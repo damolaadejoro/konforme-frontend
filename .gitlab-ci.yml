@@ -30,9 +30,13 @@ frontend-build:
 
 frontend-deploy:
   stage: deploy
-  image: amazon/aws-cli:latest
+  image: alpine:latest
+  before_script:
+    - apk add --no-cache openssh-client rsync
+    - eval $(ssh-agent -s)
+    - echo "$EC2_SSH_KEY" | tr -d '\r' | ssh-add -
+    - mkdir -p ~/.ssh && chmod 700 ~/.ssh
   script:
-    - aws s3 sync dist/ s3://${S3_BUCKET}/ --delete
-    - aws cloudfront create-invalidation --distribution-id ${CLOUDFRONT_DISTRIBUTION_ID} --paths "/*"
+    - rsync -avz --delete -e "ssh -o StrictHostKeyChecking=no" dist/ "$EC2_USER@$EC2_HOST:/var/www/konforme-frontend/"
   rules:
     - if: $CI_COMMIT_BRANCH == "main"
