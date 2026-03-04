@@ -94,7 +94,7 @@ export default function Register() {
     setLoading(true)
     try {
       await register(name, email, password)
-      navigate('/')
+      navigate('/get-started')
     } catch (err) {
       setServerError(err instanceof Error ? err.message : 'Registration failed. Please try again.')
     } finally {

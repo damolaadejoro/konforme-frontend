@@ -20,6 +20,7 @@ import { generateComplianceReport } from '../utils/generatePDF'
 import { getCombinedScore, isConnected, getStoredAuth, type CombinedScoreResponse, type AwsAccountInfo } from '../services/api'
 import { useAssessment } from '../hooks/useAssessment'
 import { useAuth } from '../context/AuthContext'
+import NextStepBanner from '../components/NextStepBanner'
 
 const statusColors: Record<ControlStatus, string> = {
   'Not Started': '#ef4444',
@@ -98,6 +99,9 @@ export default function NIS2Overview() {
 
   return (
     <div className="space-y-6">
+      {/* Onboarding next-step nudge */}
+      <NextStepBanner />
+
       {/* Page Header */}
       <div className="flex items-start justify-between">
         <div>

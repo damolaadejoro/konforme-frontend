@@ -14,9 +14,15 @@ import EmployeeTaskPage from './pages/EmployeeTaskPage'
 import Assessment from './pages/Assessment'
 import AssessmentHistory from './pages/AssessmentHistory'
 import Remediation from './pages/Remediation'
+import HumanFactor from './pages/HumanFactor'
+import HumanFactorResults from './pages/HumanFactorResults'
+import OrganizationalAssessment from './pages/OrganizationalAssessment'
+import OrganizationalResults from './pages/OrganizationalResults'
+import Findings from './pages/Findings'
 import Login from './pages/Login'
 import Register from './pages/Register'
 import ResetPassword from './pages/ResetPassword'
+import GetStarted from './pages/GetStarted'
 
 export default function App() {
   return (
@@ -28,6 +34,9 @@ export default function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/reset-password" element={<ResetPassword />} />
+
+          {/* Post-registration onboarding - no sidebar */}
+          <Route path="/get-started" element={<ProtectedRoute><GetStarted /></ProtectedRoute>} />
 
           {/* Employee task page - no layout wrapper (separate experience) */}
           <Route path="/task/:taskId" element={<EmployeeTaskPage />} />
@@ -42,6 +51,11 @@ export default function App() {
             <Route path="controls" element={<ControlsLibrary />} />
             <Route path="assessment" element={<Assessment />} />
             <Route path="assessment/history" element={<AssessmentHistory />} />
+            <Route path="human-factor" element={<HumanFactor />} />
+            <Route path="human-factor/results" element={<HumanFactorResults />} />
+            <Route path="organizational" element={<OrganizationalAssessment />} />
+            <Route path="organizational/results" element={<OrganizationalResults />} />
+            <Route path="findings" element={<Findings />} />
             <Route path="remediation" element={<Remediation />} />
             <Route path="people-tasks" element={<PeopleTasks />} />
             <Route path="scan" element={<Scan />} />
