@@ -26,6 +26,9 @@ import {
 import { mockScanResult, mockFindings } from '../data/mockData'
 import { Card, Button, SeverityBadge, ProgressBar, InfoTooltip } from '../components/ui'
 import { format } from 'date-fns'
+import { useControls } from '../hooks/useControls'
+import { useAuth } from '../context/AuthContext'
+import { generateComplianceReport } from '../utils/generatePDF'
 
 const priorityFindings = mockFindings.filter(f => f.status === 'fail').slice(0, 6)
 
@@ -214,13 +217,26 @@ function ReportPreview() {
 export default function Reports() {
   const [generating, setGenerating] = useState(false)
   const [showPreview, setShowPreview] = useState(true)
+  const { controls, complianceScore, articleAreas, criticalGaps } = useControls()
+  const { accountName } = useAuth()
 
-  const handleGenerate = () => {
+  const handleGenerate = async () => {
     setGenerating(true)
-    setTimeout(() => {
+    try {
+      await generateComplianceReport({
+        companyName: accountName || 'My Organisation',
+        complianceScore,
+        controls,
+        articleAreas,
+        criticalGaps,
+      })
+    } finally {
       setGenerating(false)
-      window.print()
-    }, 1500)
+    }
+  }
+
+  const handlePrint = () => {
+    window.print()
   }
 
   return (
@@ -248,6 +264,7 @@ export default function Reports() {
           <Button
             variant="secondary"
             size="md"
+            onClick={handlePrint}
           >
             <Printer size={15} />
             Print
