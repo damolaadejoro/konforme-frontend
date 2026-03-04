@@ -30,6 +30,8 @@ interface AuthContextValue extends AuthState {
   addAwsAccount: (alias: string, accessKeyId: string, secretAccessKey: string, sessionToken: string | null, region: string) => Promise<AwsAccountInfo>
   removeAwsAccount: (awsAccountId: string) => Promise<void>
   selectAwsAccount: (awsAccountId: string) => void
+  setAccountName: (name: string) => void
+  setEmail: (email: string) => void
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null)
@@ -183,6 +185,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setAuth(prev => ({ ...prev, selectedAwsAccountId: awsAccountId }))
   }, [])
 
+  const setAccountNameFn = useCallback((name: string) => {
+    setAuth(prev => ({ ...prev, accountName: name }))
+  }, [])
+
+  const setEmailFn = useCallback((email: string) => {
+    setAuth(prev => ({ ...prev, email }))
+  }, [])
+
   return (
     <AuthContext.Provider value={{
       ...auth,
@@ -192,6 +202,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       addAwsAccount,
       removeAwsAccount,
       selectAwsAccount,
+      setAccountName: setAccountNameFn,
+      setEmail: setEmailFn,
     }}>
       {children}
     </AuthContext.Provider>

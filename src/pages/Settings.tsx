@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
-import { Settings as SettingsIcon, Bell, Shield, Database, Key, Globe, User } from 'lucide-react'
+import { Bell, Shield, User } from 'lucide-react'
 import { Card, Button, Input, Select } from '../components/ui'
 import { useAuth } from '../context/AuthContext'
+import { updateAccount } from '../services/api'
 
 function Toggle({ enabled, onToggle }: { enabled: boolean; onToggle: () => void }) {
   return (
@@ -24,7 +25,27 @@ function Toggle({ enabled, onToggle }: { enabled: boolean; onToggle: () => void 
 }
 
 export default function Settings() {
-  const { accountName, email } = useAuth()
+  const { accountName, email, setAccountName, setEmail } = useAuth()
+
+  const [name, setName] = useState(accountName || '')
+  const [contactEmail, setContactEmail] = useState(email || '')
+  const [saving, setSaving] = useState(false)
+  const [saveMessage, setSaveMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
+
+  const handleSave = async () => {
+    setSaving(true)
+    setSaveMessage(null)
+    try {
+      const data = await updateAccount({ name, email: contactEmail })
+      setAccountName(data.account_name)
+      setEmail(data.email)
+      setSaveMessage({ type: 'success', text: 'Settings saved successfully' })
+    } catch (err) {
+      setSaveMessage({ type: 'error', text: err instanceof Error ? err.message : 'Failed to save' })
+    } finally {
+      setSaving(false)
+    }
+  }
 
   const [notifications, setNotifications] = useState<Record<string, boolean>>({
     critical: true,
@@ -56,11 +77,16 @@ export default function Settings() {
           <h2 className="text-base font-bold font-syne text-white">Account</h2>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <Input label="Organisation Name" defaultValue={accountName || ''} />
-          <Input label="Contact Email" defaultValue={email || ''} />
+          <Input label="Organisation Name" value={name} onChange={e => setName(e.target.value)} />
+          <Input label="Contact Email" value={contactEmail} onChange={e => setContactEmail(e.target.value)} />
         </div>
+        {saveMessage && (
+          <div className={`mt-3 p-3 rounded-lg text-xs ${saveMessage.type === 'success' ? 'bg-green-500/10 border border-green-500/20 text-green-400' : 'bg-red-500/10 border border-red-500/20 text-red-400'}`}>
+            {saveMessage.text}
+          </div>
+        )}
         <div className="mt-4">
-          <Button size="sm">Save Changes</Button>
+          <Button size="sm" onClick={handleSave} loading={saving}>Save Changes</Button>
         </div>
       </Card>
 

@@ -297,6 +297,16 @@ export async function getAccountInfo(): Promise<AccountInfoResponse> {
   return apiFetch<AccountInfoResponse>('/accounts')
 }
 
+export async function updateAccount(updates: { name?: string; email?: string }): Promise<{ account_id: string; account_name: string; email: string }> {
+  const data = await apiFetch<{ account_id: string; account_name: string; email: string }>('/accounts', {
+    method: 'PUT',
+    body: JSON.stringify(updates),
+  })
+  localStorage.setItem(AUTH_KEYS.accountName, data.account_name)
+  localStorage.setItem(AUTH_KEYS.email, data.email)
+  return data
+}
+
 // --- Scan ---
 
 export interface ScanStartResponse {
@@ -494,7 +504,7 @@ export interface CombinedScoreResponse {
 }
 
 export async function getCombinedScore(accountId: string, awsAccountId?: string): Promise<CombinedScoreResponse> {
-  const params = awsAccountId ? `?aws_account_id=${awsAccountId}` : ''
+  const params = awsAccountId ? `?aws_account_id=${encodeURIComponent(awsAccountId)}` : ''
   return apiFetch<CombinedScoreResponse>(`/score/${accountId}${params}`)
 }
 
