@@ -1,8 +1,47 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Settings as SettingsIcon, Bell, Shield, Database, Key, Globe, User } from 'lucide-react'
 import { Card, Button, Input, Select } from '../components/ui'
+import { useAuth } from '../context/AuthContext'
+
+function Toggle({ enabled, onToggle }: { enabled: boolean; onToggle: () => void }) {
+  return (
+    <button
+      type="button"
+      role="switch"
+      aria-checked={enabled}
+      onClick={onToggle}
+      className={`w-10 h-5 rounded-full relative cursor-pointer transition-colors ${
+        enabled ? 'bg-cyan-500' : 'bg-navy-700'
+      }`}
+    >
+      <div
+        className={`absolute top-0.5 w-4 h-4 bg-white rounded-full transition-transform ${
+          enabled ? 'right-0.5' : 'left-0.5'
+        }`}
+      />
+    </button>
+  )
+}
 
 export default function Settings() {
+  const { accountName, email } = useAuth()
+
+  const [notifications, setNotifications] = useState<Record<string, boolean>>({
+    critical: true,
+    weekly: true,
+    threshold: true,
+  })
+
+  const toggleNotification = (key: string) => {
+    setNotifications(prev => ({ ...prev, [key]: !prev[key] }))
+  }
+
+  const notificationItems = [
+    { key: 'critical', label: 'Critical findings alert', desc: 'Notify immediately when critical findings are detected' },
+    { key: 'weekly', label: 'Weekly compliance digest', desc: 'Weekly summary of compliance status' },
+    { key: 'threshold', label: 'Score below threshold', desc: 'Alert when score drops below 50%' },
+  ]
+
   return (
     <div className="max-w-3xl mx-auto space-y-6">
       <div>
@@ -17,8 +56,8 @@ export default function Settings() {
           <h2 className="text-base font-bold font-syne text-white">Account</h2>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <Input label="Organisation Name" defaultValue="Acme GmbH" />
-          <Input label="Contact Email" defaultValue="security@acme.eu" />
+          <Input label="Organisation Name" defaultValue={accountName || ''} />
+          <Input label="Contact Email" defaultValue={email || ''} />
         </div>
         <div className="mt-4">
           <Button size="sm">Save Changes</Button>
@@ -32,19 +71,16 @@ export default function Settings() {
           <h2 className="text-base font-bold font-syne text-white">Notifications</h2>
         </div>
         <div className="space-y-3">
-          {[
-            { label: 'Critical findings alert', desc: 'Notify immediately when critical findings are detected' },
-            { label: 'Weekly compliance digest', desc: 'Weekly summary of compliance status' },
-            { label: 'Score below threshold', desc: 'Alert when score drops below 50%' },
-          ].map(item => (
-            <div key={item.label} className="flex items-center justify-between p-3 rounded-lg bg-navy-900/40 border border-navy-800">
+          {notificationItems.map(item => (
+            <div key={item.key} className="flex items-center justify-between p-3 rounded-lg bg-navy-900/40 border border-navy-800">
               <div>
                 <p className="text-sm font-medium text-white">{item.label}</p>
                 <p className="text-xs text-navy-400 mt-0.5">{item.desc}</p>
               </div>
-              <button className="w-10 h-5 rounded-full bg-cyan-500 relative cursor-pointer">
-                <div className="absolute right-0.5 top-0.5 w-4 h-4 bg-white rounded-full" />
-              </button>
+              <Toggle
+                enabled={notifications[item.key]}
+                onToggle={() => toggleNotification(item.key)}
+              />
             </div>
           ))}
         </div>
