@@ -11,8 +11,10 @@ export default function TopNav() {
   const navigate = useNavigate()
   const [showAccountDropdown, setShowAccountDropdown] = useState(false)
   const [showUserMenu, setShowUserMenu] = useState(false)
+  const [showNotifications, setShowNotifications] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
   const userMenuRef = useRef<HTMLDivElement>(null)
+  const notificationsRef = useRef<HTMLDivElement>(null)
 
   const lastSavedText = lastSaved
     ? formatDistanceToNow(new Date(lastSaved), { addSuffix: true })
@@ -44,6 +46,9 @@ export default function TopNav() {
       }
       if (userMenuRef.current && !userMenuRef.current.contains(e.target as Node)) {
         setShowUserMenu(false)
+      }
+      if (notificationsRef.current && !notificationsRef.current.contains(e.target as Node)) {
+        setShowNotifications(false)
       }
     }
     document.addEventListener('mousedown', handleClick)
@@ -131,10 +136,31 @@ export default function TopNav() {
         </button>
 
         {/* Notifications */}
-        <button className="relative p-2 rounded-lg text-navy-300 hover:text-white hover:bg-navy-800 transition-all">
-          <Bell size={16} />
-          <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 bg-red-400 rounded-full" />
-        </button>
+        <div className="relative" ref={notificationsRef}>
+          <button
+            onClick={() => setShowNotifications(!showNotifications)}
+            className="relative p-2 rounded-lg text-navy-300 hover:text-white hover:bg-navy-800 transition-all"
+          >
+            <Bell size={16} />
+          </button>
+          {showNotifications && (
+            <div className="absolute right-0 top-full mt-1 w-72 bg-navy-900 border border-navy-700 rounded-lg shadow-xl z-50 py-4">
+              <div className="flex flex-col items-center gap-2 px-4 py-3 text-center">
+                <Bell size={24} className="text-navy-500" />
+                <p className="text-sm font-medium text-white">No notifications yet</p>
+                <p className="text-xs text-navy-400">When you receive notifications, they'll appear here.</p>
+              </div>
+              <div className="border-t border-navy-800 mt-2 pt-2 px-3">
+                <button
+                  onClick={() => { setShowNotifications(false); navigate('/settings') }}
+                  className="w-full text-left text-xs text-cyan-400 hover:text-cyan-300 px-2 py-1.5 rounded hover:bg-navy-800 transition-colors"
+                >
+                  Notification Settings
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
 
         {/* User menu */}
         <div className="relative" ref={userMenuRef}>
