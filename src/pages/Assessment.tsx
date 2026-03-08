@@ -20,6 +20,8 @@ export default function Assessment() {
     submitting,
     overallScore,
     articleScores,
+    projectedScore,
+    projectedArticleScores,
     gaps,
     answeredCount,
     totalQuestions,
@@ -60,10 +62,13 @@ export default function Assessment() {
 
         <AssessmentSummary
           overallScore={overallScore}
+          projectedScore={projectedScore}
           articleScores={articleScores}
+          projectedArticleScores={projectedArticleScores}
           gaps={gaps}
           answeredCount={answeredCount}
           totalQuestions={totalQuestions}
+          isComplete={isComplete}
         />
       </div>
     )
@@ -124,10 +129,16 @@ export default function Assessment() {
         </div>
         <ProgressBar value={progressPercent} color="bg-cyan-500" height="h-2" />
         {answeredCount > 0 && (
-          <p className="text-xs text-[#94b4d1] mt-2">
-            Current score: <span className="font-semibold text-white">{overallScore}%</span>
-            <InfoTooltip content="Real-time weighted score based on maturity levels selected so far" size={12} className="ml-1" />
-          </p>
+          <div className="mt-2 space-y-1">
+            <p className="text-sm text-[#94b4d1]">
+              Projected score: <span className="font-bold text-white">{projectedScore}%</span>
+              <InfoTooltip content="Your compliance score if unanswered questions score 0. Complete more questions to improve." size={12} className="ml-1" />
+            </p>
+            <p className="text-xs text-[#6b8fad]">
+              Answered quality: <span className="font-semibold text-[#94b4d1]">{overallScore}%</span>
+              <InfoTooltip content={`Score based on the ${answeredCount} questions you've answered so far`} size={12} className="ml-1" />
+            </p>
+          </div>
         )}
       </Card>
 
@@ -140,10 +151,12 @@ export default function Assessment() {
           </h3>
           {ARTICLES.map(art => {
             const artScore = articleScores.find(s => s.article === art.article)
+            const projArtScore = projectedArticleScores.find(s => s.article === art.article)
             return (
               <ArticleProgressCard
                 key={art.id}
                 articleScore={artScore || { article: art.article, title: art.title, score: 0, answered: 0, total: 4 }}
+                projectedScore={projArtScore?.score ?? 0}
                 isActive={activeArticle === art.article}
                 onClick={() => setActiveArticle(art.article)}
               />

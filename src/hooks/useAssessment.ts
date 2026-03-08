@@ -53,6 +53,57 @@ function calculateArticleScores(responses: Record<string, QuestionResponse>): Ar
   })
 }
 
+function calculateProjectedArticleScores(responses: Record<string, QuestionResponse>): ArticleScore[] {
+  return ARTICLES.map(art => {
+    const questions = QUESTIONS_BY_ARTICLE[art.article] || []
+    let earned = 0
+    let max = 0
+    let answered = 0
+
+    questions.forEach(q => {
+      const resp = responses[q.id]
+      if (resp) answered++
+
+      if (resp && resp.maturityLevel === null) return // N/A — exclude entirely
+
+      const weight = SEVERITY_WEIGHTS[q.severity]
+      max += weight
+      if (resp) {
+        earned += (resp.maturityLevel! / 4) * weight
+      }
+      // unanswered: earned += 0, max += weight (counts against you)
+    })
+
+    return {
+      article: art.article,
+      title: art.title,
+      score: max > 0 ? Math.round((earned / max) * 100 * 10) / 10 : 0,
+      answered,
+      total: questions.length,
+    }
+  })
+}
+
+function calculateProjectedScore(responses: Record<string, QuestionResponse>): number {
+  let totalEarned = 0
+  let totalMax = 0
+
+  ASSESSMENT_QUESTIONS.forEach(q => {
+    const resp = responses[q.id]
+
+    if (resp && resp.maturityLevel === null) return // N/A — exclude entirely
+
+    const weight = SEVERITY_WEIGHTS[q.severity]
+    totalMax += weight
+    if (resp) {
+      totalEarned += (resp.maturityLevel! / 4) * weight
+    }
+    // unanswered: earned += 0, max += weight
+  })
+
+  return totalMax > 0 ? Math.round((totalEarned / totalMax) * 100 * 10) / 10 : 0
+}
+
 function calculateOverallScore(responses: Record<string, QuestionResponse>): number {
   let totalEarned = 0
   let totalMax = 0
@@ -221,6 +272,8 @@ export function useAssessment() {
 
   const overallScore = useMemo(() => calculateOverallScore(responses), [responses])
   const articleScores = useMemo(() => calculateArticleScores(responses), [responses])
+  const projectedScore = useMemo(() => calculateProjectedScore(responses), [responses])
+  const projectedArticleScores = useMemo(() => calculateProjectedArticleScores(responses), [responses])
   const gaps = useMemo(() => identifyGaps(responses), [responses])
 
   const answeredCount = useMemo(
@@ -240,6 +293,8 @@ export function useAssessment() {
     submitting,
     overallScore,
     articleScores,
+    projectedScore,
+    projectedArticleScores,
     gaps,
     answeredCount,
     totalQuestions: ASSESSMENT_QUESTIONS.length,

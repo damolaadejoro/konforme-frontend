@@ -4,13 +4,15 @@ import { ProgressBar } from '../ui'
 
 interface ArticleProgressCardProps {
   articleScore: ArticleScore
+  projectedScore: number
   isActive: boolean
   onClick: () => void
 }
 
-export default function ArticleProgressCard({ articleScore, isActive, onClick }: ArticleProgressCardProps) {
-  const { article, title, score, answered, total } = articleScore
-  const color = score >= 75 ? '#10b981' : score >= 50 ? '#f59e0b' : score > 0 ? '#ef4444' : '#4a6580'
+export default function ArticleProgressCard({ articleScore, projectedScore, isActive, onClick }: ArticleProgressCardProps) {
+  const { article, title, answered, total } = articleScore
+  const displayScore = projectedScore
+  const color = displayScore >= 75 ? '#10b981' : displayScore >= 50 ? '#f59e0b' : displayScore > 0 ? '#ef4444' : '#4a6580'
   const progress = total > 0 ? Math.round((answered / total) * 100) : 0
 
   return (
@@ -25,11 +27,9 @@ export default function ArticleProgressCard({ articleScore, isActive, onClick }:
     >
       <div className="flex items-center justify-between mb-1">
         <span className="text-xs font-mono text-[#94b4d1]">{article}</span>
-        {answered > 0 && (
-          <span className="text-xs font-bold" style={{ color }}>
-            {score}%
-          </span>
-        )}
+        <span className="text-xs font-bold" style={{ color }}>
+          {displayScore}%
+        </span>
       </div>
       <h4 className={`text-[13px] font-semibold leading-snug mb-2 ${
         isActive ? 'text-cyan-400' : 'text-white'

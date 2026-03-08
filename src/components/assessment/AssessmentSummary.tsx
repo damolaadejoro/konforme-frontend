@@ -6,21 +6,30 @@ import { Card, ProgressBar } from '../ui'
 
 interface AssessmentSummaryProps {
   overallScore: number
+  projectedScore: number
   articleScores: ArticleScore[]
+  projectedArticleScores: ArticleScore[]
   gaps: AssessmentGap[]
   answeredCount: number
   totalQuestions: number
+  isComplete: boolean
 }
 
 export default function AssessmentSummary({
   overallScore,
+  projectedScore,
   articleScores,
+  projectedArticleScores,
   gaps,
   answeredCount,
   totalQuestions,
+  isComplete,
 }: AssessmentSummaryProps) {
-  const scoreColor = overallScore >= 75 ? '#10b981' : overallScore >= 50 ? '#f59e0b' : '#ef4444'
-  const scoreLabel = overallScore >= 75 ? 'Strong' : overallScore >= 50 ? 'Moderate' : 'Needs Improvement'
+  const allAnswered = answeredCount >= totalQuestions
+  const primaryScore = allAnswered ? overallScore : projectedScore
+  const displayArticleScores = allAnswered ? articleScores : projectedArticleScores
+  const scoreColor = primaryScore >= 75 ? '#10b981' : primaryScore >= 50 ? '#f59e0b' : '#ef4444'
+  const scoreLabel = primaryScore >= 75 ? 'Strong' : primaryScore >= 50 ? 'Moderate' : 'Needs Improvement'
   const criticalGaps = gaps.filter(g => g.severity === 'critical')
   const highGaps = gaps.filter(g => g.severity === 'high')
 
@@ -30,7 +39,7 @@ export default function AssessmentSummary({
       <Card glow>
         <div className="text-center py-4">
           <div className="text-5xl font-bold font-syne mb-2" style={{ color: scoreColor }}>
-            {overallScore}%
+            {primaryScore}%
           </div>
           <div className="text-lg font-semibold mb-1" style={{ color: scoreColor }}>
             {scoreLabel}
@@ -38,6 +47,16 @@ export default function AssessmentSummary({
           <p className="text-sm text-[#94b4d1]">
             {answeredCount} of {totalQuestions} questions assessed
           </p>
+          {!allAnswered && (
+            <div className="mt-3 space-y-1">
+              <p className="text-xs text-[#6b8fad]">
+                This is your projected score — unanswered questions count as 0
+              </p>
+              <p className="text-xs text-[#6b8fad]">
+                Answered quality: <span className="font-semibold text-[#94b4d1]">{overallScore}%</span>
+              </p>
+            </div>
+          )}
         </div>
 
         {/* Quick stats */}
@@ -52,7 +71,7 @@ export default function AssessmentSummary({
           </div>
           <div className="text-center">
             <div className="text-2xl font-bold font-syne text-emerald-400">
-              {articleScores.filter(a => a.score >= 75).length}
+              {displayArticleScores.filter(a => a.score >= 75).length}
             </div>
             <div className="text-xs text-[#94b4d1]">Strong Articles</div>
           </div>
@@ -65,7 +84,7 @@ export default function AssessmentSummary({
           Article Maturity Scores
         </h3>
         <div className="space-y-3">
-          {articleScores.map(art => {
+          {displayArticleScores.map(art => {
             const artColor = art.score >= 75 ? '#10b981' : art.score >= 50 ? '#f59e0b' : art.score > 0 ? '#ef4444' : '#4a6580'
             return (
               <div key={art.article} className="p-3 rounded-lg bg-navy-900/40 border border-navy-800">
