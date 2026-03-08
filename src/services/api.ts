@@ -363,6 +363,29 @@ export interface ScanResponse {
   domainScores: DomainScore[]
 }
 
+export interface ScanSummary {
+  id: string
+  status: string
+  startedAt: string
+  completedAt: string | null
+  overallScore: number | null
+  totalChecks: number
+  passed: number
+  failed: number
+  criticalCount: number
+  highCount: number
+  mediumCount: number
+  lowCount: number
+}
+
+export async function getLatestScan(accountId: string, awsAccountId: string): Promise<ScanResponse> {
+  return apiFetch<ScanResponse>(`/scan/latest/${accountId}?aws_account_id=${encodeURIComponent(awsAccountId)}`)
+}
+
+export async function getScanHistory(accountId: string, awsAccountId: string): Promise<ScanSummary[]> {
+  return apiFetch<ScanSummary[]>(`/scans/${accountId}?aws_account_id=${encodeURIComponent(awsAccountId)}`)
+}
+
 export async function startScan(accountId: string, awsAccountId: string): Promise<ScanStartResponse> {
   return apiFetch<ScanStartResponse>(`/scan/${accountId}`, {
     method: 'POST',
