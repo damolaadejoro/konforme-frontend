@@ -12,13 +12,14 @@ import {
 
 const POLL_INTERVAL = 2000
 
-export function useScan() {
+export function useScan(selectedAwsAccountId?: string | null) {
   const [status, setStatus] = useState<ScanStatus>('idle')
   const [checks, setChecks] = useState<ScanCheckProgress[]>([])
   const [currentCheckIndex, setCurrentCheckIndex] = useState(-1)
   const [progress, setProgress] = useState(0)
   const [scanResult, setScanResult] = useState<ScanResponse | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const [resuming, setResuming] = useState(false)
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const pollingRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
@@ -68,13 +69,18 @@ export function useScan() {
     }, POLL_INTERVAL)
   }, [])
 
-  // On mount, check if there's an in-progress scan and resume polling
+  // On mount (or when selected account changes), check for in-progress scan and resume polling
   useEffect(() => {
     if (!isConnected()) return
-    const { accountId, selectedAwsAccountId } = getStoredAuth()
-    if (!accountId || !selectedAwsAccountId) return
+    const { accountId } = getStoredAuth()
+    const awsId = selectedAwsAccountId || getStoredAuth().selectedAwsAccountId
+    if (!accountId || !awsId) return
 
-    getScanHistory(accountId, selectedAwsAccountId)
+    // Don't overwrite an already-running scan
+    if (pollingRef.current) return
+
+    setResuming(true)
+    getScanHistory(accountId, awsId)
       .then(scans => {
         const running = scans.find(s => s.status === 'queued' || s.status === 'running')
         if (running) {
@@ -82,8 +88,14 @@ export function useScan() {
           pollScan(running.id)
         }
       })
-      .catch(() => {}) // silently ignore — user can still start a new scan
-  }, [pollScan])
+      .catch(() => {})
+      .finally(() => setResuming(false))
+
+    return () => {
+      if (pollingRef.current) clearInterval(pollingRef.current)
+      if (timeoutRef.current) clearTimeout(timeoutRef.current)
+    }
+  }, [pollScan, selectedAwsAccountId])
 
   // Real API scan
   const startApiScan = useCallback(async (awsAccountId?: string) => {
@@ -186,6 +198,7 @@ export function useScan() {
     progress,
     scanResult,
     error,
+    resuming,
     startScan,
     resetScan,
   }

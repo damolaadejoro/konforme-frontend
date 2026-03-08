@@ -321,7 +321,7 @@ export default function Scan() {
   const [addingAccount, setAddingAccount] = useState(false)
   const [showIamPolicy, setShowIamPolicy] = useState(false)
   const [copiedPolicy, setCopiedPolicy] = useState(false)
-  const { status, checks, currentCheckIndex, progress, scanResult, error, startScan, resetScan } = useScan()
+  const { status, checks, currentCheckIndex, progress, scanResult, error, resuming, startScan, resetScan } = useScan(selectedAwsAccountId)
 
   const selectedAccount = awsAccounts.find(a => a.id === selectedAwsAccountId)
   const scanRegion = scanResult?.region || selectedAccount?.awsRegion || addCreds.region
@@ -515,13 +515,13 @@ export default function Scan() {
 
               <div className="flex gap-3">
                 <AppTooltip content="Scan the selected AWS account against NIS2 requirements using live API calls">
-                  <Button onClick={handleRunScan} size="lg" className="flex-1" disabled={!selectedAwsAccountId}>
-                    <Play size={16} />
-                    Run Scan
+                  <Button onClick={handleRunScan} size="lg" className="flex-1" disabled={!selectedAwsAccountId || resuming}>
+                    {resuming ? <RotateCcw size={16} className="animate-spin" /> : <Play size={16} />}
+                    {resuming ? 'Checking for running scans...' : 'Run Scan'}
                   </Button>
                 </AppTooltip>
                 <AppTooltip content="Run a simulated scan with sample data — no AWS credentials needed">
-                  <Button type="button" variant="secondary" size="lg" onClick={handleDemo}>
+                  <Button type="button" variant="secondary" size="lg" onClick={handleDemo} disabled={resuming}>
                     <Radar size={16} />
                     Run Demo
                   </Button>
