@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo, useRef } from 'react'
 import {
   Shield,
   Search,
@@ -65,6 +65,8 @@ function ControlDrawer({
   const [taskType, setTaskType] = useState<'acknowledge' | 'quiz'>('acknowledge')
   const [deadline, setDeadline] = useState('')
 
+  const fileInputRef = useRef<HTMLInputElement>(null)
+
   const handleSaveStatus = () => {
     onUpdate({ status: tempStatus })
     setIsEditingStatus(false)
@@ -86,14 +88,25 @@ function ControlDrawer({
   }
 
   const handleUploadEvidence = () => {
-    // Mock file upload
-    const mockEvidence = {
-      filename: 'Evidence_Document.pdf',
-      uploadedAt: new Date().toISOString(),
-      uploadedBy: 'Current User',
-      fileSize: '1.2 MB'
-    }
-    onAddEvidence(mockEvidence)
+    fileInputRef.current?.click()
+  }
+
+  const handleFileSelected = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files
+    if (!files) return
+    Array.from(files).forEach(file => {
+      const size = file.size < 1024 * 1024
+        ? `${(file.size / 1024).toFixed(1)} KB`
+        : `${(file.size / (1024 * 1024)).toFixed(1)} MB`
+      onAddEvidence({
+        filename: file.name,
+        uploadedAt: new Date().toISOString(),
+        uploadedBy: 'Current User',
+        fileSize: size,
+      })
+    })
+    // Reset so the same file can be re-selected
+    e.target.value = ''
   }
 
   const handleAssignEmployees = () => {
@@ -300,6 +313,14 @@ function ControlDrawer({
 
           {/* Evidence */}
           <div className="p-4 rounded-lg bg-navy-800/60 border border-navy-700">
+            <input
+              ref={fileInputRef}
+              type="file"
+              multiple
+              className="hidden"
+              accept=".pdf,.doc,.docx,.xls,.xlsx,.png,.jpg,.jpeg,.txt,.csv"
+              onChange={handleFileSelected}
+            />
             <div className="flex items-center justify-between mb-3">
               <label className="text-xs font-semibold text-[#94b4d1] uppercase tracking-wider flex items-center gap-2">
                 <FileText size={14} />
