@@ -4,6 +4,7 @@ import { Bell, ChevronDown, RefreshCw, Save, Check, LogOut } from 'lucide-react'
 import { formatDistanceToNow } from 'date-fns'
 import { useControls } from '../../hooks/useControls'
 import { useAuth } from '../../context/AuthContext'
+import { getCombinedScore, getStoredAuth, isConnected, type CombinedScoreResponse } from '../../services/api'
 
 export default function TopNav() {
   const { lastSaved, complianceScore } = useControls()
@@ -12,6 +13,7 @@ export default function TopNav() {
   const [showAccountDropdown, setShowAccountDropdown] = useState(false)
   const [showUserMenu, setShowUserMenu] = useState(false)
   const [showNotifications, setShowNotifications] = useState(false)
+  const [backendScore, setBackendScore] = useState<CombinedScoreResponse | null>(null)
   const dropdownRef = useRef<HTMLDivElement>(null)
   const userMenuRef = useRef<HTMLDivElement>(null)
   const notificationsRef = useRef<HTMLDivElement>(null)
@@ -20,20 +22,22 @@ export default function TopNav() {
     ? formatDistanceToNow(new Date(lastSaved), { addSuffix: true })
     : 'Never'
 
-  // Use scan score from last scan if available, otherwise controls score
-  const lastScan = React.useMemo(() => {
-    try {
-      const raw = localStorage.getItem('konforme_last_scan')
-      return raw ? JSON.parse(raw) : null
-    } catch {
-      return null
+  // Fetch real score from backend
+  useEffect(() => {
+    if (isConnected()) {
+      const { accountId } = getStoredAuth()
+      if (accountId) {
+        getCombinedScore(accountId, selectedAwsAccountId || undefined)
+          .then(setBackendScore)
+          .catch(() => {})
+      }
     }
-  }, [])
+  }, [selectedAwsAccountId])
 
   const selectedAccount = awsAccounts.find(a => a.id === selectedAwsAccountId)
-  const score = lastScan?.overallScore ?? complianceScore.overall
-  const displayName = isAuthenticated ? accountName : lastScan?.accountName ?? 'No Account'
-  const displayId = selectedAccount?.awsAccountId ?? lastScan?.accountId ?? '—'
+  const score = backendScore?.overallScore ?? complianceScore.overall
+  const displayName = isAuthenticated ? accountName : 'No Account'
+  const displayId = selectedAccount?.awsAccountId ?? '—'
   const initials = displayName
     ? displayName.slice(0, 2).toUpperCase()
     : 'NA'
