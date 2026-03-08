@@ -12,11 +12,63 @@ import {
   Play,
   RotateCcw,
   Link,
+  ChevronDown,
+  ChevronUp,
+  Copy,
+  Check,
 } from 'lucide-react'
 import { useScan } from '../hooks/useScan'
 import { useAuth } from '../context/AuthContext'
 import { AwsAccountCredentials } from '../types'
 import { Card, Button, Input, Select, SeverityBadge, ProgressBar, InfoTooltip, Tooltip as AppTooltip } from '../components/ui'
+
+const IAM_POLICY_JSON = `{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "KonformeReadOnlyScan",
+      "Effect": "Allow",
+      "Action": [
+        "sts:GetCallerIdentity",
+        "iam:GetAccountPasswordPolicy",
+        "iam:ListUsers",
+        "iam:ListMFADevices",
+        "iam:ListAccessKeys",
+        "iam:GetAccessKeyLastUsed",
+        "iam:ListAttachedUserPolicies",
+        "iam:ListUserPolicies",
+        "s3:ListAllMyBuckets",
+        "s3:GetBucketEncryption",
+        "s3:GetBucketPublicAccessBlock",
+        "s3:GetBucketVersioning",
+        "s3:GetBucketLogging",
+        "ec2:DescribeSecurityGroups",
+        "ec2:DescribeFlowLogs",
+        "ec2:DescribeVpcs",
+        "cloudtrail:DescribeTrails",
+        "cloudtrail:GetTrailStatus",
+        "guardduty:ListDetectors",
+        "securityhub:DescribeHub",
+        "kms:ListKeys",
+        "kms:DescribeKey",
+        "kms:GetKeyRotationStatus",
+        "rds:DescribeDBInstances",
+        "backup:ListBackupVaults",
+        "acm:ListCertificates",
+        "acm:DescribeCertificate",
+        "elasticloadbalancing:DescribeLoadBalancers",
+        "wafv2:ListWebACLs",
+        "sns:ListTopics",
+        "cloudwatch:DescribeAlarms",
+        "ecr:DescribeRepositories",
+        "ecr:GetRepositoryPolicy",
+        "inspector2:BatchGetAccountStatus",
+        "config:DescribeConfigurationRecorders"
+      ],
+      "Resource": "*"
+    }
+  ]
+}`
 
 const REGIONS = [
   'eu-west-1', 'eu-west-2', 'eu-west-3', 'eu-central-1',
@@ -267,6 +319,8 @@ export default function Scan() {
   })
   const [connectError, setConnectError] = useState<string | null>(null)
   const [addingAccount, setAddingAccount] = useState(false)
+  const [showIamPolicy, setShowIamPolicy] = useState(false)
+  const [copiedPolicy, setCopiedPolicy] = useState(false)
   const { status, checks, currentCheckIndex, progress, scanResult, error, startScan, resetScan } = useScan()
 
   const selectedAccount = awsAccounts.find(a => a.id === selectedAwsAccountId)
@@ -359,6 +413,54 @@ export default function Scan() {
                   </div>
                 ))}
               </div>
+
+              {/* Required IAM Permissions — prominent banner */}
+              {(showAddForm || awsAccounts.length === 0) && (
+                <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/30">
+                  <div className="flex items-start gap-3">
+                    <AlertTriangle size={18} className="text-amber-400 mt-0.5 flex-shrink-0" />
+                    <div className="flex-1">
+                      <h3 className="text-sm font-bold text-amber-300">Before you connect — set up IAM permissions</h3>
+                      <p className="text-xs text-navy-300 mt-1">
+                        Your IAM user needs a read-only policy attached for the scan to work. Without it, all 25 checks will return warnings.
+                      </p>
+                      <button
+                        type="button"
+                        onClick={() => setShowIamPolicy(!showIamPolicy)}
+                        className="mt-2 flex items-center gap-1.5 text-xs font-semibold text-cyan-400 hover:text-cyan-300 transition-colors"
+                      >
+                        {showIamPolicy ? 'Hide' : 'View'} IAM Policy JSON
+                        {showIamPolicy ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+                      </button>
+                      {showIamPolicy && (
+                        <div className="mt-3 space-y-3">
+                          <div className="relative">
+                            <pre className="text-xs font-mono text-navy-200 bg-navy-950 rounded-lg p-3 overflow-x-auto max-h-64 overflow-y-auto border border-navy-800">
+                              {IAM_POLICY_JSON}
+                            </pre>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                navigator.clipboard.writeText(IAM_POLICY_JSON)
+                                setCopiedPolicy(true)
+                                setTimeout(() => setCopiedPolicy(false), 2000)
+                              }}
+                              className="absolute top-2 right-2 flex items-center gap-1 px-2 py-1 rounded text-xs bg-navy-800 border border-navy-700 text-navy-300 hover:text-cyan-400 hover:border-cyan-500/30 transition-colors"
+                            >
+                              {copiedPolicy ? <><Check size={12} className="text-emerald-400" /> Copied!</> : <><Copy size={12} /> Copy</>}
+                            </button>
+                          </div>
+                          <div className="p-2.5 rounded-lg bg-navy-950/60 border border-navy-800">
+                            <p className="text-xs text-navy-400 leading-relaxed">
+                              <span className="text-navy-300 font-medium">Steps:</span> IAM → Policies → Create Policy → JSON tab → paste the policy above → name it <span className="text-cyan-400 font-mono">KonformeReadOnly</span> → attach to your IAM user.
+                            </p>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )}
 
               {/* Add AWS Account form */}
               {(showAddForm || awsAccounts.length === 0) && (
