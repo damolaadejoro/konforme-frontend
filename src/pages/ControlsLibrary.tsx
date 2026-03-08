@@ -202,10 +202,9 @@ function ControlDrawer({
     setDeadline('')
   }
 
-  // Merge backend evidence with localStorage evidence for display
-  const displayEvidence = accountId && backendEvidence.length > 0
-    ? backendEvidence
-    : null
+  // Use backend evidence when connected (even if empty), fall back to localStorage otherwise
+  const hasLoadedBackend = accountId && !evidenceLoading
+  const displayEvidence = hasLoadedBackend ? backendEvidence : null
 
   return (
     <div className="fixed inset-0 bg-navy-950/80 backdrop-blur-sm z-50 flex items-center justify-end">
