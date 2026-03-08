@@ -1,10 +1,12 @@
-import { useState, useCallback, useRef } from 'react'
+import { useState, useCallback, useRef, useEffect } from 'react'
 import { ScanCheckProgress, ScanStatus } from '../types'
 import { mockScanChecks, checkResults } from '../data/mockData'
 import {
   startScan as apiStartScan,
   getScan as apiGetScan,
+  getScanHistory,
   getStoredAuth,
+  isConnected,
   type ScanResponse,
 } from '../services/api'
 
@@ -19,6 +21,69 @@ export function useScan() {
   const [error, setError] = useState<string | null>(null)
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const pollingRef = useRef<ReturnType<typeof setInterval> | null>(null)
+
+  // Start polling an existing scan by ID
+  const pollScan = useCallback((scanId: string) => {
+    setStatus('scanning')
+    setError(null)
+    setScanResult(null)
+
+    pollingRef.current = setInterval(async () => {
+      try {
+        const scan = await apiGetScan(scanId)
+
+        if (scan.status === 'complete') {
+          if (pollingRef.current) clearInterval(pollingRef.current)
+          setScanResult(scan)
+          setStatus('complete')
+          setProgress(100)
+
+          const mappedChecks: ScanCheckProgress[] = scan.findings.map((f) => ({
+            id: f.id,
+            checkName: f.checkName,
+            resource: f.resource,
+            status: f.status === 'pass' ? 'pass' as const
+                  : f.status === 'info' ? 'info' as const
+                  : f.status === 'review' ? 'warn' as const
+                  : 'fail' as const,
+            severity: f.severity as ScanCheckProgress['severity'],
+            duration: Math.round(Math.random() * 1200 + 600),
+          }))
+          setChecks(mappedChecks)
+          setCurrentCheckIndex(-1)
+
+          localStorage.setItem('konforme_last_scan', JSON.stringify(scan))
+        } else if (scan.status === 'error') {
+          if (pollingRef.current) clearInterval(pollingRef.current)
+          setStatus('error')
+          setError('Scan failed. Check your IAM role permissions.')
+        } else {
+          setProgress(prev => Math.min(prev + 5, 90))
+        }
+      } catch (err) {
+        if (pollingRef.current) clearInterval(pollingRef.current)
+        setStatus('error')
+        setError(err instanceof Error ? err.message : 'Failed to poll scan status')
+      }
+    }, POLL_INTERVAL)
+  }, [])
+
+  // On mount, check if there's an in-progress scan and resume polling
+  useEffect(() => {
+    if (!isConnected()) return
+    const { accountId, selectedAwsAccountId } = getStoredAuth()
+    if (!accountId || !selectedAwsAccountId) return
+
+    getScanHistory(accountId, selectedAwsAccountId)
+      .then(scans => {
+        const running = scans.find(s => s.status === 'queued' || s.status === 'running')
+        if (running) {
+          setProgress(20)
+          pollScan(running.id)
+        }
+      })
+      .catch(() => {}) // silently ignore — user can still start a new scan
+  }, [pollScan])
 
   // Real API scan
   const startApiScan = useCallback(async (awsAccountId?: string) => {
@@ -41,54 +106,12 @@ export function useScan() {
 
     try {
       const { scan_id } = await apiStartScan(accountId, targetAwsId)
-
-      // Poll for results
-      pollingRef.current = setInterval(async () => {
-        try {
-          const scan = await apiGetScan(scan_id)
-
-          if (scan.status === 'complete') {
-            if (pollingRef.current) clearInterval(pollingRef.current)
-            setScanResult(scan)
-            setStatus('complete')
-            setProgress(100)
-
-            // Map findings to check progress format
-            const mappedChecks: ScanCheckProgress[] = scan.findings.map((f) => ({
-              id: f.id,
-              checkName: f.checkName,
-              resource: f.resource,
-              status: f.status === 'pass' ? 'pass' as const
-                    : f.status === 'info' ? 'info' as const
-                    : f.status === 'review' ? 'warn' as const
-                    : 'fail' as const,
-              severity: f.severity as ScanCheckProgress['severity'],
-              duration: Math.round(Math.random() * 1200 + 600),
-            }))
-            setChecks(mappedChecks)
-            setCurrentCheckIndex(-1)
-
-            // Store for findings page
-            localStorage.setItem('konforme_last_scan', JSON.stringify(scan))
-          } else if (scan.status === 'error') {
-            if (pollingRef.current) clearInterval(pollingRef.current)
-            setStatus('error')
-            setError('Scan failed. Check your IAM role permissions.')
-          } else {
-            // Still running — animate progress
-            setProgress(prev => Math.min(prev + 5, 90))
-          }
-        } catch (err) {
-          if (pollingRef.current) clearInterval(pollingRef.current)
-          setStatus('error')
-          setError(err instanceof Error ? err.message : 'Failed to poll scan status')
-        }
-      }, POLL_INTERVAL)
+      pollScan(scan_id)
     } catch (err) {
       setStatus('error')
       setError(err instanceof Error ? err.message : 'Failed to start scan')
     }
-  }, [])
+  }, [pollScan])
 
   // Demo mock scan (no backend needed)
   const startDemoScan = useCallback(() => {
