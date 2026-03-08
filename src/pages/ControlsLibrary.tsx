@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useRef } from 'react'
+import React, { useState, useMemo, useRef, useEffect, useCallback } from 'react'
 import {
   Shield,
   Search,
@@ -14,12 +14,22 @@ import {
   CheckCircle,
   Users as UsersIcon,
   Mail,
-  Clock
+  Clock,
+  Download,
+  Loader2
 } from 'lucide-react'
 import { useControls } from '../hooks/useControls'
 import { Card, Button, Select, Input, SeverityBadge, InfoTooltip, Tooltip } from '../components/ui'
 import { Control, ControlCategory, ControlStatus } from '../types/controls'
 import { format } from 'date-fns'
+import {
+  getStoredAuth,
+  uploadEvidence,
+  listEvidence,
+  deleteEvidence,
+  getEvidenceDownloadUrl,
+  EvidenceFile
+} from '../services/api'
 
 const statusColors: Record<ControlStatus, string> = {
   'Not Started': 'text-red-400 bg-red-500/10 border-red-500/20',
@@ -32,6 +42,13 @@ const categoryIcons = {
   Technical: '⚙️',
   Organizational: '📋',
   People: '👥'
+}
+
+function formatFileSize(bytes: number): string {
+  if (bytes < 1024 * 1024) {
+    return `${(bytes / 1024).toFixed(1)} KB`
+  }
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
 }
 
 function ControlDrawer({
@@ -65,7 +82,36 @@ function ControlDrawer({
   const [taskType, setTaskType] = useState<'acknowledge' | 'quiz'>('acknowledge')
   const [deadline, setDeadline] = useState('')
 
+  // Backend evidence state
+  const [backendEvidence, setBackendEvidence] = useState<EvidenceFile[]>([])
+  const [evidenceLoading, setEvidenceLoading] = useState(false)
+  const [uploading, setUploading] = useState(false)
+  const [evidenceError, setEvidenceError] = useState<string | null>(null)
+
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const auth = getStoredAuth()
+  const accountId = auth.accountId
+
+  // Load evidence from backend when control opens
+  const loadEvidence = useCallback(async () => {
+    if (!accountId) return
+    setEvidenceLoading(true)
+    setEvidenceError(null)
+    try {
+      const files = await listEvidence(accountId, control.id)
+      setBackendEvidence(files)
+    } catch (err: any) {
+      console.error('Failed to load evidence:', err)
+      // Fall back silently to localStorage evidence
+      setBackendEvidence([])
+    } finally {
+      setEvidenceLoading(false)
+    }
+  }, [accountId, control.id])
+
+  useEffect(() => {
+    loadEvidence()
+  }, [loadEvidence])
 
   const handleSaveStatus = () => {
     onUpdate({ status: tempStatus })
@@ -91,22 +137,61 @@ function ControlDrawer({
     fileInputRef.current?.click()
   }
 
-  const handleFileSelected = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileSelected = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files
     if (!files) return
-    Array.from(files).forEach(file => {
-      const size = file.size < 1024 * 1024
-        ? `${(file.size / 1024).toFixed(1)} KB`
-        : `${(file.size / (1024 * 1024)).toFixed(1)} MB`
-      onAddEvidence({
-        filename: file.name,
-        uploadedAt: new Date().toISOString(),
-        uploadedBy: 'Current User',
-        fileSize: size,
+
+    if (!accountId) {
+      // Fallback to localStorage-only behavior
+      Array.from(files).forEach(file => {
+        onAddEvidence({
+          filename: file.name,
+          uploadedAt: new Date().toISOString(),
+          uploadedBy: 'Current User',
+          fileSize: formatFileSize(file.size),
+        })
       })
-    })
+      e.target.value = ''
+      return
+    }
+
+    setUploading(true)
+    setEvidenceError(null)
+
+    for (const file of Array.from(files)) {
+      try {
+        await uploadEvidence(accountId, control.id, file)
+      } catch (err: any) {
+        setEvidenceError(err.message || 'Upload failed')
+      }
+    }
+
+    // Refresh evidence list
+    await loadEvidence()
+    setUploading(false)
+
     // Reset so the same file can be re-selected
     e.target.value = ''
+  }
+
+  const handleDeleteEvidence = async (evidenceId: string) => {
+    if (!accountId) {
+      onRemoveEvidence(evidenceId)
+      return
+    }
+
+    try {
+      await deleteEvidence(accountId, control.id, evidenceId)
+      setBackendEvidence(prev => prev.filter(ev => ev.id !== evidenceId))
+    } catch (err: any) {
+      setEvidenceError(err.message || 'Delete failed')
+    }
+  }
+
+  const handleDownloadEvidence = (evidenceId: string) => {
+    if (!accountId) return
+    const url = getEvidenceDownloadUrl(accountId, control.id, evidenceId)
+    window.open(url, '_blank')
   }
 
   const handleAssignEmployees = () => {
@@ -116,6 +201,11 @@ function ControlDrawer({
     setEmployeeEmails('')
     setDeadline('')
   }
+
+  // Merge backend evidence with localStorage evidence for display
+  const displayEvidence = accountId && backendEvidence.length > 0
+    ? backendEvidence
+    : null
 
   return (
     <div className="fixed inset-0 bg-navy-950/80 backdrop-blur-sm z-50 flex items-center justify-end">
@@ -324,43 +414,100 @@ function ControlDrawer({
             <div className="flex items-center justify-between mb-3">
               <label className="text-xs font-semibold text-[#94b4d1] uppercase tracking-wider flex items-center gap-2">
                 <FileText size={14} />
-                Evidence ({control.evidence.length})
+                Evidence ({displayEvidence ? displayEvidence.length : control.evidence.length})
               </label>
               {!control.isAutoPopulated && (
-                <Button size="sm" variant="secondary" onClick={handleUploadEvidence}>
-                  <Upload size={14} />
-                  Upload
+                <Button size="sm" variant="secondary" onClick={handleUploadEvidence} disabled={uploading}>
+                  {uploading ? <Loader2 size={14} className="animate-spin" /> : <Upload size={14} />}
+                  {uploading ? 'Uploading...' : 'Upload'}
                 </Button>
               )}
             </div>
 
-            {control.evidence.length === 0 ? (
-              <p className="text-[13px] text-[#94b4d1] italic">No evidence uploaded yet</p>
-            ) : (
-              <div className="space-y-2">
-                {control.evidence.map(ev => (
-                  <div
-                    key={ev.id}
-                    className="flex items-center gap-3 p-3 rounded-lg bg-navy-900/60 border border-navy-800 hover:border-navy-700 transition-colors"
-                  >
-                    <FileText size={16} className="text-cyan-400 flex-shrink-0" />
-                    <div className="flex-1 min-w-0">
-                      <p className="text-[14px] font-medium text-white truncate">{ev.filename}</p>
-                      <p className="text-[13px] text-[#94b4d1]">
-                        {format(new Date(ev.uploadedAt), 'MMM d, yyyy')} • {ev.uploadedBy} • {ev.fileSize}
-                      </p>
-                    </div>
-                    {!control.isAutoPopulated && (
-                      <button
-                        onClick={() => onRemoveEvidence(ev.id)}
-                        className="p-1.5 rounded hover:bg-navy-800 text-navy-400 hover:text-red-400 transition-colors"
-                      >
-                        <Trash2 size={14} />
-                      </button>
-                    )}
-                  </div>
-                ))}
+            {evidenceError && (
+              <div className="mb-3 p-2 rounded bg-red-500/10 border border-red-500/20 text-red-400 text-[13px] flex items-center gap-2">
+                <AlertCircle size={14} />
+                {evidenceError}
               </div>
+            )}
+
+            {evidenceLoading ? (
+              <div className="flex items-center gap-2 py-4 justify-center text-[#94b4d1]">
+                <Loader2 size={16} className="animate-spin" />
+                <span className="text-[13px]">Loading evidence...</span>
+              </div>
+            ) : displayEvidence ? (
+              displayEvidence.length === 0 ? (
+                <p className="text-[13px] text-[#94b4d1] italic">No evidence uploaded yet</p>
+              ) : (
+                <div className="space-y-2">
+                  {displayEvidence.map(ev => (
+                    <div
+                      key={ev.id}
+                      className="flex items-center gap-3 p-3 rounded-lg bg-navy-900/60 border border-navy-800 hover:border-navy-700 transition-colors"
+                    >
+                      <FileText size={16} className="text-cyan-400 flex-shrink-0" />
+                      <div
+                        className="flex-1 min-w-0 cursor-pointer"
+                        onClick={() => handleDownloadEvidence(ev.id)}
+                      >
+                        <p className="text-[14px] font-medium text-white truncate hover:text-cyan-400 transition-colors">
+                          {ev.filename}
+                        </p>
+                        <p className="text-[13px] text-[#94b4d1]">
+                          {format(new Date(ev.uploadedAt), 'MMM d, yyyy')} • {ev.uploadedBy} • {formatFileSize(ev.fileSize)}
+                        </p>
+                      </div>
+                      <button
+                        onClick={() => handleDownloadEvidence(ev.id)}
+                        className="p-1.5 rounded hover:bg-navy-800 text-navy-400 hover:text-cyan-400 transition-colors"
+                        title="Download"
+                      >
+                        <Download size={14} />
+                      </button>
+                      {!control.isAutoPopulated && (
+                        <button
+                          onClick={() => handleDeleteEvidence(ev.id)}
+                          className="p-1.5 rounded hover:bg-navy-800 text-navy-400 hover:text-red-400 transition-colors"
+                          title="Delete"
+                        >
+                          <Trash2 size={14} />
+                        </button>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )
+            ) : (
+              /* Fallback: localStorage evidence when not connected to backend */
+              control.evidence.length === 0 ? (
+                <p className="text-[13px] text-[#94b4d1] italic">No evidence uploaded yet</p>
+              ) : (
+                <div className="space-y-2">
+                  {control.evidence.map(ev => (
+                    <div
+                      key={ev.id}
+                      className="flex items-center gap-3 p-3 rounded-lg bg-navy-900/60 border border-navy-800 hover:border-navy-700 transition-colors"
+                    >
+                      <FileText size={16} className="text-cyan-400 flex-shrink-0" />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-[14px] font-medium text-white truncate">{ev.filename}</p>
+                        <p className="text-[13px] text-[#94b4d1]">
+                          {format(new Date(ev.uploadedAt), 'MMM d, yyyy')} • {ev.uploadedBy} • {ev.fileSize}
+                        </p>
+                      </div>
+                      {!control.isAutoPopulated && (
+                        <button
+                          onClick={() => onRemoveEvidence(ev.id)}
+                          className="p-1.5 rounded hover:bg-navy-800 text-navy-400 hover:text-red-400 transition-colors"
+                        >
+                          <Trash2 size={14} />
+                        </button>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )
             )}
           </div>
 

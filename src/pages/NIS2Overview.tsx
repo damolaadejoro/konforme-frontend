@@ -59,7 +59,7 @@ export default function NIS2Overview() {
           .catch(() => {})
 
         // Fetch per-account scores
-        if (awsAccounts.length > 1) {
+        if (awsAccounts.length > 0) {
           awsAccounts.forEach(acc => {
             getCombinedScore(accountId, acc.id)
               .then(score => setPerAccountScores(prev => ({ ...prev, [acc.id]: score })))
@@ -70,7 +70,12 @@ export default function NIS2Overview() {
     }
   }, [dashboardFilter, awsAccounts])
 
-  const score = complianceScore.overall
+  // Prefer backend scores when available, fall back to localStorage-based scores
+  const overallScore = backendScore?.overallScore ?? complianceScore.overall
+  const technicalScore = backendScore?.technicalScore ?? complianceScore.technical
+  const peopleScore = complianceScore.people
+
+  const score = overallScore
   const scoreColor = score >= 91 ? '#3b82f6' : score >= 71 ? '#10b981' : score >= 41 ? '#f59e0b' : '#ef4444'
   const scoreLabel = score >= 91 ? 'Excellent' : score >= 71 ? 'Good' : score >= 41 ? 'At Risk' : 'Critical'
   const scoreBg = score >= 91 ? 'from-blue-500/10' : score >= 71 ? 'from-emerald-500/10' : score >= 41 ? 'from-yellow-500/10' : 'from-red-500/10'
@@ -153,10 +158,15 @@ export default function NIS2Overview() {
                   <div className="flex items-center gap-2 mb-2">
                     <Radar size={14} className="text-purple-400" />
                     <span className="text-xs text-[#94b4d1] uppercase tracking-wider font-semibold">Technical</span>
-                    <InfoTooltip content="Score based on controls categorized as Technical (infrastructure, systems)" size={12} />
+                    <InfoTooltip content="Score based on AWS infrastructure scans and technical controls" size={12} />
                   </div>
-                  <div className="text-3xl font-bold font-syne text-white mb-1">{complianceScore.technical}%</div>
-                  <ProgressBar value={complianceScore.technical} color="bg-purple-500" height="h-1.5" />
+                  <div className="text-3xl font-bold font-syne text-white mb-1">{technicalScore}%</div>
+                  <ProgressBar value={technicalScore} color="bg-purple-500" height="h-1.5" />
+                  {backendScore?.lastTechnicalScan && (
+                    <p className="text-[11px] text-[#94b4d1] mt-1">
+                      Last scan: {new Date(backendScore.lastTechnicalScan).toLocaleDateString()}
+                    </p>
+                  )}
                 </div>
 
                 <div
@@ -179,8 +189,8 @@ export default function NIS2Overview() {
                     <span className="text-xs text-[#94b4d1] uppercase tracking-wider font-semibold">People</span>
                     <InfoTooltip content="Completion rate of employee training and policy acknowledgment tasks" size={12} />
                   </div>
-                  <div className="text-3xl font-bold font-syne text-white mb-1">{complianceScore.people}%</div>
-                  <ProgressBar value={complianceScore.people} color="bg-emerald-500" height="h-1.5" />
+                  <div className="text-3xl font-bold font-syne text-white mb-1">{peopleScore}%</div>
+                  <ProgressBar value={peopleScore} color="bg-emerald-500" height="h-1.5" />
                 </div>
               </div>
 

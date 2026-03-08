@@ -506,6 +506,88 @@ export async function updateRemediationTask(
   })
 }
 
+// --- Evidence ---
+
+export interface EvidenceFile {
+  id: string
+  controlId: string
+  filename: string
+  fileSize: number
+  contentType: string
+  uploadedAt: string
+  uploadedBy: string
+}
+
+export async function uploadEvidence(accountId: string, controlId: string, file: File): Promise<EvidenceFile> {
+  const formData = new FormData()
+  formData.append('file', file)
+
+  const method = 'POST'
+  const headers: Record<string, string> = {}
+  const csrf = getCsrfToken()
+  if (csrf) {
+    headers['X-CSRF-Token'] = csrf
+  }
+
+  let res: Response
+  try {
+    res = await fetch(`${API_BASE}/evidence/${accountId}/${encodeURIComponent(controlId)}`, {
+      method,
+      headers,
+      body: formData,
+      credentials: 'include',
+    })
+  } catch {
+    throw new Error('Unable to connect to the server.')
+  }
+
+  // On 401, try refresh then retry
+  if (res.status === 401) {
+    const refreshed = await tryRefresh()
+    if (refreshed) {
+      const retryHeaders: Record<string, string> = {}
+      const newCsrf = getCsrfToken()
+      if (newCsrf) retryHeaders['X-CSRF-Token'] = newCsrf
+      try {
+        res = await fetch(`${API_BASE}/evidence/${accountId}/${encodeURIComponent(controlId)}`, {
+          method,
+          headers: retryHeaders,
+          body: formData,
+          credentials: 'include',
+        })
+      } catch {
+        throw new Error('Unable to connect to the server.')
+      }
+    }
+    if (res.status === 401) {
+      clearAuth()
+      window.location.href = '/login'
+      throw new Error('Session expired. Please log in again.')
+    }
+  }
+
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({ detail: res.statusText }))
+    throw new Error(body.detail || `Upload failed (${res.status})`)
+  }
+
+  return res.json()
+}
+
+export async function listEvidence(accountId: string, controlId: string): Promise<EvidenceFile[]> {
+  return apiFetch<EvidenceFile[]>(`/evidence/${accountId}/${encodeURIComponent(controlId)}`)
+}
+
+export function getEvidenceDownloadUrl(accountId: string, controlId: string, evidenceId: string): string {
+  return `${API_BASE}/evidence/${accountId}/${encodeURIComponent(controlId)}/${evidenceId}/download`
+}
+
+export async function deleteEvidence(accountId: string, controlId: string, evidenceId: string): Promise<void> {
+  await apiFetch(`/evidence/${accountId}/${encodeURIComponent(controlId)}/${evidenceId}`, {
+    method: 'DELETE',
+  })
+}
+
 // --- Score ---
 
 export interface CombinedScoreResponse {
