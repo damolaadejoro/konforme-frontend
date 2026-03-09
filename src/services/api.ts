@@ -1,3 +1,5 @@
+import type { EUCountryInfo } from '../types/country'
+
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
 const API_BASE = `${API_URL}/api/v1`
 
@@ -165,6 +167,8 @@ interface AuthResponseRaw {
   account_id: string
   account_name: string
   email: string
+  country: string | null
+  language: string | null
 }
 
 function storeAuth(data: AuthResponseRaw) {
@@ -177,12 +181,14 @@ function storeAuth(data: AuthResponseRaw) {
   localStorage.setItem(AUTH_KEYS.accountId, data.account_id)
   localStorage.setItem(AUTH_KEYS.accountName, data.account_name)
   localStorage.setItem(AUTH_KEYS.email, data.email)
+  if (data.country) localStorage.setItem('konforme_country', data.country)
+  if (data.language) localStorage.setItem('konforme_language', data.language)
 }
 
-export async function register(name: string, email: string, password: string): Promise<AuthResponseRaw> {
+export async function register(name: string, email: string, password: string, country?: string | null, language?: string | null): Promise<AuthResponseRaw> {
   const data = await apiFetch<AuthResponseRaw>('/auth/register', {
     method: 'POST',
-    body: JSON.stringify({ name, email, password }),
+    body: JSON.stringify({ name, email, password, country: country || null, language: language || 'en' }),
   })
   storeAuth(data)
   return data
@@ -204,7 +210,7 @@ export async function logout(): Promise<void> {
   clearAuth()
 }
 
-export async function getMe(): Promise<{ account_id: string; account_name: string; email: string }> {
+export async function getMe(): Promise<{ account_id: string; account_name: string; email: string; country: string | null; language: string | null }> {
   return apiFetch('/auth/me')
 }
 
@@ -289,6 +295,8 @@ export interface AccountInfoResponse {
   id: string
   name: string
   is_active: boolean
+  country: string | null
+  language: string | null
   connected_at: string
   aws_accounts: AwsAccountResponseRaw[]
 }
@@ -297,14 +305,22 @@ export async function getAccountInfo(): Promise<AccountInfoResponse> {
   return apiFetch<AccountInfoResponse>('/accounts')
 }
 
-export async function updateAccount(updates: { name?: string; email?: string }): Promise<{ account_id: string; account_name: string; email: string }> {
+export async function updateAccount(updates: { name?: string; email?: string; country?: string; language?: string }): Promise<{ account_id: string; account_name: string; email: string }> {
   const data = await apiFetch<{ account_id: string; account_name: string; email: string }>('/accounts', {
     method: 'PUT',
     body: JSON.stringify(updates),
   })
   localStorage.setItem(AUTH_KEYS.accountName, data.account_name)
   localStorage.setItem(AUTH_KEYS.email, data.email)
+  if (updates.country !== undefined) localStorage.setItem('konforme_country', updates.country)
+  if (updates.language !== undefined) localStorage.setItem('konforme_language', updates.language)
   return data
+}
+
+// --- EU Countries ---
+
+export async function getEUCountries(): Promise<EUCountryInfo[]> {
+  return apiFetch<EUCountryInfo[]>('/countries')
 }
 
 // --- Scan ---

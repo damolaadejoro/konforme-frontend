@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import {
   Shield,
   AlertTriangle,
@@ -21,6 +22,7 @@ import { getCombinedScore, isConnected, getStoredAuth, type CombinedScoreRespons
 import { useAssessment } from '../hooks/useAssessment'
 import { useAuth } from '../context/AuthContext'
 import NextStepBanner from '../components/NextStepBanner'
+import CountryInfoCard from '../components/CountryInfoCard'
 
 const statusColors: Record<ControlStatus, string> = {
   'Not Started': '#ef4444',
@@ -37,6 +39,7 @@ const statusBgColors: Record<ControlStatus, string> = {
 }
 
 export default function NIS2Overview() {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const { complianceScore, articleAreas, criticalGaps, employeeComplianceStats, controls } = useControls()
   const { overallScore: assessmentScore, articleScores, answeredCount, totalQuestions, progressPercent: assessmentProgress } = useAssessment()
@@ -77,7 +80,7 @@ export default function NIS2Overview() {
 
   const score = overallScore
   const scoreColor = score >= 91 ? '#3b82f6' : score >= 71 ? '#10b981' : score >= 41 ? '#f59e0b' : '#ef4444'
-  const scoreLabel = score >= 91 ? 'Excellent' : score >= 71 ? 'Good' : score >= 41 ? 'At Risk' : 'Critical'
+  const scoreLabel = score >= 91 ? t('overview.excellent') : score >= 71 ? t('overview.good') : score >= 41 ? t('overview.atRisk') : t('overview.critical')
   const scoreBg = score >= 91 ? 'from-blue-500/10' : score >= 71 ? 'from-emerald-500/10' : score >= 41 ? 'from-yellow-500/10' : 'from-red-500/10'
 
   const handleGenerateReport = async (companyName: string) => {
@@ -110,14 +113,14 @@ export default function NIS2Overview() {
       {/* Page Header */}
       <div className="flex items-start justify-between">
         <div>
-          <h1 className="text-[26px] font-bold font-syne text-white">NIS2 Compliance Overview</h1>
+          <h1 className="text-[26px] font-bold font-syne text-white">{t('overview.title')}</h1>
           <p className="text-[14px] text-[#CBD8E8] mt-1">
-            EU Directive 2022/2555 — Article 21 Security Measures
+            {t('overview.subtitle')}
           </p>
         </div>
         <Button onClick={() => setIsModalOpen(true)} loading={isGenerating}>
           <FileText size={16} />
-          Generate Audit Report
+          {t('overview.generateReport')}
         </Button>
       </div>
 
@@ -230,6 +233,9 @@ export default function NIS2Overview() {
           </div>
         </div>
       </Card>
+
+      {/* Country Info */}
+      <CountryInfoCard />
 
       {/* AWS Account Scores */}
       {isConnected() && awsAccounts.length > 0 && (

@@ -1,9 +1,13 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { UserPlus, Eye, EyeOff } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { Card, Button, Input } from '../components/ui'
 import Logo from '../components/layout/Logo'
+import CountrySelector from '../components/CountrySelector'
+import { getEUCountries } from '../services/api'
+import type { EUCountryInfo } from '../types/country'
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
@@ -15,18 +19,25 @@ interface FieldErrors {
 }
 
 export default function Register() {
+  const { t } = useTranslation()
   const { register } = useAuth()
   const navigate = useNavigate()
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
+  const [country, setCountry] = useState<string | null>(null)
+  const [countries, setCountries] = useState<EUCountryInfo[]>([])
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirm, setShowConfirm] = useState(false)
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({})
   const [touched, setTouched] = useState<Record<string, boolean>>({})
   const [serverError, setServerError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
+
+  useEffect(() => {
+    getEUCountries().then(setCountries).catch(() => {})
+  }, [])
 
   const validateField = (field: string, value: string): string | undefined => {
     switch (field) {
@@ -93,7 +104,7 @@ export default function Register() {
 
     setLoading(true)
     try {
-      await register(name, email, password)
+      await register(name, email, password, country)
       navigate('/get-started')
     } catch (err) {
       setServerError(err instanceof Error ? err.message : 'Registration failed. Please try again.')
@@ -123,24 +134,35 @@ export default function Register() {
           <div className="inline-flex items-center justify-center mb-4">
             <Logo size="lg" showText={false} />
           </div>
-          <h1 className="text-2xl font-bold font-syne text-white">Create your account</h1>
-          <p className="text-sm text-navy-400 mt-1">Get started with NIS2 compliance</p>
+          <h1 className="text-2xl font-bold font-syne text-white">{t('auth.createAccount')}</h1>
+          <p className="text-sm text-navy-400 mt-1">{t('auth.createAccountSubtitle')}</p>
         </div>
 
         <Card>
           <form onSubmit={handleSubmit} className="space-y-4" noValidate>
             <Input
-              label="Name"
-              placeholder="Your name or company"
+              label={t('auth.name')}
+              placeholder={t('auth.namePlaceholder')}
               value={name}
               onChange={e => handleChange('name', e.target.value, setName)}
               onBlur={() => handleBlur('name', name)}
               error={touched.name ? fieldErrors.name : undefined}
             />
+
+            {countries.length > 0 && (
+              <CountrySelector
+                countries={countries}
+                value={country}
+                onChange={setCountry}
+                label={t('auth.country')}
+                placeholder={t('auth.countryPlaceholder')}
+              />
+            )}
+
             <Input
-              label="Email"
+              label={t('auth.email')}
               type="email"
-              placeholder="you@company.com"
+              placeholder={t('auth.emailPlaceholder')}
               value={email}
               onChange={e => handleChange('email', e.target.value, setEmail)}
               onBlur={() => handleBlur('email', email)}
@@ -149,9 +171,9 @@ export default function Register() {
             <div>
               <div className="relative">
                 <Input
-                  label="Password"
+                  label={t('auth.password')}
                   type={showPassword ? 'text' : 'password'}
-                  placeholder="At least 8 characters"
+                  placeholder={t('auth.passwordCreatePlaceholder')}
                   value={password}
                   onChange={e => handleChange('password', e.target.value, setPassword)}
                   onBlur={() => handleBlur('password', password)}
@@ -182,9 +204,9 @@ export default function Register() {
             </div>
             <div className="relative">
               <Input
-                label="Confirm Password"
+                label={t('auth.confirmPassword')}
                 type={showConfirm ? 'text' : 'password'}
-                placeholder="Repeat your password"
+                placeholder={t('auth.confirmPasswordPlaceholder')}
                 value={confirmPassword}
                 onChange={e => handleChange('confirmPassword', e.target.value, setConfirmPassword)}
                 onBlur={() => handleBlur('confirmPassword', confirmPassword)}
@@ -207,14 +229,14 @@ export default function Register() {
 
             <Button type="submit" size="lg" className="w-full" loading={loading}>
               <UserPlus size={16} />
-              Create Account
+              {t('auth.createAccountButton')}
             </Button>
           </form>
 
           <p className="text-center text-sm text-navy-400 mt-4">
-            Already have an account?{' '}
+            {t('auth.hasAccount')}{' '}
             <Link to="/login" className="text-cyan-400 hover:text-cyan-300 font-medium">
-              Sign in
+              {t('auth.signInLink')}
             </Link>
           </p>
         </Card>

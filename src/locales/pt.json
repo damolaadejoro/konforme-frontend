@@ -1,0 +1,420 @@
+{
+  "nav": {
+    "overview": "Visão Geral NIS2",
+    "controls": "Biblioteca de Controlos",
+    "assessment": "Avaliação",
+    "remediation": "Remediação",
+    "scan": "Análise Técnica",
+    "peopleTasks": "Tarefas de Pessoal",
+    "reports": "Relatórios",
+    "settings": "Definições"
+  },
+  "common": {
+    "save": "Guardar Alterações",
+    "cancel": "Cancelar",
+    "loading": "A carregar...",
+    "signOut": "Terminar sessão",
+    "saved": "Guardado",
+    "score": "Pontuação",
+    "all": "Todos",
+    "viewAll": "Ver Todos",
+    "noNotifications": "Sem notificações",
+    "notificationHint": "Quando receber notificações, aparecerão aqui.",
+    "notificationSettings": "Definições de Notificações"
+  },
+  "auth": {
+    "signIn": "Entrar no Konforme",
+    "signInSubtitle": "Introduza as suas credenciais para continuar",
+    "signInButton": "Entrar",
+    "createAccount": "Criar a sua conta",
+    "createAccountSubtitle": "Comece com a conformidade NIS2",
+    "createAccountButton": "Criar Conta",
+    "email": "Email",
+    "emailPlaceholder": "voce@empresa.com",
+    "password": "Palavra-passe",
+    "passwordPlaceholder": "Introduza a sua palavra-passe",
+    "passwordCreatePlaceholder": "Pelo menos 8 caracteres",
+    "confirmPassword": "Confirmar Palavra-passe",
+    "confirmPasswordPlaceholder": "Repita a sua palavra-passe",
+    "name": "Nome",
+    "namePlaceholder": "O seu nome ou empresa",
+    "forgotPassword": "Esqueceu a palavra-passe?",
+    "noAccount": "Não tem uma conta?",
+    "hasAccount": "Já tem uma conta?",
+    "register": "Registar",
+    "signInLink": "Entrar",
+    "country": "País (opcional)",
+    "countryPlaceholder": "Selecione o seu país da UE"
+  },
+  "settings": {
+    "title": "Definições",
+    "subtitle": "Configure o seu espaço de trabalho Konforme",
+    "account": "Conta",
+    "orgName": "Nome da Organização",
+    "contactEmail": "Email de Contacto",
+    "country": "País",
+    "language": "Idioma",
+    "notifications": "Notificações",
+    "compliance": "Definições de Conformidade",
+    "primaryFramework": "Enquadramento Principal",
+    "scanSchedule": "Agenda de Análise",
+    "criticalAlert": "Alerta de descobertas críticas",
+    "criticalAlertDesc": "Notificar imediatamente quando descobertas críticas são detetadas",
+    "weeklyDigest": "Resumo semanal de conformidade",
+    "weeklyDigestDesc": "Resumo semanal do estado de conformidade",
+    "scoreThreshold": "Pontuação abaixo do limiar",
+    "scoreThresholdDesc": "Alertar quando a pontuação desce abaixo de 50%",
+    "saved": "Definições guardadas com sucesso",
+    "version": "Konforme v1.0.0 · Feito para conformidade NIS2 · © 2024 Konforme"
+  },
+  "overview": {
+    "title": "Visão Geral de Conformidade NIS2",
+    "subtitle": "Diretiva UE 2022/2555 — Artigo 21 Medidas de Segurança",
+    "generateReport": "Gerar Relatório de Auditoria",
+    "readinessScore": "Pontuação Global de Prontidão NIS2",
+    "readinessDesc": "Avaliação ponderada em todos os controlos do Artigo 21",
+    "overall": "Global",
+    "overallTooltip": "Pontuação combinada em todas as dimensões de conformidade",
+    "technical": "Técnica",
+    "technicalTooltip": "Pontuação baseada em análises de infraestrutura AWS e controlos técnicos",
+    "assessment": "Avaliação",
+    "assessmentTooltip": "Pontuação da autoavaliação de maturidade NIS2",
+    "people": "Pessoas",
+    "peopleTooltip": "Taxa de conclusão de formação de colaboradores e reconhecimento de políticas",
+    "excellent": "Excelente",
+    "good": "Bom",
+    "atRisk": "Em Risco",
+    "critical": "Crítico",
+    "excellentMsg": "Excelente postura de conformidade! Mantenha este nível através de revisões regulares e monitorização contínua.",
+    "moderateRisk": "Risco de conformidade moderado — priorize lacunas de alta severidade para atingir 71%+ de prontidão",
+    "criticalRisk": "Risco de conformidade crítico — ação imediata necessária nos controlos Não Iniciados e Parciais",
+    "viewControls": "Ver Controlos",
+    "awsScores": "Pontuações de Contas AWS",
+    "awsScoresDesc": "Pontuações de conformidade por conta a partir de análises técnicas",
+    "lastScan": "Última análise",
+    "noScan": "Sem análise",
+    "controls": "Controlos",
+    "controlsTooltip": "Total de controlos NIS2 Artigo 21 monitorizados",
+    "implemented": "Implementados",
+    "implementedTooltip": "Controlos com estado definido como Implementado",
+    "criticalGaps": "Lacunas Críticas",
+    "criticalGapsTooltip": "Controlos de severidade Alta ou Crítica que estão Não Iniciados ou apenas Parciais",
+    "requiresAttention": "Requer atenção",
+    "employeeTasks": "Tarefas de Colaboradores",
+    "employeeTasksTooltip": "Percentagem de tarefas atribuídas a colaboradores concluídas",
+    "completed": "concluídas",
+    "articleAreas": "Áreas do Artigo 21",
+    "articleAreasTooltip": "Número de agrupamentos de requisitos do NIS2 Artigo 21",
+    "coverageMap": "Mapa de Cobertura NIS2 Artigo 21",
+    "coverageMapTooltip": "Mostra o progresso de implementação em cada área do NIS2 Artigo 21",
+    "coverageMapDesc": "Estado de conformidade em todas as áreas de requisitos",
+    "viewAllControls": "Ver Todos os Controlos",
+    "topGaps": "Top 5 Lacunas Críticas",
+    "topGapsDesc": "Controlos de maior prioridade que requerem atenção",
+    "noGaps": "Sem Lacunas Críticas!",
+    "noGapsDesc": "Todos os controlos de severidade crítica e alta estão pelo menos parcialmente implementados. Continue o bom trabalho!",
+    "manageControls": "Gerir Controlos",
+    "manageControlsDesc": "Ver e atualizar todos os controlos NIS2, carregar evidências e acompanhar progresso",
+    "openControls": "Abrir Biblioteca de Controlos",
+    "nis2Assessment": "Avaliação NIS2",
+    "nis2AssessmentDesc": "Avaliação de maturidade com 44 perguntas em todas as áreas do NIS2 Artigo 21",
+    "startAssessment": "Iniciar Avaliação",
+    "continueAssessment": "Continuar Avaliação",
+    "technicalScan": "Análise Técnica",
+    "technicalScanDesc": "Executar análise de infraestrutura AWS para preencher automaticamente o estado dos controlos técnicos",
+    "runScan": "Executar Análise",
+    "peopleTasksTitle": "Tarefas de Pessoal",
+    "peopleTasksDesc": "Acompanhar formação de colaboradores e reconhecimento de políticas em todas as campanhas",
+    "viewCampaigns": "Ver Campanhas",
+    "questions": "perguntas",
+    "ofControls": "de {{count}} controlos"
+  },
+  "assessment": {
+    "title": "Avaliação de Maturidade NIS2",
+    "subtitle": "Avalie a maturidade de conformidade NIS2 da sua organização",
+    "complete": "Avaliação Concluída",
+    "completeSubtitle": "Resultados da Avaliação de Maturidade NIS2",
+    "showGuidance": "Mostrar Orientação",
+    "hideGuidance": "Ocultar Orientação",
+    "notesPlaceholder": "Adicionar notas ou referências de evidências...",
+    "submit": "Submeter Avaliação",
+    "reset": "Reiniciar",
+    "back": "Voltar",
+    "next": "Seguinte",
+    "newAssessment": "Nova Avaliação",
+    "backToQuestions": "Voltar às Perguntas",
+    "viewHistory": "Ver Histórico",
+    "previewResults": "Pré-visualizar Resultados",
+    "progress": "Progresso: {{answered}} de {{total}} perguntas",
+    "projectedScore": "Pontuação projetada:",
+    "answeredQuality": "Qualidade das respostas:",
+    "projectedScoreTooltip": "A sua pontuação de conformidade se as perguntas não respondidas obtiverem 0. Responda a mais perguntas para melhorar.",
+    "answeredQualityTooltip": "Pontuação baseada nas {{count}} perguntas que respondeu até agora",
+    "percentComplete": "Percentagem de perguntas da avaliação respondidas",
+    "nis2Articles": "Artigos NIS2",
+    "tooltipInfo": "Avalie a maturidade NIS2 da sua organização respondendo a perguntas em todas as áreas do Artigo 21",
+    "maturitySubtitle": "Avaliação de maturidade em todas as áreas de requisitos do Artigo 21",
+    "previousArticle": "Artigo Anterior",
+    "nextArticle": "Próximo Artigo",
+    "previous": "Anterior"
+  },
+  "questions": {
+    "nis2-020-01": {
+      "question": "O órgão de gestão aprovou formalmente as medidas de gestão de riscos de cibersegurança?",
+      "description": "O Artigo 20 da NIS2 exige que o órgão de gestão aprove e supervisione as medidas de gestão de riscos de cibersegurança.",
+      "guidance": "Apresente a estratégia de cibersegurança ao conselho. Documente a aprovação nas atas. Inclua apetite de risco, orçamento e KPIs."
+    },
+    "nis2-020-02": {
+      "question": "O órgão de gestão revê relatórios de estado de cibersegurança pelo menos trimestralmente?",
+      "description": "Relatórios regulares ao nível do conselho garantem visibilidade contínua da postura de cibersegurança e riscos emergentes.",
+      "guidance": "Produza painéis trimestrais: métricas-chave, incidentes recentes, estado de conformidade, conclusão de formação, achados de auditoria."
+    },
+    "nis2-020-03": {
+      "question": "Os membros do órgão de gestão completaram formação em cibersegurança para o seu papel de supervisão?",
+      "description": "A NIS2 exige que os membros do órgão de gestão realizem formação para adquirir conhecimentos e competências suficientes para identificar riscos.",
+      "guidance": "Agende briefings anuais executivos de cibersegurança. Cubra o panorama de ameaças, obrigações regulamentares e responsabilidades do conselho."
+    },
+    "nis2-020-04": {
+      "question": "Existe um CISO designado ou equivalente com reporte direto à liderança sénior?",
+      "description": "A responsabilização clara requer um líder de segurança dedicado com autoridade e visibilidade ao nível executivo.",
+      "guidance": "Nomeie um CISO ou Diretor de Segurança reportando ao CEO ou conselho. Defina responsabilidades, autoridade e orçamento por escrito."
+    },
+    "nis2-21a-01": {
+      "question": "Existe uma política formal de segurança da informação revista pelo menos anualmente?",
+      "description": "Uma política de SI documentada é a base. Deve ser revista e atualizada para refletir mudanças em ameaças e negócio.",
+      "guidance": "Crie ou atualize a política de SI cobrindo âmbito, objetivos, funções, uso aceitável, classificação e calendário de revisão."
+    },
+    "nis2-21a-02": {
+      "question": "É realizada uma avaliação de riscos anual usando uma metodologia reconhecida (ISO 27005, NIST RMF)?",
+      "description": "A avaliação sistemática de riscos identifica e prioriza ameaças. Uma metodologia reconhecida garante completude.",
+      "guidance": "Adote ISO 27005 ou NIST RMF. Documente ativos, ameaças, vulnerabilidades, probabilidade, impacto e planos de tratamento."
+    },
+    "nis2-21a-03": {
+      "question": "Os riscos de cibersegurança estão no registo de riscos empresarial com responsáveis e planos de tratamento?",
+      "description": "Os riscos ciber devem ser integrados na gestão de riscos empresarial, não isolados em TI.",
+      "guidance": "Adicione riscos ciber ao registo de riscos empresarial. Pontue por probabilidade e impacto. Atribua responsáveis. Reveja trimestralmente."
+    },
+    "nis2-21a-04": {
+      "question": "As funções e responsabilidades de segurança estão claramente definidas e comunicadas (matriz RACI)?",
+      "description": "A propriedade clara previne lacunas. Uma matriz RACI mapeia quem é Responsável, Aprovador, Consultado e Informado.",
+      "guidance": "Crie uma matriz RACI de segurança. Comunique funções durante a integração e revisões anuais de políticas."
+    },
+    "nis2-21b-01": {
+      "question": "Existe um plano de resposta a incidentes documentado cobrindo desde a deteção até lições aprendidas?",
+      "description": "Um PRI completo cobre preparação, deteção, contenção, erradicação, recuperação e revisão pós-incidente.",
+      "guidance": "Documente o PRI com fases, funções, modelos de comunicação e caminhos de escalação. Teste anualmente."
+    },
+    "nis2-21b-02": {
+      "question": "Os níveis de severidade de incidentes estão definidos com caminhos de escalação e SLAs de resposta?",
+      "description": "A classificação garante resposta proporcional. Os SLAs definem expectativas para triagem e resolução.",
+      "guidance": "Defina níveis de severidade (P1-P4). Mapeie caminhos de escalação. Defina SLAs: P1 em 1 hora, P2 em 4 horas."
+    },
+    "nis2-21b-03": {
+      "question": "Está registado no CSIRT nacional e testou o processo de notificação de 24 horas?",
+      "description": "A NIS2 exige alerta precoce ao CSIRT em 24 horas após um incidente significativo.",
+      "guidance": "Registe-se no CSIRT nacional. Documente o processo de notificação. Realize um exercício de simulação testando a notificação de 24h."
+    },
+    "nis2-21b-04": {
+      "question": "Existe um registo de incidentes documentando todos os eventos, investigações e revisões pós-incidente?",
+      "description": "Um registo demonstra responsabilização, permite análise de tendências e suporta reporte regulamentar.",
+      "guidance": "Use um sistema de tickets para registar todos os incidentes. Registe: data, relator, severidade, investigação, resolução, lições aprendidas."
+    },
+    "nis2-21b-05": {
+      "question": "O plano de resposta a incidentes foi testado através de exercícios de simulação nos últimos 12 meses?",
+      "description": "Um PRI não testado pode falhar sob pressão. Testes regulares validam procedimentos, funções e fluxos de comunicação.",
+      "guidance": "Realize pelo menos exercícios anuais de simulação com cenários realistas. Inclua equipas multifuncionais. Documente achados e atualize o PRI."
+    },
+    "nis2-21c-01": {
+      "question": "Existe um PCN documentado identificando funções críticas, dependências e prioridades de recuperação?",
+      "description": "Um PCN garante que a organização pode manter operações essenciais durante e após uma perturbação.",
+      "guidance": "Conduza uma AIN para identificar funções críticas. Documente dependências, prioridades de recuperação e planos de comunicação."
+    },
+    "nis2-21c-02": {
+      "question": "Existem planos de DR com RTO/RPO definidos para todos os sistemas críticos?",
+      "description": "O Objetivo de Tempo de Recuperação e o Objetivo de Ponto de Recuperação definem tempo de inatividade e perda de dados aceitáveis.",
+      "guidance": "Defina RTO/RPO por sistema crítico. Documente procedimentos de DR incluindo passos de failover e equipas responsáveis."
+    },
+    "nis2-21c-03": {
+      "question": "Os planos PCN/DR foram testados nos últimos 12 meses (simulação ou failover)?",
+      "description": "Planos não testados podem falhar quando necessários. Testes regulares validam procedimentos e criam memória muscular.",
+      "guidance": "Agende testes anuais de PCN/DR. Comece com exercícios de simulação, progredindo para testes de failover completos para sistemas críticos."
+    },
+    "nis2-21c-04": {
+      "question": "As restaurações de backup são testadas regularmente e a integridade do backup verificada?",
+      "description": "Os backups só são úteis se puderem ser restaurados. Testes regulares verificam a integridade dos dados e os procedimentos de recuperação.",
+      "guidance": "Teste a restauração de backup mensalmente para sistemas críticos. Verifique a integridade dos dados. Documente resultados e remedeie falhas."
+    },
+    "nis2-21c-05": {
+      "question": "Existe um plano de comunicação de crise cobrindo notificação interna, reporte regulamentar e gestão mediática?",
+      "description": "Durante uma crise, a comunicação clara é crítica. Atrasos ou desinformação agravam o impacto e podem violar os requisitos de notificação NIS2.",
+      "guidance": "Documente modelos de comunicação, designação de porta-voz, cadeias de notificação e procedimentos de gestão mediática. Teste durante exercícios de PCN."
+    },
+    "nis2-21d-01": {
+      "question": "Existe um processo formal para avaliar a postura de cibersegurança dos fornecedores?",
+      "description": "Ataques à cadeia de fornecimento são um vetor primário. Avaliar fornecedores antes do envolvimento reduz o risco de terceiros.",
+      "guidance": "Exija que fornecedores preencham questionários de segurança. Reveja relatórios SOC 2/ISO 27001. Avalie anualmente."
+    },
+    "nis2-21d-02": {
+      "question": "Os contratos incluem obrigações de segurança alinhadas com a NIS2 (notificação de violação, direitos de auditoria)?",
+      "description": "Obrigações contratuais garantem que fornecedores mantêm padrões de segurança e o notificam de incidentes.",
+      "guidance": "Adicione cláusulas contratuais: notificação de violação em 24h, direito de auditoria, seguro, residência de dados, aprovação de subprocessadores."
+    },
+    "nis2-21d-03": {
+      "question": "Existe um registo de integrações de terceiros, níveis de acesso e dados processados?",
+      "description": "Não pode proteger o que não conhece. Um registo completo permite a avaliação de riscos e controlo de acesso.",
+      "guidance": "Inventarie todas as ferramentas SaaS, APIs, conexões de fornecedores. Documente: dados acedidos, responsável, detalhes do contrato, data de revisão."
+    },
+    "nis2-21d-04": {
+      "question": "O acesso de terceiros requer aprovação, MFA, limites de tempo e monitorização?",
+      "description": "O acesso não controlado de fornecedores é um vetor de violação comum. Controlos rigorosos limitam a exposição.",
+      "guidance": "Exija aprovação formal para acesso de fornecedores. Imponha MFA, defina sessões com limite de tempo, ative registo de auditoria."
+    },
+    "nis2-21e-01": {
+      "question": "Existe uma política formal de gestão de vulnerabilidades com prazos de remediação?",
+      "description": "Uma política define como as vulnerabilidades são identificadas, avaliadas, priorizadas e remediadas dentro de prazos definidos.",
+      "guidance": "Defina SLAs de remediação: Críticas 24h, Altas 7d, Médias 30d, Baixas 90d. Monitorize conformidade. Use CVSS para pontuação."
+    },
+    "nis2-21e-02": {
+      "question": "Os requisitos de segurança são verificados durante a aquisição, desenvolvimento e manutenção de sistemas?",
+      "description": "A segurança deve ser incorporada no SDLC, não adicionada depois. Os requisitos devem ser verificados em cada fase.",
+      "guidance": "Integre portões de segurança no SDLC: modelagem de ameaças, revisão de código seguro, SAST/DAST, testes de penetração antes do lançamento."
+    },
+    "nis2-21e-03": {
+      "question": "Existe um processo de divulgação responsável de vulnerabilidades e monitorização de dependências?",
+      "description": "Um processo de divulgação lida com vulnerabilidades reportadas. A monitorização de dependências captura CVEs conhecidos em bibliotecas.",
+      "guidance": "Publique uma política de divulgação de vulnerabilidades/security.txt. Monitorize dependências com Dependabot/Snyk. Reveja semanalmente."
+    },
+    "nis2-21e-04": {
+      "question": "As vulnerabilidades críticas/altas são remediadas dentro dos SLAs definidos?",
+      "description": "Identificar vulnerabilidades só é útil se forem corrigidas. A conformidade com SLAs demonstra maturidade operacional.",
+      "guidance": "Monitorize métricas de conformidade com SLAs. Escale vulnerabilidades críticas/altas em atraso à gestão. Reporte mensalmente."
+    },
+    "nis2-21e-05": {
+      "question": "Ferramentas de análise de segurança automatizadas (SAST, DAST, análise de dependências) estão integradas no pipeline CI/CD?",
+      "description": "Revisões manuais de segurança não escalam. A análise automatizada captura vulnerabilidades comuns cedo e consistentemente.",
+      "guidance": "Integre SAST (ex. SonarQube, Semgrep) e análise de dependências (Dependabot, Snyk) no CI/CD. Falhe builds em achados críticos."
+    },
+    "nis2-21f-01": {
+      "question": "Os controlos são testados via auditorias, testes de penetração ou exercícios de red team?",
+      "description": "Testes validam que os controlos funcionam como pretendido. Sem testes, a conformidade é teórica.",
+      "guidance": "Realize testes de penetração anuais. Execute auditorias internas trimestralmente. Considere exercícios de red team para sistemas críticos."
+    },
+    "nis2-21f-02": {
+      "question": "São monitorizados KPIs de cibersegurança (MTTD, MTTR, conformidade de patches, etc.)?",
+      "description": "Os KPIs fornecem medição objetiva da postura de segurança e identificam áreas que necessitam de melhoria.",
+      "guidance": "Monitorize: MTTD, MTTR, taxa de conformidade de patches, taxa de cliques em phishing, conclusão de formação, contagem de vulnerabilidades abertas."
+    },
+    "nis2-21f-03": {
+      "question": "Os achados de auditoria são monitorizados até à remediação com responsáveis e prazos?",
+      "description": "Achados de auditoria sem seguimento não têm valor. A monitorização garante responsabilização e encerramento.",
+      "guidance": "Registe todos os achados de auditoria num tracker. Atribua responsáveis e prazos. Reveja o progresso mensalmente. Escale itens em atraso."
+    },
+    "nis2-21f-04": {
+      "question": "Um processo de melhoria contínua alimenta auditoria/incidente/inteligência de ameaças em atualizações de políticas?",
+      "description": "As lições aprendidas devem impulsionar melhorias em políticas e controlos. Isto fecha o ciclo de feedback.",
+      "guidance": "Após auditorias e incidentes graves, atualize políticas e controlos relevantes. Documente alterações e justificação."
+    },
+    "nis2-21g-01": {
+      "question": "É fornecida formação obrigatória de segurança na contratação e renovada anualmente?",
+      "description": "Todos os colaboradores devem receber formação básica de segurança. A renovação anual mantém o conhecimento atualizado.",
+      "guidance": "Implemente formação de integração cobrindo: políticas de palavras-passe, MFA, phishing, tratamento de dados, reporte de incidentes. Renove anualmente."
+    },
+    "nis2-21g-02": {
+      "question": "São realizadas simulações de phishing pelo menos trimestralmente com resultados monitorizados?",
+      "description": "Campanhas simuladas medem a prontidão real e identificam indivíduos que necessitam de formação adicional.",
+      "guidance": "Execute simulações de phishing trimestrais. Forneça feedback imediato aos que clicam. Monitorize métricas e tendências ao longo do tempo."
+    },
+    "nis2-21g-03": {
+      "question": "É fornecida formação de segurança específica por função para pessoal técnico?",
+      "description": "Engenheiros e administradores necessitam de formação especializada além da sensibilização geral (codificação segura, segurança cloud).",
+      "guidance": "Forneça formação: Desenvolvedores (OWASP, codificação segura), Administradores (princípio do menor privilégio, logging), Engenheiros Cloud (IAM, encriptação)."
+    },
+    "nis2-21g-04": {
+      "question": "Os requisitos de higiene ciber estão documentados e aplicados (atualizações, bloqueio de ecrã, palavras-passe)?",
+      "description": "Práticas básicas de higiene reduzem a superfície de ataque. Devem ser documentadas e aplicadas, não apenas recomendadas.",
+      "guidance": "Documente requisitos de higiene: atualizações automáticas ativadas, bloqueio de ecrã após 5 min, gestor de palavras-passe obrigatório, política de mesa limpa."
+    },
+    "nis2-21h-01": {
+      "question": "Existe uma política formal de criptografia especificando algoritmos aprovados e comprimentos mínimos de chave?",
+      "description": "Uma política de criptografia previne o uso de algoritmos fracos ou obsoletos e garante padrões consistentes.",
+      "guidance": "Defina algoritmos aprovados (AES-256, RSA-2048+, SHA-256+). Proíba algoritmos obsoletos. Reveja anualmente."
+    },
+    "nis2-21h-02": {
+      "question": "Existe um ciclo de vida de gestão de chaves cobrindo geração, rotação, revogação e destruição?",
+      "description": "A gestão deficiente de chaves mina a encriptação. As chaves devem ser adequadamente geridas ao longo do seu ciclo de vida.",
+      "guidance": "Documente procedimentos de gestão de chaves. Use HSMs para chaves críticas. Rode chaves conforme política. Destrua chaves retiradas de forma segura."
+    },
+    "nis2-21h-03": {
+      "question": "Os dados são classificados com requisitos de encriptação definidos por nível de classificação?",
+      "description": "Nem todos os dados necessitam da mesma proteção. A classificação orienta controlos de encriptação proporcionais.",
+      "guidance": "Defina níveis de classificação de dados (Público, Interno, Confidencial, Restrito). Mapeie requisitos de encriptação por nível."
+    },
+    "nis2-21h-04": {
+      "question": "A encriptação é aplicada em repouso e em trânsito, com TLS 1.2+ para comunicações externas?",
+      "description": "Os dados devem ser protegidos tanto em repouso (disco/base de dados) como em trânsito (rede). TLS 1.2 é o padrão mínimo.",
+      "guidance": "Ative encriptação em repouso para todas as bases de dados e armazenamento. Imponha TLS 1.2+ para todas as conexões externas. Desative TLS 1.0/1.1."
+    },
+    "nis2-21i-01": {
+      "question": "Existe uma política de controlo de acesso com princípio do menor privilégio, RBAC e revisões trimestrais?",
+      "description": "O controlo de acesso é fundamental. O menor privilégio limita o raio de explosão; RBAC simplifica a gestão; revisões capturam desvios.",
+      "guidance": "Documente o modelo RBAC, fluxos de aprovação, calendário de revisão. Conduza revisões trimestrais de acesso. Remova acessos não utilizados."
+    },
+    "nis2-21i-02": {
+      "question": "A integração inclui formação de segurança, NDA e provisionamento baseado em funções antes do acesso?",
+      "description": "Uma integração consistente previne lacunas. Formação e acordos legais devem preceder o acesso ao sistema.",
+      "guidance": "Lista de verificação de integração: NDA assinado, formação de segurança concluída, acesso baseado em funções provisionado, hardware entregue."
+    },
+    "nis2-21i-03": {
+      "question": "Existe revogação de conta no mesmo dia da saída com uma lista de verificação formal de desvinculação?",
+      "description": "Desvinculação atrasada cria risco. Colaboradores que saem devem perder o acesso imediatamente.",
+      "guidance": "RH notifica TI no mesmo dia. Desative contas em 1 hora. Revogue: email, VPN, SSO, serviços cloud, cartões físicos."
+    },
+    "nis2-21i-04": {
+      "question": "Existe um inventário de ativos (hardware, software, dados) com responsáveis e classificação?",
+      "description": "Não pode proteger o que não conhece. Um inventário completo de ativos é a base para a gestão de riscos.",
+      "guidance": "Mantenha inventário de todos os ativos de hardware, software e dados. Atribua responsáveis. Classifique por sensibilidade. Reveja trimestralmente."
+    },
+    "nis2-21i-05": {
+      "question": "O acesso privilegiado é gerido com controlos adicionais (PAM, sessões com limite de tempo, logging melhorado)?",
+      "description": "Contas privilegiadas são alvos primários para atacantes. Controlos de acesso padrão são insuficientes para acesso de nível administrador.",
+      "guidance": "Implemente solução PAM. Exija acesso just-in-time para tarefas de administrador. Registe todas as sessões privilegiadas. Reveja acesso privilegiado mensalmente."
+    },
+    "nis2-21i-06": {
+      "question": "São realizadas verificações de antecedentes ou segurança para pessoal em funções com acesso elevado?",
+      "description": "Pessoal com acesso privilegiado ou que lida com dados sensíveis apresenta maior risco. Rastreio pré-emprego reduz a ameaça interna.",
+      "guidance": "Realize verificações de antecedentes para funções privilegiadas antes de conceder acesso. Defina quais funções requerem verificações. Reveja a política anualmente."
+    },
+    "nis2-21j-01": {
+      "question": "A MFA é aplicada para sistemas críticos usando tokens de hardware ou aplicações de autenticação (não SMS)?",
+      "description": "A MFA baseada em SMS é vulnerável a ataques de SIM-swap. Tokens de hardware ou aplicações de autenticação são necessários.",
+      "guidance": "Imponha MFA para todos os sistemas críticos. Use tokens de hardware (FIDO2/U2F) ou aplicações de autenticação. Bloqueie MFA baseado em SMS."
+    },
+    "nis2-21j-02": {
+      "question": "São utilizados canais encriptados de ponta a ponta para comunicações sensíveis de voz, vídeo e texto?",
+      "description": "Comunicações sensíveis devem ser protegidas contra escuta com encriptação de ponta a ponta.",
+      "guidance": "Use ferramentas com encriptação E2E para comunicações sensíveis (Signal, Teams com E2E, email encriptado). Documente canais aprovados."
+    },
+    "nis2-21j-03": {
+      "question": "As comunicações seguras de emergência estão operacionais se os sistemas primários forem comprometidos?",
+      "description": "Se as comunicações primárias estiverem em baixo durante um incidente, precisa de um canal de backup pré-estabelecido e testado.",
+      "guidance": "Estabeleça comunicações fora de banda (aplicação de mensagens separada, telefone satélite, dispositivos pessoais). Teste durante exercícios de DR."
+    },
+    "nis2-21j-04": {
+      "question": "A autenticação legada está bloqueada e é utilizada autenticação contínua/adaptativa para acesso de alto risco?",
+      "description": "Protocolos de autenticação legada contornam a MFA. A autenticação adaptativa ajusta requisitos com base em sinais de risco.",
+      "guidance": "Bloqueie autenticação legada (NTLM, autenticação básica). Implemente políticas de acesso condicional. Use MFA adaptativa para logins de alto risco."
+    }
+  },
+  "countryInfo": {
+    "title": "Autoridade Nacional NIS2",
+    "authority": "Autoridade Competente",
+    "reportIncident": "Reportar Incidente",
+    "transposition": "Estado de Transposição",
+    "transposed": "Transposta",
+    "partial": "Em Progresso",
+    "pending": "Pendente",
+    "nationalLaw": "Lei Nacional",
+    "noCountry": "Selecione o seu país nas Definições para ver a sua autoridade nacional NIS2 e contactos de reporte.",
+    "goToSettings": "Ir para Definições"
+  }
+}

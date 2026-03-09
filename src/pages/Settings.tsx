@@ -1,8 +1,12 @@
 import React, { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Bell, Shield, User } from 'lucide-react'
 import { Card, Button, Input, Select } from '../components/ui'
 import { useAuth } from '../context/AuthContext'
 import { updateAccount } from '../services/api'
+import CountrySelector from '../components/CountrySelector'
+import LanguageSwitcher from '../components/LanguageSwitcher'
+import { useCountryData } from '../hooks/useCountryData'
 
 function Toggle({ enabled, onToggle }: { enabled: boolean; onToggle: () => void }) {
   return (
@@ -25,7 +29,9 @@ function Toggle({ enabled, onToggle }: { enabled: boolean; onToggle: () => void 
 }
 
 export default function Settings() {
-  const { accountName, email, setAccountName, setEmail } = useAuth()
+  const { t } = useTranslation()
+  const { accountName, email, country, setAccountName, setEmail, setCountry } = useAuth()
+  const { countries } = useCountryData()
 
   const [name, setName] = useState(accountName || '')
   const [contactEmail, setContactEmail] = useState(email || '')
@@ -39,12 +45,19 @@ export default function Settings() {
       const data = await updateAccount({ name, email: contactEmail })
       setAccountName(data.account_name)
       setEmail(data.email)
-      setSaveMessage({ type: 'success', text: 'Settings saved successfully' })
+      setSaveMessage({ type: 'success', text: t('settings.saved') })
     } catch (err) {
       setSaveMessage({ type: 'error', text: err instanceof Error ? err.message : 'Failed to save' })
     } finally {
       setSaving(false)
     }
+  }
+
+  const handleCountryChange = async (code: string) => {
+    setCountry(code)
+    try {
+      await updateAccount({ country: code })
+    } catch { /* ignore */ }
   }
 
   const [notifications, setNotifications] = useState<Record<string, boolean>>({
@@ -58,27 +71,37 @@ export default function Settings() {
   }
 
   const notificationItems = [
-    { key: 'critical', label: 'Critical findings alert', desc: 'Notify immediately when critical findings are detected' },
-    { key: 'weekly', label: 'Weekly compliance digest', desc: 'Weekly summary of compliance status' },
-    { key: 'threshold', label: 'Score below threshold', desc: 'Alert when score drops below 50%' },
+    { key: 'critical', label: t('settings.criticalAlert'), desc: t('settings.criticalAlertDesc') },
+    { key: 'weekly', label: t('settings.weeklyDigest'), desc: t('settings.weeklyDigestDesc') },
+    { key: 'threshold', label: t('settings.scoreThreshold'), desc: t('settings.scoreThresholdDesc') },
   ]
 
   return (
     <div className="max-w-3xl mx-auto space-y-6">
       <div>
-        <h1 className="text-2xl font-bold font-syne text-white">Settings</h1>
-        <p className="text-sm text-navy-300 mt-1">Configure your Konforme workspace</p>
+        <h1 className="text-2xl font-bold font-syne text-white">{t('settings.title')}</h1>
+        <p className="text-sm text-navy-300 mt-1">{t('settings.subtitle')}</p>
       </div>
 
       {/* Profile */}
       <Card>
         <div className="flex items-center gap-3 mb-5">
           <User size={16} className="text-cyan-400" />
-          <h2 className="text-base font-bold font-syne text-white">Account</h2>
+          <h2 className="text-base font-bold font-syne text-white">{t('settings.account')}</h2>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <Input label="Organisation Name" value={name} onChange={e => setName(e.target.value)} />
-          <Input label="Contact Email" value={contactEmail} onChange={e => setContactEmail(e.target.value)} />
+          <Input label={t('settings.orgName')} value={name} onChange={e => setName(e.target.value)} />
+          <Input label={t('settings.contactEmail')} value={contactEmail} onChange={e => setContactEmail(e.target.value)} />
+          <CountrySelector
+            countries={countries}
+            value={country}
+            onChange={handleCountryChange}
+            label={t('settings.country')}
+          />
+          <div>
+            <label className="block text-xs font-medium text-[#CBD8E8] mb-1.5">{t('settings.language')}</label>
+            <LanguageSwitcher />
+          </div>
         </div>
         {saveMessage && (
           <div className={`mt-3 p-3 rounded-lg text-xs ${saveMessage.type === 'success' ? 'bg-green-500/10 border border-green-500/20 text-green-400' : 'bg-red-500/10 border border-red-500/20 text-red-400'}`}>
@@ -86,7 +109,7 @@ export default function Settings() {
           </div>
         )}
         <div className="mt-4">
-          <Button size="sm" onClick={handleSave} loading={saving}>Save Changes</Button>
+          <Button size="sm" onClick={handleSave} loading={saving}>{t('common.save')}</Button>
         </div>
       </Card>
 
@@ -94,7 +117,7 @@ export default function Settings() {
       <Card>
         <div className="flex items-center gap-3 mb-5">
           <Bell size={16} className="text-cyan-400" />
-          <h2 className="text-base font-bold font-syne text-white">Notifications</h2>
+          <h2 className="text-base font-bold font-syne text-white">{t('settings.notifications')}</h2>
         </div>
         <div className="space-y-3">
           {notificationItems.map(item => (
@@ -116,11 +139,11 @@ export default function Settings() {
       <Card>
         <div className="flex items-center gap-3 mb-5">
           <Shield size={16} className="text-cyan-400" />
-          <h2 className="text-base font-bold font-syne text-white">Compliance Settings</h2>
+          <h2 className="text-base font-bold font-syne text-white">{t('settings.compliance')}</h2>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <Select
-            label="Primary Framework"
+            label={t('settings.primaryFramework')}
             options={[
               { value: 'nis2', label: 'NIS2 (EU 2022/2555)' },
               { value: 'iso27001', label: 'ISO 27001' },
@@ -128,7 +151,7 @@ export default function Settings() {
             ]}
           />
           <Select
-            label="Scan Schedule"
+            label={t('settings.scanSchedule')}
             options={[
               { value: 'daily', label: 'Daily' },
               { value: 'weekly', label: 'Weekly' },
@@ -141,7 +164,7 @@ export default function Settings() {
 
       {/* Version */}
       <div className="text-center text-xs text-navy-600 py-4">
-        Konforme v1.0.0 · Built for NIS2 compliance · © 2024 Konforme
+        {t('settings.version')}
       </div>
     </div>
   )

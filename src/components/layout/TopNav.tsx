@@ -1,12 +1,15 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { Bell, ChevronDown, RefreshCw, Save, Check, LogOut } from 'lucide-react'
 import { formatDistanceToNow } from 'date-fns'
 import { useControls } from '../../hooks/useControls'
 import { useAuth } from '../../context/AuthContext'
 import { getCombinedScore, getStoredAuth, isConnected, type CombinedScoreResponse } from '../../services/api'
+import LanguageSwitcher from '../LanguageSwitcher'
 
 export default function TopNav() {
+  const { t } = useTranslation()
   const { lastSaved, complianceScore } = useControls()
   const { isAuthenticated, accountName, email, awsAccounts, selectedAwsAccountId, selectAwsAccount, logout } = useAuth()
   const navigate = useNavigate()
@@ -69,7 +72,7 @@ export default function TopNav() {
       {/* Left — breadcrumb/context */}
       <div className="flex items-center gap-2 text-sm text-navy-300">
         <Save size={14} className="text-emerald-400" />
-        <span>Saved:</span>
+        <span>{t('common.saved')}:</span>
         <span className="text-emerald-400 font-medium">{lastSavedText}</span>
         <span className="mx-2 text-navy-600">|</span>
         <span className="text-cyan-400 font-medium">{displayName}</span>
@@ -130,9 +133,12 @@ export default function TopNav() {
           <span className={`text-xs font-semibold ${
             score >= 75 ? 'text-emerald-400' : score >= 50 ? 'text-yellow-400' : 'text-red-400'
           }`}>
-            Score: {score}%
+            {t('common.score')}: {score}%
           </span>
         </div>
+
+        {/* Language switcher */}
+        <LanguageSwitcher compact />
 
         {/* Refresh */}
         <button className="p-2 rounded-lg text-navy-300 hover:text-white hover:bg-navy-800 transition-all">
@@ -151,15 +157,15 @@ export default function TopNav() {
             <div className="absolute right-0 top-full mt-1 w-72 bg-navy-900 border border-navy-700 rounded-lg shadow-xl z-50 py-4">
               <div className="flex flex-col items-center gap-2 px-4 py-3 text-center">
                 <Bell size={24} className="text-navy-500" />
-                <p className="text-sm font-medium text-white">No notifications yet</p>
-                <p className="text-xs text-navy-400">When you receive notifications, they'll appear here.</p>
+                <p className="text-sm font-medium text-white">{t('common.noNotifications')}</p>
+                <p className="text-xs text-navy-400">{t('common.notificationHint')}</p>
               </div>
               <div className="border-t border-navy-800 mt-2 pt-2 px-3">
                 <button
                   onClick={() => { setShowNotifications(false); navigate('/settings') }}
                   className="w-full text-left text-xs text-cyan-400 hover:text-cyan-300 px-2 py-1.5 rounded hover:bg-navy-800 transition-colors"
                 >
-                  Notification Settings
+                  {t('common.notificationSettings')}
                 </button>
               </div>
             </div>
@@ -189,7 +195,7 @@ export default function TopNav() {
                 className="w-full flex items-center gap-2 px-3 py-2 hover:bg-navy-800 transition-colors text-left text-red-400 text-xs"
               >
                 <LogOut size={12} />
-                Sign out
+                {t('common.signOut')}
               </button>
             </div>
           )}

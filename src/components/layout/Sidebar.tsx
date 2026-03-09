@@ -1,5 +1,6 @@
 import React from 'react'
 import { NavLink } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import {
   LayoutDashboard,
   Radar,
@@ -15,17 +16,19 @@ import Logo from './Logo'
 import { Tooltip } from '../ui'
 
 const navItems = [
-  { path: '/', label: 'NIS2 Overview', icon: LayoutDashboard, tooltip: 'Your compliance dashboard — overall scores, gaps, and coverage' },
-  { path: '/controls', label: 'Controls Library', icon: Shield, tooltip: 'Manage all NIS2 controls — assign owners, track status, upload evidence' },
-  { path: '/assessment', label: 'Assessment', icon: ClipboardCheck, tooltip: 'Self-assessment questionnaire to evaluate your NIS2 maturity' },
-  { path: '/remediation', label: 'Remediation', icon: ListTodo, tooltip: 'Action items to close compliance gaps from your assessment' },
-  { path: '/scan', label: 'Technical Scan', icon: Radar, tooltip: 'Run automated AWS infrastructure scans against NIS2 requirements' },
-  { path: '/people-tasks', label: 'People Tasks', icon: Users, tooltip: 'Employee training campaigns and policy acknowledgments' },
-  { path: '/reports', label: 'Reports', icon: FileText, tooltip: 'Generate compliance audit reports' },
-  { path: '/settings', label: 'Settings', icon: Settings, tooltip: 'Account and AWS connection settings' },
+  { path: '/', labelKey: 'nav.overview', icon: LayoutDashboard, tooltip: 'Your compliance dashboard — overall scores, gaps, and coverage' },
+  { path: '/controls', labelKey: 'nav.controls', icon: Shield, tooltip: 'Manage all NIS2 controls — assign owners, track status, upload evidence' },
+  { path: '/assessment', labelKey: 'nav.assessment', icon: ClipboardCheck, tooltip: 'Self-assessment questionnaire to evaluate your NIS2 maturity' },
+  { path: '/remediation', labelKey: 'nav.remediation', icon: ListTodo, tooltip: 'Action items to close compliance gaps from your assessment' },
+  { path: '/scan', labelKey: 'nav.scan', icon: Radar, tooltip: 'Run automated AWS infrastructure scans against NIS2 requirements' },
+  { path: '/people-tasks', labelKey: 'nav.peopleTasks', icon: Users, tooltip: 'Employee training campaigns and policy acknowledgments' },
+  { path: '/reports', labelKey: 'nav.reports', icon: FileText, tooltip: 'Generate compliance audit reports' },
+  { path: '/settings', labelKey: 'nav.settings', icon: Settings, tooltip: 'Account and AWS connection settings' },
 ]
 
 export default function Sidebar() {
+  const { t } = useTranslation()
+
   return (
     <aside className="w-60 min-h-screen flex flex-col bg-navy-900 border-r border-navy-700/50 fixed left-0 top-0 z-40">
       {/* Logo */}
@@ -35,7 +38,7 @@ export default function Sidebar() {
 
       {/* Nav */}
       <nav className="flex-1 px-3 py-4 space-y-1">
-        {navItems.map(({ path, label, icon: Icon, tooltip }) => (
+        {navItems.map(({ path, labelKey, icon: Icon, tooltip }) => (
           <Tooltip key={path} content={tooltip} side="right">
             <NavLink
               to={path}
@@ -54,7 +57,7 @@ export default function Sidebar() {
                     size={18}
                     className={isActive ? 'text-cyan-400' : 'text-[#94b4d1] group-hover:text-white'}
                   />
-                  <span className="flex-1">{label}</span>
+                  <span className="flex-1">{t(labelKey)}</span>
                   {isActive && (
                     <ChevronRight size={14} className="text-cyan-400" />
                   )}

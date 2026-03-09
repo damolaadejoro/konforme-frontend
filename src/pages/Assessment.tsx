@@ -1,5 +1,6 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { ClipboardCheck, ChevronRight, RotateCcw, Send, ChevronLeft } from 'lucide-react'
 import { Card, Button, ProgressBar, InfoTooltip } from '../components/ui'
 import { ARTICLES, QUESTIONS_BY_ARTICLE, ASSESSMENT_QUESTIONS } from '../data/assessmentQuestions'
@@ -9,6 +10,7 @@ import ArticleProgressCard from '../components/assessment/ArticleProgressCard'
 import AssessmentSummary from '../components/assessment/AssessmentSummary'
 
 export default function Assessment() {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const {
     responses,
@@ -44,18 +46,18 @@ export default function Assessment() {
       <div className="space-y-6">
         <div className="flex items-start justify-between">
           <div>
-            <h1 className="text-[26px] font-bold font-syne text-white">Assessment Complete</h1>
+            <h1 className="text-[26px] font-bold font-syne text-white">{t('assessment.complete')}</h1>
             <p className="text-[14px] text-[#CBD8E8] mt-1">
-              NIS2 Maturity Assessment Results
+              {t('assessment.completeSubtitle')}
             </p>
           </div>
           <div className="flex gap-2">
             <Button variant="secondary" onClick={() => { setShowSummary(false); if (isComplete) resetAssessment(); }}>
               <RotateCcw size={14} />
-              {isComplete ? 'New Assessment' : 'Back to Questions'}
+              {isComplete ? t('assessment.newAssessment') : t('assessment.backToQuestions')}
             </Button>
             <Button onClick={() => navigate('/assessment/history')}>
-              View History <ChevronRight size={14} />
+              {t('assessment.viewHistory')} <ChevronRight size={14} />
             </Button>
           </div>
         </div>
@@ -83,11 +85,11 @@ export default function Assessment() {
       <div className="flex items-start justify-between">
         <div>
           <h1 className="text-[26px] font-bold font-syne text-white flex items-center gap-2">
-            NIS2 Assessment
-            <InfoTooltip content="Evaluate your organization's NIS2 maturity by answering questions across all Article 21 areas" />
+            {t('assessment.title')}
+            <InfoTooltip content={t('assessment.tooltipInfo')} />
           </h1>
           <p className="text-[14px] text-[#CBD8E8] mt-1">
-            Maturity assessment across all Article 21 requirement areas
+            {t('assessment.maturitySubtitle')}
           </p>
         </div>
         <div className="flex gap-2">
@@ -96,7 +98,7 @@ export default function Assessment() {
               variant="secondary"
               onClick={() => setShowSummary(true)}
             >
-              Preview Results
+              {t('assessment.previewResults')}
             </Button>
           )}
           <Button
@@ -108,7 +110,7 @@ export default function Assessment() {
             disabled={answeredCount < totalQuestions}
           >
             <Send size={14} />
-            Submit Assessment
+            {t('assessment.submit')}
           </Button>
         </div>
       </div>
@@ -119,24 +121,24 @@ export default function Assessment() {
           <div className="flex items-center gap-2">
             <ClipboardCheck size={18} className="text-cyan-400" />
             <span className="text-sm font-semibold text-white">
-              Progress: {answeredCount} of {totalQuestions} questions
+              {t('assessment.progress', { answered: answeredCount, total: totalQuestions })}
             </span>
           </div>
           <span className="text-sm font-bold text-cyan-400 flex items-center gap-1">
             {progressPercent}%
-            <InfoTooltip content="Percentage of assessment questions answered" size={12} />
+            <InfoTooltip content={t('assessment.percentComplete')} size={12} />
           </span>
         </div>
         <ProgressBar value={progressPercent} color="bg-cyan-500" height="h-2" />
         {answeredCount > 0 && (
           <div className="mt-2 space-y-1">
             <p className="text-sm text-[#94b4d1]">
-              Projected score: <span className="font-bold text-white">{projectedScore}%</span>
-              <InfoTooltip content="Your compliance score if unanswered questions score 0. Complete more questions to improve." size={12} className="ml-1" />
+              {t('assessment.projectedScore')} <span className="font-bold text-white">{projectedScore}%</span>
+              <InfoTooltip content={t('assessment.projectedScoreTooltip')} size={12} className="ml-1" />
             </p>
             <p className="text-xs text-[#6b8fad]">
-              Answered quality: <span className="font-semibold text-[#94b4d1]">{overallScore}%</span>
-              <InfoTooltip content={`Score based on the ${answeredCount} questions you've answered so far`} size={12} className="ml-1" />
+              {t('assessment.answeredQuality')} <span className="font-semibold text-[#94b4d1]">{overallScore}%</span>
+              <InfoTooltip content={t('assessment.answeredQualityTooltip', { count: answeredCount })} size={12} className="ml-1" />
             </p>
           </div>
         )}
@@ -147,7 +149,7 @@ export default function Assessment() {
         {/* Article navigation sidebar */}
         <div className="lg:col-span-1 space-y-2">
           <h3 className="text-xs font-semibold text-[#94b4d1] uppercase tracking-wider mb-3">
-            NIS2 Articles
+            {t('assessment.nis2Articles')}
           </h3>
           {ARTICLES.map(art => {
             const artScore = articleScores.find(s => s.article === art.article)
@@ -181,7 +183,7 @@ export default function Assessment() {
                 disabled={activeIndex === 0}
                 onClick={() => setActiveArticle(ARTICLES[activeIndex - 1].article)}
               >
-                <ChevronLeft size={14} /> Previous
+                <ChevronLeft size={14} /> {t('assessment.previous')}
               </Button>
               <Button
                 variant="ghost"
@@ -189,7 +191,7 @@ export default function Assessment() {
                 disabled={activeIndex === ARTICLES.length - 1}
                 onClick={() => setActiveArticle(ARTICLES[activeIndex + 1].article)}
               >
-                Next <ChevronRight size={14} />
+                {t('assessment.next')} <ChevronRight size={14} />
               </Button>
             </div>
           </div>
@@ -216,13 +218,13 @@ export default function Assessment() {
               disabled={activeIndex === 0}
               onClick={() => setActiveArticle(ARTICLES[activeIndex - 1].article)}
             >
-              <ChevronLeft size={14} /> Previous Article
+              <ChevronLeft size={14} /> {t('assessment.previousArticle')}
             </Button>
             {activeIndex < ARTICLES.length - 1 ? (
               <Button
                 onClick={() => setActiveArticle(ARTICLES[activeIndex + 1].article)}
               >
-                Next Article <ChevronRight size={14} />
+                {t('assessment.nextArticle')} <ChevronRight size={14} />
               </Button>
             ) : (
               <Button
@@ -235,7 +237,7 @@ export default function Assessment() {
                 loading={submitting}
               >
                 <Send size={14} />
-                {answeredCount >= totalQuestions ? 'Submit Assessment' : 'Preview Results'}
+                {answeredCount >= totalQuestions ? t('assessment.submit') : t('assessment.previewResults')}
               </Button>
             )}
           </div>

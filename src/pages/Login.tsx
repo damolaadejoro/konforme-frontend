@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { LogIn, Eye, EyeOff } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { Card, Button, Input } from '../components/ui'
@@ -13,6 +14,7 @@ interface FieldErrors {
 }
 
 export default function Login() {
+  const { t } = useTranslation()
   const { login } = useAuth()
   const navigate = useNavigate()
   const [email, setEmail] = useState('')
@@ -84,16 +86,16 @@ export default function Login() {
           <div className="inline-flex items-center justify-center mb-4">
             <Logo size="lg" showText={false} />
           </div>
-          <h1 className="text-2xl font-bold font-syne text-white">Sign in to Konforme</h1>
-          <p className="text-sm text-navy-400 mt-1">Enter your credentials to continue</p>
+          <h1 className="text-2xl font-bold font-syne text-white">{t('auth.signIn')}</h1>
+          <p className="text-sm text-navy-400 mt-1">{t('auth.signInSubtitle')}</p>
         </div>
 
         <Card>
           <form onSubmit={handleSubmit} className="space-y-4" noValidate>
             <Input
-              label="Email"
+              label={t('auth.email')}
               type="email"
-              placeholder="you@company.com"
+              placeholder={t('auth.emailPlaceholder')}
               value={email}
               onChange={e => handleChange('email', e.target.value, setEmail)}
               onBlur={() => handleBlur('email', email)}
@@ -101,9 +103,9 @@ export default function Login() {
             />
             <div className="relative">
               <Input
-                label="Password"
+                label={t('auth.password')}
                 type={showPassword ? 'text' : 'password'}
-                placeholder="Enter your password"
+                placeholder={t('auth.passwordPlaceholder')}
                 value={password}
                 onChange={e => handleChange('password', e.target.value, setPassword)}
                 onBlur={() => handleBlur('password', password)}
@@ -120,7 +122,7 @@ export default function Login() {
 
             <div className="flex justify-end">
               <Link to="/reset-password" className="text-xs text-cyan-400 hover:text-cyan-300">
-                Forgot password?
+                {t('auth.forgotPassword')}
               </Link>
             </div>
 
@@ -132,14 +134,14 @@ export default function Login() {
 
             <Button type="submit" size="lg" className="w-full" loading={loading}>
               <LogIn size={16} />
-              Sign In
+              {t('auth.signInButton')}
             </Button>
           </form>
 
           <p className="text-center text-sm text-navy-400 mt-4">
-            Don't have an account?{' '}
+            {t('auth.noAccount')}{' '}
             <Link to="/register" className="text-cyan-400 hover:text-cyan-300 font-medium">
-              Register
+              {t('auth.register')}
             </Link>
           </p>
         </Card>

@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { ChevronDown, ChevronUp, Lightbulb } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import type { AssessmentQuestion, MaturityLevel } from '../../types/assessment'
 import { MATURITY_LABELS, MATURITY_COLORS } from '../../types/assessment'
 import MaturitySelector from './MaturitySelector'
@@ -27,8 +28,14 @@ export default function QuestionCard({
   index,
   disabled,
 }: QuestionCardProps) {
+  const { t } = useTranslation()
   const [showGuidance, setShowGuidance] = useState(false)
   const [localNotes, setLocalNotes] = useState(notes)
+
+  // Translated question text — falls back to source data if no translation key exists
+  const qText = t(`questions.${question.id}.question`, { defaultValue: question.question })
+  const qDesc = t(`questions.${question.id}.description`, { defaultValue: question.description })
+  const qGuidance = t(`questions.${question.id}.guidance`, { defaultValue: question.guidance })
   const isAnswered = maturityLevel !== undefined
 
   // Sync localNotes when notes prop changes (e.g. navigating between articles)
@@ -77,10 +84,10 @@ export default function QuestionCard({
             )}
           </div>
           <h4 className="text-[15px] font-semibold text-white leading-snug">
-            {question.question}
+            {qText}
           </h4>
           <p className="text-[13px] text-[#94b4d1] mt-1 leading-relaxed">
-            {question.description}
+            {qDesc}
           </p>
         </div>
       </div>
@@ -102,27 +109,27 @@ export default function QuestionCard({
               onAnswer(maturityLevel!, localNotes)
             }
           }}
-          placeholder="Add notes or evidence references..."
+          placeholder={t('assessment.notesPlaceholder')}
           className="w-full bg-navy-900/60 border border-navy-700 rounded-lg px-3 py-2 text-sm text-white placeholder-navy-500 focus:outline-none focus:border-cyan-500/50 resize-none"
           rows={1}
           disabled={disabled}
         />
 
         {/* Guidance accordion */}
-        {question.guidance && (
+        {qGuidance && (
           <button
             type="button"
             onClick={() => setShowGuidance(!showGuidance)}
             className="flex items-center gap-1.5 text-xs text-cyan-400 hover:text-cyan-300 transition-colors"
           >
             <Lightbulb size={12} />
-            {showGuidance ? 'Hide' : 'Show'} Guidance
+            {showGuidance ? t('assessment.hideGuidance') : t('assessment.showGuidance')}
             {showGuidance ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
           </button>
         )}
         {showGuidance && (
           <div className="p-3 rounded-lg bg-cyan-500/5 border border-cyan-500/15 text-[13px] text-cyan-200 leading-relaxed">
-            {question.guidance}
+            {qGuidance}
           </div>
         )}
       </div>

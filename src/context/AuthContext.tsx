@@ -17,6 +17,8 @@ interface AuthState {
   accountId: string | null
   accountName: string | null
   email: string | null
+  country: string | null
+  language: string | null
   isAuthenticated: boolean
   loading: boolean
   awsAccounts: AwsAccountInfo[]
@@ -25,13 +27,15 @@ interface AuthState {
 
 interface AuthContextValue extends AuthState {
   login: (email: string, password: string) => Promise<void>
-  register: (name: string, email: string, password: string) => Promise<void>
+  register: (name: string, email: string, password: string, country?: string | null, language?: string | null) => Promise<void>
   logout: () => void
   addAwsAccount: (alias: string, accessKeyId: string, secretAccessKey: string, sessionToken: string | null, region: string) => Promise<AwsAccountInfo>
   removeAwsAccount: (awsAccountId: string) => Promise<void>
   selectAwsAccount: (awsAccountId: string) => void
   setAccountName: (name: string) => void
   setEmail: (email: string) => void
+  setCountry: (country: string) => void
+  setLanguage: (language: string) => void
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null)
@@ -43,6 +47,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       accountId: stored.accountId,
       accountName: stored.accountName,
       email: stored.email,
+      country: localStorage.getItem('konforme_country'),
+      language: localStorage.getItem('konforme_language') || 'en',
       isAuthenticated: checkAuth(),
       loading: true,
       awsAccounts: stored.awsAccounts,
@@ -57,11 +63,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         localStorage.setItem('konforme_account_id', info.account_id)
         localStorage.setItem('konforme_account_name', info.account_name)
         localStorage.setItem('konforme_email', info.email)
+        if (info.country) localStorage.setItem('konforme_country', info.country)
+        if (info.language) localStorage.setItem('konforme_language', info.language)
         setAuth(prev => ({
           ...prev,
           accountId: info.account_id,
           accountName: info.account_name,
           email: info.email,
+          country: info.country || prev.country,
+          language: info.language || prev.language,
           isAuthenticated: true,
           loading: false,
         }))
@@ -91,7 +101,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         // No valid session — clear local state
         clearAuth()
         setAuth({
-          accountId: null, accountName: null, email: null,
+          accountId: null, accountName: null, email: null, country: null, language: 'en',
           isAuthenticated: false, loading: false, awsAccounts: [], selectedAwsAccountId: null,
         })
       })
@@ -110,6 +120,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       accountId: data.account_id,
       accountName: data.account_name,
       email: data.email,
+      country: data.country,
+      language: data.language || 'en',
       isAuthenticated: true,
       loading: false,
       awsAccounts: [],
@@ -131,9 +143,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     } catch { /* ignore */ }
   }, [auth.accountId])
 
-  const registerFn = useCallback(async (name: string, email: string, password: string) => {
+  const registerFn = useCallback(async (name: string, email: string, password: string, country?: string | null, language?: string | null) => {
     const previousAccountId = auth.accountId
-    const data = await apiRegister(name, email, password)
+    const data = await apiRegister(name, email, password, country, language)
 
     if (previousAccountId && previousAccountId !== data.account_id) {
       window.location.href = '/'
@@ -144,6 +156,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       accountId: data.account_id,
       accountName: data.account_name,
       email: data.email,
+      country: data.country,
+      language: data.language || 'en',
       isAuthenticated: true,
       loading: false,
       awsAccounts: [],
@@ -193,6 +207,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setAuth(prev => ({ ...prev, email }))
   }, [])
 
+  const setCountryFn = useCallback((country: string) => {
+    localStorage.setItem('konforme_country', country)
+    setAuth(prev => ({ ...prev, country }))
+  }, [])
+
+  const setLanguageFn = useCallback((language: string) => {
+    localStorage.setItem('konforme_language', language)
+    setAuth(prev => ({ ...prev, language }))
+  }, [])
+
   return (
     <AuthContext.Provider value={{
       ...auth,
@@ -204,6 +228,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       selectAwsAccount,
       setAccountName: setAccountNameFn,
       setEmail: setEmailFn,
+      setCountry: setCountryFn,
+      setLanguage: setLanguageFn,
     }}>
       {children}
     </AuthContext.Provider>
