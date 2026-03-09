@@ -12,6 +12,7 @@ vi.mock('../services/api', () => ({
   autoSaveResponse: vi.fn(),
   getStoredAuth: vi.fn(() => ({ accountId: null })),
   isConnected: vi.fn(() => false),
+  getEUCountries: vi.fn(() => Promise.resolve([])),
 }))
 
 const STORAGE_KEY = 'konforme_assessment_v2'

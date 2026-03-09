@@ -42,6 +42,17 @@ vi.mock('../services/api', () => ({
   getCombinedScore: vi.fn(),
   isConnected: vi.fn(() => false),
   getStoredAuth: vi.fn(() => null),
+  getEUCountries: vi.fn(() => Promise.resolve([])),
+}))
+
+// Mock react-i18next
+vi.mock('react-i18next', () => ({
+  useTranslation: () => ({
+    t: (key: string) => key,
+    i18n: { changeLanguage: vi.fn(), language: 'en' },
+  }),
+  Trans: ({ children }: { children: React.ReactNode }) => children,
+  initReactI18next: { type: '3rdParty', init: vi.fn() },
 }))
 
 // Mock the useControls hook
@@ -121,7 +132,7 @@ describe('UI Components', () => {
           </BrowserRouter>
         </TooltipPrimitive.Provider>
       )
-      expect(screen.getByText('NIS2 Compliance Overview')).toBeInTheDocument()
+      expect(screen.getByText('overview.title')).toBeInTheDocument()
     })
 
     it('Displays the overall readiness score', () => {
@@ -144,8 +155,8 @@ describe('UI Components', () => {
           </BrowserRouter>
         </TooltipPrimitive.Provider>
       )
-      // The score is 75%, which should show "Good"
-      expect(screen.getByText('Good')).toBeInTheDocument()
+      // The score is 75%, which should show the "good" label
+      expect(screen.getByText('overview.good')).toBeInTheDocument()
     })
 
     it('Displays all three category scores', () => {
