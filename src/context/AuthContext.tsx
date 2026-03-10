@@ -148,7 +148,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const data = await apiRegister(name, email, password, country, language)
 
     if (previousAccountId && previousAccountId !== data.account_id) {
-      window.location.href = '/'
+      window.location.href = '/get-started'
       return
     }
 
