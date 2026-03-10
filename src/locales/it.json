@@ -445,7 +445,9 @@
     "completeTrainingQuiz": "Completa quiz di formazione",
     "deadlineLabel": "Scadenza",
     "sendTasksButton": "Invia attività",
-    "lastUpdated": "Ultimo aggiornamento:"
+    "lastUpdated": "Ultimo aggiornamento:",
+    "severityLabel": "Severità",
+    "allSeverities": "Tutte le severità"
   },
   "remediation": {
     "pageTitle": "Attività di rimediazione",
@@ -593,7 +595,16 @@
     "goToControlsButton": "Vai alla libreria dei controlli",
     "activeCampaignsSectionTitle": "Campagne attive",
     "completedCampaignsSectionTitle": "Campagne completate",
-    "tasksLabel": "attività"
+    "tasksLabel": "attività",
+    "createFormTitle": "Crea campagna",
+    "selectControlLabel": "Controllo",
+    "selectControlPlaceholder": "Seleziona un controllo del personale...",
+    "taskTypeLabel": "Tipo di attività",
+    "employeeEmailsLabel": "E-mail dei dipendenti",
+    "employeeEmailsPlaceholder": "Inserisca un'e-mail per riga",
+    "deadlineLabel": "Scadenza",
+    "cancelButton": "Annulla",
+    "createButtonLabel": "Crea campagna"
   },
   "humanFactor": {
     "pageTitle": "Valutazione del fattore umano",
@@ -749,7 +760,26 @@
     "assessmentTitle": "Inizia la valutazione NIS2",
     "assessmentDescription": "Risponda alle domande sulle politiche, processi e misure tecniche della sua organizzazione.",
     "assessmentAction": "Inizia valutazione",
-    "skipLink": "Salta per ora — vai al cruscotto"
+    "skipLink": "Salta per ora — vai al cruscotto",
+    "welcomeTitle": "Benvenuto, {{name}}!",
+    "welcomeSubtitle": "Konforme ti guida attraverso la conformità NIS2 in 4 fasi",
+    "stageAssess": "Valutare",
+    "stageRemediate": "Rimediare",
+    "stageReport": "Segnalare",
+    "stageMonitor": "Monitorare",
+    "letsGetStarted": "Iniziamo",
+    "stepWelcome": "Benvenuto",
+    "stepQuickStart": "Avvio rapido",
+    "stepAllSet": "Tutto pronto",
+    "recommendedBadge": "Consigliato",
+    "demoDescriptionExpanded": "Scopri Konforme in azione con dati di esempio — richiede 10 secondi",
+    "allSetTitle": "Il tuo cruscotto è pronto!",
+    "allSetSubtitle": "Ecco alcune cose da esplorare",
+    "tipControls": "Sfoglia la libreria dei controlli per vedere tutti i requisiti NIS2",
+    "tipAssessment": "Prova le schede di valutazione per Tecnico, Organizzativo e Fattore umano",
+    "tipReports": "Genera il tuo primo rapporto di conformità",
+    "goToDashboard": "Vai al cruscotto",
+    "back": "Indietro"
   },
   "resetPassword": {
     "pageTitle": "Reimposta password",

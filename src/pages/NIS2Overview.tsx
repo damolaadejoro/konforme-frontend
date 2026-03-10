@@ -339,7 +339,7 @@ export default function NIS2Overview() {
           accent="text-red-500"
           trend={t('overview.requiresAttention')}
           tooltip={t('overview.criticalGapsTooltip')}
-          onClick={() => navigate('/controls?status=Not Started')}
+          onClick={() => navigate('/controls?severity=critical')}
         />
         <StatCard
           label={t('overview.employeeTasks')}

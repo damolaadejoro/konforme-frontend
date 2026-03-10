@@ -445,7 +445,9 @@
     "completeTrainingQuiz": "Schulungsquiz absolvieren",
     "deadlineLabel": "Frist",
     "sendTasksButton": "Aufgaben senden",
-    "lastUpdated": "Zuletzt aktualisiert:"
+    "lastUpdated": "Zuletzt aktualisiert:",
+    "severityLabel": "Schweregrad",
+    "allSeverities": "Alle Schweregrade"
   },
   "remediation": {
     "pageTitle": "Behebungsaufgaben",
@@ -593,7 +595,16 @@
     "goToControlsButton": "Zur Kontrollbibliothek",
     "activeCampaignsSectionTitle": "Aktive Kampagnen",
     "completedCampaignsSectionTitle": "Abgeschlossene Kampagnen",
-    "tasksLabel": "Aufgaben"
+    "tasksLabel": "Aufgaben",
+    "createFormTitle": "Kampagne erstellen",
+    "selectControlLabel": "Kontrolle",
+    "selectControlPlaceholder": "Wählen Sie eine Mitarbeiterkontrolle...",
+    "taskTypeLabel": "Aufgabentyp",
+    "employeeEmailsLabel": "Mitarbeiter-E-Mails",
+    "employeeEmailsPlaceholder": "Geben Sie eine E-Mail pro Zeile ein",
+    "deadlineLabel": "Frist",
+    "cancelButton": "Abbrechen",
+    "createButtonLabel": "Kampagne erstellen"
   },
   "humanFactor": {
     "pageTitle": "Bewertung des Menschlichen Faktors",
@@ -749,7 +760,26 @@
     "assessmentTitle": "NIS2-Bewertung starten",
     "assessmentDescription": "Beantworten Sie Fragen zu den Richtlinien, Prozessen und technischen Maßnahmen Ihrer Organisation.",
     "assessmentAction": "Bewertung beginnen",
-    "skipLink": "Überspringen — zum Dashboard gehen"
+    "skipLink": "Überspringen — zum Dashboard gehen",
+    "welcomeTitle": "Willkommen, {{name}}!",
+    "welcomeSubtitle": "Konforme begleitet Sie durch die NIS2-Compliance in 4 Stufen",
+    "stageAssess": "Bewerten",
+    "stageRemediate": "Beheben",
+    "stageReport": "Berichten",
+    "stageMonitor": "Überwachen",
+    "letsGetStarted": "Los geht's",
+    "stepWelcome": "Willkommen",
+    "stepQuickStart": "Schnellstart",
+    "stepAllSet": "Fertig",
+    "recommendedBadge": "Empfohlen",
+    "demoDescriptionExpanded": "Erleben Sie Konforme in Aktion mit Beispieldaten — dauert 10 Sekunden",
+    "allSetTitle": "Ihr Dashboard ist bereit!",
+    "allSetSubtitle": "Hier sind einige Dinge, die Sie als Nächstes erkunden können",
+    "tipControls": "Durchstöbern Sie die Kontrollbibliothek, um alle NIS2-Anforderungen zu sehen",
+    "tipAssessment": "Probieren Sie die Bewertungs-Tabs für Technik, Organisation und den menschlichen Faktor",
+    "tipReports": "Erstellen Sie Ihren ersten Compliance-Bericht",
+    "goToDashboard": "Zum Dashboard",
+    "back": "Zurück"
   },
   "resetPassword": {
     "pageTitle": "Passwort zurücksetzen",

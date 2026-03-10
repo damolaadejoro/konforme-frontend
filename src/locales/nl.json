@@ -445,7 +445,9 @@
     "completeTrainingQuiz": "Trainingsquiz voltooien",
     "deadlineLabel": "Deadline",
     "sendTasksButton": "Taken versturen",
-    "lastUpdated": "Laatst bijgewerkt:"
+    "lastUpdated": "Laatst bijgewerkt:",
+    "severityLabel": "Ernst",
+    "allSeverities": "Alle ernsten"
   },
   "remediation": {
     "pageTitle": "Hersteltaken",
@@ -593,7 +595,16 @@
     "goToControlsButton": "Naar de controlbibliotheek",
     "activeCampaignsSectionTitle": "Actieve campagnes",
     "completedCampaignsSectionTitle": "Voltooide campagnes",
-    "tasksLabel": "taken"
+    "tasksLabel": "taken",
+    "createFormTitle": "Campagne maken",
+    "selectControlLabel": "Controle",
+    "selectControlPlaceholder": "Selecteer een personeelscontrole...",
+    "taskTypeLabel": "Taaktype",
+    "employeeEmailsLabel": "E-mailadressen medewerkers",
+    "employeeEmailsPlaceholder": "Voer één e-mailadres per regel in",
+    "deadlineLabel": "Deadline",
+    "cancelButton": "Annuleren",
+    "createButtonLabel": "Campagne maken"
   },
   "humanFactor": {
     "pageTitle": "Menselijke factor beoordeling",
@@ -749,7 +760,26 @@
     "assessmentTitle": "Start de NIS2-beoordeling",
     "assessmentDescription": "Beantwoord vragen over het beleid, de processen en technische maatregelen van uw organisatie.",
     "assessmentAction": "Beoordeling starten",
-    "skipLink": "Overslaan — naar dashboard"
+    "skipLink": "Overslaan — naar dashboard",
+    "welcomeTitle": "Welkom, {{name}}!",
+    "welcomeSubtitle": "Konforme begeleidt u door NIS2-compliance in 4 stappen",
+    "stageAssess": "Beoordelen",
+    "stageRemediate": "Herstellen",
+    "stageReport": "Rapporteren",
+    "stageMonitor": "Bewaken",
+    "letsGetStarted": "Laten we beginnen",
+    "stepWelcome": "Welkom",
+    "stepQuickStart": "Snelstart",
+    "stepAllSet": "Klaar",
+    "recommendedBadge": "Aanbevolen",
+    "demoDescriptionExpanded": "Bekijk Konforme in actie met voorbeeldgegevens — duurt 10 seconden",
+    "allSetTitle": "Uw dashboard is klaar!",
+    "allSetSubtitle": "Hier zijn een paar dingen om te verkennen",
+    "tipControls": "Blader door de controlbibliotheek om alle NIS2-vereisten te bekijken",
+    "tipAssessment": "Probeer de beoordelingstabbladen voor Technisch, Organisatorisch en Menselijke factor",
+    "tipReports": "Genereer uw eerste compliance-rapport",
+    "goToDashboard": "Naar dashboard",
+    "back": "Terug"
   },
   "resetPassword": {
     "pageTitle": "Wachtwoord herstellen",

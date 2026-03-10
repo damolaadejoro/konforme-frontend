@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from 'react'
 import {
   Control,
   ControlCategory,
+  ControlSeverity,
   ControlStatus,
   EmployeeCampaign,
   EmployeeTask,
@@ -342,12 +343,14 @@ export function useControls() {
     category?: ControlCategory,
     status?: ControlStatus,
     articleArea?: string,
-    searchQuery?: string
+    searchQuery?: string,
+    severity?: ControlSeverity
   ) => {
     return controls.filter(control => {
       if (category && control.category !== category) return false
       if (status && control.status !== status) return false
       if (articleArea && control.articleArea !== articleArea) return false
+      if (severity && control.severity !== severity) return false
       if (searchQuery) {
         const query = searchQuery.toLowerCase()
         return (

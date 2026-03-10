@@ -445,7 +445,9 @@
     "completeTrainingQuiz": "Compléter le quiz de formation",
     "deadlineLabel": "Date limite",
     "sendTasksButton": "Envoyer les tâches",
-    "lastUpdated": "Dernière mise à jour :"
+    "lastUpdated": "Dernière mise à jour :",
+    "severityLabel": "Sévérité",
+    "allSeverities": "Toutes les sévérités"
   },
   "remediation": {
     "pageTitle": "Tâches de remédiation",
@@ -593,7 +595,16 @@
     "goToControlsButton": "Aller à la bibliothèque de contrôles",
     "activeCampaignsSectionTitle": "Campagnes actives",
     "completedCampaignsSectionTitle": "Campagnes terminées",
-    "tasksLabel": "tâches"
+    "tasksLabel": "tâches",
+    "createFormTitle": "Créer une campagne",
+    "selectControlLabel": "Contrôle",
+    "selectControlPlaceholder": "Sélectionner un contrôle personnel...",
+    "taskTypeLabel": "Type de tâche",
+    "employeeEmailsLabel": "E-mails des employés",
+    "employeeEmailsPlaceholder": "Entrez un e-mail par ligne",
+    "deadlineLabel": "Date limite",
+    "cancelButton": "Annuler",
+    "createButtonLabel": "Créer une campagne"
   },
   "humanFactor": {
     "pageTitle": "Évaluation du facteur humain",
@@ -749,7 +760,26 @@
     "assessmentTitle": "Démarrer l'évaluation NIS2",
     "assessmentDescription": "Répondez aux questions sur les politiques, processus et mesures techniques de votre organisation.",
     "assessmentAction": "Commencer l'évaluation",
-    "skipLink": "Passer pour l'instant — aller au tableau de bord"
+    "skipLink": "Passer pour l'instant — aller au tableau de bord",
+    "welcomeTitle": "Bienvenue, {{name}} !",
+    "welcomeSubtitle": "Konforme vous guide à travers la conformité NIS2 en 4 étapes",
+    "stageAssess": "Évaluer",
+    "stageRemediate": "Remédier",
+    "stageReport": "Rapporter",
+    "stageMonitor": "Surveiller",
+    "letsGetStarted": "Commençons",
+    "stepWelcome": "Bienvenue",
+    "stepQuickStart": "Démarrage rapide",
+    "stepAllSet": "Terminé",
+    "recommendedBadge": "Recommandé",
+    "demoDescriptionExpanded": "Découvrez Konforme en action avec des données d'exemple — prend 10 secondes",
+    "allSetTitle": "Votre tableau de bord est prêt !",
+    "allSetSubtitle": "Voici quelques éléments à explorer ensuite",
+    "tipControls": "Parcourez la bibliothèque de contrôles pour voir toutes les exigences NIS2",
+    "tipAssessment": "Essayez les onglets d'évaluation pour Technique, Organisationnel et Facteur humain",
+    "tipReports": "Générez votre premier rapport de conformité",
+    "goToDashboard": "Aller au tableau de bord",
+    "back": "Retour"
   },
   "resetPassword": {
     "pageTitle": "Réinitialiser le mot de passe",

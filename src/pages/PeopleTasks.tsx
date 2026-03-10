@@ -13,10 +13,11 @@ import {
   TrendingUp,
   TrendingDown,
   Award,
+  Plus,
 } from 'lucide-react'
 import { useControls } from '../hooks/useControls'
 import { Card, Button, StatCard, ProgressBar, InfoTooltip } from '../components/ui'
-import { EmployeeCampaign, TaskStatus } from '../types/controls'
+import { EmployeeCampaign, TaskStatus, TaskType } from '../types/controls'
 import { format } from 'date-fns'
 
 const taskStatusColors: Record<TaskStatus, string> = {
@@ -201,9 +202,38 @@ function CampaignCard({ campaign }: { campaign: EmployeeCampaign }) {
 }
 
 export default function PeopleTasks() {
-  const navigate = useNavigate()
   const { t } = useTranslation()
-  const { campaigns, employeeComplianceStats } = useControls()
+  const { campaigns, controls, createCampaign, employeeComplianceStats } = useControls()
+  const [showCreateForm, setShowCreateForm] = useState(false)
+  const [selectedControlId, setSelectedControlId] = useState('')
+  const [taskType, setTaskType] = useState<TaskType>('acknowledge')
+  const [employeeEmails, setEmployeeEmails] = useState('')
+  const [deadline, setDeadline] = useState('')
+
+  const peopleControls = controls.filter(c => c.isPeopleControl)
+
+  const handleCreateCampaign = () => {
+    if (!selectedControlId || !employeeEmails.trim() || !deadline) return
+
+    const employees = employeeEmails
+      .split('\n')
+      .map(line => line.trim())
+      .filter(email => email.length > 0)
+      .map(email => ({
+        name: email.split('@')[0].replace(/[._]/g, ' '),
+        email,
+        department: 'General'
+      }))
+
+    if (employees.length === 0) return
+
+    createCampaign(selectedControlId, taskType, employees, deadline)
+    setShowCreateForm(false)
+    setSelectedControlId('')
+    setTaskType('acknowledge')
+    setEmployeeEmails('')
+    setDeadline('')
+  }
 
   const getCampaignCompletionRate = (c: EmployeeCampaign) =>
     c.tasks.length > 0 ? (c.tasks.filter(t => t.status === 'completed').length / c.tasks.length) * 100 : 0
@@ -230,11 +260,88 @@ export default function PeopleTasks() {
             {t('peopleTasks.pageSubtitle')}
           </p>
         </div>
-        <Button onClick={() => navigate('/controls')}>
-          <Users size={16} />
+        <Button onClick={() => setShowCreateForm(true)}>
+          <Plus size={16} />
           {t('peopleTasks.createCampaignButton')}
         </Button>
       </div>
+
+      {/* Inline Create Campaign Form */}
+      {showCreateForm && (
+        <Card className="border-cyan-500/30">
+          <h3 className="text-[16px] font-bold font-syne text-white mb-4">{t('peopleTasks.createFormTitle')}</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="text-xs text-[#94b4d1] mb-1 block">{t('peopleTasks.selectControlLabel')}</label>
+              <select
+                value={selectedControlId}
+                onChange={(e) => setSelectedControlId(e.target.value)}
+                className="w-full px-3 py-2 bg-navy-800 border border-navy-700 rounded-lg text-white text-sm focus:outline-none focus:border-cyan-500"
+              >
+                <option value="">{t('peopleTasks.selectControlPlaceholder')}</option>
+                {peopleControls.map(c => (
+                  <option key={c.id} value={c.id}>{c.title}</option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="text-xs text-[#94b4d1] mb-1 block">{t('peopleTasks.taskTypeLabel')}</label>
+              <select
+                value={taskType}
+                onChange={(e) => setTaskType(e.target.value as TaskType)}
+                className="w-full px-3 py-2 bg-navy-800 border border-navy-700 rounded-lg text-white text-sm focus:outline-none focus:border-cyan-500"
+              >
+                <option value="acknowledge">{t('peopleTasks.policyAcknowledgmentType')}</option>
+                <option value="quiz">{t('peopleTasks.trainingQuizType')}</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="text-xs text-[#94b4d1] mb-1 block">{t('peopleTasks.employeeEmailsLabel')}</label>
+              <textarea
+                value={employeeEmails}
+                onChange={(e) => setEmployeeEmails(e.target.value)}
+                rows={3}
+                className="w-full px-3 py-2 bg-navy-800 border border-navy-700 rounded-lg text-white text-sm focus:outline-none focus:border-cyan-500 resize-none"
+                placeholder={t('peopleTasks.employeeEmailsPlaceholder')}
+              />
+            </div>
+
+            <div>
+              <label className="text-xs text-[#94b4d1] mb-1 block">{t('peopleTasks.deadlineLabel')}</label>
+              <input
+                type="date"
+                value={deadline}
+                onChange={(e) => setDeadline(e.target.value)}
+                className="w-full px-3 py-2 bg-navy-800 border border-navy-700 rounded-lg text-white text-sm focus:outline-none focus:border-cyan-500"
+              />
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2 mt-4">
+            <Button
+              onClick={handleCreateCampaign}
+              disabled={!selectedControlId || !employeeEmails.trim() || !deadline}
+            >
+              <Plus size={14} />
+              {t('peopleTasks.createButtonLabel')}
+            </Button>
+            <Button
+              variant="ghost"
+              onClick={() => {
+                setShowCreateForm(false)
+                setSelectedControlId('')
+                setTaskType('acknowledge')
+                setEmployeeEmails('')
+                setDeadline('')
+              }}
+            >
+              {t('peopleTasks.cancelButton')}
+            </Button>
+          </div>
+        </Card>
+      )}
 
       {/* Stats Bar */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
@@ -309,9 +416,9 @@ export default function PeopleTasks() {
           <p className="text-[14px] text-[#CBD8E8] max-w-md mx-auto mb-6">
             {t('peopleTasks.noCampaignsDescription')}
           </p>
-          <Button onClick={() => navigate('/controls')}>
-            <Users size={16} />
-            {t('peopleTasks.goToControlsButton')}
+          <Button onClick={() => setShowCreateForm(true)}>
+            <Plus size={16} />
+            {t('peopleTasks.createCampaignButton')}
           </Button>
         </Card>
       )}

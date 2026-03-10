@@ -22,7 +22,7 @@ import {
 import { useTranslation } from 'react-i18next'
 import { useControls } from '../hooks/useControls'
 import { Card, Button, InfoTooltip, Tooltip } from '../components/ui'
-import { Control, ControlCategory, ControlStatus } from '../types/controls'
+import { Control, ControlCategory, ControlSeverity, ControlStatus } from '../types/controls'
 import { format } from 'date-fns'
 import {
   getStoredAuth,
@@ -733,22 +733,28 @@ export default function ControlsLibrary() {
   } = useControls()
 
   const validStatuses: ControlStatus[] = ['Not Started', 'Planned', 'Partial', 'Implemented']
+  const validSeverities: ControlSeverity[] = ['critical', 'high', 'medium']
   const initialStatus = searchParams.get('status')
+  const initialSeverity = searchParams.get('severity')
   const [searchQuery, setSearchQuery] = useState('')
   const [categoryFilter, setCategoryFilter] = useState<ControlCategory | ''>('')
   const [statusFilter, setStatusFilter] = useState<ControlStatus | ''>(
     validStatuses.includes(initialStatus as ControlStatus) ? (initialStatus as ControlStatus) : ''
   )
   const [articleAreaFilter, setArticleAreaFilter] = useState('')
+  const [severityFilter, setSeverityFilter] = useState<ControlSeverity | ''>(
+    validSeverities.includes(initialSeverity as ControlSeverity) ? (initialSeverity as ControlSeverity) : ''
+  )
 
   const filteredControls = useMemo(() => {
     return filterControls(
       categoryFilter || undefined,
       statusFilter || undefined,
       articleAreaFilter || undefined,
-      searchQuery || undefined
+      searchQuery || undefined,
+      severityFilter || undefined
     )
-  }, [controls, searchQuery, categoryFilter, statusFilter, articleAreaFilter])
+  }, [controls, searchQuery, categoryFilter, statusFilter, articleAreaFilter, severityFilter])
 
   const articleAreas = useMemo(() => {
     return Array.from(new Set(controls.map(c => c.articleArea)))
@@ -790,7 +796,7 @@ export default function ControlsLibrary() {
           </div>
 
           {/* Filter row */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
             <div>
               <label className="text-xs text-[#94b4d1] mb-1 flex items-center gap-1">
                 {t('controls.categoryLabel')}
@@ -827,6 +833,20 @@ export default function ControlsLibrary() {
             </div>
 
             <div>
+              <label className="text-xs text-[#94b4d1] mb-1 block">{t('controls.severityLabel')}</label>
+              <select
+                value={severityFilter}
+                onChange={(e) => setSeverityFilter(e.target.value as ControlSeverity | '')}
+                className="w-full px-3 py-2 bg-navy-800 border border-navy-700 rounded-lg text-white text-sm focus:outline-none focus:border-cyan-500"
+              >
+                <option value="">{t('controls.allSeverities')}</option>
+                <option value="critical">{t('common.critical')}</option>
+                <option value="high">{t('common.high')}</option>
+                <option value="medium">{t('common.medium')}</option>
+              </select>
+            </div>
+
+            <div>
               <label className="text-xs text-[#94b4d1] mb-1 block">{t('controls.articleAreaLabel')}</label>
               <select
                 value={articleAreaFilter}
@@ -842,7 +862,7 @@ export default function ControlsLibrary() {
           </div>
 
           {/* Active filters */}
-          {(searchQuery || categoryFilter || statusFilter || articleAreaFilter) && (
+          {(searchQuery || categoryFilter || statusFilter || articleAreaFilter || severityFilter) && (
             <div className="flex items-center gap-2 flex-wrap">
               <span className="text-xs text-[#94b4d1]">{t('controls.activeFiltersLabel')}</span>
               {searchQuery && (
@@ -869,6 +889,14 @@ export default function ControlsLibrary() {
                   </button>
                 </span>
               )}
+              {severityFilter && (
+                <span className="text-xs px-2 py-1 rounded bg-navy-800 text-white flex items-center gap-1">
+                  {severityFilter}
+                  <button onClick={() => setSeverityFilter('')} className="text-navy-400 hover:text-white">
+                    <X size={12} />
+                  </button>
+                </span>
+              )}
               {articleAreaFilter && (
                 <span className="text-xs px-2 py-1 rounded bg-navy-800 text-white flex items-center gap-1">
                   {articleAreaFilter}
@@ -882,6 +910,7 @@ export default function ControlsLibrary() {
                   setSearchQuery('')
                   setCategoryFilter('')
                   setStatusFilter('')
+                  setSeverityFilter('')
                   setArticleAreaFilter('')
                 }}
                 className="text-xs text-cyan-400 hover:text-cyan-300"

@@ -445,7 +445,9 @@
     "completeTrainingQuiz": "Completar cuestionario de capacitación",
     "deadlineLabel": "Fecha límite",
     "sendTasksButton": "Enviar tareas",
-    "lastUpdated": "Última actualización:"
+    "lastUpdated": "Última actualización:",
+    "severityLabel": "Severidad",
+    "allSeverities": "Todas las severidades"
   },
   "remediation": {
     "pageTitle": "Tareas de remediación",
@@ -593,7 +595,16 @@
     "goToControlsButton": "Ir a la biblioteca de controles",
     "activeCampaignsSectionTitle": "Campañas activas",
     "completedCampaignsSectionTitle": "Campañas completadas",
-    "tasksLabel": "tareas"
+    "tasksLabel": "tareas",
+    "createFormTitle": "Crear campaña",
+    "selectControlLabel": "Control",
+    "selectControlPlaceholder": "Seleccione un control de personal...",
+    "taskTypeLabel": "Tipo de tarea",
+    "employeeEmailsLabel": "Correos de empleados",
+    "employeeEmailsPlaceholder": "Ingrese un correo por línea",
+    "deadlineLabel": "Fecha límite",
+    "cancelButton": "Cancelar",
+    "createButtonLabel": "Crear campaña"
   },
   "humanFactor": {
     "pageTitle": "Evaluación del factor humano",
@@ -749,7 +760,26 @@
     "assessmentTitle": "Iniciar la evaluación NIS2",
     "assessmentDescription": "Responda preguntas sobre las políticas, procesos y medidas técnicas de su organización.",
     "assessmentAction": "Comenzar evaluación",
-    "skipLink": "Omitir por ahora — ir al panel de control"
+    "skipLink": "Omitir por ahora — ir al panel de control",
+    "welcomeTitle": "¡Bienvenido, {{name}}!",
+    "welcomeSubtitle": "Konforme le guía a través del cumplimiento NIS2 en 4 etapas",
+    "stageAssess": "Evaluar",
+    "stageRemediate": "Remediar",
+    "stageReport": "Informar",
+    "stageMonitor": "Monitorizar",
+    "letsGetStarted": "Empecemos",
+    "stepWelcome": "Bienvenida",
+    "stepQuickStart": "Inicio rápido",
+    "stepAllSet": "Listo",
+    "recommendedBadge": "Recomendado",
+    "demoDescriptionExpanded": "Vea Konforme en acción con datos de ejemplo — toma 10 segundos",
+    "allSetTitle": "¡Su panel de control está listo!",
+    "allSetSubtitle": "Aquí hay algunas cosas que explorar a continuación",
+    "tipControls": "Explore la biblioteca de controles para ver todos los requisitos NIS2",
+    "tipAssessment": "Pruebe las pestañas de evaluación para Técnico, Organizacional y Factor humano",
+    "tipReports": "Genere su primer informe de cumplimiento",
+    "goToDashboard": "Ir al panel de control",
+    "back": "Atrás"
   },
   "resetPassword": {
     "pageTitle": "Restablecer contraseña",

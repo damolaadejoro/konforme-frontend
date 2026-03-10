@@ -445,7 +445,9 @@
     "completeTrainingQuiz": "Complete Training Quiz",
     "deadlineLabel": "Deadline",
     "sendTasksButton": "Send Tasks",
-    "lastUpdated": "Last updated:"
+    "lastUpdated": "Last updated:",
+    "severityLabel": "Severity",
+    "allSeverities": "All Severities"
   },
   "remediation": {
     "pageTitle": "Remediation Tasks",
@@ -593,7 +595,16 @@
     "goToControlsButton": "Go to Controls Library",
     "activeCampaignsSectionTitle": "Active Campaigns",
     "completedCampaignsSectionTitle": "Completed Campaigns",
-    "tasksLabel": "tasks"
+    "tasksLabel": "tasks",
+    "createFormTitle": "Create Campaign",
+    "selectControlLabel": "Control",
+    "selectControlPlaceholder": "Select a people control...",
+    "taskTypeLabel": "Task Type",
+    "employeeEmailsLabel": "Employee Emails",
+    "employeeEmailsPlaceholder": "Enter one email per line",
+    "deadlineLabel": "Deadline",
+    "cancelButton": "Cancel",
+    "createButtonLabel": "Create Campaign"
   },
   "humanFactor": {
     "pageTitle": "Human Factor Assessment",
@@ -742,6 +753,7 @@
     "pageSubtitle": "Get your first NIS2 compliance result in minutes. Pick the option that fits your situation best.",
     "demoTitle": "Run a Demo Assessment",
     "demoDescription": "See how Konforme works with sample data. Instantly populates your dashboard with realistic scores.",
+    "demoDescriptionExpanded": "See Konforme in action with sample data — takes 10 seconds",
     "demoAction": "Try the Demo",
     "scanTitle": "Connect Your AWS Account",
     "scanDescription": "Scan your infrastructure automatically to populate technical controls and identify gaps.",
@@ -749,7 +761,25 @@
     "assessmentTitle": "Start the NIS2 Assessment",
     "assessmentDescription": "Answer questions about your organisation's policies, processes, and technical measures.",
     "assessmentAction": "Begin Assessment",
-    "skipLink": "Skip for now — go to dashboard"
+    "skipLink": "Skip for now — go to dashboard",
+    "welcomeTitle": "Welcome, {{name}}!",
+    "welcomeSubtitle": "Konforme guides you through NIS2 compliance in 4 stages",
+    "stageAssess": "Assess",
+    "stageRemediate": "Remediate",
+    "stageReport": "Report",
+    "stageMonitor": "Monitor",
+    "letsGetStarted": "Let's Get Started",
+    "stepWelcome": "Welcome",
+    "stepQuickStart": "Quick Start",
+    "stepAllSet": "All Set",
+    "recommendedBadge": "Recommended",
+    "allSetTitle": "Your dashboard is ready!",
+    "allSetSubtitle": "Here are a few things to explore next",
+    "tipControls": "Browse the Controls Library to see all NIS2 requirements",
+    "tipAssessment": "Try the Assessment tabs for Technical, Organizational, and Human Factor",
+    "tipReports": "Generate your first compliance report",
+    "goToDashboard": "Go to Dashboard",
+    "back": "Back"
   },
   "resetPassword": {
     "pageTitle": "Reset Password",

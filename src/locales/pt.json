@@ -411,6 +411,23 @@
       "guidance": "Bloqueie autenticação legada (NTLM, autenticação básica). Implemente políticas de acesso condicional. Use MFA adaptativa para logins de alto risco."
     }
   },
+  "controls": {
+    "lastUpdated": "Última atualização:",
+    "severityLabel": "Severidade",
+    "allSeverities": "Todas as severidades"
+  },
+  "peopleTasks": {
+    "tasksLabel": "tarefas",
+    "createFormTitle": "Criar campanha",
+    "selectControlLabel": "Controlo",
+    "selectControlPlaceholder": "Selecione um controlo de pessoal...",
+    "taskTypeLabel": "Tipo de tarefa",
+    "employeeEmailsLabel": "E-mails dos colaboradores",
+    "employeeEmailsPlaceholder": "Introduza um e-mail por linha",
+    "deadlineLabel": "Prazo",
+    "cancelButton": "Cancelar",
+    "createButtonLabel": "Criar campanha"
+  },
   "countryInfo": {
     "title": "Autoridade Nacional NIS2",
     "authority": "Autoridade Competente",
@@ -422,5 +439,38 @@
     "nationalLaw": "Lei Nacional",
     "noCountry": "Selecione o seu país nas Definições para ver a sua autoridade nacional NIS2 e contactos de reporte.",
     "goToSettings": "Ir para Definições"
+  },
+  "getStarted": {
+    "pageTitle": "Bem-vindo ao Konforme",
+    "pageSubtitle": "Obtenha o seu primeiro resultado de conformidade NIS2 em minutos. Escolha a opção mais adequada à sua situação.",
+    "demoTitle": "Executar uma avaliação de demonstração",
+    "demoDescription": "Veja como o Konforme funciona com dados de exemplo. Preenche instantaneamente o seu painel com pontuações realistas.",
+    "demoDescriptionExpanded": "Veja o Konforme em ação com dados de exemplo — demora 10 segundos",
+    "demoAction": "Experimentar a demo",
+    "scanTitle": "Conectar a sua conta AWS",
+    "scanDescription": "Analise automaticamente a sua infraestrutura para preencher controlos técnicos e identificar lacunas.",
+    "scanAction": "Conectar AWS",
+    "assessmentTitle": "Iniciar a avaliação NIS2",
+    "assessmentDescription": "Responda a perguntas sobre as políticas, processos e medidas técnicas da sua organização.",
+    "assessmentAction": "Iniciar avaliação",
+    "skipLink": "Saltar por agora — ir para o painel",
+    "welcomeTitle": "Bem-vindo, {{name}}!",
+    "welcomeSubtitle": "O Konforme guia-o através da conformidade NIS2 em 4 etapas",
+    "stageAssess": "Avaliar",
+    "stageRemediate": "Remediar",
+    "stageReport": "Reportar",
+    "stageMonitor": "Monitorizar",
+    "letsGetStarted": "Vamos começar",
+    "stepWelcome": "Bem-vindo",
+    "stepQuickStart": "Início rápido",
+    "stepAllSet": "Pronto",
+    "recommendedBadge": "Recomendado",
+    "allSetTitle": "O seu painel está pronto!",
+    "allSetSubtitle": "Aqui estão algumas coisas para explorar a seguir",
+    "tipControls": "Explore a biblioteca de controlos para ver todos os requisitos NIS2",
+    "tipAssessment": "Experimente os separadores de avaliação para Técnico, Organizacional e Fator humano",
+    "tipReports": "Gere o seu primeiro relatório de conformidade",
+    "goToDashboard": "Ir para o painel",
+    "back": "Voltar"
   }
 }
