@@ -15,4 +15,5 @@ export interface EUCountryInfo {
   nis2TranspositionStatus: 'transposed' | 'partial' | 'pending'
   nis2NationalLaw: string
   primaryLanguage: string
+  countryNotes: string[]
 }

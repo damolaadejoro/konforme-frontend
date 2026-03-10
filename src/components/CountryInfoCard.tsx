@@ -1,6 +1,6 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Globe, ExternalLink, Shield } from 'lucide-react'
+import { Globe, ExternalLink, Shield, Info } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { useCountryData } from '../hooks/useCountryData'
 import { Card, Button } from './ui'
@@ -90,6 +90,23 @@ export default function CountryInfoCard() {
               </a>
             </div>
           </div>
+
+          {currentCountry.countryNotes && currentCountry.countryNotes.length > 0 && (
+            <div className="mt-4 pt-3 border-t border-navy-700">
+              <div className="flex items-center gap-2 mb-2">
+                <Info size={13} className="text-sky-400" />
+                <h4 className="text-xs font-bold text-sky-400 uppercase tracking-wider">{t('countryInfo.specificRequirements')}</h4>
+              </div>
+              <ul className="space-y-1.5">
+                {currentCountry.countryNotes.map((note, i) => (
+                  <li key={i} className="flex items-start gap-2 text-xs text-navy-200">
+                    <span className="text-sky-400 mt-0.5">•</span>
+                    <span>{note}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
       </div>
     </Card>
