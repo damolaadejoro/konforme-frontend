@@ -318,8 +318,8 @@ export function useControls() {
     return Object.values(areas)
   }, [controls])
 
-  // Get critical gaps
-  const criticalGaps = useMemo(() => {
+  // Get critical gaps (all, for count)
+  const allCriticalGaps = useMemo(() => {
     return controls
       .filter(c =>
         (c.status === 'Not Started' || c.status === 'Partial') &&
@@ -335,8 +335,12 @@ export function useControls() {
         const statusOrder = { 'Not Started': 0, 'Planned': 1, 'Partial': 2, 'Implemented': 3 }
         return statusOrder[a.status] - statusOrder[b.status]
       })
-      .slice(0, 5)
   }, [controls])
+
+  // Top 5 critical gaps for display
+  const criticalGaps = useMemo(() => {
+    return allCriticalGaps.slice(0, 5)
+  }, [allCriticalGaps])
 
   // Filter controls
   const filterControls = (
@@ -403,6 +407,7 @@ export function useControls() {
     complianceScore,
     articleAreas,
     criticalGaps,
+    allCriticalGaps,
     filterControls,
     getCampaignsForControl,
     allTasks,

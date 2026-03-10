@@ -41,7 +41,7 @@ const statusBgColors: Record<ControlStatus, string> = {
 export default function NIS2Overview() {
   const { t } = useTranslation()
   const navigate = useNavigate()
-  const { complianceScore, articleAreas, criticalGaps, employeeComplianceStats, controls } = useControls()
+  const { complianceScore, articleAreas, criticalGaps, allCriticalGaps, employeeComplianceStats, controls } = useControls()
   const { projectedScore: assessmentScore, articleScores, answeredCount, totalQuestions, progressPercent: assessmentProgress } = useAssessment()
   const { awsAccounts, selectedAwsAccountId, selectAwsAccount } = useAuth()
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -334,12 +334,12 @@ export default function NIS2Overview() {
         />
         <StatCard
           label={t('overview.criticalGaps')}
-          value={criticalGaps.length}
+          value={allCriticalGaps.length}
           icon={<AlertTriangle size={18} className="text-red-500" />}
           accent="text-red-500"
           trend={t('overview.requiresAttention')}
           tooltip={t('overview.criticalGapsTooltip')}
-          onClick={() => navigate('/controls?severity=critical')}
+          onClick={() => navigate('/controls?view=critical-gaps')}
         />
         <StatCard
           label={t('overview.employeeTasks')}

@@ -736,6 +736,7 @@ export default function ControlsLibrary() {
   const validSeverities: ControlSeverity[] = ['critical', 'high', 'medium']
   const initialStatus = searchParams.get('status')
   const initialSeverity = searchParams.get('severity')
+  const initialView = searchParams.get('view')
   const [searchQuery, setSearchQuery] = useState('')
   const [categoryFilter, setCategoryFilter] = useState<ControlCategory | ''>('')
   const [statusFilter, setStatusFilter] = useState<ControlStatus | ''>(
@@ -745,8 +746,15 @@ export default function ControlsLibrary() {
   const [severityFilter, setSeverityFilter] = useState<ControlSeverity | ''>(
     validSeverities.includes(initialSeverity as ControlSeverity) ? (initialSeverity as ControlSeverity) : ''
   )
+  const [criticalGapsView, setCriticalGapsView] = useState(initialView === 'critical-gaps')
 
   const filteredControls = useMemo(() => {
+    if (criticalGapsView) {
+      return controls.filter(c =>
+        (c.status === 'Not Started' || c.status === 'Partial') &&
+        (c.severity === 'critical' || c.severity === 'high')
+      )
+    }
     return filterControls(
       categoryFilter || undefined,
       statusFilter || undefined,
@@ -754,7 +762,7 @@ export default function ControlsLibrary() {
       searchQuery || undefined,
       severityFilter || undefined
     )
-  }, [controls, searchQuery, categoryFilter, statusFilter, articleAreaFilter, severityFilter])
+  }, [controls, searchQuery, categoryFilter, statusFilter, articleAreaFilter, severityFilter, criticalGapsView])
 
   const articleAreas = useMemo(() => {
     return Array.from(new Set(controls.map(c => c.articleArea)))
@@ -862,9 +870,17 @@ export default function ControlsLibrary() {
           </div>
 
           {/* Active filters */}
-          {(searchQuery || categoryFilter || statusFilter || articleAreaFilter || severityFilter) && (
+          {(searchQuery || categoryFilter || statusFilter || articleAreaFilter || severityFilter || criticalGapsView) && (
             <div className="flex items-center gap-2 flex-wrap">
               <span className="text-xs text-[#94b4d1]">{t('controls.activeFiltersLabel')}</span>
+              {criticalGapsView && (
+                <span className="text-xs px-2 py-1 rounded bg-red-500/10 text-red-400 border border-red-500/20 flex items-center gap-1">
+                  {t('overview.criticalGaps')}
+                  <button onClick={() => setCriticalGapsView(false)} className="text-red-400 hover:text-white">
+                    <X size={12} />
+                  </button>
+                </span>
+              )}
               {searchQuery && (
                 <span className="text-xs px-2 py-1 rounded bg-navy-800 text-white flex items-center gap-1">
                   Search: "{searchQuery}"
@@ -912,6 +928,7 @@ export default function ControlsLibrary() {
                   setStatusFilter('')
                   setSeverityFilter('')
                   setArticleAreaFilter('')
+                  setCriticalGapsView(false)
                 }}
                 className="text-xs text-cyan-400 hover:text-cyan-300"
               >
