@@ -95,6 +95,25 @@ vi.mock('../hooks/useControls', () => ({
         severity: 'critical'
       }
     ],
+    allCriticalGaps: [
+      {
+        id: 'gap-1',
+        title: 'Critical Gap Control',
+        description: 'Test gap',
+        article: 'Art. 21(2)(a)',
+        articleArea: 'Risk Management',
+        category: 'Technical',
+        status: 'Not Started',
+        owner: '',
+        dueDate: null,
+        evidence: [],
+        notes: '',
+        isAutoPopulated: false,
+        isPeopleControl: false,
+        lastUpdated: new Date().toISOString(),
+        severity: 'critical'
+      }
+    ],
     employeeComplianceStats: {
       totalTasks: 10,
       completedTasks: 5,
