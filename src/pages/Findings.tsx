@@ -350,7 +350,7 @@ export default function Findings() {
             color="bg-red-500"
             height="h-1.5"
           />
-          <span className="text-xs text-red-400 font-semibold">{t('findings.failRate', { percent: Math.round(((total - passCount) / total) * 100) })}</span>
+          <span className="text-xs text-red-400 font-semibold">{t('findings.failRate', { percent: total > 0 ? Math.round(((total - passCount) / total) * 100) : 0 })}</span>
         </div>
       </div>
     </div>
