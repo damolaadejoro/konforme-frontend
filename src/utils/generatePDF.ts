@@ -212,7 +212,7 @@ export async function generateComplianceReport(data: PDFData): Promise<void> {
   yPos = doc.lastAutoTable.finalY + 10
 
   // Control Status Summary
-  const totalControls = data.controls.length
+  const totalControls = data.controls.length || 1 // Avoid division by zero
   const implemented = data.controls.filter(c => c.status === 'Implemented').length
   const partial = data.controls.filter(c => c.status === 'Partial').length
   const planned = data.controls.filter(c => c.status === 'Planned').length
@@ -299,7 +299,7 @@ export async function generateComplianceReport(data: PDFData): Promise<void> {
       area.name,
       area.status,
       `${area.implementedCount}/${area.controlCount}`,
-      `${Math.round((area.implementedCount / area.controlCount) * 100)}%`
+      `${area.controlCount > 0 ? Math.round((area.implementedCount / area.controlCount) * 100) : 0}%`
     ]),
     theme: 'grid',
     headStyles: { fillColor: COLORS.navy, textColor: COLORS.white, fontStyle: 'bold', fontSize: 9 },

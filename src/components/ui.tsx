@@ -118,11 +118,15 @@ interface StatCardProps {
   trend?: string
   trendUp?: boolean
   tooltip?: string
+  onClick?: () => void
 }
 
-export function StatCard({ label, value, icon, accent, trend, tooltip }: StatCardProps) {
+export function StatCard({ label, value, icon, accent, trend, tooltip, onClick }: StatCardProps) {
   return (
-    <div className="glass-card rounded-xl p-5 flex items-start justify-between">
+    <div
+      className={`glass-card rounded-xl p-5 flex items-start justify-between ${onClick ? 'cursor-pointer hover:border-cyan-500/40 transition-all' : ''}`}
+      onClick={onClick}
+    >
       <div>
         <p className="text-xs text-navy-300 font-medium uppercase tracking-wider mb-1 flex items-center gap-1">
           {label}
@@ -255,7 +259,7 @@ export function Input({ label, error, icon, className = '', ...props }: InputPro
 // Select
 interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
   label?: string
-  options: { value: string; label: string }[]
+  options: { value: string; label: string; disabled?: boolean }[]
 }
 
 export function Select({ label, options, className = '', ...props }: SelectProps) {
@@ -273,7 +277,7 @@ export function Select({ label, options, className = '', ...props }: SelectProps
         {...props}
       >
         {options.map(o => (
-          <option key={o.value} value={o.value} className="bg-navy-900">
+          <option key={o.value} value={o.value} disabled={o.disabled} className="bg-navy-900">
             {o.label}
           </option>
         ))}

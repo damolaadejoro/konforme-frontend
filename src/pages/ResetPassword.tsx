@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { KeyRound, Eye, EyeOff, CheckCircle } from 'lucide-react'
 import { resetPassword } from '../services/api'
 import { Card, Button, Input } from '../components/ui'
@@ -15,6 +16,7 @@ interface FieldErrors {
 
 export default function ResetPassword() {
   const navigate = useNavigate()
+  const { t } = useTranslation()
   const [email, setEmail] = useState('')
   const [newPassword, setNewPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
@@ -29,19 +31,19 @@ export default function ResetPassword() {
   const validateField = (field: string, value: string): string | undefined => {
     switch (field) {
       case 'email':
-        if (!value.trim()) return 'Email is required'
-        if (!EMAIL_REGEX.test(value)) return 'Please enter a valid email address'
+        if (!value.trim()) return t('resetPassword.validationEmailRequired')
+        if (!EMAIL_REGEX.test(value)) return t('resetPassword.validationEmailInvalid')
         return undefined
       case 'newPassword':
-        if (!value) return 'New password is required'
-        if (value.length < 8) return 'Password must be at least 8 characters'
-        if (!/[A-Z]/.test(value)) return 'Password must include an uppercase letter'
-        if (!/[a-z]/.test(value)) return 'Password must include a lowercase letter'
-        if (!/[0-9]/.test(value)) return 'Password must include a number'
+        if (!value) return t('resetPassword.validationPasswordRequired')
+        if (value.length < 8) return t('resetPassword.validationPasswordMinLength')
+        if (!/[A-Z]/.test(value)) return t('resetPassword.validationPasswordUppercase')
+        if (!/[a-z]/.test(value)) return t('resetPassword.validationPasswordLowercase')
+        if (!/[0-9]/.test(value)) return t('resetPassword.validationPasswordNumber')
         return undefined
       case 'confirmPassword':
-        if (!value) return 'Please confirm your new password'
-        if (value !== newPassword) return 'Passwords do not match'
+        if (!value) return t('resetPassword.validationConfirmRequired')
+        if (value !== newPassword) return t('resetPassword.validationPasswordsMismatch')
         return undefined
       default:
         return undefined
@@ -62,7 +64,7 @@ export default function ResetPassword() {
     if (field === 'newPassword' && touched.confirmPassword && confirmPassword) {
       setFieldErrors(prev => ({
         ...prev,
-        confirmPassword: value !== confirmPassword ? 'Passwords do not match' : undefined,
+        confirmPassword: value !== confirmPassword ? t('resetPassword.validationPasswordsMismatch') : undefined,
       }))
     }
   }
@@ -89,7 +91,7 @@ export default function ResetPassword() {
       await resetPassword(email, newPassword)
       setSuccess(true)
     } catch (err) {
-      setServerError(err instanceof Error ? err.message : 'Failed to reset password. Please try again.')
+      setServerError(err instanceof Error ? err.message : t('resetPassword.serverErrorFallback'))
     } finally {
       setLoading(false)
     }
@@ -102,12 +104,12 @@ export default function ResetPassword() {
           <Card>
             <div className="text-center py-4">
               <CheckCircle size={48} className="text-emerald-400 mx-auto mb-4" />
-              <h2 className="text-lg font-bold font-syne text-white mb-2">Password Reset</h2>
+              <h2 className="text-lg font-bold font-syne text-white mb-2">{t('resetPassword.successTitle')}</h2>
               <p className="text-sm text-navy-400 mb-6">
-                If an account with that email exists, the password has been updated. You can now sign in with your new password.
+                {t('resetPassword.successDescription')}
               </p>
               <Button onClick={() => navigate('/login')} size="lg" className="w-full">
-                Go to Sign In
+                {t('resetPassword.goToSignInButton')}
               </Button>
             </div>
           </Card>
@@ -123,16 +125,16 @@ export default function ResetPassword() {
           <div className="inline-flex items-center justify-center mb-4">
             <Logo size="lg" showText={false} />
           </div>
-          <h1 className="text-2xl font-bold font-syne text-white">Reset Password</h1>
-          <p className="text-sm text-navy-400 mt-1">Enter your email and a new password</p>
+          <h1 className="text-2xl font-bold font-syne text-white">{t('resetPassword.pageTitle')}</h1>
+          <p className="text-sm text-navy-400 mt-1">{t('resetPassword.pageSubtitle')}</p>
         </div>
 
         <Card>
           <form onSubmit={handleSubmit} className="space-y-4" noValidate>
             <Input
-              label="Email"
+              label={t('resetPassword.emailLabel')}
               type="email"
-              placeholder="you@company.com"
+              placeholder={t('resetPassword.emailPlaceholder')}
               value={email}
               onChange={e => handleChange('email', e.target.value, setEmail)}
               onBlur={() => handleBlur('email', email)}
@@ -140,9 +142,9 @@ export default function ResetPassword() {
             />
             <div className="relative">
               <Input
-                label="New Password"
+                label={t('resetPassword.newPasswordLabel')}
                 type={showPassword ? 'text' : 'password'}
-                placeholder="At least 8 characters"
+                placeholder={t('resetPassword.newPasswordPlaceholder')}
                 value={newPassword}
                 onChange={e => handleChange('newPassword', e.target.value, setNewPassword)}
                 onBlur={() => handleBlur('newPassword', newPassword)}
@@ -158,9 +160,9 @@ export default function ResetPassword() {
             </div>
             <div className="relative">
               <Input
-                label="Confirm New Password"
+                label={t('resetPassword.confirmPasswordLabel')}
                 type={showConfirm ? 'text' : 'password'}
-                placeholder="Repeat your new password"
+                placeholder={t('resetPassword.confirmPasswordPlaceholder')}
                 value={confirmPassword}
                 onChange={e => handleChange('confirmPassword', e.target.value, setConfirmPassword)}
                 onBlur={() => handleBlur('confirmPassword', confirmPassword)}
@@ -183,14 +185,14 @@ export default function ResetPassword() {
 
             <Button type="submit" size="lg" className="w-full" loading={loading}>
               <KeyRound size={16} />
-              Reset Password
+              {t('resetPassword.submitButton')}
             </Button>
           </form>
 
           <p className="text-center text-sm text-navy-400 mt-4">
-            Remember your password?{' '}
+            {t('resetPassword.rememberPasswordText')}{' '}
             <Link to="/login" className="text-cyan-400 hover:text-cyan-300 font-medium">
-              Sign in
+              {t('resetPassword.signInLink')}
             </Link>
           </p>
         </Card>

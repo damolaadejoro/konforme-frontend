@@ -125,10 +125,11 @@ export function useRemediation() {
     }
 
     // Fallback: update locally
+    let updatedTask: RemediationTask | null = null
     setTasks(prev => {
       const updated = prev.map(t => {
         if (t.id !== taskId) return t
-        return {
+        const merged = {
           ...t,
           ...(updates.title !== undefined && { title: updates.title }),
           ...(updates.description !== undefined && { description: updates.description }),
@@ -139,11 +140,13 @@ export function useRemediation() {
           updatedAt: new Date().toISOString(),
           ...(updates.status === 'completed' && { completedAt: new Date().toISOString() }),
         }
+        updatedTask = merged
+        return merged
       })
       saveLocalTasks(updated)
       return updated
     })
-    return null
+    return updatedTask
   }, [connected])
 
   return {

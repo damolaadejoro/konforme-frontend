@@ -1,5 +1,6 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import {
   PieChart,
   Pie,
@@ -19,6 +20,7 @@ import {
   XCircle,
   Radar,
   ChevronRight,
+  ChevronDown,
   TrendingDown,
   Lock,
   Eye,
@@ -26,23 +28,16 @@ import {
   Server,
   Users,
   FileText,
+  Clock,
+  HelpCircle,
+  Loader2,
 } from 'lucide-react'
-import { mockScanResult } from '../data/mockData'
 import { Card, StatCard, SeverityBadge, Button, ProgressBar } from '../components/ui'
 import { useHumanFactor } from '../hooks/useHumanFactor'
 import { useOrganizational } from '../hooks/useOrganizational'
+import { useDashboardScan } from '../hooks/useDashboardScan'
+import { useScanHistory } from '../hooks/useScanHistory'
 import { format } from 'date-fns'
-
-const score = mockScanResult.overallScore
-const scoreColor =
-  score >= 75 ? '#10b981' : score >= 50 ? '#f59e0b' : '#ef4444'
-const scoreLabel =
-  score >= 75 ? 'Compliant' : score >= 50 ? 'At Risk' : 'Non-Compliant'
-
-const donutData = [
-  { name: 'Score', value: score },
-  { name: 'Gap', value: 100 - score },
-]
 
 const CustomTooltip = ({ active, payload, label }: any) => {
   if (active && payload && payload.length) {
@@ -64,15 +59,66 @@ const domainIcons: Record<string, React.ReactNode> = {
 }
 
 export default function Dashboard() {
+  const { t } = useTranslation()
   const navigate = useNavigate()
+  const { scanData, loading: scanLoading } = useDashboardScan()
+  const { scans: scanHistory, loading: historyLoading } = useScanHistory()
   const { assessment: humanAssessment } = useHumanFactor()
   const { assessment: orgAssessment } = useOrganizational()
-  const criticalFindings = mockScanResult.findings
+  const [scoreExplainerOpen, setScoreExplainerOpen] = useState(false)
+
+  // Loading state
+  if (scanLoading) {
+    return (
+      <div className="flex flex-col items-center justify-center py-32 text-center">
+        <Loader2 size={40} className="text-cyan-400 animate-spin mb-4" />
+        <p className="text-navy-300 text-sm">{t('dashboard.loadingScanData')}</p>
+      </div>
+    )
+  }
+
+  // Empty state — no scan yet
+  if (!scanData) {
+    return (
+      <div className="space-y-6">
+        <div className="flex items-start justify-between">
+          <div>
+            <h1 className="text-2xl font-bold font-syne text-white">{t('dashboard.title')}</h1>
+            <p className="text-sm text-navy-300 mt-1">{t('dashboard.subtitle')}</p>
+          </div>
+        </div>
+        <Card glow className="flex flex-col items-center justify-center py-16 text-center">
+          <Radar size={48} className="text-navy-600 mb-4" />
+          <h2 className="text-xl font-bold font-syne text-white mb-2">{t('dashboard.noScanTitle')}</h2>
+          <p className="text-sm text-navy-400 mb-6 max-w-md">
+            {t('dashboard.noScanDesc')}
+          </p>
+          <Button onClick={() => navigate('/scan')} size="md">
+            <Radar size={16} />
+            {t('dashboard.runFirstScan')}
+          </Button>
+        </Card>
+      </div>
+    )
+  }
+
+  const score = scanData.overallScore ?? 0
+  const scoreColor =
+    score >= 75 ? '#10b981' : score >= 50 ? '#f59e0b' : '#ef4444'
+  const scoreLabel =
+    score >= 75 ? t('common.compliant') : score >= 50 ? t('common.atRisk') : t('common.nonCompliant')
+
+  const donutData = [
+    { name: 'Score', value: score },
+    { name: 'Gap', value: 100 - score },
+  ]
+
+  const criticalFindings = scanData.findings
     .filter(f => f.severity === 'critical' || f.severity === 'high')
     .slice(0, 5)
 
   // Calculate combined NIS2 compliance score
-  const technicalScore = mockScanResult.overallScore
+  const technicalScore = score
   const humanScore = humanAssessment.score
   const orgScore = orgAssessment.score
   const hasHumanAssessment = humanAssessment.answered > 0
@@ -89,7 +135,7 @@ export default function Dashboard() {
   }
 
   const combinedColor = combinedScore >= 75 ? '#10b981' : combinedScore >= 50 ? '#f59e0b' : '#ef4444'
-  const combinedLabel = combinedScore >= 75 ? 'Compliant' : combinedScore >= 50 ? 'At Risk' : 'Non-Compliant'
+  const combinedLabel = combinedScore >= 75 ? t('common.compliant') : combinedScore >= 50 ? t('common.atRisk') : t('common.nonCompliant')
 
   const hasAllAssessments = hasHumanAssessment && hasOrgAssessment
 
@@ -99,16 +145,18 @@ export default function Dashboard() {
       <div className="flex items-start justify-between">
         <div>
           <h1 className="text-2xl font-bold font-syne text-white">
-            Compliance Overview
+            {t('dashboard.title')}
           </h1>
           <p className="text-sm text-navy-300 mt-1">
-            NIS2 Article 21 assessment ·{' '}
-            {format(new Date(mockScanResult.completedAt), 'MMMM d, yyyy')}
+            {t('dashboard.subtitle')} ·{' '}
+            {scanData.completedAt
+              ? format(new Date(scanData.completedAt), 'MMMM d, yyyy')
+              : t('common.inProgress')}
           </p>
         </div>
         <Button onClick={() => navigate('/scan')} size="md">
           <Radar size={16} />
-          Run New Scan
+          {t('dashboard.runNewScan')}
         </Button>
       </div>
 
@@ -121,11 +169,11 @@ export default function Dashboard() {
               <div className="flex items-center gap-3 mb-2">
                 <Shield size={20} className="text-cyan-400" />
                 <h2 className="text-lg font-bold font-syne text-white">
-                  Overall NIS2 Compliance Score
+                  {t('dashboard.overallScore')}
                 </h2>
               </div>
               <p className="text-sm text-navy-300 mb-4">
-                Combined assessment of technical infrastructure and organizational controls
+                {t('dashboard.overallScoreDesc')}
               </p>
 
               {/* Score breakdown */}
@@ -133,27 +181,27 @@ export default function Dashboard() {
                 <div className="p-3 rounded-lg bg-navy-900/60 border border-navy-700">
                   <div className="flex items-center gap-2 mb-1">
                     <Radar size={14} className="text-purple-400" />
-                    <span className="text-xs text-navy-400 uppercase tracking-wider">Technical</span>
+                    <span className="text-xs text-navy-400 uppercase tracking-wider">{t('dashboard.technical')}</span>
                   </div>
                   <div className="text-2xl font-bold font-syne text-red-400">{technicalScore}%</div>
-                  <div className="text-xs text-navy-500 mt-1">AWS Infrastructure</div>
+                  <div className="text-xs text-navy-500 mt-1">{t('dashboard.awsInfrastructure')}</div>
                 </div>
 
                 <div className="p-3 rounded-lg bg-navy-900/60 border border-navy-700">
                   <div className="flex items-center gap-2 mb-1">
                     <Users size={14} className="text-emerald-400" />
-                    <span className="text-xs text-navy-400 uppercase tracking-wider">Human Factor</span>
+                    <span className="text-xs text-navy-400 uppercase tracking-wider">{t('dashboard.humanFactor')}</span>
                   </div>
                   <div className={`text-2xl font-bold font-syne ${hasHumanAssessment ? 'text-white' : 'text-navy-600'}`}>
                     {hasHumanAssessment ? `${humanScore}%` : '—'}
                   </div>
                   <div className="text-xs text-navy-500 mt-1">
-                    {hasHumanAssessment ? 'People & Security' : (
+                    {hasHumanAssessment ? t('dashboard.peopleSecurity') : (
                       <button
-                        onClick={() => navigate('/human-factor')}
+                        onClick={() => navigate('/assessment/human-factor')}
                         className="text-cyan-400 hover:text-cyan-300 transition-colors"
                       >
-                        Start Assessment →
+                        {t('dashboard.startAssessment')}
                       </button>
                     )}
                   </div>
@@ -162,18 +210,18 @@ export default function Dashboard() {
                 <div className="p-3 rounded-lg bg-navy-900/60 border border-navy-700">
                   <div className="flex items-center gap-2 mb-1">
                     <FileText size={14} className="text-blue-400" />
-                    <span className="text-xs text-navy-400 uppercase tracking-wider">Organizational</span>
+                    <span className="text-xs text-navy-400 uppercase tracking-wider">{t('dashboard.organizational')}</span>
                   </div>
                   <div className={`text-2xl font-bold font-syne ${hasOrgAssessment ? 'text-white' : 'text-navy-600'}`}>
                     {hasOrgAssessment ? `${orgScore}%` : '—'}
                   </div>
                   <div className="text-xs text-navy-500 mt-1">
-                    {hasOrgAssessment ? 'Policies & Governance' : (
+                    {hasOrgAssessment ? t('dashboard.policiesGovernance') : (
                       <button
-                        onClick={() => navigate('/organizational')}
+                        onClick={() => navigate('/assessment/organizational')}
                         className="text-cyan-400 hover:text-cyan-300 transition-colors"
                       >
-                        Start Assessment →
+                        {t('dashboard.startAssessment')}
                       </button>
                     )}
                   </div>
@@ -182,7 +230,7 @@ export default function Dashboard() {
                 <div className="p-3 rounded-lg bg-gradient-to-br from-cyan-500/10 to-cyan-500/5 border border-cyan-500/20">
                   <div className="flex items-center gap-2 mb-1">
                     <Shield size={14} className="text-cyan-400" />
-                    <span className="text-xs text-cyan-400 uppercase tracking-wider font-semibold">Combined</span>
+                    <span className="text-xs text-cyan-400 uppercase tracking-wider font-semibold">{t('dashboard.combined')}</span>
                   </div>
                   <div className="text-3xl font-bold font-syne" style={{ color: combinedColor }}>
                     {combinedScore}%
@@ -198,27 +246,27 @@ export default function Dashboard() {
                   <AlertTriangle size={14} className="text-yellow-400 mt-0.5 flex-shrink-0" />
                   <div className="flex-1">
                     <p className="text-xs text-yellow-300">
-                      <strong>Incomplete Assessment:</strong> Complete {!hasHumanAssessment && !hasOrgAssessment ? 'both Human Factor and Organizational assessments' : !hasHumanAssessment ? 'the Human Factor assessment' : 'the Organizational assessment'} for full NIS2 compliance visibility
+                      <strong>{t('dashboard.incompleteAssessment')}</strong> {!hasHumanAssessment && !hasOrgAssessment ? t('dashboard.completeBothAssessments') : !hasHumanAssessment ? t('dashboard.completeHumanFactor') : t('dashboard.completeOrganizational')}
                     </p>
                   </div>
                   {!hasHumanAssessment && (
                     <Button
                       variant="ghost"
                       size="sm"
-                      onClick={() => navigate('/human-factor')}
+                      onClick={() => navigate('/assessment/human-factor')}
                       className="text-yellow-400 hover:text-yellow-300"
                     >
-                      Human Factor <ChevronRight size={12} />
+                      {t('dashboard.humanFactor')} <ChevronRight size={12} />
                     </Button>
                   )}
                   {!hasOrgAssessment && (
                     <Button
                       variant="ghost"
                       size="sm"
-                      onClick={() => navigate('/organizational')}
+                      onClick={() => navigate('/assessment/organizational')}
                       className="text-yellow-400 hover:text-yellow-300"
                     >
-                      Organizational <ChevronRight size={12} />
+                      {t('dashboard.organizational')} <ChevronRight size={12} />
                     </Button>
                   )}
                 </div>
@@ -228,38 +276,76 @@ export default function Dashboard() {
         </div>
       </Card>
 
+      {/* Score Explanation */}
+      <button
+        onClick={() => setScoreExplainerOpen(!scoreExplainerOpen)}
+        className="flex items-center gap-2 text-xs text-navy-400 hover:text-cyan-400 transition-colors"
+      >
+        <HelpCircle size={14} />
+        <span>{t('dashboard.howScoreCalculated')}</span>
+        {scoreExplainerOpen ? <ChevronDown size={12} /> : <ChevronRight size={12} />}
+      </button>
+
+      {scoreExplainerOpen && (
+        <Card className="text-sm text-navy-300 space-y-4">
+          <div>
+            <h3 className="text-white font-semibold mb-1">{t('dashboard.technicalScoreTitle')}</h3>
+            <p>{t('dashboard.technicalScoreDesc')}</p>
+            <p className="mt-1">
+              Formula: <code className="text-cyan-400 bg-navy-900 px-1.5 py-0.5 rounded text-xs">{t('dashboard.technicalScoreFormula')}</code>
+            </p>
+            <p className="mt-1 text-xs text-navy-500">{t('dashboard.technicalScoreNote')}</p>
+          </div>
+
+          <div>
+            <h3 className="text-white font-semibold mb-1">{t('dashboard.domainScoresTitle')}</h3>
+            <p>{t('dashboard.domainScoresDesc')} <code className="text-cyan-400 bg-navy-900 px-1.5 py-0.5 rounded text-xs">{t('dashboard.domainScoresFormula')}</code></p>
+            <p className="mt-1 text-xs text-navy-500">{t('dashboard.domainScoresNote')}</p>
+          </div>
+
+          <div>
+            <h3 className="text-white font-semibold mb-1">{t('dashboard.combinedScoreTitle')}</h3>
+            <ul className="space-y-1 text-xs">
+              <li><span className="text-white">{t('dashboard.combinedTechnicalOnly')}</span> {t('dashboard.combinedTechnicalOnlyDesc')}</li>
+              <li><span className="text-white">{t('dashboard.combinedOneAssessment')}</span> {t('dashboard.combinedOneAssessmentDesc')}</li>
+              <li><span className="text-white">{t('dashboard.combinedBothAssessments')}</span> {t('dashboard.combinedBothAssessmentsDesc')}</li>
+            </ul>
+          </div>
+        </Card>
+      )}
+
       {/* Stats bar */}
       <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
         <StatCard
-          label="NIS2 Score"
+          label={t('dashboard.nis2Score')}
           value={`${score}%`}
-          accent="text-red-400"
-          icon={<Shield size={18} className="text-red-400" />}
-          trend="Non-Compliant"
+          accent={score >= 75 ? 'text-emerald-400' : score >= 50 ? 'text-yellow-400' : 'text-red-400'}
+          icon={<Shield size={18} className={score >= 75 ? 'text-emerald-400' : score >= 50 ? 'text-yellow-400' : 'text-red-400'} />}
+          trend={scoreLabel}
         />
         <StatCard
-          label="Total Checks"
-          value={mockScanResult.totalChecks}
+          label={t('dashboard.totalChecks')}
+          value={scanData.totalChecks}
           icon={<CheckCircle size={18} className="text-navy-300" />}
         />
         <StatCard
-          label="Passed"
-          value={mockScanResult.passed}
+          label={t('dashboard.passed')}
+          value={scanData.passed}
           accent="text-emerald-400"
           icon={<CheckCircle size={18} className="text-emerald-400" />}
         />
         <StatCard
-          label="Failed"
-          value={mockScanResult.failed}
+          label={t('dashboard.failed')}
+          value={scanData.failed}
           accent="text-red-400"
           icon={<XCircle size={18} className="text-red-400" />}
         />
         <StatCard
-          label="Critical"
-          value={mockScanResult.criticalCount}
+          label={t('dashboard.critical')}
+          value={scanData.criticalCount}
           accent="text-red-500"
           icon={<AlertTriangle size={18} className="text-red-500" />}
-          trend="Requires immediate action"
+          trend={scanData.criticalCount > 0 ? t('dashboard.requiresAction') : undefined}
         />
       </div>
 
@@ -268,7 +354,7 @@ export default function Dashboard() {
         {/* Score Donut */}
         <Card glow className="flex flex-col items-center">
           <h2 className="text-base font-bold font-syne text-white mb-4 self-start">
-            Overall Compliance Score
+            {t('dashboard.overallComplianceScore')}
           </h2>
           <div className="relative">
             <ResponsiveContainer width={220} height={220}>
@@ -307,10 +393,10 @@ export default function Dashboard() {
           {/* Legend */}
           <div className="w-full mt-4 space-y-2">
             {[
-              { label: 'Critical', count: mockScanResult.criticalCount, color: '#ef4444' },
-              { label: 'High', count: mockScanResult.highCount, color: '#f97316' },
-              { label: 'Medium', count: mockScanResult.mediumCount, color: '#f59e0b' },
-              { label: 'Passed', count: mockScanResult.passed, color: '#10b981' },
+              { label: t('common.critical'), count: scanData.criticalCount, color: '#ef4444' },
+              { label: t('common.high'), count: scanData.highCount, color: '#f97316' },
+              { label: t('common.medium'), count: scanData.mediumCount, color: '#f59e0b' },
+              { label: t('common.passed'), count: scanData.passed, color: '#10b981' },
             ].map(item => (
               <div key={item.label} className="flex items-center justify-between text-sm">
                 <div className="flex items-center gap-2">
@@ -326,75 +412,83 @@ export default function Dashboard() {
           </div>
 
           {/* Alert */}
-          <div className="mt-4 w-full p-3 rounded-lg bg-red-500/8 border border-red-500/15 flex items-start gap-2">
-            <TrendingDown size={14} className="text-red-400 mt-0.5 flex-shrink-0" />
-            <p className="text-xs text-red-300">
-              Score below 50% — immediate remediation required for NIS2 compliance
-            </p>
-          </div>
+          {score < 50 && (
+            <div className="mt-4 w-full p-3 rounded-lg bg-red-500/8 border border-red-500/15 flex items-start gap-2">
+              <TrendingDown size={14} className="text-red-400 mt-0.5 flex-shrink-0" />
+              <p className="text-xs text-red-300">
+                {t('dashboard.scoreBelow50')}
+              </p>
+            </div>
+          )}
         </Card>
 
         {/* Domain bar chart */}
         <Card className="col-span-2">
           <h2 className="text-base font-bold font-syne text-white mb-5">
-            Score by NIS2 Domain
+            {t('dashboard.scoreByDomain')}
           </h2>
-          <ResponsiveContainer width="100%" height={200}>
-            <BarChart
-              data={mockScanResult.domainScores}
-              margin={{ top: 0, right: 10, left: -20, bottom: 0 }}
-            >
-              <CartesianGrid strokeDasharray="3 3" stroke="#1e3a5f" vertical={false} />
-              <XAxis
-                dataKey="domain"
-                tick={{ fill: '#7a9cc4', fontSize: 11 }}
-                axisLine={false}
-                tickLine={false}
-              />
-              <YAxis
-                domain={[0, 100]}
-                tick={{ fill: '#7a9cc4', fontSize: 11 }}
-                axisLine={false}
-                tickLine={false}
-              />
-              <Tooltip content={<CustomTooltip />} />
-              <Bar dataKey="score" radius={[4, 4, 0, 0]} maxBarSize={60}>
-                {mockScanResult.domainScores.map((entry, index) => (
-                  <Cell
-                    key={`cell-${index}`}
-                    fill={
-                      entry.score >= 75
-                        ? '#10b981'
-                        : entry.score >= 50
-                        ? '#f59e0b'
-                        : '#ef4444'
-                    }
-                    opacity={0.85}
+          {scanData.domainScores.length > 0 ? (
+            <>
+              <ResponsiveContainer width="100%" height={200}>
+                <BarChart
+                  data={scanData.domainScores}
+                  margin={{ top: 0, right: 10, left: -20, bottom: 0 }}
+                >
+                  <CartesianGrid strokeDasharray="3 3" stroke="#1e3a5f" vertical={false} />
+                  <XAxis
+                    dataKey="domain"
+                    tick={{ fill: '#7a9cc4', fontSize: 11 }}
+                    axisLine={false}
+                    tickLine={false}
                   />
-                ))}
-              </Bar>
-            </BarChart>
-          </ResponsiveContainer>
+                  <YAxis
+                    domain={[0, 100]}
+                    tick={{ fill: '#7a9cc4', fontSize: 11 }}
+                    axisLine={false}
+                    tickLine={false}
+                  />
+                  <Tooltip content={<CustomTooltip />} />
+                  <Bar dataKey="score" radius={[4, 4, 0, 0]} maxBarSize={60}>
+                    {scanData.domainScores.map((entry, index) => (
+                      <Cell
+                        key={`cell-${index}`}
+                        fill={
+                          entry.score >= 75
+                            ? '#10b981'
+                            : entry.score >= 50
+                            ? '#f59e0b'
+                            : '#ef4444'
+                        }
+                        opacity={0.85}
+                      />
+                    ))}
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
 
-          {/* Domain details */}
-          <div className="grid grid-cols-2 gap-3 mt-5">
-            {mockScanResult.domainScores.map(d => (
-              <div key={d.domain} className="bg-navy-900/60 rounded-lg p-3">
-                <div className="flex items-center justify-between mb-2">
-                  <div className="flex items-center gap-1.5">
-                    {domainIcons[d.domain]}
-                    <span className="text-xs font-semibold text-white">{d.domain}</span>
+              {/* Domain details */}
+              <div className="grid grid-cols-2 gap-3 mt-5">
+                {scanData.domainScores.map(d => (
+                  <div key={d.domain} className="bg-navy-900/60 rounded-lg p-3">
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center gap-1.5">
+                        {domainIcons[d.domain]}
+                        <span className="text-xs font-semibold text-white">{d.domain}</span>
+                      </div>
+                      <span className="text-xs text-navy-400">{d.article}</span>
+                    </div>
+                    <ProgressBar value={d.score} />
+                    <div className="flex justify-between mt-1.5">
+                      <span className="text-xs text-emerald-400">{d.passed} {t('dashboard.pass')}</span>
+                      <span className="text-xs text-red-400">{d.failed} {t('dashboard.fail')}</span>
+                    </div>
                   </div>
-                  <span className="text-xs text-navy-400">{d.article}</span>
-                </div>
-                <ProgressBar value={d.score} />
-                <div className="flex justify-between mt-1.5">
-                  <span className="text-xs text-emerald-400">{d.passed} pass</span>
-                  <span className="text-xs text-red-400">{d.failed} fail</span>
-                </div>
+                ))}
               </div>
-            ))}
-          </div>
+            </>
+          ) : (
+            <p className="text-sm text-navy-400">{t('dashboard.noDomainScores')}</p>
+          )}
         </Card>
       </div>
 
@@ -402,48 +496,120 @@ export default function Dashboard() {
       <Card>
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-base font-bold font-syne text-white">
-            Critical & High Findings
+            {t('dashboard.criticalHighFindings')}
           </h2>
-          <Button variant="ghost" size="sm" onClick={() => navigate('/findings')}>
-            View All <ChevronRight size={14} />
+          <Button variant="ghost" size="sm" onClick={() => navigate('/scan/findings')}>
+            {t('common.viewAll')} <ChevronRight size={14} />
           </Button>
         </div>
 
-        <div className="space-y-2">
-          {criticalFindings.map((finding, i) => (
-            <div
-              key={finding.id}
-              onClick={() => navigate('/findings')}
-              className="group flex items-center gap-4 p-3 rounded-lg bg-navy-900/40 hover:bg-navy-800/60 border border-navy-800 hover:border-navy-700 cursor-pointer transition-all duration-200"
-              style={{ animationDelay: `${i * 80}ms` }}
-            >
-              <SeverityBadge severity={finding.severity} />
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-white truncate group-hover:text-cyan-400 transition-colors">
-                  {finding.checkName}
-                </p>
-                <p className="text-xs text-navy-400 truncate mt-0.5">{finding.resource}</p>
+        {criticalFindings.length === 0 ? (
+          <div className="flex items-center gap-2 p-4 rounded-lg bg-emerald-500/8 border border-emerald-500/15">
+            <CheckCircle size={16} className="text-emerald-400" />
+            <p className="text-sm text-emerald-300">{t('dashboard.noCriticalFindings')}</p>
+          </div>
+        ) : (
+          <div className="space-y-2">
+            {criticalFindings.map((finding, i) => (
+              <div
+                key={finding.id}
+                onClick={() => navigate('/scan/findings')}
+                className="group flex items-center gap-4 p-3 rounded-lg bg-navy-900/40 hover:bg-navy-800/60 border border-navy-800 hover:border-navy-700 cursor-pointer transition-all duration-200"
+                style={{ animationDelay: `${i * 80}ms` }}
+              >
+                <SeverityBadge severity={finding.severity as any} />
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium text-white truncate group-hover:text-cyan-400 transition-colors">
+                    {finding.checkName}
+                  </p>
+                  <p className="text-xs text-navy-400 truncate mt-0.5">{finding.resource}</p>
+                </div>
+                <div className="hidden sm:flex items-center gap-3">
+                  <span className="text-xs text-navy-400 font-mono">{finding.article}</span>
+                  <span className="text-xs text-navy-500">{finding.region}</span>
+                </div>
+                <ChevronRight size={14} className="text-navy-600 group-hover:text-cyan-400 transition-colors flex-shrink-0" />
               </div>
-              <div className="hidden sm:flex items-center gap-3">
-                <span className="text-xs text-navy-400 font-mono">{finding.article}</span>
-                <span className="text-xs text-navy-500">{finding.region}</span>
-              </div>
-              <ChevronRight size={14} className="text-navy-600 group-hover:text-cyan-400 transition-colors flex-shrink-0" />
-            </div>
-          ))}
+            ))}
+          </div>
+        )}
+      </Card>
+
+      {/* Scan History */}
+      <Card>
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-2">
+            <Clock size={16} className="text-cyan-400" />
+            <h2 className="text-base font-bold font-syne text-white">{t('dashboard.scanHistory')}</h2>
+          </div>
         </div>
+
+        {historyLoading ? (
+          <div className="flex items-center gap-2 py-4">
+            <Loader2 size={16} className="text-cyan-400 animate-spin" />
+            <span className="text-sm text-navy-400">{t('dashboard.loadingScanHistory')}</span>
+          </div>
+        ) : scanHistory.length === 0 ? (
+          <p className="text-sm text-navy-400 py-4">{t('dashboard.noPreviousScans')}</p>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b border-navy-700">
+                  <th className="px-4 py-2 text-left text-xs font-semibold text-navy-400 uppercase tracking-wider">{t('dashboard.dateHeader')}</th>
+                  <th className="px-4 py-2 text-left text-xs font-semibold text-navy-400 uppercase tracking-wider">{t('dashboard.statusHeader')}</th>
+                  <th className="px-4 py-2 text-left text-xs font-semibold text-navy-400 uppercase tracking-wider">{t('dashboard.scoreHeader')}</th>
+                  <th className="px-4 py-2 text-left text-xs font-semibold text-navy-400 uppercase tracking-wider">{t('dashboard.checksHeader')}</th>
+                  <th className="px-4 py-2 text-left text-xs font-semibold text-navy-400 uppercase tracking-wider">{t('dashboard.passedHeader')}</th>
+                  <th className="px-4 py-2 text-left text-xs font-semibold text-navy-400 uppercase tracking-wider">{t('dashboard.failedHeader')}</th>
+                  <th className="px-4 py-2 text-left text-xs font-semibold text-navy-400 uppercase tracking-wider hidden md:table-cell">{t('dashboard.criticalHeader')}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {scanHistory.map(s => (
+                  <tr key={s.id} className="border-b border-navy-800 hover:bg-navy-800/40 transition-colors">
+                    <td className="px-4 py-2.5 text-sm text-white">
+                      {s.startedAt ? format(new Date(s.startedAt), 'MMM d, yyyy HH:mm') : '—'}
+                    </td>
+                    <td className="px-4 py-2.5">
+                      <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${
+                        s.status === 'complete'
+                          ? 'bg-emerald-500/10 text-emerald-400'
+                          : s.status === 'error'
+                          ? 'bg-red-500/10 text-red-400'
+                          : 'bg-yellow-500/10 text-yellow-400'
+                      }`}>
+                        {s.status}
+                      </span>
+                    </td>
+                    <td className="px-4 py-2.5 text-sm font-semibold" style={{
+                      color: s.overallScore != null
+                        ? s.overallScore >= 75 ? '#10b981' : s.overallScore >= 50 ? '#f59e0b' : '#ef4444'
+                        : '#4a6a8a',
+                    }}>
+                      {s.overallScore != null ? `${s.overallScore}%` : '—'}
+                    </td>
+                    <td className="px-4 py-2.5 text-sm text-navy-300">{s.totalChecks}</td>
+                    <td className="px-4 py-2.5 text-sm text-emerald-400">{s.passed}</td>
+                    <td className="px-4 py-2.5 text-sm text-red-400">{s.failed}</td>
+                    <td className="px-4 py-2.5 text-sm text-red-500 hidden md:table-cell">{s.criticalCount}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </Card>
 
       {/* Scan info footer */}
       <div className="flex items-center justify-between py-3 px-4 rounded-lg bg-navy-900/40 border border-navy-800">
         <div className="flex items-center gap-4 text-xs text-navy-400">
-          <span>Account: <span className="text-white">{mockScanResult.accountName} ({mockScanResult.accountId})</span></span>
-          <span>Region: <span className="text-white">{mockScanResult.region}</span></span>
-          <span>Duration: <span className="text-white">1m 40s</span></span>
+          <span>{t('common.account')}: <span className="text-white">{scanData.accountName} ({scanData.accountId})</span></span>
+          <span>{t('common.region')}: <span className="text-white">{scanData.region}</span></span>
         </div>
         <Button variant="secondary" size="sm" onClick={() => navigate('/scan')}>
           <Radar size={13} />
-          Re-scan
+          {t('dashboard.reScan')}
         </Button>
       </div>
     </div>

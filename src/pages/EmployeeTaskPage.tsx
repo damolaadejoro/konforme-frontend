@@ -22,20 +22,8 @@ export default function EmployeeTaskPage() {
   const totalSteps = task.type === 'acknowledge' ? 4 : 7
 
   // Handle completion
-  const handleComplete = (data: any) => {
-    // In a real app, this would update the backend
-    // For now, we'll just log it
-    console.log('Task completed:', {
-      taskId: task.id,
-      type: task.type,
-      completedBy: task.employeeName,
-      completedAt: new Date().toISOString(),
-      data
-    })
-
-    // TODO: Update the task status in the controls hook
-    // This would require integrating with the useControls hook
-    // For now, completion is just tracked locally within the flow
+  const handleComplete = (_data: any) => {
+    // TODO: POST task completion to backend and update controls hook
   }
 
   return (

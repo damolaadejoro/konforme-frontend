@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import {
   Users,
   CheckCircle,
@@ -26,28 +27,30 @@ function ResponseButton({
   selected: boolean
   onClick: () => void
 }) {
+  const { t } = useTranslation()
+
   const config = {
     yes: {
       icon: CheckCircle,
-      label: 'Yes',
+      label: t('humanFactor.responseYes'),
       color: selected ? 'bg-emerald-500/15 border-emerald-500/40 text-emerald-400' : 'border-navy-700 text-navy-300 hover:border-emerald-500/30 hover:text-emerald-400',
       iconColor: 'text-emerald-400',
     },
     partial: {
       icon: MinusCircle,
-      label: 'Partial',
+      label: t('humanFactor.responsePartial'),
       color: selected ? 'bg-yellow-500/15 border-yellow-500/40 text-yellow-400' : 'border-navy-700 text-navy-300 hover:border-yellow-500/30 hover:text-yellow-400',
       iconColor: 'text-yellow-400',
     },
     no: {
       icon: XCircle,
-      label: 'No',
+      label: t('humanFactor.responseNo'),
       color: selected ? 'bg-red-500/15 border-red-500/40 text-red-400' : 'border-navy-700 text-navy-300 hover:border-red-500/30 hover:text-red-400',
       iconColor: 'text-red-400',
     },
     na: {
       icon: Circle,
-      label: 'N/A',
+      label: t('humanFactor.responseNa'),
       color: selected ? 'bg-navy-600/30 border-navy-600/60 text-navy-300' : 'border-navy-700 text-navy-400 hover:border-navy-600 hover:text-navy-300',
       iconColor: 'text-navy-400',
     },
@@ -76,6 +79,7 @@ function QuestionCard({
   answer: QuestionResponse
   onAnswer: (response: QuestionResponse) => void
 }) {
+  const { t } = useTranslation()
   const [showGuidance, setShowGuidance] = useState(false)
 
   return (
@@ -115,7 +119,7 @@ function QuestionCard({
           className="flex items-center gap-2 text-xs text-cyan-400 hover:text-cyan-300 transition-colors"
         >
           <Info size={13} />
-          <span>{showGuidance ? 'Hide' : 'Show'} guidance</span>
+          <span>{showGuidance ? t('humanFactor.hideGuidance') : t('humanFactor.showGuidance')}</span>
           {showGuidance ? <ChevronDown size={13} /> : <ChevronRight size={13} />}
         </button>
       )}
@@ -132,6 +136,7 @@ function QuestionCard({
 
 export default function HumanFactor() {
   const navigate = useNavigate()
+  const { t } = useTranslation()
   const { assessment, answers, answerQuestion, completeAssessment, progressPercent, isComplete } = useHumanFactor()
   const [expandedCategory, setExpandedCategory] = useState<string | null>(categories[0])
 
@@ -151,15 +156,15 @@ export default function HumanFactor() {
       {/* Header */}
       <div className="flex items-start justify-between">
         <div>
-          <h1 className="text-2xl font-bold font-syne text-white">Human Factor Assessment</h1>
+          <h1 className="text-2xl font-bold font-syne text-white">{t('humanFactor.pageTitle')}</h1>
           <p className="text-sm text-navy-300 mt-1">
-            Self-assessment questionnaire for organizational security controls
+            {t('humanFactor.pageSubtitle')}
           </p>
         </div>
         {isComplete && (
           <Button variant="secondary" onClick={() => navigate('/human-factor/results')}>
             <BarChart3 size={16} />
-            View Results
+            {t('humanFactor.viewResultsButton')}
           </Button>
         )}
       </div>
@@ -169,18 +174,18 @@ export default function HumanFactor() {
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
             <Shield size={16} className="text-cyan-400" />
-            <h2 className="text-base font-bold font-syne text-white">Assessment Progress</h2>
+            <h2 className="text-base font-bold font-syne text-white">{t('humanFactor.assessmentProgressTitle')}</h2>
           </div>
           <span className="text-sm font-semibold text-cyan-400">
-            {assessment.answered} / {assessment.totalQuestions} questions
+            {t('humanFactor.questionsCount', { answered: assessment.answered, total: assessment.totalQuestions })}
           </span>
         </div>
         <ProgressBar value={progressPercent} animated color="bg-cyan-500" height="h-2.5" />
         <div className="flex items-center justify-between mt-3 text-sm">
-          <span className="text-navy-300">{progressPercent}% complete</span>
+          <span className="text-navy-300">{t('humanFactor.percentComplete', { percent: progressPercent })}</span>
           {allAnswered && !isComplete && (
             <Button size="sm" onClick={handleComplete}>
-              Complete Assessment <ChevronRight size={14} />
+              {t('humanFactor.completeAssessmentButton')} <ChevronRight size={14} />
             </Button>
           )}
         </div>
@@ -191,27 +196,27 @@ export default function HumanFactor() {
         <div className="flex items-start gap-3">
           <Info size={18} className="text-cyan-400 mt-0.5 flex-shrink-0" />
           <div className="text-sm text-navy-200 leading-relaxed space-y-2">
-            <p className="font-semibold text-white">How to complete this assessment:</p>
+            <p className="font-semibold text-white">{t('humanFactor.instructionsTitle')}</p>
             <ul className="space-y-1 text-navy-300">
               <li className="flex items-start gap-2">
                 <ChevronRight size={14} className="text-cyan-400 mt-0.5 flex-shrink-0" />
-                <span><strong className="text-emerald-400">Yes</strong> — Control is fully implemented and documented</span>
+                <span><strong className="text-emerald-400">{t('humanFactor.instructionYes')}</strong> — {t('humanFactor.instructionYesDescription')}</span>
               </li>
               <li className="flex items-start gap-2">
                 <ChevronRight size={14} className="text-cyan-400 mt-0.5 flex-shrink-0" />
-                <span><strong className="text-yellow-400">Partial</strong> — Control is partially in place but needs improvement</span>
+                <span><strong className="text-yellow-400">{t('humanFactor.instructionPartial')}</strong> — {t('humanFactor.instructionPartialDescription')}</span>
               </li>
               <li className="flex items-start gap-2">
                 <ChevronRight size={14} className="text-cyan-400 mt-0.5 flex-shrink-0" />
-                <span><strong className="text-red-400">No</strong> — Control is not implemented or not documented</span>
+                <span><strong className="text-red-400">{t('humanFactor.instructionNo')}</strong> — {t('humanFactor.instructionNoDescription')}</span>
               </li>
               <li className="flex items-start gap-2">
                 <ChevronRight size={14} className="text-cyan-400 mt-0.5 flex-shrink-0" />
-                <span><strong className="text-navy-400">N/A</strong> — Not applicable to your organization</span>
+                <span><strong className="text-navy-400">{t('humanFactor.instructionNa')}</strong> — {t('humanFactor.instructionNaDescription')}</span>
               </li>
             </ul>
             <p className="text-cyan-400 text-xs mt-3">
-              Your answers are saved automatically to browser storage.
+              {t('humanFactor.autoSaveNote')}
             </p>
           </div>
         </div>
@@ -238,7 +243,7 @@ export default function HumanFactor() {
                   <div className="text-left">
                     <h3 className="text-base font-bold font-syne text-white">{category}</h3>
                     <p className="text-xs text-navy-400 mt-0.5">
-                      {categoryAnswered} of {categoryQuestions.length} answered
+                      {t('humanFactor.answeredOfTotal', { answered: categoryAnswered, total: categoryQuestions.length })}
                     </p>
                   </div>
                 </div>
@@ -292,13 +297,13 @@ export default function HumanFactor() {
           <div className="flex flex-col items-center gap-4 py-4">
             <CheckCircle size={40} className="text-emerald-400" />
             <div>
-              <h3 className="text-lg font-bold font-syne text-white">All Questions Answered</h3>
+              <h3 className="text-lg font-bold font-syne text-white">{t('humanFactor.allQuestionsAnsweredTitle')}</h3>
               <p className="text-sm text-navy-300 mt-1">
-                Ready to complete your assessment and view results
+                {t('humanFactor.allQuestionsAnsweredSubtitle')}
               </p>
             </div>
             <Button size="lg" onClick={handleComplete}>
-              Complete Assessment <ChevronRight size={16} />
+              {t('humanFactor.completeAssessmentButton')} <ChevronRight size={16} />
             </Button>
           </div>
         </Card>

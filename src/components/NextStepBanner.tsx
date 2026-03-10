@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { Lightbulb, X } from 'lucide-react'
 import { Button } from './ui'
 
@@ -10,37 +11,6 @@ interface Step {
   action: string
   path: string
 }
-
-const steps: Step[] = [
-  {
-    key: 'assessment',
-    label: 'Complete the NIS2 Assessment',
-    description: 'Answer questions about your organisation to get your first compliance score.',
-    action: 'Start Assessment',
-    path: '/assessment',
-  },
-  {
-    key: 'scan',
-    label: 'Connect Your AWS Account',
-    description: 'Auto-scan your infrastructure to populate technical controls.',
-    action: 'Connect AWS',
-    path: '/scan',
-  },
-  {
-    key: 'tasks',
-    label: 'Assign People Tasks',
-    description: 'Delegate compliance tasks to team members and track progress.',
-    action: 'Manage Tasks',
-    path: '/people-tasks',
-  },
-  {
-    key: 'report',
-    label: 'Generate Your First Report',
-    description: 'Export a PDF audit report to share with stakeholders or auditors.',
-    action: 'Go to Reports',
-    path: '/reports',
-  },
-]
 
 const DISMISS_KEY = 'konforme_banner_dismissed'
 const COMPLETED_KEY = 'konforme_completed_steps'
@@ -53,18 +23,46 @@ function getCompletedSteps(): string[] {
   }
 }
 
-function getNextStep(): Step | null {
-  const completed = getCompletedSteps()
-  return steps.find((s) => !completed.includes(s.key)) ?? null
-}
-
 export default function NextStepBanner() {
   const navigate = useNavigate()
+  const { t } = useTranslation()
   const [dismissed, setDismissed] = useState(
     () => localStorage.getItem(DISMISS_KEY) === 'true'
   )
 
-  const step = getNextStep()
+  const steps: Step[] = [
+    {
+      key: 'assessment',
+      label: t('nextStepBanner.assessmentLabel'),
+      description: t('nextStepBanner.assessmentDescription'),
+      action: t('nextStepBanner.assessmentAction'),
+      path: '/assessment',
+    },
+    {
+      key: 'scan',
+      label: t('nextStepBanner.scanLabel'),
+      description: t('nextStepBanner.scanDescription'),
+      action: t('nextStepBanner.scanAction'),
+      path: '/scan',
+    },
+    {
+      key: 'tasks',
+      label: t('nextStepBanner.tasksLabel'),
+      description: t('nextStepBanner.tasksDescription'),
+      action: t('nextStepBanner.tasksAction'),
+      path: '/people-tasks',
+    },
+    {
+      key: 'report',
+      label: t('nextStepBanner.reportLabel'),
+      description: t('nextStepBanner.reportDescription'),
+      action: t('nextStepBanner.reportAction'),
+      path: '/reports',
+    },
+  ]
+
+  const completed = getCompletedSteps()
+  const step = steps.find((s) => !completed.includes(s.key)) ?? null
 
   if (dismissed || !step) return null
 
@@ -92,7 +90,7 @@ export default function NextStepBanner() {
         <button
           onClick={handleDismiss}
           className="text-navy-400 hover:text-white transition-colors flex-shrink-0 p-1"
-          aria-label="Dismiss banner"
+          aria-label={t('nextStepBanner.dismissAriaLabel')}
         >
           <X size={16} />
         </button>

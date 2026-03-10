@@ -1,6 +1,6 @@
 import React from 'react'
+import { useTranslation } from 'react-i18next'
 import {
-  ChevronDown,
   ChevronUp,
   Search,
   Filter,
@@ -15,31 +15,16 @@ import {
   FileText,
 } from 'lucide-react'
 import { useFindings } from '../hooks/useFindings'
+import { useDashboardScan } from '../hooks/useDashboardScan'
 import { SeverityBadge, Card, Button, ProgressBar } from '../components/ui'
 import { Severity, FindingStatus, Finding } from '../types'
-
-const SEVERITY_OPTIONS = [
-  { value: 'all', label: 'All Severities' },
-  { value: 'critical', label: 'Critical' },
-  { value: 'high', label: 'High' },
-  { value: 'medium', label: 'Medium' },
-  { value: 'low', label: 'Low' },
-  { value: 'pass', label: 'Pass' },
-]
-
-const STATUS_OPTIONS = [
-  { value: 'all', label: 'All Status' },
-  { value: 'fail', label: 'Failed' },
-  { value: 'pass', label: 'Passed' },
-  { value: 'info', label: 'Not Applicable' },
-  { value: 'review', label: 'Review' },
-]
 
 function FindingRow({ finding, expanded, onToggle }: {
   finding: Finding
   expanded: boolean
   onToggle: () => void
 }) {
+  const { t } = useTranslation()
   const rowBg = expanded ? 'bg-navy-800/60 border-cyan-500/20' : 'bg-navy-900/40 border-navy-800 hover:border-navy-700 hover:bg-navy-800/40'
 
   return (
@@ -102,7 +87,7 @@ function FindingRow({ finding, expanded, onToggle }: {
                   <div>
                     <div className="flex items-center gap-2 mb-2">
                       <BookOpen size={13} className="text-cyan-400" />
-                      <h4 className="text-xs font-bold text-cyan-400 uppercase tracking-wider">Description</h4>
+                      <h4 className="text-xs font-bold text-cyan-400 uppercase tracking-wider">{t('findings.description')}</h4>
                     </div>
                     <p className="text-sm text-navy-200 leading-relaxed">{finding.description}</p>
                   </div>
@@ -111,7 +96,7 @@ function FindingRow({ finding, expanded, onToggle }: {
                     <div>
                       <div className="flex items-center gap-2 mb-2">
                         <FileText size={13} className="text-yellow-400" />
-                        <h4 className="text-xs font-bold text-yellow-400 uppercase tracking-wider">Evidence</h4>
+                        <h4 className="text-xs font-bold text-yellow-400 uppercase tracking-wider">{t('findings.evidence')}</h4>
                       </div>
                       <div className="p-3 rounded-lg bg-navy-950 border border-navy-700 font-mono text-xs text-navy-300 leading-relaxed whitespace-pre-wrap">
                         {finding.evidence}
@@ -121,15 +106,15 @@ function FindingRow({ finding, expanded, onToggle }: {
 
                   <div className="flex items-center gap-4 text-xs">
                     <div>
-                      <span className="text-navy-500">Article</span>
+                      <span className="text-navy-500">{t('findings.article')}</span>
                       <span className="ml-2 font-mono font-bold text-cyan-400">{finding.article}</span>
                     </div>
                     <div>
-                      <span className="text-navy-500">Domain</span>
+                      <span className="text-navy-500">{t('findings.domain')}</span>
                       <span className="ml-2 text-white">{finding.domain}</span>
                     </div>
                     <div>
-                      <span className="text-navy-500">Resource type</span>
+                      <span className="text-navy-500">{t('findings.resourceType')}</span>
                       <span className="ml-2 font-mono text-navy-300">{finding.resourceType}</span>
                     </div>
                   </div>
@@ -139,7 +124,7 @@ function FindingRow({ finding, expanded, onToggle }: {
                 <div>
                   <div className="flex items-center gap-2 mb-3">
                     <Wrench size={13} className="text-emerald-400" />
-                    <h4 className="text-xs font-bold text-emerald-400 uppercase tracking-wider">Remediation Steps</h4>
+                    <h4 className="text-xs font-bold text-emerald-400 uppercase tracking-wider">{t('findings.remediationSteps')}</h4>
                   </div>
                   {finding.remediationSteps.length > 0 ? (
                     <ol className="space-y-2">
@@ -155,14 +140,14 @@ function FindingRow({ finding, expanded, onToggle }: {
                   ) : (
                     <div className="flex items-center gap-2 p-3 rounded-lg bg-emerald-500/8 border border-emerald-500/15">
                       <CheckCircle size={14} className="text-emerald-400" />
-                      <p className="text-sm text-emerald-300">No action required — control is passing.</p>
+                      <p className="text-sm text-emerald-300">{t('findings.noActionRequired')}</p>
                     </div>
                   )}
 
                   {finding.remediationSteps.length > 0 && (
                     <button className="mt-4 flex items-center gap-1.5 text-xs text-cyan-400 hover:text-cyan-300 transition-colors">
                       <ExternalLink size={12} />
-                      View AWS documentation
+                      {t('findings.viewAwsDocs')}
                     </button>
                   )}
                 </div>
@@ -176,6 +161,9 @@ function FindingRow({ finding, expanded, onToggle }: {
 }
 
 export default function Findings() {
+  const { t } = useTranslation()
+  const { scanData } = useDashboardScan()
+  const allFindings = (scanData?.findings ?? []) as Finding[]
   const {
     findings,
     filters,
@@ -185,32 +173,49 @@ export default function Findings() {
     articles,
     regions,
     total,
-  } = useFindings()
+  } = useFindings(allFindings)
 
   const criticalCount = findings.filter(f => f.severity === 'critical').length
   const highCount = findings.filter(f => f.severity === 'high').length
   const passCount = findings.filter(f => f.status === 'pass').length
+
+  const severityOptions = [
+    { value: 'all', label: t('findings.allSeverities') },
+    { value: 'critical', label: t('common.critical') },
+    { value: 'high', label: t('common.high') },
+    { value: 'medium', label: t('common.medium') },
+    { value: 'low', label: t('common.low') },
+    { value: 'pass', label: t('common.passed') },
+  ]
+
+  const statusOptions = [
+    { value: 'all', label: t('findings.allStatus') },
+    { value: 'fail', label: t('findings.statusFailed') },
+    { value: 'pass', label: t('findings.statusPassed') },
+    { value: 'info', label: t('findings.statusNotApplicable') },
+    { value: 'review', label: t('findings.statusReview') },
+  ]
 
   return (
     <div className="space-y-6">
       {/* Header */}
       <div className="flex items-start justify-between">
         <div>
-          <h1 className="text-2xl font-bold font-syne text-white">Findings</h1>
+          <h1 className="text-2xl font-bold font-syne text-white">{t('findings.title')}</h1>
           <p className="text-sm text-navy-300 mt-1">
-            {findings.length} of {total} findings shown
+            {t('findings.showing', { count: findings.length, total })}
           </p>
         </div>
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2 text-xs">
             <span className="px-2 py-1 rounded-md bg-red-500/10 border border-red-500/20 text-red-400 font-semibold">
-              {criticalCount} Critical
+              {criticalCount} {t('common.critical')}
             </span>
             <span className="px-2 py-1 rounded-md bg-orange-500/10 border border-orange-500/20 text-orange-400 font-semibold">
-              {highCount} High
+              {highCount} {t('common.high')}
             </span>
             <span className="px-2 py-1 rounded-md bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 font-semibold">
-              {passCount} Pass
+              {passCount} {t('common.passed')}
             </span>
           </div>
         </div>
@@ -221,7 +226,7 @@ export default function Findings() {
         <div className="flex flex-wrap items-center gap-3">
           <div className="flex items-center gap-2 text-sm text-navy-300 mr-2">
             <Filter size={14} className="text-cyan-400" />
-            <span className="font-semibold text-xs uppercase tracking-wider">Filters</span>
+            <span className="font-semibold text-xs uppercase tracking-wider">{t('common.filters')}</span>
           </div>
 
           {/* Search */}
@@ -229,7 +234,7 @@ export default function Findings() {
             <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-navy-400" />
             <input
               type="text"
-              placeholder="Search findings..."
+              placeholder={t('findings.searchPlaceholder')}
               value={filters.search}
               onChange={e => setFilters(p => ({ ...p, search: e.target.value }))}
               className="w-full bg-navy-900 border border-navy-700 rounded-lg pl-9 pr-3 py-2 text-sm text-white placeholder-navy-500 focus:outline-none focus:border-cyan-500 transition-all"
@@ -242,7 +247,7 @@ export default function Findings() {
             onChange={e => setFilters(p => ({ ...p, severity: e.target.value as Severity | 'all' }))}
             className="bg-navy-900 border border-navy-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-500 transition-all"
           >
-            {SEVERITY_OPTIONS.map(o => (
+            {severityOptions.map(o => (
               <option key={o.value} value={o.value} className="bg-navy-900">{o.label}</option>
             ))}
           </select>
@@ -253,7 +258,7 @@ export default function Findings() {
             onChange={e => setFilters(p => ({ ...p, status: e.target.value as FindingStatus | 'all' }))}
             className="bg-navy-900 border border-navy-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-500 transition-all"
           >
-            {STATUS_OPTIONS.map(o => (
+            {statusOptions.map(o => (
               <option key={o.value} value={o.value} className="bg-navy-900">{o.label}</option>
             ))}
           </select>
@@ -264,7 +269,7 @@ export default function Findings() {
             onChange={e => setFilters(p => ({ ...p, article: e.target.value }))}
             className="bg-navy-900 border border-navy-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-500 transition-all"
           >
-            <option value="all" className="bg-navy-900">All Articles</option>
+            <option value="all" className="bg-navy-900">{t('findings.allArticles')}</option>
             {articles.map(a => (
               <option key={a} value={a} className="bg-navy-900">{a}</option>
             ))}
@@ -276,7 +281,7 @@ export default function Findings() {
             onChange={e => setFilters(p => ({ ...p, region: e.target.value }))}
             className="bg-navy-900 border border-navy-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-500 transition-all"
           >
-            <option value="all" className="bg-navy-900">All Regions</option>
+            <option value="all" className="bg-navy-900">{t('findings.allRegions')}</option>
             {regions.map(r => (
               <option key={r} value={r} className="bg-navy-900">{r}</option>
             ))}
@@ -289,7 +294,7 @@ export default function Findings() {
               size="sm"
               onClick={() => setFilters({ severity: 'all', status: 'all', article: 'all', region: 'all', search: '' })}
             >
-              Clear filters
+              {t('common.clearFilters')}
             </Button>
           )}
         </div>
@@ -300,18 +305,18 @@ export default function Findings() {
         {findings.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-16 text-center">
             <CheckCircle size={40} className="text-emerald-400 mb-3" />
-            <h3 className="font-bold font-syne text-white mb-1">No findings match your filters</h3>
-            <p className="text-sm text-navy-400">Try adjusting your filter criteria</p>
+            <h3 className="font-bold font-syne text-white mb-1">{t('findings.noMatchTitle')}</h3>
+            <p className="text-sm text-navy-400">{t('findings.noMatchDesc')}</p>
           </div>
         ) : (
           <table className="w-full">
             <thead>
               <tr className="border-b border-navy-700">
-                <th className="px-4 py-3 text-left text-xs font-semibold text-navy-400 uppercase tracking-wider w-24">Severity</th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-navy-400 uppercase tracking-wider">Check Name</th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-navy-400 uppercase tracking-wider hidden md:table-cell">Resource</th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-navy-400 uppercase tracking-wider hidden lg:table-cell w-28">Article</th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-navy-400 uppercase tracking-wider hidden sm:table-cell w-24">Region</th>
+                <th className="px-4 py-3 text-left text-xs font-semibold text-navy-400 uppercase tracking-wider w-24">{t('findings.severityHeader')}</th>
+                <th className="px-4 py-3 text-left text-xs font-semibold text-navy-400 uppercase tracking-wider">{t('findings.checkNameHeader')}</th>
+                <th className="px-4 py-3 text-left text-xs font-semibold text-navy-400 uppercase tracking-wider hidden md:table-cell">{t('findings.resourceHeader')}</th>
+                <th className="px-4 py-3 text-left text-xs font-semibold text-navy-400 uppercase tracking-wider hidden lg:table-cell w-28">{t('findings.articleHeader')}</th>
+                <th className="px-4 py-3 text-left text-xs font-semibold text-navy-400 uppercase tracking-wider hidden sm:table-cell w-24">{t('findings.regionHeader')}</th>
                 <th className="px-4 py-3 w-10"></th>
               </tr>
             </thead>
@@ -332,9 +337,9 @@ export default function Findings() {
       {/* Summary bar */}
       <div className="flex items-center justify-between p-3 rounded-lg bg-navy-900/40 border border-navy-800">
         <p className="text-xs text-navy-400">
-          Showing <span className="text-white font-medium">{findings.length}</span> findings
+          {t('findings.showingCount', { count: findings.length })}
           {findings.length !== total && (
-            <span> (filtered from {total} total)</span>
+            <span> {t('findings.filteredFrom', { total })}</span>
           )}
         </p>
         <div className="flex items-center gap-2 w-48">
@@ -345,7 +350,7 @@ export default function Findings() {
             color="bg-red-500"
             height="h-1.5"
           />
-          <span className="text-xs text-red-400 font-semibold">{Math.round(((total - passCount) / total) * 100)}% fail</span>
+          <span className="text-xs text-red-400 font-semibold">{t('findings.failRate', { percent: Math.round(((total - passCount) / total) * 100) })}</span>
         </div>
       </div>
     </div>

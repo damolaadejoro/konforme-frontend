@@ -6,6 +6,11 @@ import { updateAccount } from '../services/api'
 const LANGUAGES = [
   { code: 'en', label: 'English', flag: '\u{1F1EC}\u{1F1E7}' },
   { code: 'pt', label: 'Português', flag: '\u{1F1F5}\u{1F1F9}' },
+  { code: 'de', label: 'Deutsch', flag: '\u{1F1E9}\u{1F1EA}' },
+  { code: 'fr', label: 'Français', flag: '\u{1F1EB}\u{1F1F7}' },
+  { code: 'es', label: 'Español', flag: '\u{1F1EA}\u{1F1F8}' },
+  { code: 'it', label: 'Italiano', flag: '\u{1F1EE}\u{1F1F9}' },
+  { code: 'nl', label: 'Nederlands', flag: '\u{1F1F3}\u{1F1F1}' },
 ]
 
 interface LanguageSwitcherProps {

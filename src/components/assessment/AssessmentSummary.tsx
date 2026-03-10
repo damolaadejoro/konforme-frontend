@@ -48,12 +48,9 @@ export default function AssessmentSummary({
             {answeredCount} of {totalQuestions} questions assessed
           </p>
           {!allAnswered && (
-            <div className="mt-3 space-y-1">
+            <div className="mt-3">
               <p className="text-xs text-[#6b8fad]">
-                This is your projected score — unanswered questions count as 0
-              </p>
-              <p className="text-xs text-[#6b8fad]">
-                Answered quality: <span className="font-semibold text-[#94b4d1]">{overallScore}%</span>
+                {answeredCount} of {totalQuestions} questions answered — unanswered count as not addressed
               </p>
             </div>
           )}

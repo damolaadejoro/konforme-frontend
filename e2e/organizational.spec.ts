@@ -5,8 +5,8 @@ test.describe('Unrecognized Routes', () => {
     await mockApi(page)
   })
 
-  test('navigating to /organizational does not crash', async ({ page }) => {
-    await page.goto('/organizational')
+  test('navigating to /assessment/organizational does not crash', async ({ page }) => {
+    await page.goto('/assessment/organizational')
     // Unknown nested routes under the protected layout should still show the sidebar
     // Wait for the app to settle
     await page.waitForTimeout(1000)

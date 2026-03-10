@@ -131,14 +131,10 @@ export default function Assessment() {
         </div>
         <ProgressBar value={progressPercent} color="bg-cyan-500" height="h-2" />
         {answeredCount > 0 && (
-          <div className="mt-2 space-y-1">
+          <div className="mt-2">
             <p className="text-sm text-[#94b4d1]">
-              {t('assessment.projectedScore')} <span className="font-bold text-white">{projectedScore}%</span>
-              <InfoTooltip content={t('assessment.projectedScoreTooltip')} size={12} className="ml-1" />
-            </p>
-            <p className="text-xs text-[#6b8fad]">
-              {t('assessment.answeredQuality')} <span className="font-semibold text-[#94b4d1]">{overallScore}%</span>
-              <InfoTooltip content={t('assessment.answeredQualityTooltip', { count: answeredCount })} size={12} className="ml-1" />
+              {t('assessment.currentScore')} <span className="font-bold text-white">{projectedScore}%</span>
+              <InfoTooltip content={t('assessment.currentScoreTooltip')} size={12} className="ml-1" />
             </p>
           </div>
         )}

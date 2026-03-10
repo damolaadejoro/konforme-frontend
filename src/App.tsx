@@ -1,9 +1,11 @@
 import React from 'react'
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import * as TooltipPrimitive from '@radix-ui/react-tooltip'
 import { AuthProvider } from './context/AuthContext'
 import ProtectedRoute from './components/auth/ProtectedRoute'
 import Layout from './components/layout/Layout'
+import AssessmentLayout from './components/layout/AssessmentLayout'
+import ScanLayout from './components/layout/ScanLayout'
 import NIS2Overview from './pages/NIS2Overview'
 import ControlsLibrary from './pages/ControlsLibrary'
 import PeopleTasks from './pages/PeopleTasks'
@@ -49,18 +51,34 @@ export default function App() {
           }>
             <Route index element={<NIS2Overview />} />
             <Route path="controls" element={<ControlsLibrary />} />
-            <Route path="assessment" element={<Assessment />} />
-            <Route path="assessment/history" element={<AssessmentHistory />} />
-            <Route path="human-factor" element={<HumanFactor />} />
+
+            {/* Assessment with tabs */}
+            <Route path="assessment" element={<AssessmentLayout />}>
+              <Route index element={<Assessment />} />
+              <Route path="organizational" element={<OrganizationalAssessment />} />
+              <Route path="human-factor" element={<HumanFactor />} />
+              <Route path="history" element={<AssessmentHistory />} />
+            </Route>
+
+            {/* Results pages — standalone (no tabs) */}
             <Route path="human-factor/results" element={<HumanFactorResults />} />
-            <Route path="organizational" element={<OrganizationalAssessment />} />
             <Route path="organizational/results" element={<OrganizationalResults />} />
-            <Route path="findings" element={<Findings />} />
+
+            {/* Scan with tabs */}
+            <Route path="scan" element={<ScanLayout />}>
+              <Route index element={<Scan />} />
+              <Route path="findings" element={<Findings />} />
+            </Route>
+
             <Route path="remediation" element={<Remediation />} />
             <Route path="people-tasks" element={<PeopleTasks />} />
-            <Route path="scan" element={<Scan />} />
             <Route path="reports" element={<Reports />} />
             <Route path="settings" element={<Settings />} />
+
+            {/* Backwards-compat redirects */}
+            <Route path="human-factor" element={<Navigate to="/assessment/human-factor" replace />} />
+            <Route path="organizational" element={<Navigate to="/assessment/organizational" replace />} />
+            <Route path="findings" element={<Navigate to="/scan/findings" replace />} />
           </Route>
         </Routes>
       </BrowserRouter>

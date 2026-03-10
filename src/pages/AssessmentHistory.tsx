@@ -1,11 +1,13 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { Clock, TrendingUp, ChevronRight, ArrowLeft } from 'lucide-react'
 import { Card, Button } from '../components/ui'
 import { useAssessmentHistory } from '../hooks/useAssessmentHistory'
 
 export default function AssessmentHistory() {
   const navigate = useNavigate()
+  const { t } = useTranslation()
   const { versions, loading } = useAssessmentHistory()
 
   if (loading) {
@@ -21,18 +23,18 @@ export default function AssessmentHistory() {
       {/* Header */}
       <div className="flex items-start justify-between">
         <div>
-          <h1 className="text-[26px] font-bold font-syne text-white">Assessment History</h1>
+          <h1 className="text-[26px] font-bold font-syne text-white">{t('assessmentHistory.pageTitle')}</h1>
           <p className="text-[14px] text-[#CBD8E8] mt-1">
-            Track your NIS2 maturity progress over time
+            {t('assessmentHistory.pageSubtitle')}
           </p>
         </div>
         <div className="flex gap-2">
           <Button variant="secondary" onClick={() => navigate('/assessment')}>
             <ArrowLeft size={14} />
-            Back to Assessment
+            {t('assessmentHistory.backToAssessmentButton')}
           </Button>
           <Button onClick={() => navigate('/assessment')}>
-            New Assessment <ChevronRight size={14} />
+            {t('assessmentHistory.newAssessmentButton')} <ChevronRight size={14} />
           </Button>
         </div>
       </div>
@@ -41,12 +43,12 @@ export default function AssessmentHistory() {
         <Card>
           <div className="text-center py-16">
             <Clock size={48} className="text-navy-500 mx-auto mb-4" />
-            <h3 className="text-lg font-bold font-syne text-white mb-2">No Assessments Yet</h3>
+            <h3 className="text-lg font-bold font-syne text-white mb-2">{t('assessmentHistory.noAssessmentsTitle')}</h3>
             <p className="text-[14px] text-[#CBD8E8] max-w-md mx-auto mb-6">
-              Complete your first NIS2 maturity assessment to start tracking your progress. Each submitted assessment creates a new version.
+              {t('assessmentHistory.noAssessmentsDescription')}
             </p>
             <Button onClick={() => navigate('/assessment')}>
-              Start Assessment <ChevronRight size={14} />
+              {t('assessmentHistory.startAssessmentButton')} <ChevronRight size={14} />
             </Button>
           </div>
         </Card>
@@ -57,10 +59,10 @@ export default function AssessmentHistory() {
             <Card glow>
               <div className="flex items-center gap-3 mb-4">
                 <TrendingUp size={20} className="text-cyan-400" />
-                <h2 className="text-lg font-bold font-syne text-white">Score Trend</h2>
+                <h2 className="text-lg font-bold font-syne text-white">{t('assessmentHistory.scoreTrendTitle')}</h2>
               </div>
               <div className="flex items-end gap-4 h-32">
-                {[...versions].reverse().map((v, i) => {
+                {[...versions].reverse().map((v) => {
                   const score = v.overallScore ?? 0
                   const barColor = score >= 75 ? 'bg-emerald-500' : score >= 50 ? 'bg-yellow-500' : 'bg-red-500'
                   return (
@@ -83,7 +85,7 @@ export default function AssessmentHistory() {
           {/* Version list */}
           <Card>
             <h2 className="text-[18px] font-bold font-syne text-white mb-4">
-              All Versions ({versions.length})
+              {t('assessmentHistory.allVersionsTitle')} ({versions.length})
             </h2>
             <div className="space-y-3">
               {versions.map((v, i) => {
@@ -104,7 +106,7 @@ export default function AssessmentHistory() {
                     <div className="flex-1">
                       <div className="flex items-center gap-2">
                         <h4 className="text-[15px] font-semibold text-white">
-                          Assessment v{v.version}
+                          {t('assessmentHistory.assessmentVersionLabel', { version: v.version })}
                         </h4>
                         <span className={`text-xs px-2 py-0.5 rounded font-semibold ${
                           v.status === 'submitted'

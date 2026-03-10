@@ -1,4 +1,6 @@
 import React, { useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { useNavigate } from 'react-router-dom'
 import {
   FileText,
   Download,
@@ -13,6 +15,7 @@ import {
   Printer,
   Eye,
   BarChart2,
+  Radar,
 } from 'lucide-react'
 import {
   BarChart,
@@ -23,46 +26,48 @@ import {
   ResponsiveContainer,
   Cell,
 } from 'recharts'
-import { mockScanResult, mockFindings } from '../data/mockData'
 import { Card, Button, SeverityBadge, ProgressBar, InfoTooltip } from '../components/ui'
 import { format } from 'date-fns'
 import { useControls } from '../hooks/useControls'
 import { useAuth } from '../context/AuthContext'
 import { generateComplianceReport } from '../utils/generatePDF'
+import { useDashboardScan } from '../hooks/useDashboardScan'
+import type { ScanResponse } from '../services/api'
+import type { Severity } from '../types'
 
-const priorityFindings = mockFindings.filter(f => f.status === 'fail').slice(0, 6)
-
-function ReportPreview() {
-  const date = format(new Date(mockScanResult.completedAt), 'MMMM d, yyyy')
-  const score = mockScanResult.overallScore
+function ReportPreview({ scanData }: { scanData: ScanResponse }) {
+  const { t } = useTranslation()
+  const date = scanData.completedAt ? format(new Date(scanData.completedAt), 'MMMM d, yyyy') : format(new Date(), 'MMMM d, yyyy')
+  const score = scanData.overallScore ?? 0
+  const priorityFindings = scanData.findings.filter(f => f.status === 'fail').slice(0, 6)
 
   const roadmap = [
     {
       priority: 1,
-      label: 'Week 1-2',
-      title: 'Critical Remediation',
-      items: ['Enable MFA on root account', 'Block public S3 buckets (3 buckets)', 'Enable multi-region CloudTrail'],
+      label: t('reports.roadmapWeek1_2Label'),
+      title: t('reports.roadmapWeek1_2Title'),
+      items: [t('reports.roadmapWeek1_2Item1'), t('reports.roadmapWeek1_2Item2'), t('reports.roadmapWeek1_2Item3')],
       severity: 'critical' as const,
     },
     {
       priority: 2,
-      label: 'Week 3-4',
-      title: 'High Priority Fixes',
-      items: ['Encrypt EBS volumes', 'Migrate RDS to encrypted storage', 'Restrict SSH security groups', 'Strengthen IAM password policy'],
+      label: t('reports.roadmapWeek3_4Label'),
+      title: t('reports.roadmapWeek3_4Title'),
+      items: [t('reports.roadmapWeek3_4Item1'), t('reports.roadmapWeek3_4Item2'), t('reports.roadmapWeek3_4Item3'), t('reports.roadmapWeek3_4Item4')],
       severity: 'high' as const,
     },
     {
       priority: 3,
-      label: 'Month 2',
-      title: 'Medium Priority',
-      items: ['Enable GuardDuty', 'Enable VPC flow logs', 'Rotate access keys', 'Configure AWS Backup'],
+      label: t('reports.roadmapMonth2Label'),
+      title: t('reports.roadmapMonth2Title'),
+      items: [t('reports.roadmapMonth2Item1'), t('reports.roadmapMonth2Item2'), t('reports.roadmapMonth2Item3'), t('reports.roadmapMonth2Item4')],
       severity: 'medium' as const,
     },
     {
       priority: 4,
-      label: 'Ongoing',
-      title: 'Maintenance',
-      items: ['Monthly compliance scans', 'Key rotation schedule', 'Quarterly backup restore tests', 'Security training'],
+      label: t('reports.roadmapOngoingLabel'),
+      title: t('reports.roadmapOngoingTitle'),
+      items: [t('reports.roadmapOngoingItem1'), t('reports.roadmapOngoingItem2'), t('reports.roadmapOngoingItem3'), t('reports.roadmapOngoingItem4')],
       severity: 'pass' as const,
     },
   ]
@@ -79,14 +84,14 @@ function ReportPreview() {
                 <path d="M100 30L40 58V100C40 137 64 170 100 182C136 170 160 137 160 100V58L100 30Z" fill="#0B1F3A" stroke="#00C2D4" strokeWidth="6" />
                 <path d="M72 72V128M72 100L104 72M72 100L108 128" stroke="#00C2D4" strokeWidth="10" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
-              <span className="text-white font-bold text-lg font-syne">Konforme</span>
+              <span className="text-white font-bold text-lg font-syne">{t('reports.konforme')}</span>
             </div>
-            <h1 className="text-2xl font-bold text-white font-syne mt-2">NIS2 Compliance Report</h1>
-            <p className="text-[#7a9cc4] text-sm mt-1">EU Directive 2022/2555 · Article 21 Assessment</p>
+            <h1 className="text-2xl font-bold text-white font-syne mt-2">{t('reports.reportHeaderTitle')}</h1>
+            <p className="text-[#7a9cc4] text-sm mt-1">{t('reports.reportHeaderSubtitle')}</p>
           </div>
           <div className="text-right">
             <div className="text-4xl font-bold text-red-400 font-syne">{score}%</div>
-            <div className="text-red-400 text-sm font-semibold">Non-Compliant</div>
+            <div className="text-red-400 text-sm font-semibold">{t('reports.nonCompliant')}</div>
             <div className="text-[#7a9cc4] text-xs mt-1">{date}</div>
           </div>
         </div>
@@ -96,18 +101,20 @@ function ReportPreview() {
         {/* Executive Summary */}
         <section>
           <h2 className="text-lg font-bold font-syne text-gray-800 border-b border-gray-200 pb-2 mb-4">
-            Executive Summary
+            {t('reports.executiveSummaryTitle')}
           </h2>
           <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-4">
             <div className="flex items-start gap-3">
               <AlertTriangle size={18} className="text-red-500 mt-0.5 flex-shrink-0" />
               <div>
-                <p className="font-semibold text-red-700 text-sm">Critical Compliance Gap Identified</p>
+                <p className="font-semibold text-red-700 text-sm">{t('reports.criticalComplianceGap')}</p>
                 <p className="text-sm text-gray-600 mt-1">
-                  Your AWS environment ({mockScanResult.accountName}) scored <strong>{score}%</strong> against
-                  NIS2 Article 21 security requirements. With {mockScanResult.criticalCount} critical and{' '}
-                  {mockScanResult.highCount} high severity findings, immediate remediation is required to achieve
-                  compliance before the NIS2 deadline.
+                  {t('reports.executiveSummaryBody', {
+                    accountName: scanData.accountName,
+                    score,
+                    criticalCount: scanData.criticalCount,
+                    highCount: scanData.highCount,
+                  })}
                 </p>
               </div>
             </div>
@@ -115,10 +122,10 @@ function ReportPreview() {
 
           <div className="grid grid-cols-4 gap-3">
             {[
-              { label: 'Total Checks', value: mockScanResult.totalChecks, color: 'text-gray-700' },
-              { label: 'Passed', value: mockScanResult.passed, color: 'text-emerald-600' },
-              { label: 'Failed', value: mockScanResult.failed, color: 'text-red-600' },
-              { label: 'Critical', value: mockScanResult.criticalCount, color: 'text-red-700' },
+              { label: t('reports.totalChecksLabel'), value: scanData.totalChecks, color: 'text-gray-700' },
+              { label: t('reports.passedLabel'), value: scanData.passed, color: 'text-emerald-600' },
+              { label: t('reports.failedLabel'), value: scanData.failed, color: 'text-red-600' },
+              { label: t('reports.criticalLabel'), value: scanData.criticalCount, color: 'text-red-700' },
             ].map(stat => (
               <div key={stat.label} className="text-center p-3 bg-gray-50 rounded-lg">
                 <div className={`text-2xl font-bold font-syne ${stat.color}`}>{stat.value}</div>
@@ -131,15 +138,15 @@ function ReportPreview() {
         {/* Score by domain */}
         <section>
           <h2 className="text-lg font-bold font-syne text-gray-800 border-b border-gray-200 pb-2 mb-4">
-            Compliance by NIS2 Domain
+            {t('reports.complianceByDomainTitle')}
           </h2>
           <ResponsiveContainer width="100%" height={160}>
-            <BarChart data={mockScanResult.domainScores} margin={{ top: 0, right: 0, left: -30, bottom: 0 }}>
+            <BarChart data={scanData.domainScores} margin={{ top: 0, right: 0, left: -30, bottom: 0 }}>
               <XAxis dataKey="domain" tick={{ fontSize: 11, fill: '#6b7280' }} axisLine={false} tickLine={false} />
               <YAxis domain={[0, 100]} tick={{ fontSize: 11, fill: '#6b7280' }} axisLine={false} tickLine={false} />
               <Tooltip />
               <Bar dataKey="score" radius={[3, 3, 0, 0]} maxBarSize={50}>
-                {mockScanResult.domainScores.map((entry, i) => (
+                {scanData.domainScores.map((entry, i) => (
                   <Cell key={i} fill={entry.score >= 75 ? '#10b981' : entry.score >= 50 ? '#f59e0b' : '#ef4444'} />
                 ))}
               </Bar>
@@ -150,7 +157,7 @@ function ReportPreview() {
         {/* Critical findings */}
         <section>
           <h2 className="text-lg font-bold font-syne text-gray-800 border-b border-gray-200 pb-2 mb-4">
-            Priority Findings
+            {t('reports.priorityFindingsTitle')}
           </h2>
           <div className="space-y-2">
             {priorityFindings.map((f, i) => (
@@ -164,7 +171,7 @@ function ReportPreview() {
                 </div>
                 <span className="text-xs font-mono text-blue-600 hidden sm:block">{f.article}</span>
                 <div className="flex-shrink-0">
-                  <SeverityBadge severity={f.severity} />
+                  <SeverityBadge severity={f.severity as Severity} />
                 </div>
               </div>
             ))}
@@ -174,7 +181,7 @@ function ReportPreview() {
         {/* Remediation roadmap */}
         <section>
           <h2 className="text-lg font-bold font-syne text-gray-800 border-b border-gray-200 pb-2 mb-4">
-            Remediation Roadmap
+            {t('reports.remediationRoadmapTitle')}
           </h2>
           <div className="relative">
             <div className="absolute left-4 top-0 bottom-0 w-0.5 bg-gray-200" />
@@ -206,9 +213,9 @@ function ReportPreview() {
 
         {/* Footer */}
         <div className="border-t border-gray-200 pt-4 flex items-center justify-between text-xs text-gray-400">
-          <span>Generated by Konforme · {date}</span>
-          <span>Confidential — for internal use only</span>
-          <span>NIS2 Directive 2022/2555</span>
+          <span>{t('reports.footerGenerated')} · {date}</span>
+          <span>{t('reports.footerConfidential')}</span>
+          <span>{t('reports.footerDirective')}</span>
         </div>
       </div>
     </div>
@@ -216,16 +223,19 @@ function ReportPreview() {
 }
 
 export default function Reports() {
+  const { t } = useTranslation()
+  const navigate = useNavigate()
   const [generating, setGenerating] = useState(false)
   const [showPreview, setShowPreview] = useState(true)
   const { controls, complianceScore, articleAreas, criticalGaps } = useControls()
   const { accountName } = useAuth()
+  const { scanData, loading } = useDashboardScan()
 
   const handleGenerate = async () => {
     setGenerating(true)
     try {
       await generateComplianceReport({
-        companyName: accountName || 'My Organisation',
+        companyName: accountName || t('reports.defaultCompanyName'),
         complianceScore,
         controls,
         articleAreas,
@@ -240,17 +250,71 @@ export default function Reports() {
     window.print()
   }
 
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-20">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-cyan-400" />
+      </div>
+    )
+  }
+
+  if (!scanData) {
+    return (
+      <div className="space-y-6">
+        {/* Header */}
+        <div className="flex items-start justify-between">
+          <div>
+            <h1 className="text-2xl font-bold font-syne text-white flex items-center gap-2">
+              {t('reports.pageTitle')}
+              <InfoTooltip content={t('reports.pageTitleTooltip')} />
+            </h1>
+            <p className="text-sm text-navy-300 mt-1">
+              {t('reports.pageSubtitle')}
+            </p>
+          </div>
+          <Button
+            size="md"
+            loading={generating}
+            onClick={handleGenerate}
+          >
+            {!generating && <Download size={15} />}
+            {generating ? t('reports.generatingPdfButton') : t('reports.downloadPdfButton')}
+          </Button>
+        </div>
+
+        {/* Empty state */}
+        <Card>
+          <div className="flex flex-col items-center justify-center py-16 text-center">
+            <div className="p-4 rounded-full bg-navy-800/60 mb-4">
+              <Radar size={32} className="text-cyan-400" />
+            </div>
+            <h2 className="text-lg font-bold font-syne text-white mb-2">
+              {t('reports.noScanDataTitle', 'No scan data yet')}
+            </h2>
+            <p className="text-sm text-navy-300 mb-6 max-w-md">
+              {t('reports.noScanDataDescription', 'Run your first AWS compliance scan to generate a report.')}
+            </p>
+            <Button size="md" onClick={() => navigate('/scan')}>
+              <Radar size={15} />
+              {t('reports.runScanButton', 'Run a Scan')}
+            </Button>
+          </div>
+        </Card>
+      </div>
+    )
+  }
+
   return (
     <div className="space-y-6">
       {/* Header */}
       <div className="flex items-start justify-between">
         <div>
           <h1 className="text-2xl font-bold font-syne text-white flex items-center gap-2">
-            Compliance Report
-            <InfoTooltip content="Generate and download a PDF compliance report summarizing your NIS2 posture, findings, and remediation roadmap" />
+            {t('reports.pageTitle')}
+            <InfoTooltip content={t('reports.pageTitleTooltip')} />
           </h1>
           <p className="text-sm text-navy-300 mt-1">
-            NIS2 Article 21 assessment · {mockScanResult.accountName}
+            {t('reports.pageSubtitle')} · {scanData.accountName}
           </p>
         </div>
         <div className="flex items-center gap-3">
@@ -260,7 +324,7 @@ export default function Reports() {
             onClick={() => setShowPreview(!showPreview)}
           >
             <Eye size={15} />
-            {showPreview ? 'Hide' : 'Show'} Preview
+            {showPreview ? t('reports.hidePreviewButton') : t('reports.showPreviewButton')}
           </Button>
           <Button
             variant="secondary"
@@ -268,7 +332,7 @@ export default function Reports() {
             onClick={handlePrint}
           >
             <Printer size={15} />
-            Print
+            {t('reports.printButton')}
           </Button>
           <Button
             size="md"
@@ -276,7 +340,7 @@ export default function Reports() {
             onClick={handleGenerate}
           >
             {!generating && <Download size={15} />}
-            {generating ? 'Generating PDF...' : 'Download PDF'}
+            {generating ? t('reports.generatingPdfButton') : t('reports.downloadPdfButton')}
           </Button>
         </div>
       </div>
@@ -284,10 +348,10 @@ export default function Reports() {
       {/* Report metadata */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         {[
-          { icon: <Building size={15} className="text-cyan-400" />, label: 'Account', value: mockScanResult.accountName },
-          { icon: <Globe size={15} className="text-cyan-400" />, label: 'Region', value: mockScanResult.region },
-          { icon: <Calendar size={15} className="text-cyan-400" />, label: 'Scan Date', value: format(new Date(mockScanResult.completedAt), 'MMM d, yyyy') },
-          { icon: <Shield size={15} className="text-cyan-400" />, label: 'Framework', value: 'NIS2 Art. 21' },
+          { icon: <Building size={15} className="text-cyan-400" />, label: t('reports.accountLabel'), value: scanData.accountName },
+          { icon: <Globe size={15} className="text-cyan-400" />, label: t('reports.regionLabel'), value: scanData.region },
+          { icon: <Calendar size={15} className="text-cyan-400" />, label: t('reports.scanDateLabel'), value: scanData.completedAt ? format(new Date(scanData.completedAt), 'MMM d, yyyy') : '—' },
+          { icon: <Shield size={15} className="text-cyan-400" />, label: t('reports.frameworkLabel'), value: t('reports.frameworkValue') },
         ].map(item => (
           <div key={item.label} className="glass-card rounded-xl p-4 flex items-center gap-3">
             <div className="p-2 rounded-lg bg-navy-800/60">{item.icon}</div>
@@ -303,11 +367,11 @@ export default function Reports() {
       <Card>
         <div className="flex items-center gap-3 mb-5">
           <BarChart2 size={16} className="text-cyan-400" />
-          <h2 className="text-base font-bold font-syne text-white">Report Summary</h2>
-          <InfoTooltip content="Compliance scores broken down by NIS2 Article 21 domain — each domain maps to a specific set of security requirements" size={12} />
+          <h2 className="text-base font-bold font-syne text-white">{t('reports.reportSummaryTitle')}</h2>
+          <InfoTooltip content={t('reports.reportSummaryTooltip')} size={12} />
         </div>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          {mockScanResult.domainScores.map(d => (
+          {scanData.domainScores.map(d => (
             <div key={d.domain} className="space-y-2">
               <div className="flex items-center justify-between">
                 <span className="text-sm font-medium text-white">{d.domain}</span>
@@ -318,7 +382,7 @@ export default function Reports() {
               <ProgressBar value={d.score} />
               <div className="flex justify-between text-xs">
                 <span className="text-navy-500 font-mono">{d.article}</span>
-                <span className="text-navy-400">{d.passed}/{d.total} pass</span>
+                <span className="text-navy-400">{d.passed}/{d.total} {t('reports.passLabel')}</span>
               </div>
             </div>
           ))}
@@ -330,13 +394,13 @@ export default function Reports() {
         <Card>
           <h3 className="text-sm font-bold font-syne text-white mb-4 flex items-center gap-2">
             <AlertTriangle size={14} className="text-red-400" />
-            Findings to Remediate
-            <InfoTooltip content="Failed checks from the latest scan that require action to achieve compliance" size={12} />
+            {t('reports.findingsToRemediateTitle')}
+            <InfoTooltip content={t('reports.findingsToRemediateTooltip')} size={12} />
           </h3>
           <div className="space-y-2">
-            {mockFindings.filter(f => f.status === 'fail').map(f => (
+            {scanData.findings.filter(f => f.status === 'fail').map(f => (
               <div key={f.id} className="flex items-center gap-3 py-1.5 border-b border-navy-800/60 last:border-0">
-                <SeverityBadge severity={f.severity} />
+                <SeverityBadge severity={f.severity as Severity} />
                 <span className="text-xs text-navy-200 flex-1 truncate">{f.checkName}</span>
                 <span className="text-xs font-mono text-navy-500">{f.article}</span>
               </div>
@@ -347,11 +411,11 @@ export default function Reports() {
         <Card>
           <h3 className="text-sm font-bold font-syne text-white mb-4 flex items-center gap-2">
             <CheckCircle size={14} className="text-emerald-400" />
-            Passing Controls
-            <InfoTooltip content="Checks that your AWS environment currently passes — these controls are compliant" size={12} />
+            {t('reports.passingControlsTitle')}
+            <InfoTooltip content={t('reports.passingControlsTooltip')} size={12} />
           </h3>
           <div className="space-y-2">
-            {mockFindings.filter(f => f.status === 'pass').map(f => (
+            {scanData.findings.filter(f => f.status === 'pass').map(f => (
               <div key={f.id} className="flex items-center gap-3 py-1.5 border-b border-navy-800/60 last:border-0">
                 <CheckCircle size={13} className="text-emerald-400 flex-shrink-0" />
                 <span className="text-xs text-navy-200 flex-1 truncate">{f.checkName}</span>
@@ -364,8 +428,7 @@ export default function Reports() {
             <div className="flex items-center gap-2">
               <TrendingUp size={14} className="text-emerald-400" />
               <p className="text-xs text-emerald-300 font-medium">
-                {mockScanResult.passed} of {mockScanResult.totalChecks} controls are passing.
-                Focus on critical remediations to achieve compliance.
+                {t('reports.passingControlsSummary', { passed: scanData.passed, total: scanData.totalChecks })}
               </p>
             </div>
           </div>
@@ -377,11 +440,11 @@ export default function Reports() {
         <div className="space-y-3">
           <div className="flex items-center gap-3">
             <FileText size={15} className="text-cyan-400" />
-            <h2 className="text-base font-bold font-syne text-white">Report Preview</h2>
-            <span className="text-xs text-navy-400 px-2 py-0.5 rounded-full bg-navy-800 border border-navy-700">PDF format</span>
+            <h2 className="text-base font-bold font-syne text-white">{t('reports.reportPreviewTitle')}</h2>
+            <span className="text-xs text-navy-400 px-2 py-0.5 rounded-full bg-navy-800 border border-navy-700">{t('reports.pdfFormatBadge')}</span>
           </div>
           <div className="rounded-xl overflow-hidden shadow-2xl shadow-navy-950/50 ring-1 ring-navy-700">
-            <ReportPreview />
+            <ReportPreview scanData={scanData} />
           </div>
         </div>
       )}

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import {
   Radar,
   Shield,
@@ -82,6 +83,7 @@ function ScanTerminal({ checks, currentIndex, progress, status, scanRegion }: {
   status: string
   scanRegion: string
 }) {
+  const { t } = useTranslation()
   const bottomRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -100,13 +102,13 @@ function ScanTerminal({ checks, currentIndex, progress, status, scanRegion }: {
             <div className="w-3 h-3 rounded-full bg-yellow-500/70" />
             <div className="w-3 h-3 rounded-full bg-emerald-500/70" />
           </div>
-          <span className="ml-2 text-xs text-navy-400 font-mono">konforme-scanner — bash</span>
+          <span className="ml-2 text-xs text-navy-400 font-mono">{t('scan.terminalTitle')}</span>
         </div>
         <div className="flex items-center gap-2">
           <Terminal size={13} className="text-cyan-400" />
           <span className="text-xs text-cyan-400 font-mono">
-            {status === 'scanning' ? `Running check ${currentIndex + 1}/${checks.length}` :
-             status === 'complete' ? `Scan complete · ${checks.length} checks` : 'Ready'}
+            {status === 'scanning' ? t('scan.runningCheck', { current: currentIndex + 1, total: checks.length }) :
+             status === 'complete' ? t('scan.scanComplete', { total: checks.length }) : t('scan.ready')}
           </span>
         </div>
       </div>
@@ -115,7 +117,7 @@ function ScanTerminal({ checks, currentIndex, progress, status, scanRegion }: {
       {status === 'scanning' && (
         <div className="px-4 py-2 bg-navy-950">
           <div className="flex items-center justify-between mb-1">
-            <span className="text-xs text-navy-400 font-mono">Progress</span>
+            <span className="text-xs text-navy-400 font-mono">{t('scan.progress')}</span>
             <span className="text-xs text-cyan-400 font-mono font-bold">{progress}%</span>
           </div>
           <ProgressBar value={progress} animated height="h-1" color="bg-cyan-500" />
@@ -127,9 +129,9 @@ function ScanTerminal({ checks, currentIndex, progress, status, scanRegion }: {
         {/* Boot messages */}
         <div className="text-navy-400 mb-3">
           <p className="text-cyan-500 font-bold">$ konforme scan --framework nis2 --region {scanRegion}</p>
-          <p className="mt-1 text-navy-500">Initializing AWS session...</p>
-          <p className="text-navy-500">Loading NIS2 Article 21 ruleset (25 checks)...</p>
-          <p className="text-navy-500">Starting compliance scan...</p>
+          <p className="mt-1 text-navy-500">{t('scan.initSession')}</p>
+          <p className="text-navy-500">{t('scan.loadingRuleset')}</p>
+          <p className="text-navy-500">{t('scan.startingScan')}</p>
           <p className="text-navy-500 mb-3">─────────────────────────────────────────</p>
         </div>
 
@@ -212,16 +214,16 @@ function ScanTerminal({ checks, currentIndex, progress, status, scanRegion }: {
         {status === 'complete' && (
           <div className="mt-4 pt-4 border-t border-navy-800">
             <p className="text-navy-500">─────────────────────────────────────────</p>
-            <p className="text-white font-bold mt-2">Scan Complete</p>
+            <p className="text-white font-bold mt-2">{t('scan.scanCompleteLabel')}</p>
             <p className="text-navy-400">
-              Total: {checks.length} checks ·{' '}
-              <span className="text-emerald-400">{checks.filter(c => c.status === 'pass').length} passed</span> ·{' '}
-              <span className="text-red-400">{checks.filter(c => c.status === 'fail').length} failed</span>
+              {t('scan.totalLabel')} {checks.length} checks ·{' '}
+              <span className="text-emerald-400">{checks.filter(c => c.status === 'pass').length} {t('scan.passedLabel')}</span> ·{' '}
+              <span className="text-red-400">{checks.filter(c => c.status === 'fail').length} {t('scan.failedLabel')}</span>
               {checks.filter(c => c.status === 'info').length > 0 && (
-                <> · <span className="text-sky-400">{checks.filter(c => c.status === 'info').length} not applicable</span></>
+                <> · <span className="text-sky-400">{checks.filter(c => c.status === 'info').length} {t('scan.notApplicableLabel')}</span></>
               )}
               {checks.filter(c => c.status === 'warn').length > 0 && (
-                <> · <span className="text-amber-400">{checks.filter(c => c.status === 'warn').length} warnings</span></>
+                <> · <span className="text-amber-400">{checks.filter(c => c.status === 'warn').length} {t('scan.warningsLabel')}</span></>
               )}
             </p>
             <p className="text-cyan-500 mt-2">$ _<span className="cursor-blink">█</span></p>
@@ -235,6 +237,7 @@ function ScanTerminal({ checks, currentIndex, progress, status, scanRegion }: {
 }
 
 function ScanComplete({ onReset, scanResult }: { onReset: () => void; scanResult: ReturnType<typeof useScan>['scanResult'] }) {
+  const { t } = useTranslation()
   const navigate = useNavigate()
 
   const passed = scanResult?.passed ?? 0
@@ -264,27 +267,27 @@ function ScanComplete({ onReset, scanResult }: { onReset: () => void; scanResult
                 : <AlertTriangle size={18} className={scoreClasses.text} />
               }
               <h3 className={`font-bold font-syne ${scoreClasses.text}`}>
-                {isCompliant ? 'Scan Complete — Compliant' : 'Scan Complete — Action Required'}
+                {isCompliant ? t('scan.scanCompleteCompliant') : t('scan.scanCompleteAction')}
               </h3>
             </div>
             <p className="text-sm text-navy-300">
-              Your AWS environment scored <span className={`font-bold ${scoreClasses.text}`}>{score}%</span> — {failed} of {total} checks failed.
+              {t('scan.awsScoreDesc', { score, failed, total })}
             </p>
           </div>
           <div className="text-right">
             <div className={`text-4xl font-bold font-syne ${scoreClasses.text}`}>{score}%</div>
-            <div className={`text-xs font-semibold ${scoreClasses.label}`}>{isCompliant ? 'Compliant' : 'Non-Compliant'}</div>
+            <div className={`text-xs font-semibold ${scoreClasses.label}`}>{isCompliant ? t('common.compliant') : t('common.nonCompliant')}</div>
           </div>
         </div>
       </div>
 
       <div className="grid grid-cols-5 gap-3">
         {[
-          { label: 'Critical', value: critical, color: 'text-red-400', bg: 'bg-red-500/10 border-red-500/20' },
-          { label: 'High', value: high, color: 'text-orange-400', bg: 'bg-orange-500/10 border-orange-500/20' },
-          { label: 'Medium', value: medium, color: 'text-yellow-400', bg: 'bg-yellow-500/10 border-yellow-500/20' },
-          { label: 'Low', value: low, color: 'text-blue-400', bg: 'bg-blue-500/10 border-blue-500/20' },
-          { label: 'Passed', value: passed, color: 'text-emerald-400', bg: 'bg-emerald-500/10 border-emerald-500/20' },
+          { label: t('common.critical'), value: critical, color: 'text-red-400', bg: 'bg-red-500/10 border-red-500/20' },
+          { label: t('common.high'), value: high, color: 'text-orange-400', bg: 'bg-orange-500/10 border-orange-500/20' },
+          { label: t('common.medium'), value: medium, color: 'text-yellow-400', bg: 'bg-yellow-500/10 border-yellow-500/20' },
+          { label: t('common.low'), value: low, color: 'text-blue-400', bg: 'bg-blue-500/10 border-blue-500/20' },
+          { label: t('common.passed'), value: passed, color: 'text-emerald-400', bg: 'bg-emerald-500/10 border-emerald-500/20' },
         ].map(item => (
           <div key={item.label} className={`rounded-lg p-3 border ${item.bg} text-center`}>
             <div className={`text-2xl font-bold font-syne ${item.color}`}>{item.value}</div>
@@ -296,11 +299,11 @@ function ScanComplete({ onReset, scanResult }: { onReset: () => void; scanResult
       <div className="flex gap-3">
         <Button onClick={() => navigate('/')} variant="secondary" size="lg" className="flex-1">
           <Shield size={16} />
-          Dashboard
+          {t('common.goToDashboard')}
         </Button>
         <Button onClick={onReset} variant="ghost" size="lg">
           <RotateCcw size={16} />
-          New Scan
+          {t('scan.newScan')}
         </Button>
       </div>
     </div>
@@ -308,6 +311,7 @@ function ScanComplete({ onReset, scanResult }: { onReset: () => void; scanResult
 }
 
 export default function Scan() {
+  const { t } = useTranslation()
   const { accountName, awsAccounts, selectedAwsAccountId, addAwsAccount, selectAwsAccount } = useAuth()
   const [showAddForm, setShowAddForm] = useState(awsAccounts.length === 0)
   const [addCreds, setAddCreds] = useState<AwsAccountCredentials>({
@@ -360,11 +364,11 @@ export default function Scan() {
     <div className="max-w-5xl mx-auto space-y-6">
       <div>
         <h1 className="text-2xl font-bold font-syne text-white flex items-center gap-2">
-          NIS2 Compliance Scan
-          <InfoTooltip content="Run automated scans against your AWS infrastructure to check compliance with NIS2 Article 21 technical requirements" />
+          {t('scan.title')}
+          <InfoTooltip content={t('scan.titleTooltip')} />
         </h1>
         <p className="text-sm text-navy-300 mt-1">
-          Scan your AWS account against NIS2 Article 21 requirements
+          {t('scan.subtitle')}
         </p>
       </div>
 
@@ -383,11 +387,11 @@ export default function Scan() {
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <span className="text-xs text-navy-400 uppercase tracking-wider font-semibold">
-                    {awsAccounts.length === 0 ? 'Add Your First AWS Account' : 'AWS Accounts'}
+                    {awsAccounts.length === 0 ? t('scan.addFirstAccount') : t('scan.awsAccounts')}
                   </span>
                   {awsAccounts.length > 0 && (
                     <Button variant="ghost" size="sm" onClick={() => setShowAddForm(!showAddForm)} className="text-cyan-400 hover:text-cyan-300">
-                      {showAddForm ? 'Cancel' : '+ Add Account'}
+                      {showAddForm ? t('common.cancel') : t('scan.addAccount')}
                     </Button>
                   )}
                 </div>
@@ -420,16 +424,16 @@ export default function Scan() {
                   <div className="flex items-start gap-3">
                     <AlertTriangle size={18} className="text-amber-400 mt-0.5 flex-shrink-0" />
                     <div className="flex-1">
-                      <h3 className="text-sm font-bold text-amber-300">Before you connect — set up IAM permissions</h3>
+                      <h3 className="text-sm font-bold text-amber-300">{t('scan.iamPermissionsTitle')}</h3>
                       <p className="text-xs text-navy-300 mt-1">
-                        Your IAM user needs a read-only policy attached for the scan to work. Without it, all 25 checks will return warnings.
+                        {t('scan.iamPermissionsDesc')}
                       </p>
                       <button
                         type="button"
                         onClick={() => setShowIamPolicy(!showIamPolicy)}
                         className="mt-2 flex items-center gap-1.5 text-xs font-semibold text-cyan-400 hover:text-cyan-300 transition-colors"
                       >
-                        {showIamPolicy ? 'Hide' : 'View'} IAM Policy JSON
+                        {showIamPolicy ? t('scan.hideIamPolicy') : t('scan.viewIamPolicy')}
                         {showIamPolicy ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
                       </button>
                       {showIamPolicy && (
@@ -447,12 +451,12 @@ export default function Scan() {
                               }}
                               className="absolute top-2 right-2 flex items-center gap-1 px-2 py-1 rounded text-xs bg-navy-800 border border-navy-700 text-navy-300 hover:text-cyan-400 hover:border-cyan-500/30 transition-colors"
                             >
-                              {copiedPolicy ? <><Check size={12} className="text-emerald-400" /> Copied!</> : <><Copy size={12} /> Copy</>}
+                              {copiedPolicy ? <><Check size={12} className="text-emerald-400" /> {t('common.copied')}</> : <><Copy size={12} /> {t('common.copy')}</>}
                             </button>
                           </div>
                           <div className="p-2.5 rounded-lg bg-navy-950/60 border border-navy-800">
                             <p className="text-xs text-navy-400 leading-relaxed">
-                              <span className="text-navy-300 font-medium">Steps:</span> IAM → Policies → Create Policy → JSON tab → paste the policy above → name it <span className="text-cyan-400 font-mono">KonformeReadOnly</span> → attach to your IAM user.
+                              {t('scan.iamSteps')}
                             </p>
                           </div>
                         </div>
@@ -466,38 +470,38 @@ export default function Scan() {
               {(showAddForm || awsAccounts.length === 0) && (
                 <form onSubmit={handleAddAwsAccount} className="space-y-3 p-4 rounded-lg bg-navy-900/60 border border-navy-700">
                   <h3 className="text-sm font-semibold text-white">
-                    {awsAccounts.length === 0 ? 'Add Your First AWS Account' : 'Add AWS Account'}
+                    {awsAccounts.length === 0 ? t('scan.addFirstAccount') : t('scan.addAwsAccount')}
                   </h3>
                   <Input
-                    label="Alias"
-                    placeholder="e.g. Production, Staging"
+                    label={t('scan.aliasLabel')}
+                    placeholder={t('scan.aliasPlaceholder')}
                     value={addCreds.alias}
                     onChange={e => setAddCreds(p => ({ ...p, alias: e.target.value }))}
                     required
                   />
                   <Input
-                    label="Access Key ID"
-                    placeholder="AKIA..."
+                    label={t('scan.accessKeyLabel')}
+                    placeholder={t('scan.accessKeyPlaceholder')}
                     value={addCreds.accessKeyId}
                     onChange={e => setAddCreds(p => ({ ...p, accessKeyId: e.target.value }))}
                     required
                   />
                   <Input
-                    label="Secret Access Key"
+                    label={t('scan.secretKeyLabel')}
                     type="password"
-                    placeholder="Enter secret access key"
+                    placeholder={t('scan.secretKeyPlaceholder')}
                     value={addCreds.secretAccessKey}
                     onChange={e => setAddCreds(p => ({ ...p, secretAccessKey: e.target.value }))}
                     required
                   />
                   <Input
-                    label="Session Token (optional)"
-                    placeholder="Paste session token"
+                    label={t('scan.sessionTokenLabel')}
+                    placeholder={t('scan.sessionTokenPlaceholder')}
                     value={addCreds.sessionToken}
                     onChange={e => setAddCreds(p => ({ ...p, sessionToken: e.target.value }))}
                   />
                   <Select
-                    label="AWS Region"
+                    label={t('scan.awsRegionLabel')}
                     value={addCreds.region}
                     onChange={e => setAddCreds(p => ({ ...p, region: e.target.value }))}
                     options={REGIONS.map(r => ({ value: r, label: r }))}
@@ -508,22 +512,22 @@ export default function Scan() {
                     </div>
                   )}
                   <Button type="submit" size="sm" loading={addingAccount} className="w-full">
-                    Add AWS Account
+                    {t('scan.addAwsAccount')}
                   </Button>
                 </form>
               )}
 
               <div className="flex gap-3">
-                <AppTooltip content="Scan the selected AWS account against NIS2 requirements using live API calls">
+                <AppTooltip content={t('scan.runScanTooltip')}>
                   <Button onClick={handleRunScan} size="lg" className="flex-1" disabled={!selectedAwsAccountId || resuming}>
                     {resuming ? <RotateCcw size={16} className="animate-spin" /> : <Play size={16} />}
-                    {resuming ? 'Checking for running scans...' : 'Run Scan'}
+                    {resuming ? t('scan.checkingForScans') : t('scan.runScan')}
                   </Button>
                 </AppTooltip>
-                <AppTooltip content="Run a simulated scan with sample data — no AWS credentials needed">
+                <AppTooltip content={t('scan.runDemoTooltip')}>
                   <Button type="button" variant="secondary" size="lg" onClick={handleDemo} disabled={resuming}>
                     <Radar size={16} />
-                    Run Demo
+                    {t('scan.runDemo')}
                   </Button>
                 </AppTooltip>
               </div>
@@ -534,22 +538,22 @@ export default function Scan() {
           <Card>
             <h2 className="text-sm font-bold font-syne text-white mb-4 flex items-center gap-2">
               <Terminal size={14} className="text-cyan-400" />
-              What Gets Scanned
-              <InfoTooltip content="Each scan checks your AWS resources against specific NIS2 Article 21 requirements and auto-updates control statuses" size={12} />
+              {t('scan.whatGetsScanned')}
+              <InfoTooltip content={t('scan.whatGetsScannedTooltip')} size={12} />
             </h2>
             <div className="space-y-2">
               {[
-                { article: 'Art 21(2)(i)', label: 'IAM & Access Control', checks: 5, color: 'text-cyan-400' },
-                { article: 'Art 21(2)(a)', label: 'Monitoring & Logging', checks: 3, color: 'text-purple-400' },
-                { article: 'Art 21(2)(h)', label: 'Encryption', checks: 4, color: 'text-blue-400' },
-                { article: 'Art 21(2)(b/e)', label: 'Business Continuity', checks: 3, color: 'text-emerald-400' },
+                { article: 'Art 21(2)(i)', label: t('scan.iamAccessControl'), checks: 5, color: 'text-cyan-400' },
+                { article: 'Art 21(2)(a)', label: t('scan.monitoringLogging'), checks: 3, color: 'text-purple-400' },
+                { article: 'Art 21(2)(h)', label: t('scan.encryption'), checks: 4, color: 'text-blue-400' },
+                { article: 'Art 21(2)(b/e)', label: t('scan.businessContinuity'), checks: 3, color: 'text-emerald-400' },
               ].map(item => (
                 <div key={item.article} className="flex items-center justify-between p-2.5 rounded-lg bg-navy-900/40">
                   <div>
                     <span className={`text-xs font-mono font-bold ${item.color}`}>{item.article}</span>
                     <p className="text-xs text-white mt-0.5">{item.label}</p>
                   </div>
-                  <span className="text-xs text-navy-400">{item.checks} checks</span>
+                  <span className="text-xs text-navy-400">{t('scan.checksCount', { count: item.checks })}</span>
                 </div>
               ))}
             </div>
@@ -557,9 +561,9 @@ export default function Scan() {
             <div className="mt-4 p-3 rounded-lg bg-cyan-500/8 border border-cyan-500/15">
               <div className="flex items-center gap-2 mb-1">
                 <Clock size={13} className="text-cyan-400" />
-                <span className="text-xs font-semibold text-cyan-400">Est. duration</span>
+                <span className="text-xs font-semibold text-cyan-400">{t('scan.estDuration')}</span>
               </div>
-              <p className="text-xs text-navy-300">~2-5 minutes depending on account size</p>
+              <p className="text-xs text-navy-300">{t('scan.estDurationDesc')}</p>
             </div>
           </Card>
         </div>
@@ -570,16 +574,16 @@ export default function Scan() {
         <Card>
           <div className="p-6 text-center">
             <AlertTriangle size={48} className="text-red-400 mx-auto mb-4" />
-            <h3 className="text-lg font-bold font-syne text-white mb-2">Scan Failed</h3>
-            <p className="text-sm text-navy-300 mb-4">{error || 'An unexpected error occurred.'}</p>
+            <h3 className="text-lg font-bold font-syne text-white mb-2">{t('scan.scanFailed')}</h3>
+            <p className="text-sm text-navy-300 mb-4">{error || t('scan.unexpectedError')}</p>
             <div className="flex gap-3 justify-center">
               <Button onClick={resetScan} variant="secondary">
                 <RotateCcw size={16} />
-                Try Again
+                {t('scan.tryAgain')}
               </Button>
               <Button onClick={handleDemo} variant="ghost">
                 <Radar size={16} />
-                Run Demo Instead
+                {t('scan.runDemoInstead')}
               </Button>
             </div>
           </div>
@@ -591,7 +595,7 @@ export default function Scan() {
           <div className="flex items-center gap-4 p-3 rounded-lg bg-navy-900/60 border border-navy-700">
             <Shield size={16} className="text-cyan-400" />
             <div className="flex items-center gap-4 text-sm">
-              <span className="text-white font-medium">{selectedAccount?.alias || accountName || 'Demo Account'}</span>
+              <span className="text-white font-medium">{selectedAccount?.alias || accountName || t('scan.demoAccount')}</span>
               <span className="text-navy-500">·</span>
               <span className="text-navy-400 font-mono">{selectedAccount?.awsAccountId || '123456789012'}</span>
               <span className="text-navy-500">·</span>
@@ -600,7 +604,7 @@ export default function Scan() {
             {status === 'scanning' && (
               <div className="ml-auto flex items-center gap-2 text-xs text-cyan-400">
                 <span className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse" />
-                Scanning in progress...
+                {t('scan.scanningInProgress')}
               </div>
             )}
           </div>
@@ -616,8 +620,8 @@ export default function Scan() {
           <Card>
             <h2 className="text-sm font-bold font-syne text-white mb-4 flex items-center gap-2">
               <Radar size={14} className="text-cyan-400" />
-              Check Status
-              <InfoTooltip content="Real-time status of each individual compliance check as the scan runs" size={12} />
+              {t('scan.checkStatus')}
+              <InfoTooltip content={t('scan.checkStatusTooltip')} size={12} />
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
               {checks.map((check) => (

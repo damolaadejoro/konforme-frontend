@@ -1,4 +1,5 @@
 import React, { useState, useMemo, useRef, useEffect, useCallback } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import {
   Shield,
   Search,
@@ -18,8 +19,9 @@ import {
   Download,
   Loader2
 } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { useControls } from '../hooks/useControls'
-import { Card, Button, Select, Input, SeverityBadge, InfoTooltip, Tooltip } from '../components/ui'
+import { Card, Button, InfoTooltip, Tooltip } from '../components/ui'
 import { Control, ControlCategory, ControlStatus } from '../types/controls'
 import { format } from 'date-fns'
 import {
@@ -66,6 +68,7 @@ function ControlDrawer({
   onRemoveEvidence: (evidenceId: string) => void
   campaigns: any[]
 }) {
+  const { t } = useTranslation()
   const [isEditingStatus, setIsEditingStatus] = useState(false)
   const [isEditingOwner, setIsEditingOwner] = useState(false)
   const [isEditingDueDate, setIsEditingDueDate] = useState(false)
@@ -162,7 +165,7 @@ function ControlDrawer({
       try {
         await uploadEvidence(accountId, control.id, file)
       } catch (err: any) {
-        setEvidenceError(err.message || 'Upload failed')
+        setEvidenceError(err.message || t('controls.uploadFailedError'))
       }
     }
 
@@ -184,7 +187,7 @@ function ControlDrawer({
       await deleteEvidence(accountId, control.id, evidenceId)
       setBackendEvidence(prev => prev.filter(ev => ev.id !== evidenceId))
     } catch (err: any) {
-      setEvidenceError(err.message || 'Delete failed')
+      setEvidenceError(err.message || t('controls.deleteFailedError'))
     }
   }
 
@@ -196,7 +199,7 @@ function ControlDrawer({
 
   const handleAssignEmployees = () => {
     // This would trigger the campaign creation in the parent
-    console.log('Creating campaign with:', { employeeEmails, taskType, deadline })
+    // TODO: trigger campaign creation via API
     setIsAddingEmployee(false)
     setEmployeeEmails('')
     setDeadline('')
@@ -216,7 +219,7 @@ function ControlDrawer({
         <div className="sticky top-0 z-10 bg-navy-900 border-b border-navy-700 px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Shield size={20} className="text-cyan-400" />
-            <h2 className="text-lg font-bold font-syne text-white">Control Details</h2>
+            <h2 className="text-lg font-bold font-syne text-white">{t('controls.drawerTitle')}</h2>
           </div>
           <button
             onClick={onClose}
@@ -240,7 +243,7 @@ function ControlDrawer({
                     <>
                       <span className="text-xs text-navy-500">•</span>
                       <span className="text-xs px-2 py-0.5 rounded bg-purple-500/10 text-purple-400 border border-purple-500/20">
-                        Auto
+                        {t('controls.autoPopulatedBadge')}
                       </span>
                     </>
                   )}
@@ -248,7 +251,7 @@ function ControlDrawer({
                     <>
                       <span className="text-xs text-navy-500">•</span>
                       <span className="text-xs px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                        People
+                        {t('controls.peopleBadge')}
                       </span>
                     </>
                   )}
@@ -263,14 +266,14 @@ function ControlDrawer({
           <div className="p-4 rounded-lg bg-navy-800/60 border border-navy-700">
             <div className="flex items-center justify-between mb-2">
               <label className="text-xs font-semibold text-[#94b4d1] uppercase tracking-wider">
-                Maturity Status
+                {t('controls.maturityStatusLabel')}
               </label>
               {!isEditingStatus && !control.isAutoPopulated && (
                 <button
                   onClick={() => setIsEditingStatus(true)}
                   className="text-xs text-cyan-400 hover:text-cyan-300"
                 >
-                  Edit
+                  {t('controls.editButton')}
                 </button>
               )}
             </div>
@@ -282,12 +285,12 @@ function ControlDrawer({
                   onChange={(e) => setTempStatus(e.target.value as ControlStatus)}
                   className="flex-1 px-3 py-2 bg-navy-900 border border-navy-700 rounded-lg text-white text-sm focus:outline-none focus:border-cyan-500"
                 >
-                  <option value="Not Started">Not Started</option>
-                  <option value="Planned">Planned</option>
-                  <option value="Partial">Partial</option>
-                  <option value="Implemented">Implemented</option>
+                  <option value="Not Started">{t('controls.statusNotStarted')}</option>
+                  <option value="Planned">{t('controls.statusPlanned')}</option>
+                  <option value="Partial">{t('controls.statusPartial')}</option>
+                  <option value="Implemented">{t('controls.statusImplemented')}</option>
                 </select>
-                <Button size="sm" onClick={handleSaveStatus}>Save</Button>
+                <Button size="sm" onClick={handleSaveStatus}>{t('controls.saveButton')}</Button>
                 <Button
                   size="sm"
                   variant="ghost"
@@ -296,7 +299,7 @@ function ControlDrawer({
                     setIsEditingStatus(false)
                   }}
                 >
-                  Cancel
+                  {t('controls.cancelButton')}
                 </Button>
               </div>
             ) : (
@@ -308,7 +311,7 @@ function ControlDrawer({
             {control.isAutoPopulated && (
               <p className="mt-2 text-[13px] text-purple-400 flex items-center gap-1">
                 <AlertCircle size={12} />
-                Auto-populated from AWS scanner — status updates automatically
+                {t('controls.autoPopulatedNote')}
               </p>
             )}
           </div>
@@ -318,14 +321,14 @@ function ControlDrawer({
             <div className="flex items-center justify-between mb-2">
               <label className="text-xs font-semibold text-[#94b4d1] uppercase tracking-wider flex items-center gap-2">
                 <User size={14} />
-                Owner
+                {t('controls.ownerLabel')}
               </label>
               {!isEditingOwner && (
                 <button
                   onClick={() => setIsEditingOwner(true)}
                   className="text-xs text-cyan-400 hover:text-cyan-300"
                 >
-                  Edit
+                  {t('controls.editButton')}
                 </button>
               )}
             </div>
@@ -337,9 +340,9 @@ function ControlDrawer({
                   value={tempOwner}
                   onChange={(e) => setTempOwner(e.target.value)}
                   className="flex-1 px-3 py-2 bg-navy-900 border border-navy-700 rounded-lg text-white text-sm focus:outline-none focus:border-cyan-500"
-                  placeholder="Owner name or role"
+                  placeholder={t('controls.ownerPlaceholder')}
                 />
-                <Button size="sm" onClick={handleSaveOwner}>Save</Button>
+                <Button size="sm" onClick={handleSaveOwner}>{t('controls.saveButton')}</Button>
                 <Button
                   size="sm"
                   variant="ghost"
@@ -348,7 +351,7 @@ function ControlDrawer({
                     setIsEditingOwner(false)
                   }}
                 >
-                  Cancel
+                  {t('controls.cancelButton')}
                 </Button>
               </div>
             ) : (
@@ -361,14 +364,14 @@ function ControlDrawer({
             <div className="flex items-center justify-between mb-2">
               <label className="text-xs font-semibold text-[#94b4d1] uppercase tracking-wider flex items-center gap-2">
                 <Calendar size={14} />
-                Due Date
+                {t('controls.dueDateLabel')}
               </label>
               {!isEditingDueDate && (
                 <button
                   onClick={() => setIsEditingDueDate(true)}
                   className="text-xs text-cyan-400 hover:text-cyan-300"
                 >
-                  Edit
+                  {t('controls.editButton')}
                 </button>
               )}
             </div>
@@ -381,7 +384,7 @@ function ControlDrawer({
                   onChange={(e) => setTempDueDate(e.target.value)}
                   className="flex-1 px-3 py-2 bg-navy-900 border border-navy-700 rounded-lg text-white text-sm focus:outline-none focus:border-cyan-500"
                 />
-                <Button size="sm" onClick={handleSaveDueDate}>Save</Button>
+                <Button size="sm" onClick={handleSaveDueDate}>{t('controls.saveButton')}</Button>
                 <Button
                   size="sm"
                   variant="ghost"
@@ -390,12 +393,12 @@ function ControlDrawer({
                     setIsEditingDueDate(false)
                   }}
                 >
-                  Cancel
+                  {t('controls.cancelButton')}
                 </Button>
               </div>
             ) : (
               <p className="text-[14px] text-white">
-                {control.dueDate ? format(new Date(control.dueDate), 'MMMM d, yyyy') : 'No due date set'}
+                {control.dueDate ? format(new Date(control.dueDate), 'MMMM d, yyyy') : t('controls.noDueDateSet')}
               </p>
             )}
           </div>
@@ -413,12 +416,12 @@ function ControlDrawer({
             <div className="flex items-center justify-between mb-3">
               <label className="text-xs font-semibold text-[#94b4d1] uppercase tracking-wider flex items-center gap-2">
                 <FileText size={14} />
-                Evidence ({displayEvidence ? displayEvidence.length : control.evidence.length})
+                {t('controls.evidenceLabel')} ({displayEvidence ? displayEvidence.length : control.evidence.length})
               </label>
               {!control.isAutoPopulated && (
                 <Button size="sm" variant="secondary" onClick={handleUploadEvidence} disabled={uploading}>
                   {uploading ? <Loader2 size={14} className="animate-spin" /> : <Upload size={14} />}
-                  {uploading ? 'Uploading...' : 'Upload'}
+                  {uploading ? t('controls.uploadingButton') : t('controls.uploadButton')}
                 </Button>
               )}
             </div>
@@ -433,11 +436,11 @@ function ControlDrawer({
             {evidenceLoading ? (
               <div className="flex items-center gap-2 py-4 justify-center text-[#94b4d1]">
                 <Loader2 size={16} className="animate-spin" />
-                <span className="text-[13px]">Loading evidence...</span>
+                <span className="text-[13px]">{t('controls.loadingEvidence')}</span>
               </div>
             ) : displayEvidence ? (
               displayEvidence.length === 0 ? (
-                <p className="text-[13px] text-[#94b4d1] italic">No evidence uploaded yet</p>
+                <p className="text-[13px] text-[#94b4d1] italic">{t('controls.noEvidenceUploaded')}</p>
               ) : (
                 <div className="space-y-2">
                   {displayEvidence.map(ev => (
@@ -460,7 +463,7 @@ function ControlDrawer({
                       <button
                         onClick={() => handleDownloadEvidence(ev.id)}
                         className="p-1.5 rounded hover:bg-navy-800 text-navy-400 hover:text-cyan-400 transition-colors"
-                        title="Download"
+                        title={t('controls.downloadTooltip')}
                       >
                         <Download size={14} />
                       </button>
@@ -468,7 +471,7 @@ function ControlDrawer({
                         <button
                           onClick={() => handleDeleteEvidence(ev.id)}
                           className="p-1.5 rounded hover:bg-navy-800 text-navy-400 hover:text-red-400 transition-colors"
-                          title="Delete"
+                          title={t('controls.deleteTooltip')}
                         >
                           <Trash2 size={14} />
                         </button>
@@ -480,7 +483,7 @@ function ControlDrawer({
             ) : (
               /* Fallback: localStorage evidence when not connected to backend */
               control.evidence.length === 0 ? (
-                <p className="text-[13px] text-[#94b4d1] italic">No evidence uploaded yet</p>
+                <p className="text-[13px] text-[#94b4d1] italic">{t('controls.noEvidenceUploaded')}</p>
               ) : (
                 <div className="space-y-2">
                   {control.evidence.map(ev => (
@@ -514,14 +517,14 @@ function ControlDrawer({
           <div className="p-4 rounded-lg bg-navy-800/60 border border-navy-700">
             <div className="flex items-center justify-between mb-2">
               <label className="text-xs font-semibold text-[#94b4d1] uppercase tracking-wider">
-                Notes
+                {t('controls.notesLabel')}
               </label>
               {!isEditingNotes && (
                 <button
                   onClick={() => setIsEditingNotes(true)}
                   className="text-xs text-cyan-400 hover:text-cyan-300"
                 >
-                  Edit
+                  {t('controls.editButton')}
                 </button>
               )}
             </div>
@@ -533,10 +536,10 @@ function ControlDrawer({
                   onChange={(e) => setTempNotes(e.target.value)}
                   rows={4}
                   className="w-full px-3 py-2 bg-navy-900 border border-navy-700 rounded-lg text-white text-sm focus:outline-none focus:border-cyan-500 resize-none"
-                  placeholder="Add notes about this control..."
+                  placeholder={t('controls.notesPlaceholder')}
                 />
                 <div className="flex items-center gap-2">
-                  <Button size="sm" onClick={handleSaveNotes}>Save</Button>
+                  <Button size="sm" onClick={handleSaveNotes}>{t('controls.saveButton')}</Button>
                   <Button
                     size="sm"
                     variant="ghost"
@@ -545,13 +548,13 @@ function ControlDrawer({
                       setIsEditingNotes(false)
                     }}
                   >
-                    Cancel
+                    {t('controls.cancelButton')}
                   </Button>
                 </div>
               </div>
             ) : (
               <p className="text-[14px] text-[#CBD8E8] leading-relaxed whitespace-pre-wrap">
-                {control.notes || 'No notes added'}
+                {control.notes || t('controls.noNotesAdded')}
               </p>
             )}
           </div>
@@ -562,7 +565,7 @@ function ControlDrawer({
               <div className="flex items-center justify-between mb-3">
                 <label className="text-[15px] font-semibold text-emerald-400 flex items-center gap-2">
                   <UsersIcon size={16} />
-                  Assign to Employees
+                  {t('controls.assignToEmployeesLabel')}
                 </label>
               </div>
 
@@ -579,11 +582,11 @@ function ControlDrawer({
                         <div className="flex items-center justify-between mb-2">
                           <div className="flex items-center gap-2">
                             <span className="text-xs px-2 py-0.5 rounded bg-navy-800 text-[#CBD8E8]">
-                              {campaign.taskType === 'quiz' ? 'Training Quiz' : 'Policy Acknowledgment'}
+                              {campaign.taskType === 'quiz' ? t('controls.trainingQuizType') : t('controls.policyAcknowledgmentType')}
                             </span>
                             {isOverdue && (
                               <span className="text-xs px-2 py-0.5 rounded bg-red-500/10 text-red-400 border border-red-500/20">
-                                At Risk
+                                {t('controls.atRiskBadge')}
                               </span>
                             )}
                           </div>
@@ -595,7 +598,10 @@ function ControlDrawer({
                         <div className="mb-2">
                           <div className="flex items-center justify-between text-xs mb-1">
                             <span className="text-[#94b4d1]">
-                              {campaign.tasks.filter((t: any) => t.status === 'completed').length} of {campaign.tasks.length} completed
+                              {t('controls.completedOfTotal', {
+                                completed: campaign.tasks.filter((t: any) => t.status === 'completed').length,
+                                total: campaign.tasks.length
+                              })}
                             </span>
                             <span className={completionRate >= 80 ? 'text-emerald-400' : 'text-yellow-400'}>
                               {completionRate}%
@@ -614,7 +620,7 @@ function ControlDrawer({
                           size="sm"
                           className="text-cyan-400 hover:text-cyan-300 -ml-2"
                         >
-                          View Details <ChevronRight size={14} />
+                          {t('controls.viewDetailsButton')} <ChevronRight size={14} />
                         </Button>
                       </div>
                     )
@@ -627,7 +633,7 @@ function ControlDrawer({
                     className="w-full"
                   >
                     <UsersIcon size={14} />
-                    Create New Campaign
+                    {t('controls.createNewCampaignButton')}
                   </Button>
                 </div>
               ) : !isAddingEmployee ? (
@@ -638,14 +644,14 @@ function ControlDrawer({
                   className="w-full"
                 >
                   <UsersIcon size={14} />
-                  Assign to Employees
+                  {t('controls.assignToEmployeesButton')}
                 </Button>
               ) : null}
 
               {isAddingEmployee && (
                 <div className="space-y-3 mt-3 pt-3 border-t border-emerald-500/20">
                   <div>
-                    <label className="text-xs text-[#94b4d1] mb-1 block">Employee Emails (one per line)</label>
+                    <label className="text-xs text-[#94b4d1] mb-1 block">{t('controls.employeeEmailsLabel')}</label>
                     <textarea
                       value={employeeEmails}
                       onChange={(e) => setEmployeeEmails(e.target.value)}
@@ -656,19 +662,19 @@ function ControlDrawer({
                   </div>
 
                   <div>
-                    <label className="text-xs text-[#94b4d1] mb-1 block">Task Type</label>
+                    <label className="text-xs text-[#94b4d1] mb-1 block">{t('controls.taskTypeLabel')}</label>
                     <select
                       value={taskType}
                       onChange={(e) => setTaskType(e.target.value as 'acknowledge' | 'quiz')}
                       className="w-full px-3 py-2 bg-navy-900 border border-navy-700 rounded-lg text-white text-sm focus:outline-none focus:border-cyan-500"
                     >
-                      <option value="acknowledge">Acknowledge Policy</option>
-                      <option value="quiz">Complete Training Quiz</option>
+                      <option value="acknowledge">{t('controls.acknowledgePolicy')}</option>
+                      <option value="quiz">{t('controls.completeTrainingQuiz')}</option>
                     </select>
                   </div>
 
                   <div>
-                    <label className="text-xs text-[#94b4d1] mb-1 block">Deadline</label>
+                    <label className="text-xs text-[#94b4d1] mb-1 block">{t('controls.deadlineLabel')}</label>
                     <input
                       type="date"
                       value={deadline}
@@ -680,7 +686,7 @@ function ControlDrawer({
                   <div className="flex items-center gap-2">
                     <Button size="sm" onClick={handleAssignEmployees} disabled={!employeeEmails || !deadline}>
                       <Mail size={14} />
-                      Send Tasks
+                      {t('controls.sendTasksButton')}
                     </Button>
                     <Button
                       size="sm"
@@ -691,7 +697,7 @@ function ControlDrawer({
                         setDeadline('')
                       }}
                     >
-                      Cancel
+                      {t('controls.cancelButton')}
                     </Button>
                   </div>
                 </div>
@@ -703,7 +709,7 @@ function ControlDrawer({
           <div className="pt-4 border-t border-navy-700 text-xs text-[#94b4d1]">
             <div className="flex items-center gap-2">
               <Clock size={12} />
-              <span>Last updated: {format(new Date(control.lastUpdated), 'MMM d, yyyy \'at\' h:mm a')}</span>
+              <span>{t('controls.lastUpdated')} {format(new Date(control.lastUpdated), 'MMM d, yyyy \'at\' h:mm a')}</span>
             </div>
           </div>
         </div>
@@ -713,6 +719,8 @@ function ControlDrawer({
 }
 
 export default function ControlsLibrary() {
+  const { t } = useTranslation()
+  const [searchParams] = useSearchParams()
   const {
     controls,
     selectedControl,
@@ -724,9 +732,13 @@ export default function ControlsLibrary() {
     getCampaignsForControl
   } = useControls()
 
+  const validStatuses: ControlStatus[] = ['Not Started', 'Planned', 'Partial', 'Implemented']
+  const initialStatus = searchParams.get('status')
   const [searchQuery, setSearchQuery] = useState('')
   const [categoryFilter, setCategoryFilter] = useState<ControlCategory | ''>('')
-  const [statusFilter, setStatusFilter] = useState<ControlStatus | ''>('')
+  const [statusFilter, setStatusFilter] = useState<ControlStatus | ''>(
+    validStatuses.includes(initialStatus as ControlStatus) ? (initialStatus as ControlStatus) : ''
+  )
   const [articleAreaFilter, setArticleAreaFilter] = useState('')
 
   const filteredControls = useMemo(() => {
@@ -748,16 +760,16 @@ export default function ControlsLibrary() {
       <div className="flex items-start justify-between">
         <div>
           <h1 className="text-[26px] font-bold font-syne text-white flex items-center gap-2">
-            Controls Library
-            <InfoTooltip content="The full set of NIS2 Article 21 controls. Track status, assign owners, upload evidence, and manage employee tasks." />
+            {t('controls.pageTitle')}
+            <InfoTooltip content={t('controls.pageTitleTooltip')} />
           </h1>
           <p className="text-[14px] text-[#CBD8E8] mt-1">
-            Manage all NIS2 Article 21 controls and evidence
+            {t('controls.pageSubtitle')}
           </p>
         </div>
         <div className="flex items-center gap-3">
           <span className="text-[14px] text-[#94b4d1]">
-            {filteredControls.length} of {controls.length} controls
+            {t('controls.controlsCount', { filtered: filteredControls.length, total: controls.length })}
           </span>
         </div>
       </div>
@@ -772,7 +784,7 @@ export default function ControlsLibrary() {
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search controls by title, description, or article..."
+              placeholder={t('controls.searchPlaceholder')}
               className="w-full pl-10 pr-4 py-2.5 bg-navy-800 border border-navy-700 rounded-lg text-white text-sm placeholder-navy-400 focus:outline-none focus:border-cyan-500"
             />
           </div>
@@ -781,47 +793,47 @@ export default function ControlsLibrary() {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div>
               <label className="text-xs text-[#94b4d1] mb-1 flex items-center gap-1">
-                Category
-                <InfoTooltip content="Technical = infrastructure/system controls, Organizational = policy/process controls, People = training/human controls" size={12} />
+                {t('controls.categoryLabel')}
+                <InfoTooltip content={t('controls.categoryTooltip')} size={12} />
               </label>
               <select
                 value={categoryFilter}
                 onChange={(e) => setCategoryFilter(e.target.value as ControlCategory | '')}
                 className="w-full px-3 py-2 bg-navy-800 border border-navy-700 rounded-lg text-white text-sm focus:outline-none focus:border-cyan-500"
               >
-                <option value="">All Categories</option>
-                <option value="Technical">Technical</option>
-                <option value="Organizational">Organizational</option>
-                <option value="People">People</option>
+                <option value="">{t('controls.allCategories')}</option>
+                <option value="Technical">{t('controls.categoryTechnical')}</option>
+                <option value="Organizational">{t('controls.categoryOrganizational')}</option>
+                <option value="People">{t('controls.categoryPeople')}</option>
               </select>
             </div>
 
             <div>
               <label className="text-xs text-[#94b4d1] mb-1 flex items-center gap-1">
-                Status
-                <InfoTooltip content="Not Started → Planned → Partial → Implemented" size={12} />
+                {t('controls.statusLabel')}
+                <InfoTooltip content={t('controls.statusTooltip')} size={12} />
               </label>
               <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value as ControlStatus | '')}
                 className="w-full px-3 py-2 bg-navy-800 border border-navy-700 rounded-lg text-white text-sm focus:outline-none focus:border-cyan-500"
               >
-                <option value="">All Statuses</option>
-                <option value="Not Started">Not Started</option>
-                <option value="Planned">Planned</option>
-                <option value="Partial">Partial</option>
-                <option value="Implemented">Implemented</option>
+                <option value="">{t('controls.allStatuses')}</option>
+                <option value="Not Started">{t('controls.statusNotStarted')}</option>
+                <option value="Planned">{t('controls.statusPlanned')}</option>
+                <option value="Partial">{t('controls.statusPartial')}</option>
+                <option value="Implemented">{t('controls.statusImplemented')}</option>
               </select>
             </div>
 
             <div>
-              <label className="text-xs text-[#94b4d1] mb-1 block">Article 21 Area</label>
+              <label className="text-xs text-[#94b4d1] mb-1 block">{t('controls.articleAreaLabel')}</label>
               <select
                 value={articleAreaFilter}
                 onChange={(e) => setArticleAreaFilter(e.target.value)}
                 className="w-full px-3 py-2 bg-navy-800 border border-navy-700 rounded-lg text-white text-sm focus:outline-none focus:border-cyan-500"
               >
-                <option value="">All Areas</option>
+                <option value="">{t('controls.allAreas')}</option>
                 {articleAreas.map(area => (
                   <option key={area} value={area}>{area}</option>
                 ))}
@@ -832,7 +844,7 @@ export default function ControlsLibrary() {
           {/* Active filters */}
           {(searchQuery || categoryFilter || statusFilter || articleAreaFilter) && (
             <div className="flex items-center gap-2 flex-wrap">
-              <span className="text-xs text-[#94b4d1]">Active filters:</span>
+              <span className="text-xs text-[#94b4d1]">{t('controls.activeFiltersLabel')}</span>
               {searchQuery && (
                 <span className="text-xs px-2 py-1 rounded bg-navy-800 text-white flex items-center gap-1">
                   Search: "{searchQuery}"
@@ -874,7 +886,7 @@ export default function ControlsLibrary() {
                 }}
                 className="text-xs text-cyan-400 hover:text-cyan-300"
               >
-                Clear all
+                {t('controls.clearAll')}
               </button>
             </div>
           )}
@@ -887,10 +899,10 @@ export default function ControlsLibrary() {
           <div className="text-center py-12">
             <Filter size={48} className="text-navy-600 mx-auto mb-4" />
             <h3 className="text-lg font-bold font-syne text-white mb-2">
-              No controls found
+              {t('controls.noControlsFoundTitle')}
             </h3>
             <p className="text-[14px] text-[#94b4d1]">
-              Try adjusting your filters or search query
+              {t('controls.noControlsFoundSubtitle')}
             </p>
           </div>
         ) : (
@@ -912,16 +924,16 @@ export default function ControlsLibrary() {
                       {control.title}
                     </h3>
                     {control.isAutoPopulated && (
-                      <Tooltip content="Status auto-updated from AWS infrastructure scans">
+                      <Tooltip content={t('controls.autoTooltip')}>
                         <span className="text-xs px-2 py-0.5 rounded bg-purple-500/10 text-purple-400 border border-purple-500/20 flex-shrink-0">
-                          Auto
+                          {t('controls.autoPopulatedBadge')}
                         </span>
                       </Tooltip>
                     )}
                     {control.isPeopleControl && (
-                      <Tooltip content="Requires human action — assign to employees as training or policy tasks">
+                      <Tooltip content={t('controls.peopleTooltip')}>
                         <span className="text-xs px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex-shrink-0">
-                          People
+                          {t('controls.peopleBadge')}
                         </span>
                       </Tooltip>
                     )}
@@ -936,7 +948,7 @@ export default function ControlsLibrary() {
                         <span className="text-navy-600">•</span>
                         <span className="text-cyan-400 flex items-center gap-1">
                           <FileText size={11} />
-                          {control.evidence.length} evidence
+                          {t('controls.evidenceCount', { count: control.evidence.length })}
                         </span>
                       </>
                     )}
@@ -945,7 +957,7 @@ export default function ControlsLibrary() {
 
                 <div className="hidden md:flex items-center gap-4 flex-shrink-0">
                   <div className="text-right">
-                    <p className="text-xs text-[#94b4d1]">Owner</p>
+                    <p className="text-xs text-[#94b4d1]">{t('controls.ownerColumnLabel')}</p>
                     <p className="text-[13px] text-white">{control.owner}</p>
                   </div>
 

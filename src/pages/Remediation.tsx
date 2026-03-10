@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import {
   ListTodo,
   Plus,
-  Filter,
   CheckCircle,
   Clock,
   AlertTriangle,
@@ -18,26 +18,27 @@ import { isConnected } from '../services/api'
 
 type StatusFilter = 'all' | 'open' | 'in_progress' | 'completed' | 'dismissed'
 
-const STATUS_TOOLTIPS: Record<string, string> = {
-  open: 'Tasks created but not yet started',
-  in_progress: 'Tasks actively being worked on',
-  completed: 'Tasks that have been resolved',
-  dismissed: 'Tasks acknowledged but deprioritized',
-}
-
-const STATUS_CONFIG: Record<string, { label: string; color: string; bgColor: string; icon: React.ReactNode }> = {
-  open: { label: 'Open', color: 'text-red-400', bgColor: 'bg-red-500/10 border-red-500/20', icon: <AlertTriangle size={14} /> },
-  in_progress: { label: 'In Progress', color: 'text-yellow-400', bgColor: 'bg-yellow-500/10 border-yellow-500/20', icon: <Clock size={14} /> },
-  completed: { label: 'Completed', color: 'text-emerald-400', bgColor: 'bg-emerald-500/10 border-emerald-500/20', icon: <CheckCircle size={14} /> },
-  dismissed: { label: 'Dismissed', color: 'text-navy-400', bgColor: 'bg-navy-700/50 border-navy-600', icon: <X size={14} /> },
-}
-
 export default function Remediation() {
   const navigate = useNavigate()
+  const { t } = useTranslation()
   const { tasks, loading, addTask, updateTask } = useRemediation()
   const [filter, setFilter] = useState<StatusFilter>('all')
   const [showCreate, setShowCreate] = useState(false)
   const [newTask, setNewTask] = useState({ question_id: '', title: '', description: '', priority: 'medium' })
+
+  const STATUS_TOOLTIPS: Record<string, string> = {
+    open: t('remediation.statusTooltipOpen'),
+    in_progress: t('remediation.statusTooltipInProgress'),
+    completed: t('remediation.statusTooltipCompleted'),
+    dismissed: t('remediation.statusTooltipDismissed'),
+  }
+
+  const STATUS_CONFIG: Record<string, { label: string; color: string; bgColor: string; icon: React.ReactNode }> = {
+    open: { label: t('remediation.statusOpen'), color: 'text-red-400', bgColor: 'bg-red-500/10 border-red-500/20', icon: <AlertTriangle size={14} /> },
+    in_progress: { label: t('remediation.statusInProgress'), color: 'text-yellow-400', bgColor: 'bg-yellow-500/10 border-yellow-500/20', icon: <Clock size={14} /> },
+    completed: { label: t('remediation.statusCompleted'), color: 'text-emerald-400', bgColor: 'bg-emerald-500/10 border-emerald-500/20', icon: <CheckCircle size={14} /> },
+    dismissed: { label: t('remediation.statusDismissed'), color: 'text-navy-400', bgColor: 'bg-navy-700/50 border-navy-600', icon: <X size={14} /> },
+  }
 
   const filteredTasks = filter === 'all' ? tasks : tasks.filter(t => t.status === filter)
   const connected = isConnected()
@@ -57,21 +58,29 @@ export default function Remediation() {
     setShowCreate(false)
   }
 
+  const filterLabels: Record<StatusFilter, string> = {
+    all: t('remediation.filterAll'),
+    open: t('remediation.statusOpen'),
+    in_progress: t('remediation.filterInProgress'),
+    completed: t('remediation.statusCompleted'),
+    dismissed: t('remediation.statusDismissed'),
+  }
+
   if (!connected) {
     return (
       <div className="space-y-6">
         <div>
-          <h1 className="text-[26px] font-bold font-syne text-white">Remediation Tasks</h1>
-          <p className="text-[14px] text-[#CBD8E8] mt-1">Track and manage compliance gap remediation</p>
+          <h1 className="text-[26px] font-bold font-syne text-white">{t('remediation.pageTitle')}</h1>
+          <p className="text-[14px] text-[#CBD8E8] mt-1">{t('remediation.pageSubtitle')}</p>
         </div>
         <Card>
           <div className="text-center py-16">
             <ListTodo size={48} className="text-navy-500 mx-auto mb-4" />
-            <h3 className="text-lg font-bold font-syne text-white mb-2">Connect to Get Started</h3>
+            <h3 className="text-lg font-bold font-syne text-white mb-2">{t('remediation.connectTitle')}</h3>
             <p className="text-[14px] text-[#CBD8E8] max-w-md mx-auto mb-6">
-              Connect your account in Settings to create and track remediation tasks.
+              {t('remediation.connectDescription')}
             </p>
-            <Button onClick={() => navigate('/settings')}>Go to Settings <ChevronRight size={14} /></Button>
+            <Button onClick={() => navigate('/settings')}>{t('remediation.goToSettingsButton')} <ChevronRight size={14} /></Button>
           </div>
         </Card>
       </div>
@@ -92,19 +101,19 @@ export default function Remediation() {
       <div className="flex items-start justify-between">
         <div>
           <h1 className="text-[26px] font-bold font-syne text-white flex items-center gap-2">
-            Remediation Tasks
-            <InfoTooltip content="Track and manage tasks to close gaps identified in your assessment" />
+            {t('remediation.pageTitle')}
+            <InfoTooltip content={t('remediation.pageTitleTooltip')} />
           </h1>
           <p className="text-[14px] text-[#CBD8E8] mt-1">
-            Track and manage compliance gap remediation
+            {t('remediation.pageSubtitle')}
           </p>
         </div>
         <div className="flex gap-2">
           <Button variant="secondary" onClick={() => navigate('/assessment')}>
-            <ArrowLeft size={14} /> Assessment
+            <ArrowLeft size={14} /> {t('remediation.assessmentButton')}
           </Button>
           <Button onClick={() => setShowCreate(true)}>
-            <Plus size={14} /> Create Task
+            <Plus size={14} /> {t('remediation.createTaskButton')}
           </Button>
         </div>
       </div>
@@ -123,7 +132,7 @@ export default function Remediation() {
               }`}
             >
               <div className="text-xs text-[#94b4d1] uppercase mb-1">
-                {s === 'all' ? 'All' : s === 'in_progress' ? 'In Progress' : s.charAt(0).toUpperCase() + s.slice(1)}
+                {filterLabels[s]}
               </div>
               <div className={`text-xl font-bold font-syne ${filter === s ? 'text-cyan-400' : 'text-white'}`}>
                 {statusCounts[s]}
@@ -143,11 +152,11 @@ export default function Remediation() {
       {/* Create task form */}
       {showCreate && (
         <Card>
-          <h3 className="text-[16px] font-bold font-syne text-white mb-4">Create Remediation Task</h3>
+          <h3 className="text-[16px] font-bold font-syne text-white mb-4">{t('remediation.createFormTitle')}</h3>
           <div className="space-y-4">
             <div>
               <label className="text-xs font-semibold text-navy-200 uppercase tracking-wider block mb-1.5">
-                Related Question
+                {t('remediation.relatedQuestionLabel')}
               </label>
               <select
                 value={newTask.question_id}
@@ -162,7 +171,7 @@ export default function Remediation() {
                 }}
                 className="w-full bg-navy-900 border border-navy-700 rounded-lg px-3 py-2.5 text-sm text-white focus:outline-none focus:border-cyan-500"
               >
-                <option value="">Select a question...</option>
+                <option value="">{t('remediation.relatedQuestionPlaceholder')}</option>
                 {ARTICLES.map(art => (
                   <optgroup key={art.id} label={`${art.article} — ${art.title}`}>
                     {ASSESSMENT_QUESTIONS.filter(q => q.article === art.article).map(q => (
@@ -176,46 +185,46 @@ export default function Remediation() {
             </div>
             <div>
               <label className="text-xs font-semibold text-navy-200 uppercase tracking-wider block mb-1.5">
-                Title
+                {t('remediation.titleLabel')}
               </label>
               <input
                 value={newTask.title}
                 onChange={(e) => setNewTask(prev => ({ ...prev, title: e.target.value }))}
                 className="w-full bg-navy-900 border border-navy-700 rounded-lg px-3 py-2.5 text-sm text-white focus:outline-none focus:border-cyan-500"
-                placeholder="Task title..."
+                placeholder={t('remediation.titlePlaceholder')}
               />
             </div>
             <div>
               <label className="text-xs font-semibold text-navy-200 uppercase tracking-wider block mb-1.5">
-                Description
+                {t('remediation.descriptionLabel')}
               </label>
               <textarea
                 value={newTask.description}
                 onChange={(e) => setNewTask(prev => ({ ...prev, description: e.target.value }))}
                 className="w-full bg-navy-900 border border-navy-700 rounded-lg px-3 py-2.5 text-sm text-white focus:outline-none focus:border-cyan-500 resize-none"
                 rows={3}
-                placeholder="Describe what needs to be done..."
+                placeholder={t('remediation.descriptionPlaceholder')}
               />
             </div>
             <div>
               <label className="text-xs font-semibold text-navy-200 uppercase tracking-wider block mb-1.5">
-                Priority
+                {t('remediation.priorityLabel')}
               </label>
               <select
                 value={newTask.priority}
                 onChange={(e) => setNewTask(prev => ({ ...prev, priority: e.target.value }))}
                 className="w-full bg-navy-900 border border-navy-700 rounded-lg px-3 py-2.5 text-sm text-white focus:outline-none focus:border-cyan-500"
               >
-                <option value="critical">Critical</option>
-                <option value="high">High</option>
-                <option value="medium">Medium</option>
-                <option value="low">Low</option>
+                <option value="critical">{t('remediation.priorityCritical')}</option>
+                <option value="high">{t('remediation.priorityHigh')}</option>
+                <option value="medium">{t('remediation.priorityMedium')}</option>
+                <option value="low">{t('remediation.priorityLow')}</option>
               </select>
             </div>
             <div className="flex gap-2 justify-end">
-              <Button variant="secondary" onClick={() => setShowCreate(false)}>Cancel</Button>
+              <Button variant="secondary" onClick={() => setShowCreate(false)}>{t('remediation.cancelButton')}</Button>
               <Button onClick={handleCreateTask} disabled={!newTask.question_id || !newTask.title}>
-                Create Task
+                {t('remediation.createTaskButton')}
               </Button>
             </div>
           </div>
@@ -228,12 +237,12 @@ export default function Remediation() {
           <div className="text-center py-12">
             <ListTodo size={48} className="text-navy-500 mx-auto mb-4" />
             <h3 className="text-lg font-bold font-syne text-white mb-2">
-              {tasks.length === 0 ? 'No Tasks Yet' : 'No Matching Tasks'}
+              {tasks.length === 0 ? t('remediation.noTasksYetTitle') : t('remediation.noMatchingTasksTitle')}
             </h3>
             <p className="text-[14px] text-[#CBD8E8] max-w-md mx-auto">
               {tasks.length === 0
-                ? 'Create remediation tasks from your assessment gaps to track progress.'
-                : 'Try changing the filter to see other tasks.'}
+                ? t('remediation.noTasksYetDescription')
+                : t('remediation.noMatchingTasksDescription')}
             </p>
           </div>
         </Card>
@@ -271,9 +280,9 @@ export default function Remediation() {
                         <p className="text-[13px] text-[#94b4d1] line-clamp-2">{task.description}</p>
                       )}
                       <div className="flex items-center gap-3 mt-2 text-[12px] text-[#94b4d1]">
-                        <span>Created: {new Date(task.createdAt).toLocaleDateString('en-GB')}</span>
-                        {task.assignedTo && <span>Assigned: {task.assignedTo}</span>}
-                        {task.dueDate && <span>Due: {new Date(task.dueDate).toLocaleDateString('en-GB')}</span>}
+                        <span>{t('remediation.createdLabel')} {new Date(task.createdAt).toLocaleDateString('en-GB')}</span>
+                        {task.assignedTo && <span>{t('remediation.assignedLabel')} {task.assignedTo}</span>}
+                        {task.dueDate && <span>{t('remediation.dueLabel')} {new Date(task.dueDate).toLocaleDateString('en-GB')}</span>}
                       </div>
                     </div>
                     <div className="flex gap-1 flex-shrink-0">
@@ -283,7 +292,7 @@ export default function Remediation() {
                           size="sm"
                           onClick={() => updateTask(task.id, { status: 'in_progress' })}
                         >
-                          Start
+                          {t('remediation.startButton')}
                         </Button>
                       )}
                       {task.status === 'in_progress' && (
@@ -292,7 +301,7 @@ export default function Remediation() {
                           size="sm"
                           onClick={() => updateTask(task.id, { status: 'completed' })}
                         >
-                          Complete
+                          {t('remediation.completeButton')}
                         </Button>
                       )}
                       {(task.status === 'open' || task.status === 'in_progress') && (
@@ -302,7 +311,7 @@ export default function Remediation() {
                           className="text-navy-400"
                           onClick={() => updateTask(task.id, { status: 'dismissed' })}
                         >
-                          Dismiss
+                          {t('remediation.dismissButton')}
                         </Button>
                       )}
                     </div>

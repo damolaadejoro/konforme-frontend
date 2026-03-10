@@ -42,7 +42,7 @@ export default function NIS2Overview() {
   const { t } = useTranslation()
   const navigate = useNavigate()
   const { complianceScore, articleAreas, criticalGaps, employeeComplianceStats, controls } = useControls()
-  const { overallScore: assessmentScore, articleScores, answeredCount, totalQuestions, progressPercent: assessmentProgress } = useAssessment()
+  const { projectedScore: assessmentScore, articleScores, answeredCount, totalQuestions, progressPercent: assessmentProgress } = useAssessment()
   const { awsAccounts, selectedAwsAccountId, selectAwsAccount } = useAuth()
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isGenerating, setIsGenerating] = useState(false)
@@ -74,8 +74,13 @@ export default function NIS2Overview() {
   }, [dashboardFilter, awsAccounts])
 
   // Prefer backend scores when available, fall back to localStorage-based scores
-  const overallScore = backendScore?.overallScore ?? complianceScore.overall
   const technicalScore = backendScore?.technicalScore ?? complianceScore.technical
+  const overallScore = backendScore?.overallScore
+    ?? (technicalScore > 0 && assessmentScore > 0
+      ? Math.round(technicalScore * 0.6 + assessmentScore * 0.4)
+      : technicalScore > 0 ? technicalScore
+      : assessmentScore > 0 ? assessmentScore
+      : 0)
   const peopleScore = complianceScore.people
 
   const score = overallScore
@@ -101,7 +106,7 @@ export default function NIS2Overview() {
     } catch (error) {
       console.error('Failed to generate PDF:', error)
       setIsGenerating(false)
-      alert('Failed to generate report. Please try again.')
+      alert(t('common.reportGenerateFailed'))
     }
   }
 
@@ -133,12 +138,12 @@ export default function NIS2Overview() {
               <div className="flex items-center gap-3 mb-2">
                 <Shield size={24} className="text-cyan-400" />
                 <h2 className="text-xl font-bold font-syne text-white flex items-center gap-2">
-                  Overall NIS2 Readiness Score
-                  <InfoTooltip content="Weighted compliance score combining Technical controls, Assessment responses, and People task completion" />
+                  {t('overview.readinessScore')}
+                  <InfoTooltip content={t('overview.readinessScoreTooltip')} />
                 </h2>
               </div>
               <p className="text-[14px] text-[#CBD8E8] mb-6">
-                Weighted assessment across all Article 21 controls
+                {t('overview.readinessDesc')}
               </p>
 
               {/* Score breakdown */}
@@ -146,8 +151,8 @@ export default function NIS2Overview() {
                 <div className={`p-4 rounded-lg bg-gradient-to-br ${scoreBg} to-transparent border border-cyan-500/20`}>
                   <div className="flex items-center gap-2 mb-2">
                     <Shield size={16} className="text-cyan-400" />
-                    <span className="text-xs text-cyan-400 uppercase tracking-wider font-semibold">Overall</span>
-                    <InfoTooltip content="Combined score across all compliance dimensions" size={12} />
+                    <span className="text-xs text-cyan-400 uppercase tracking-wider font-semibold">{t('overview.overall')}</span>
+                    <InfoTooltip content={t('overview.overallTooltip')} size={12} />
                   </div>
                   <div className="text-4xl font-bold font-syne mb-1" style={{ color: scoreColor }}>
                     {score}%
@@ -160,14 +165,14 @@ export default function NIS2Overview() {
                 <div className="p-4 rounded-lg bg-navy-900/60 border border-navy-700">
                   <div className="flex items-center gap-2 mb-2">
                     <Radar size={14} className="text-purple-400" />
-                    <span className="text-xs text-[#94b4d1] uppercase tracking-wider font-semibold">Technical</span>
-                    <InfoTooltip content="Score based on AWS infrastructure scans and technical controls" size={12} />
+                    <span className="text-xs text-[#94b4d1] uppercase tracking-wider font-semibold">{t('overview.technical')}</span>
+                    <InfoTooltip content={t('overview.technicalTooltip')} size={12} />
                   </div>
                   <div className="text-3xl font-bold font-syne text-white mb-1">{technicalScore}%</div>
                   <ProgressBar value={technicalScore} color="bg-purple-500" height="h-1.5" />
                   {backendScore?.lastTechnicalScan && (
                     <p className="text-[11px] text-[#94b4d1] mt-1">
-                      Last scan: {new Date(backendScore.lastTechnicalScan).toLocaleDateString()}
+                      {t('overview.lastScan')}: {new Date(backendScore.lastTechnicalScan).toLocaleDateString()}
                     </p>
                   )}
                 </div>
@@ -178,19 +183,19 @@ export default function NIS2Overview() {
                 >
                   <div className="flex items-center gap-2 mb-2">
                     <ClipboardCheck size={14} className="text-blue-400" />
-                    <span className="text-xs text-[#94b4d1] uppercase tracking-wider font-semibold">Assessment</span>
-                    <InfoTooltip content="Score from the NIS2 maturity self-assessment questionnaire" size={12} />
+                    <span className="text-xs text-[#94b4d1] uppercase tracking-wider font-semibold">{t('overview.assessment')}</span>
+                    <InfoTooltip content={t('overview.assessmentTooltip')} size={12} />
                   </div>
                   <div className="text-3xl font-bold font-syne text-white mb-1">{assessmentScore}%</div>
                   <ProgressBar value={assessmentScore} color="bg-blue-500" height="h-1.5" />
-                  <p className="text-[11px] text-[#94b4d1] mt-1">{answeredCount}/{totalQuestions} questions</p>
+                  <p className="text-[11px] text-[#94b4d1] mt-1">{answeredCount}/{totalQuestions} {t('overview.questions')}</p>
                 </div>
 
                 <div className="p-4 rounded-lg bg-navy-900/60 border border-navy-700">
                   <div className="flex items-center gap-2 mb-2">
                     <Users size={14} className="text-emerald-400" />
-                    <span className="text-xs text-[#94b4d1] uppercase tracking-wider font-semibold">People</span>
-                    <InfoTooltip content="Completion rate of employee training and policy acknowledgment tasks" size={12} />
+                    <span className="text-xs text-[#94b4d1] uppercase tracking-wider font-semibold">{t('overview.people')}</span>
+                    <InfoTooltip content={t('overview.peopleTooltip')} size={12} />
                   </div>
                   <div className="text-3xl font-bold font-syne text-white mb-1">{peopleScore}%</div>
                   <ProgressBar value={peopleScore} color="bg-emerald-500" height="h-1.5" />
@@ -206,8 +211,8 @@ export default function NIS2Overview() {
                   <div className="flex-1">
                     <p className={`text-[13px] ${score >= 41 ? 'text-yellow-300' : 'text-red-300'}`}>
                       {score >= 41
-                        ? 'Moderate compliance risk — prioritize high-severity gaps to reach 71%+ readiness'
-                        : 'Critical compliance risk — immediate action required on Not Started and Partial controls'}
+                        ? t('overview.moderateRisk')
+                        : t('overview.criticalRisk')}
                     </p>
                   </div>
                   <Button
@@ -216,7 +221,7 @@ export default function NIS2Overview() {
                     onClick={() => navigate('/controls')}
                     className={score >= 41 ? 'text-yellow-400 hover:text-yellow-300' : 'text-red-400 hover:text-red-300'}
                   >
-                    View Controls <ChevronRight size={12} />
+                    {t('overview.viewControls')} <ChevronRight size={12} />
                   </Button>
                 </div>
               )}
@@ -225,7 +230,7 @@ export default function NIS2Overview() {
                 <div className="mt-6 p-3 rounded-lg bg-blue-500/8 border border-blue-500/15 flex items-start gap-2">
                   <TrendingUp size={14} className="text-blue-400 mt-0.5 flex-shrink-0" />
                   <p className="text-[13px] text-blue-300">
-                    Excellent compliance posture! Maintain this level through regular reviews and continuous monitoring.
+                    {t('overview.excellentMsg')}
                   </p>
                 </div>
               )}
@@ -242,8 +247,8 @@ export default function NIS2Overview() {
         <Card>
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h2 className="text-[18px] font-bold font-syne text-white">AWS Account Scores</h2>
-              <p className="text-[13px] text-[#94b4d1] mt-1">Per-account compliance scores from technical scans</p>
+              <h2 className="text-[18px] font-bold font-syne text-white">{t('overview.awsScores')}</h2>
+              <p className="text-[13px] text-[#94b4d1] mt-1">{t('overview.awsScoresDesc')}</p>
             </div>
             {awsAccounts.length > 1 && (
               <div className="flex items-center gap-2">
@@ -253,7 +258,7 @@ export default function NIS2Overview() {
                     !dashboardFilter ? 'bg-cyan-500/15 text-cyan-400 border border-cyan-500/30' : 'text-navy-400 hover:text-white'
                   }`}
                 >
-                  All
+                  {t('common.all')}
                 </button>
                 {awsAccounts.map(acc => (
                   <button
@@ -276,7 +281,7 @@ export default function NIS2Overview() {
               const grade = accScore?.grade || '—'
               const lastScanDate = accScore?.lastTechnicalScan
                 ? new Date(accScore.lastTechnicalScan).toLocaleDateString()
-                : 'No scan yet'
+                : t('overview.noScan')
               const sColor = s != null ? (s >= 75 ? 'text-emerald-400' : s >= 50 ? 'text-yellow-400' : 'text-red-400') : 'text-navy-400'
               const sBg = s != null ? (s >= 75 ? 'bg-emerald-500/8 border-emerald-500/20' : s >= 50 ? 'bg-yellow-500/8 border-yellow-500/20' : 'bg-red-500/8 border-red-500/20') : 'bg-navy-900/40 border-navy-800'
 
@@ -299,7 +304,7 @@ export default function NIS2Overview() {
                     </div>
                   </div>
                   <div className="flex items-center justify-between text-[11px] text-navy-400">
-                    <span>Last scan: {lastScanDate}</span>
+                    <span>{t('overview.lastScan')}: {lastScanDate}</span>
                     {s != null && <ProgressBar value={s} height="h-1" />}
                   </div>
                 </div>
@@ -312,41 +317,46 @@ export default function NIS2Overview() {
       {/* Stats Bar */}
       <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
         <StatCard
-          label="Controls"
+          label={t('overview.controls')}
           value={articleAreas.reduce((sum, area) => sum + area.controlCount, 0)}
           icon={<Shield size={18} className="text-navy-300" />}
           accent="text-white"
-          tooltip="Total NIS2 Article 21 controls being tracked"
+          tooltip={t('overview.controlsTooltip')}
+          onClick={() => navigate('/controls')}
         />
         <StatCard
-          label="Implemented"
+          label={t('overview.implemented')}
           value={articleAreas.reduce((sum, area) => sum + area.implementedCount, 0)}
           icon={<CheckCircle size={18} className="text-emerald-400" />}
           accent="text-emerald-400"
-          tooltip="Controls with status set to Implemented"
+          tooltip={t('overview.implementedTooltip')}
+          onClick={() => navigate('/controls?status=Implemented')}
         />
         <StatCard
-          label="Critical Gaps"
+          label={t('overview.criticalGaps')}
           value={criticalGaps.length}
           icon={<AlertTriangle size={18} className="text-red-500" />}
           accent="text-red-500"
-          trend="Requires attention"
-          tooltip="High or Critical severity controls that are Not Started or only Partial"
+          trend={t('overview.requiresAttention')}
+          tooltip={t('overview.criticalGapsTooltip')}
+          onClick={() => navigate('/controls?status=Not Started')}
         />
         <StatCard
-          label="Employee Tasks"
+          label={t('overview.employeeTasks')}
           value={`${employeeComplianceStats.completionRate}%`}
           icon={<Users size={18} className="text-cyan-400" />}
           accent="text-cyan-400"
-          trend={`${employeeComplianceStats.completedTasks}/${employeeComplianceStats.totalTasks} completed`}
-          tooltip="Percentage of assigned employee tasks completed"
+          trend={`${employeeComplianceStats.completedTasks}/${employeeComplianceStats.totalTasks} ${t('overview.completed')}`}
+          tooltip={t('overview.employeeTasksTooltip')}
+          onClick={() => navigate('/people-tasks')}
         />
         <StatCard
-          label="Article 21 Areas"
+          label={t('overview.articleAreas')}
           value={articleAreas.length}
           icon={<Activity size={18} className="text-navy-300" />}
           accent="text-white"
-          tooltip="Number of NIS2 Article 21 requirement groupings"
+          tooltip={t('overview.articleAreasTooltip')}
+          onClick={() => navigate('/controls')}
         />
       </div>
 
@@ -355,13 +365,13 @@ export default function NIS2Overview() {
         <div className="flex items-center justify-between mb-5">
           <div>
             <h2 className="text-[18px] font-bold font-syne text-white flex items-center gap-2">
-              NIS2 Article 21 Coverage Map
-              <InfoTooltip content="Shows implementation progress across each NIS2 Article 21 area" />
+              {t('overview.coverageMap')}
+              <InfoTooltip content={t('overview.coverageMapTooltip')} />
             </h2>
-            <p className="text-[13px] text-[#94b4d1] mt-1">Compliance status across all requirement areas</p>
+            <p className="text-[13px] text-[#94b4d1] mt-1">{t('overview.coverageMapDesc')}</p>
           </div>
           <Button variant="ghost" size="sm" onClick={() => navigate('/controls')}>
-            View All Controls <ChevronRight size={14} />
+            {t('overview.viewAllControls')} <ChevronRight size={14} />
           </Button>
         </div>
 
@@ -399,7 +409,7 @@ export default function NIS2Overview() {
                   <ProgressBar value={progress} />
                   <div className="flex items-center justify-between text-[13px]">
                     <span className="text-[#94b4d1]">
-                      {area.implementedCount} of {area.controlCount} controls
+                      {t('overview.ofControls', { implemented: area.implementedCount, count: area.controlCount })}
                     </span>
                     <span className="font-semibold" style={{ color }}>
                       {progress}%
@@ -417,12 +427,12 @@ export default function NIS2Overview() {
         <div className="flex items-center justify-between mb-5">
           <div>
             <h2 className="text-[18px] font-bold font-syne text-white">
-              Top 5 Critical Gaps
+              {t('overview.topGaps')}
             </h2>
-            <p className="text-[13px] text-[#94b4d1] mt-1">Highest priority controls requiring attention</p>
+            <p className="text-[13px] text-[#94b4d1] mt-1">{t('overview.topGapsDesc')}</p>
           </div>
           <Button variant="ghost" size="sm" onClick={() => navigate('/controls')}>
-            View All <ChevronRight size={14} />
+            {t('common.viewAll')} <ChevronRight size={14} />
           </Button>
         </div>
 
@@ -430,10 +440,10 @@ export default function NIS2Overview() {
           <div className="text-center py-12">
             <CheckCircle size={48} className="text-emerald-400 mx-auto mb-4" />
             <h3 className="text-lg font-bold font-syne text-white mb-2">
-              No Critical Gaps!
+              {t('overview.noGaps')}
             </h3>
             <p className="text-[14px] text-[#CBD8E8] max-w-md mx-auto">
-              All critical and high severity controls are at least partially implemented. Keep up the good work!
+              {t('overview.noGapsDesc')}
             </p>
           </div>
         ) : (
@@ -487,12 +497,12 @@ export default function NIS2Overview() {
               <Shield size={24} className="text-cyan-400" />
             </div>
             <div className="flex-1">
-              <h3 className="text-[15px] font-semibold text-white mb-1">Manage Controls</h3>
+              <h3 className="text-[15px] font-semibold text-white mb-1">{t('overview.manageControls')}</h3>
               <p className="text-[13px] text-[#94b4d1] leading-relaxed mb-3">
-                View and update all NIS2 controls, upload evidence, and track progress
+                {t('overview.manageControlsDesc')}
               </p>
               <Button variant="ghost" size="sm" className="text-cyan-400 hover:text-cyan-300 -ml-2">
-                Open Controls Library <ChevronRight size={14} />
+                {t('overview.openControls')} <ChevronRight size={14} />
               </Button>
             </div>
           </div>
@@ -504,12 +514,12 @@ export default function NIS2Overview() {
               <ClipboardCheck size={24} className="text-blue-400" />
             </div>
             <div className="flex-1">
-              <h3 className="text-[15px] font-semibold text-white mb-1">NIS2 Assessment</h3>
+              <h3 className="text-[15px] font-semibold text-white mb-1">{t('overview.nis2Assessment')}</h3>
               <p className="text-[13px] text-[#94b4d1] leading-relaxed mb-3">
-                44-question maturity assessment across all NIS2 Article 21 areas
+                {t('overview.nis2AssessmentDesc')}
               </p>
               <Button variant="ghost" size="sm" className="text-blue-400 hover:text-blue-300 -ml-2">
-                {answeredCount > 0 ? 'Continue Assessment' : 'Start Assessment'} <ChevronRight size={14} />
+                {answeredCount > 0 ? t('overview.continueAssessment') : t('overview.startAssessment')} <ChevronRight size={14} />
               </Button>
             </div>
           </div>
@@ -521,12 +531,12 @@ export default function NIS2Overview() {
               <Radar size={24} className="text-purple-400" />
             </div>
             <div className="flex-1">
-              <h3 className="text-[15px] font-semibold text-white mb-1">Technical Scan</h3>
+              <h3 className="text-[15px] font-semibold text-white mb-1">{t('overview.technicalScan')}</h3>
               <p className="text-[13px] text-[#94b4d1] leading-relaxed mb-3">
-                Run AWS infrastructure scan to auto-populate technical control status
+                {t('overview.technicalScanDesc')}
               </p>
               <Button variant="ghost" size="sm" className="text-purple-400 hover:text-purple-300 -ml-2">
-                Run Scan <ChevronRight size={14} />
+                {t('overview.runScan')} <ChevronRight size={14} />
               </Button>
             </div>
           </div>
@@ -538,12 +548,12 @@ export default function NIS2Overview() {
               <Users size={24} className="text-emerald-400" />
             </div>
             <div className="flex-1">
-              <h3 className="text-[15px] font-semibold text-white mb-1">People Tasks</h3>
+              <h3 className="text-[15px] font-semibold text-white mb-1">{t('overview.peopleTasksTitle')}</h3>
               <p className="text-[13px] text-[#94b4d1] leading-relaxed mb-3">
-                Track employee training and policy acknowledgments across all campaigns
+                {t('overview.peopleTasksDesc')}
               </p>
               <Button variant="ghost" size="sm" className="text-emerald-400 hover:text-emerald-300 -ml-2">
-                View Campaigns <ChevronRight size={14} />
+                {t('overview.viewCampaigns')} <ChevronRight size={14} />
               </Button>
             </div>
           </div>

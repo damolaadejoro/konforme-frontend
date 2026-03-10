@@ -30,6 +30,7 @@ vi.mock('../context/AuthContext', () => ({
 vi.mock('../hooks/useAssessment', () => ({
   useAssessment: () => ({
     overallScore: 0,
+    projectedScore: 0,
     articleScores: {},
     answeredCount: 0,
     totalQuestions: 0,
@@ -167,8 +168,8 @@ describe('UI Components', () => {
           </BrowserRouter>
         </TooltipPrimitive.Provider>
       )
-      expect(screen.getByText('80%')).toBeInTheDocument() // Technical
-      expect(screen.getAllByText('75%').length).toBeGreaterThanOrEqual(2) // Overall + People
+      expect(screen.getAllByText('80%').length).toBeGreaterThanOrEqual(2) // Technical + Overall (falls back to technical when no assessment)
+      expect(screen.getByText('75%')).toBeInTheDocument() // People
       expect(screen.getByText('0%')).toBeInTheDocument() // Assessment
     })
 
@@ -180,7 +181,7 @@ describe('UI Components', () => {
           </BrowserRouter>
         </TooltipPrimitive.Provider>
       )
-      expect(screen.getByText('NIS2 Article 21 Coverage Map')).toBeInTheDocument()
+      expect(screen.getByText('overview.coverageMap')).toBeInTheDocument()
     })
 
     it('Renders the top 5 critical gaps section', () => {
@@ -191,7 +192,7 @@ describe('UI Components', () => {
           </BrowserRouter>
         </TooltipPrimitive.Provider>
       )
-      expect(screen.getByText('Top 5 Critical Gaps')).toBeInTheDocument()
+      expect(screen.getByText('overview.topGaps')).toBeInTheDocument()
     })
 
     it('Quick action buttons are present and visible', () => {
@@ -202,9 +203,9 @@ describe('UI Components', () => {
           </BrowserRouter>
         </TooltipPrimitive.Provider>
       )
-      expect(screen.getByText('Manage Controls')).toBeInTheDocument()
-      expect(screen.getByText('People Tasks')).toBeInTheDocument()
-      expect(screen.getByText('Technical Scan')).toBeInTheDocument()
+      expect(screen.getByText('overview.manageControls')).toBeInTheDocument()
+      expect(screen.getByText('overview.peopleTasksTitle')).toBeInTheDocument()
+      expect(screen.getByText('overview.technicalScan')).toBeInTheDocument()
     })
   })
 

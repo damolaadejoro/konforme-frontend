@@ -157,10 +157,12 @@ export function useControls() {
     const control = controls.find(c => c.id === controlId)
     if (!control) return
 
+    const campaignId = `camp-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`
+
     const tasks: EmployeeTask[] = employees.map(emp => ({
       id: `task-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
       controlId,
-      campaignId: '', // Will be set below
+      campaignId,
       employeeName: emp.name,
       employeeEmail: emp.email,
       department: emp.department,
@@ -172,13 +174,13 @@ export function useControls() {
     }))
 
     const campaign: EmployeeCampaign = {
-      id: `camp-${Date.now()}`,
+      id: campaignId,
       controlId,
       controlName: control.title,
       taskType,
       deadline,
       createdAt: new Date().toISOString(),
-      tasks: tasks.map(t => ({ ...t, campaignId: `camp-${Date.now()}` })),
+      tasks,
       policyContent
     }
 

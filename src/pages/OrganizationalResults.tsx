@@ -1,5 +1,6 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import {
   BarChart,
   Bar,
@@ -28,11 +29,12 @@ import { useOrganizational } from '../hooks/useOrganizational'
 import { Card, Button, SeverityBadge, ProgressBar, StatCard } from '../components/ui'
 
 const CustomTooltip = ({ active, payload, label }: any) => {
+  const { t } = useTranslation()
   if (active && payload && payload.length) {
     return (
       <div className="bg-navy-800 border border-navy-700 rounded-lg px-3 py-2 text-xs shadow-xl">
         <p className="font-semibold text-white mb-1">{label}</p>
-        <p className="text-cyan-400">Score: <span className="font-bold">{payload[0].value}%</span></p>
+        <p className="text-cyan-400">{t('organizationalResults.tooltipScoreLabel')} <span className="font-bold">{payload[0].value}%</span></p>
       </div>
     )
   }
@@ -41,6 +43,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 
 export default function OrganizationalResults() {
   const navigate = useNavigate()
+  const { t } = useTranslation()
   const { assessment, sectionScores, resetAssessment, isComplete } = useOrganizational()
 
   if (!isComplete && assessment.answered === 0) {
@@ -49,14 +52,14 @@ export default function OrganizationalResults() {
         <Card className="text-center py-12">
           <AlertTriangle size={48} className="text-yellow-400 mx-auto mb-4" />
           <h2 className="text-xl font-bold font-syne text-white mb-2">
-            No Assessment Completed Yet
+            {t('organizationalResults.noAssessmentTitle')}
           </h2>
           <p className="text-navy-300 mb-6">
-            Complete the Organizational Assessment to view your results
+            {t('organizationalResults.noAssessmentDescription')}
           </p>
-          <Button onClick={() => navigate('/organizational')}>
+          <Button onClick={() => navigate('/assessment/organizational')}>
             <FileText size={16} />
-            Start Assessment
+            {t('organizationalResults.startAssessmentButton')}
           </Button>
         </Card>
       </div>
@@ -65,11 +68,10 @@ export default function OrganizationalResults() {
 
   const score = assessment.score
   const scoreColor = score >= 75 ? '#10b981' : score >= 50 ? '#f59e0b' : '#ef4444'
-  const scoreLabel = score >= 75 ? 'Strong' : score >= 50 ? 'Moderate' : 'Needs Improvement'
+  const scoreLabel = score >= 75 ? t('organizationalResults.scoreLabelStrong') : score >= 50 ? t('organizationalResults.scoreLabelModerate') : t('organizationalResults.scoreLabelNeedsImprovement')
 
   const criticalGaps = assessment.gaps.filter(g => g.severity === 'critical')
   const highGaps = assessment.gaps.filter(g => g.severity === 'high')
-  const mediumGaps = assessment.gaps.filter(g => g.severity === 'medium')
 
   const donutData = [
     { name: 'Score', value: score },
@@ -78,68 +80,64 @@ export default function OrganizationalResults() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
       <div className="flex items-start justify-between">
         <div>
-          <h1 className="text-2xl font-bold font-syne text-white">Organizational Results</h1>
+          <h1 className="text-2xl font-bold font-syne text-white">{t('organizationalResults.pageTitle')}</h1>
           <p className="text-sm text-navy-300 mt-1">
-            Assessment of organizational security controls and policies
+            {t('organizationalResults.pageSubtitle')}
           </p>
         </div>
         <div className="flex items-center gap-3">
-          <Button variant="secondary" onClick={() => navigate('/organizational')}>
+          <Button variant="secondary" onClick={() => navigate('/assessment/organizational')}>
             <Edit size={15} />
-            Edit Answers
+            {t('organizationalResults.editAnswersButton')}
           </Button>
           <Button
             variant="danger"
             onClick={() => {
-              if (confirm('Reset assessment? This will delete all answers.')) {
+              if (confirm(t('organizationalResults.resetConfirmation'))) {
                 resetAssessment()
-                navigate('/organizational')
+                navigate('/assessment/organizational')
               }
             }}
           >
             <RotateCcw size={15} />
-            Reset
+            {t('organizationalResults.resetButton')}
           </Button>
         </div>
       </div>
 
-      {/* Stats bar */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard
-          label="Organizational Score"
+          label={t('organizationalResults.organizationalScoreLabel')}
           value={`${score}%`}
           accent={`text-${score >= 75 ? 'emerald' : score >= 50 ? 'yellow' : 'red'}-400`}
           icon={<Shield size={18} style={{ color: scoreColor }} />}
           trend={scoreLabel}
         />
         <StatCard
-          label="Critical Gaps"
+          label={t('organizationalResults.criticalGapsLabel')}
           value={criticalGaps.length}
           accent="text-red-500"
           icon={<AlertTriangle size={18} className="text-red-500" />}
         />
         <StatCard
-          label="High Gaps"
+          label={t('organizationalResults.highGapsLabel')}
           value={highGaps.length}
           accent="text-orange-400"
           icon={<AlertTriangle size={18} className="text-orange-400" />}
         />
         <StatCard
-          label="Questions Answered"
+          label={t('organizationalResults.questionsAnsweredLabel')}
           value={`${assessment.answered}/${assessment.totalQuestions}`}
           icon={<CheckCircle size={18} className="text-cyan-400" />}
         />
       </div>
 
-      {/* Score visual + category breakdown */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Score donut */}
         <Card glow className="flex flex-col items-center">
           <h2 className="text-base font-bold font-syne text-white mb-4 self-start">
-            Overall Organizational Score
+            {t('organizationalResults.overallScoreTitle')}
           </h2>
           <div className="relative">
             <ResponsiveContainer width={220} height={220}>
@@ -171,7 +169,6 @@ export default function OrganizationalResults() {
             </div>
           </div>
 
-          {/* Alert */}
           <div className={`mt-4 w-full p-3 rounded-lg border flex items-start gap-2 ${
             score >= 75 ? 'bg-emerald-500/8 border-emerald-500/15' :
             score >= 50 ? 'bg-yellow-500/8 border-yellow-500/15' :
@@ -188,18 +185,17 @@ export default function OrganizationalResults() {
               'text-red-300'
             }`}>
               {score >= 75
-                ? 'Strong organizational controls — continue monitoring'
+                ? t('organizationalResults.strongControlsMessage')
                 : score >= 50
-                ? 'Moderate controls — address high-priority gaps'
-                : 'Significant gaps — immediate action required'}
+                ? t('organizationalResults.moderateControlsMessage')
+                : t('organizationalResults.significantGapsMessage')}
             </p>
           </div>
         </Card>
 
-        {/* Category bar chart */}
         <Card className="col-span-2">
           <h2 className="text-base font-bold font-syne text-white mb-5">
-            Score by Section
+            {t('organizationalResults.scoreBySectionTitle')}
           </h2>
           <ResponsiveContainer width="100%" height={200}>
             <BarChart
@@ -241,7 +237,6 @@ export default function OrganizationalResults() {
             </BarChart>
           </ResponsiveContainer>
 
-          {/* Section details */}
           <div className="grid grid-cols-2 gap-3 mt-5">
             {sectionScores.map(c => (
               <div key={c.section} className="bg-navy-900/60 rounded-lg p-3">
@@ -255,8 +250,8 @@ export default function OrganizationalResults() {
                 </div>
                 <ProgressBar value={c.score} />
                 <div className="flex justify-between mt-1.5">
-                  <span className="text-xs text-navy-400">{c.answered}/{c.total} answered</span>
-                  <span className="text-xs text-red-400">{c.critical}C {c.high}H {c.medium}M</span>
+                  <span className="text-xs text-navy-400">{c.answered}/{c.total} {t('organizationalResults.answeredLabel')}</span>
+                  <span className="text-xs text-red-400">{c.critical}{t('organizationalResults.criticalAbbrev')} {c.high}{t('organizationalResults.highAbbrev')} {c.medium}{t('organizationalResults.mediumAbbrev')}</span>
                 </div>
               </div>
             ))}
@@ -264,14 +259,13 @@ export default function OrganizationalResults() {
         </Card>
       </div>
 
-      {/* Gaps & Recommendations */}
       {assessment.gaps.length > 0 && (
         <Card>
           <div className="flex items-center justify-between mb-5">
             <h2 className="text-base font-bold font-syne text-white">
-              Gaps & Recommendations
+              {t('organizationalResults.gapsAndRecommendationsTitle')}
             </h2>
-            <span className="text-sm text-navy-400">{assessment.gaps.length} items</span>
+            <span className="text-sm text-navy-400">{t('organizationalResults.itemsCount', { count: assessment.gaps.length })}</span>
           </div>
 
           <div className="space-y-3">
@@ -294,20 +288,19 @@ export default function OrganizationalResults() {
                     </div>
                     <h4 className="text-sm font-semibold text-white mb-1">{gap.question}</h4>
                     <div className="flex items-center gap-2 text-xs">
-                      <span className="text-navy-500">Response:</span>
+                      <span className="text-navy-500">{t('organizationalResults.responseLabel')}</span>
                       <span className={gap.response === 'partial' ? 'text-yellow-400' : 'text-red-400'}>
-                        {gap.response === 'partial' ? 'Partial' : 'No'}
+                        {gap.response === 'partial' ? t('organizationalResults.responsePartial') : t('organizationalResults.responseNo')}
                       </span>
                     </div>
                   </div>
                 </div>
 
-                {/* Recommendation */}
                 <div className="ml-9 p-3 rounded-lg bg-emerald-500/8 border border-emerald-500/15">
                   <div className="flex items-center gap-2 mb-2">
                     <Lightbulb size={13} className="text-emerald-400" />
                     <span className="text-xs font-bold text-emerald-400 uppercase tracking-wider">
-                      Recommendation
+                      {t('organizationalResults.recommendationLabel')}
                     </span>
                   </div>
                   <p className="text-sm text-emerald-200 leading-relaxed">{gap.recommendation}</p>
@@ -318,27 +311,25 @@ export default function OrganizationalResults() {
         </Card>
       )}
 
-      {/* No gaps — success message */}
       {assessment.gaps.length === 0 && assessment.answered > 0 && (
         <Card className="text-center py-12">
           <CheckCircle size={48} className="text-emerald-400 mx-auto mb-4" />
           <h3 className="text-xl font-bold font-syne text-white mb-2">
-            Excellent! No Gaps Found
+            {t('organizationalResults.noGapsTitle')}
           </h3>
           <p className="text-navy-300 max-w-md mx-auto">
-            All organizational security controls are in place. Continue monitoring and reviewing quarterly to maintain compliance.
+            {t('organizationalResults.noGapsDescription')}
           </p>
         </Card>
       )}
 
-      {/* Action buttons */}
       <div className="flex items-center justify-center gap-3 pt-4">
         <Button variant="secondary" onClick={() => navigate('/')}>
           <Shield size={15} />
-          View Dashboard
+          {t('organizationalResults.viewDashboardButton')}
         </Button>
         <Button onClick={() => navigate('/reports')}>
-          View Full Report <ChevronRight size={15} />
+          {t('organizationalResults.viewFullReportButton')} <ChevronRight size={15} />
         </Button>
       </div>
     </div>

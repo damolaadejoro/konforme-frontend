@@ -146,8 +146,8 @@ export default function Settings() {
             label={t('settings.primaryFramework')}
             options={[
               { value: 'nis2', label: 'NIS2 (EU 2022/2555)' },
-              { value: 'iso27001', label: 'ISO 27001' },
-              { value: 'soc2', label: 'SOC 2 Type II' },
+              { value: 'iso27001', label: 'ISO 27001 — Coming Soon', disabled: true },
+              { value: 'soc2', label: 'SOC 2 Type II — Coming Soon', disabled: true },
             ]}
           />
           <Select

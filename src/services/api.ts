@@ -103,10 +103,14 @@ async function apiFetch<T>(path: string, options: RequestInit = {}): Promise<T> 
 
   // Add CSRF token for state-changing requests
   const method = (options.method || 'GET').toUpperCase()
+  const isAuthEndpoint = path.startsWith('/auth/')
   if (['POST', 'PATCH', 'DELETE', 'PUT'].includes(method)) {
     const csrf = getCsrfToken()
     if (csrf) {
       headers['X-CSRF-Token'] = csrf
+    } else if (!isAuthEndpoint) {
+      // CSRF token required for non-auth state-changing requests
+      throw new Error('Missing CSRF token. Please refresh and try again.')
     }
   }
 
@@ -122,7 +126,6 @@ async function apiFetch<T>(path: string, options: RequestInit = {}): Promise<T> 
   }
 
   // On 401, try refreshing the token once
-  const isAuthEndpoint = path.startsWith('/auth/')
   if (res.status === 401 && !isAuthEndpoint) {
     const refreshed = await tryRefresh()
     if (refreshed) {
@@ -543,6 +546,8 @@ export async function uploadEvidence(accountId: string, controlId: string, file:
   const csrf = getCsrfToken()
   if (csrf) {
     headers['X-CSRF-Token'] = csrf
+  } else {
+    throw new Error('Missing CSRF token. Please refresh and try again.')
   }
 
   let res: Response

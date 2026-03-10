@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { FlaskConical, Cloud, ClipboardCheck, ChevronRight } from 'lucide-react'
 import { Card, Button } from '../components/ui'
 import Logo from '../components/layout/Logo'
@@ -37,38 +38,39 @@ function generateDemoResponses(): Record<string, QuestionResponse> {
   return responses
 }
 
-const cards = [
-  {
-    key: 'demo',
-    title: 'Run a Demo Assessment',
-    description: 'See how Konforme works with sample data. Instantly populates your dashboard with realistic scores.',
-    action: 'Try the Demo',
-    icon: FlaskConical,
-    accent: 'text-purple-400',
-    iconBg: 'bg-purple-500/10 border-purple-500/20',
-  },
-  {
-    key: 'scan',
-    title: 'Connect Your AWS Account',
-    description: 'Scan your infrastructure automatically to populate technical controls and identify gaps.',
-    action: 'Connect AWS',
-    icon: Cloud,
-    accent: 'text-cyan-400',
-    iconBg: 'bg-cyan-500/10 border-cyan-500/20',
-  },
-  {
-    key: 'assessment',
-    title: 'Start the NIS2 Assessment',
-    description: 'Answer questions about your organisation\'s policies, processes, and technical measures.',
-    action: 'Begin Assessment',
-    icon: ClipboardCheck,
-    accent: 'text-blue-400',
-    iconBg: 'bg-blue-500/10 border-blue-500/20',
-  },
-] as const
-
 export default function GetStarted() {
   const navigate = useNavigate()
+  const { t } = useTranslation()
+
+  const cards = [
+    {
+      key: 'demo',
+      title: t('getStarted.demoTitle'),
+      description: t('getStarted.demoDescription'),
+      action: t('getStarted.demoAction'),
+      icon: FlaskConical,
+      accent: 'text-purple-400',
+      iconBg: 'bg-purple-500/10 border-purple-500/20',
+    },
+    {
+      key: 'scan',
+      title: t('getStarted.scanTitle'),
+      description: t('getStarted.scanDescription'),
+      action: t('getStarted.scanAction'),
+      icon: Cloud,
+      accent: 'text-cyan-400',
+      iconBg: 'bg-cyan-500/10 border-cyan-500/20',
+    },
+    {
+      key: 'assessment',
+      title: t('getStarted.assessmentTitle'),
+      description: t('getStarted.assessmentDescription'),
+      action: t('getStarted.assessmentAction'),
+      icon: ClipboardCheck,
+      accent: 'text-blue-400',
+      iconBg: 'bg-blue-500/10 border-blue-500/20',
+    },
+  ] as const
 
   const handleSelect = (key: string) => {
     localStorage.setItem('konforme_onboarded', 'true')
@@ -104,9 +106,9 @@ export default function GetStarted() {
           <div className="inline-flex items-center justify-center mb-4">
             <Logo size="lg" showText={false} />
           </div>
-          <h1 className="text-2xl font-bold font-syne text-white">Welcome to Konforme</h1>
+          <h1 className="text-2xl font-bold font-syne text-white">{t('getStarted.pageTitle')}</h1>
           <p className="text-sm text-navy-400 mt-1 max-w-md mx-auto">
-            Get your first NIS2 compliance result in minutes. Pick the option that fits your situation best.
+            {t('getStarted.pageSubtitle')}
           </p>
         </div>
 
@@ -143,7 +145,7 @@ export default function GetStarted() {
             onClick={handleSkip}
             className="text-sm text-navy-400 hover:text-white transition-colors"
           >
-            Skip for now — go to dashboard
+            {t('getStarted.skipLink')}
           </button>
         </div>
       </div>

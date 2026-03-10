@@ -1,6 +1,5 @@
 import { useState, useMemo } from 'react'
 import { Finding, Severity, FindingStatus } from '../types'
-import { mockFindings } from '../data/mockData'
 
 interface Filters {
   severity: Severity | 'all'
@@ -10,7 +9,7 @@ interface Filters {
   search: string
 }
 
-export function useFindings() {
+export function useFindings(allFindings: Finding[] = []) {
   const [filters, setFilters] = useState<Filters>({
     severity: 'all',
     status: 'all',
@@ -22,7 +21,7 @@ export function useFindings() {
   const [expandedId, setExpandedId] = useState<string | null>(null)
 
   const filtered = useMemo(() => {
-    return mockFindings.filter(f => {
+    return allFindings.filter(f => {
       if (filters.severity !== 'all' && f.severity !== filters.severity) return false
       if (filters.status !== 'all' && f.status !== filters.status) return false
       if (filters.article !== 'all' && f.article !== filters.article) return false
@@ -33,17 +32,17 @@ export function useFindings() {
       }
       return true
     })
-  }, [filters])
+  }, [allFindings, filters])
 
   const articles = useMemo(() => {
-    const set = new Set(mockFindings.map(f => f.article))
+    const set = new Set(allFindings.map(f => f.article))
     return Array.from(set).sort()
-  }, [])
+  }, [allFindings])
 
   const regions = useMemo(() => {
-    const set = new Set(mockFindings.map(f => f.region))
+    const set = new Set(allFindings.map(f => f.region))
     return Array.from(set).sort()
-  }, [])
+  }, [allFindings])
 
   const toggleExpand = (id: string) => {
     setExpandedId(prev => (prev === id ? null : id))
@@ -57,6 +56,6 @@ export function useFindings() {
     toggleExpand,
     articles,
     regions,
-    total: mockFindings.length,
+    total: allFindings.length,
   }
 }

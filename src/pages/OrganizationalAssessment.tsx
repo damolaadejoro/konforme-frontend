@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import {
   FileText,
   CheckCircle,
@@ -26,28 +27,30 @@ function ResponseButton({
   selected: boolean
   onClick: () => void
 }) {
+  const { t } = useTranslation()
+
   const config = {
     yes: {
       icon: CheckCircle,
-      label: 'Yes',
+      label: t('organizationalAssessment.responseYes'),
       color: selected ? 'bg-emerald-500/15 border-emerald-500/40 text-emerald-400' : 'border-navy-700 text-navy-300 hover:border-emerald-500/30 hover:text-emerald-400',
       iconColor: 'text-emerald-400',
     },
     partial: {
       icon: MinusCircle,
-      label: 'Partial',
+      label: t('organizationalAssessment.responsePartial'),
       color: selected ? 'bg-yellow-500/15 border-yellow-500/40 text-yellow-400' : 'border-navy-700 text-navy-300 hover:border-yellow-500/30 hover:text-yellow-400',
       iconColor: 'text-yellow-400',
     },
     no: {
       icon: XCircle,
-      label: 'No',
+      label: t('organizationalAssessment.responseNo'),
       color: selected ? 'bg-red-500/15 border-red-500/40 text-red-400' : 'border-navy-700 text-navy-300 hover:border-red-500/30 hover:text-red-400',
       iconColor: 'text-red-400',
     },
     na: {
       icon: Circle,
-      label: 'N/A',
+      label: t('organizationalAssessment.responseNa'),
       color: selected ? 'bg-navy-600/30 border-navy-600/60 text-navy-300' : 'border-navy-700 text-navy-400 hover:border-navy-600 hover:text-navy-300',
       iconColor: 'text-navy-400',
     },
@@ -76,11 +79,11 @@ function QuestionCard({
   answer: OrgQuestionResponse
   onAnswer: (response: OrgQuestionResponse) => void
 }) {
+  const { t } = useTranslation()
   const [showGuidance, setShowGuidance] = useState(false)
 
   return (
     <div className="glass-card rounded-xl p-5 space-y-4">
-      {/* Question header */}
       <div className="flex items-start justify-between gap-4">
         <div className="flex-1">
           <div className="flex items-center gap-3 mb-2">
@@ -100,7 +103,6 @@ function QuestionCard({
         )}
       </div>
 
-      {/* Response buttons */}
       <div className="flex flex-wrap gap-2">
         <ResponseButton response="yes" selected={answer === 'yes'} onClick={() => onAnswer('yes')} />
         <ResponseButton response="partial" selected={answer === 'partial'} onClick={() => onAnswer('partial')} />
@@ -108,19 +110,17 @@ function QuestionCard({
         <ResponseButton response="na" selected={answer === 'na'} onClick={() => onAnswer('na')} />
       </div>
 
-      {/* Guidance toggle */}
       {question.guidance && (
         <button
           onClick={() => setShowGuidance(!showGuidance)}
           className="flex items-center gap-2 text-xs text-cyan-400 hover:text-cyan-300 transition-colors"
         >
           <Info size={13} />
-          <span>{showGuidance ? 'Hide' : 'Show'} guidance</span>
+          <span>{showGuidance ? t('organizationalAssessment.hideGuidance') : t('organizationalAssessment.showGuidance')}</span>
           {showGuidance ? <ChevronDown size={13} /> : <ChevronRight size={13} />}
         </button>
       )}
 
-      {/* Guidance content */}
       {showGuidance && question.guidance && (
         <div className="p-3 rounded-lg bg-cyan-500/8 border border-cyan-500/15 text-sm text-navy-200 leading-relaxed">
           {question.guidance}
@@ -132,6 +132,7 @@ function QuestionCard({
 
 export default function OrganizationalAssessment() {
   const navigate = useNavigate()
+  const { t } = useTranslation()
   const { assessment, answers, answerQuestion, completeAssessment, progressPercent, isComplete } = useOrganizational()
   const [expandedSection, setExpandedSection] = useState<string | null>(orgSections[0])
 
@@ -148,76 +149,72 @@ export default function OrganizationalAssessment() {
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
-      {/* Header */}
       <div className="flex items-start justify-between">
         <div>
-          <h1 className="text-2xl font-bold font-syne text-white">Organizational Assessment</h1>
+          <h1 className="text-2xl font-bold font-syne text-white">{t('organizationalAssessment.pageTitle')}</h1>
           <p className="text-sm text-navy-300 mt-1">
-            NIS2 organizational controls and policy assessment
+            {t('organizationalAssessment.pageSubtitle')}
           </p>
         </div>
         {isComplete && (
           <Button variant="secondary" onClick={() => navigate('/organizational/results')}>
             <BarChart3 size={16} />
-            View Results
+            {t('organizationalAssessment.viewResultsButton')}
           </Button>
         )}
       </div>
 
-      {/* Progress card */}
       <Card glow>
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
             <Shield size={16} className="text-cyan-400" />
-            <h2 className="text-base font-bold font-syne text-white">Assessment Progress</h2>
+            <h2 className="text-base font-bold font-syne text-white">{t('organizationalAssessment.assessmentProgressTitle')}</h2>
           </div>
           <span className="text-sm font-semibold text-cyan-400">
-            {assessment.answered} / {assessment.totalQuestions} questions
+            {t('organizationalAssessment.questionsCount', { answered: assessment.answered, total: assessment.totalQuestions })}
           </span>
         </div>
         <ProgressBar value={progressPercent} animated color="bg-cyan-500" height="h-2.5" />
         <div className="flex items-center justify-between mt-3 text-sm">
-          <span className="text-navy-300">{progressPercent}% complete</span>
+          <span className="text-navy-300">{t('organizationalAssessment.percentComplete', { percent: progressPercent })}</span>
           {allAnswered && !isComplete && (
             <Button size="sm" onClick={handleComplete}>
-              Complete Assessment <ChevronRight size={14} />
+              {t('organizationalAssessment.completeAssessmentButton')} <ChevronRight size={14} />
             </Button>
           )}
         </div>
       </Card>
 
-      {/* Instructions */}
       <Card>
         <div className="flex items-start gap-3">
           <Info size={18} className="text-cyan-400 mt-0.5 flex-shrink-0" />
           <div className="text-sm text-navy-200 leading-relaxed space-y-2">
-            <p className="font-semibold text-white">How to complete this assessment:</p>
+            <p className="font-semibold text-white">{t('organizationalAssessment.instructionsTitle')}</p>
             <ul className="space-y-1 text-navy-300">
               <li className="flex items-start gap-2">
                 <ChevronRight size={14} className="text-cyan-400 mt-0.5 flex-shrink-0" />
-                <span><strong className="text-emerald-400">Yes</strong> — Control is fully implemented and documented</span>
+                <span><strong className="text-emerald-400">{t('organizationalAssessment.instructionYes')}</strong> — {t('organizationalAssessment.instructionYesDescription')}</span>
               </li>
               <li className="flex items-start gap-2">
                 <ChevronRight size={14} className="text-cyan-400 mt-0.5 flex-shrink-0" />
-                <span><strong className="text-yellow-400">Partial</strong> — Control is partially in place but needs improvement</span>
+                <span><strong className="text-yellow-400">{t('organizationalAssessment.instructionPartial')}</strong> — {t('organizationalAssessment.instructionPartialDescription')}</span>
               </li>
               <li className="flex items-start gap-2">
                 <ChevronRight size={14} className="text-cyan-400 mt-0.5 flex-shrink-0" />
-                <span><strong className="text-red-400">No</strong> — Control is not implemented or not documented</span>
+                <span><strong className="text-red-400">{t('organizationalAssessment.instructionNo')}</strong> — {t('organizationalAssessment.instructionNoDescription')}</span>
               </li>
               <li className="flex items-start gap-2">
                 <ChevronRight size={14} className="text-cyan-400 mt-0.5 flex-shrink-0" />
-                <span><strong className="text-navy-400">N/A</strong> — Not applicable to your organization</span>
+                <span><strong className="text-navy-400">{t('organizationalAssessment.instructionNa')}</strong> — {t('organizationalAssessment.instructionNaDescription')}</span>
               </li>
             </ul>
             <p className="text-cyan-400 text-xs mt-3">
-              Your answers are saved automatically to browser storage.
+              {t('organizationalAssessment.autoSaveNote')}
             </p>
           </div>
         </div>
       </Card>
 
-      {/* Questions by section */}
       <div className="space-y-3">
         {orgSections.map(section => {
           const sectionQuestions = organizationalQuestions.filter(q => q.section === section)
@@ -228,7 +225,6 @@ export default function OrganizationalAssessment() {
 
           return (
             <div key={section} className="glass-card rounded-xl overflow-hidden">
-              {/* Section header */}
               <button
                 onClick={() => setExpandedSection(isExpanded ? null : section)}
                 className="w-full flex items-center justify-between p-4 hover:bg-navy-800/40 transition-colors"
@@ -238,7 +234,7 @@ export default function OrganizationalAssessment() {
                   <div className="text-left">
                     <h3 className="text-base font-bold font-syne text-white">{section}</h3>
                     <p className="text-xs text-navy-400 mt-0.5">
-                      {sectionAnswered} of {sectionQuestions.length} answered
+                      {t('organizationalAssessment.answeredOfTotal', { answered: sectionAnswered, total: sectionQuestions.length })}
                     </p>
                   </div>
                 </div>
@@ -268,7 +264,6 @@ export default function OrganizationalAssessment() {
                 </div>
               </button>
 
-              {/* Questions */}
               {isExpanded && (
                 <div className="px-4 pb-4 space-y-3">
                   {sectionQuestions.map(q => (
@@ -286,19 +281,18 @@ export default function OrganizationalAssessment() {
         })}
       </div>
 
-      {/* Bottom CTA */}
       {allAnswered && !isComplete && (
         <Card className="text-center">
           <div className="flex flex-col items-center gap-4 py-4">
             <CheckCircle size={40} className="text-emerald-400" />
             <div>
-              <h3 className="text-lg font-bold font-syne text-white">All Questions Answered</h3>
+              <h3 className="text-lg font-bold font-syne text-white">{t('organizationalAssessment.allQuestionsAnsweredTitle')}</h3>
               <p className="text-sm text-navy-300 mt-1">
-                Ready to complete your assessment and view results
+                {t('organizationalAssessment.allQuestionsAnsweredSubtitle')}
               </p>
             </div>
             <Button size="lg" onClick={handleComplete}>
-              Complete Assessment <ChevronRight size={16} />
+              {t('organizationalAssessment.completeAssessmentButton')} <ChevronRight size={16} />
             </Button>
           </div>
         </Card>
