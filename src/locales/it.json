@@ -375,7 +375,9 @@
     "scanCompleteAction": "Scansione completata — Azione richiesta",
     "awsScoreDesc": "Il suo ambiente AWS ha ottenuto {{score}}% — {{failed}} di {{total}} verifiche non superate.",
     "newScan": "Nuova scansione",
-    "demoAccount": "Account demo"
+    "demoAccount": "Account demo",
+    "comingSoonTitle": "Prossimamente",
+    "comingSoonDesc": "Azure, Google Cloud (GCP) e la scansione dell'infrastruttura on-premises sono sulla nostra roadmap."
   },
   "controls": {
     "pageTitle": "Libreria dei controlli",

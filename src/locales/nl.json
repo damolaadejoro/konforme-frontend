@@ -375,7 +375,9 @@
     "scanCompleteAction": "Scan voltooid — Actie vereist",
     "awsScoreDesc": "Uw AWS-omgeving scoorde {{score}}% — {{failed}} van {{total}} controles niet geslaagd.",
     "newScan": "Nieuwe scan",
-    "demoAccount": "Demo-account"
+    "demoAccount": "Demo-account",
+    "comingSoonTitle": "Binnenkort beschikbaar",
+    "comingSoonDesc": "Azure, Google Cloud (GCP) en on-premises infrastructuurscanning staan op onze roadmap."
   },
   "controls": {
     "pageTitle": "Controlbibliotheek",

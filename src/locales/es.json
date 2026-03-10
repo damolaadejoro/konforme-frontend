@@ -375,7 +375,9 @@
     "scanCompleteAction": "Escaneo completado — Acción requerida",
     "awsScoreDesc": "Su entorno AWS obtuvo {{score}}% — {{failed}} de {{total}} verificaciones fallidas.",
     "newScan": "Nuevo escaneo",
-    "demoAccount": "Cuenta de demostración"
+    "demoAccount": "Cuenta de demostración",
+    "comingSoonTitle": "Próximamente",
+    "comingSoonDesc": "Azure, Google Cloud (GCP) y el escaneo de infraestructura local están en nuestra hoja de ruta."
   },
   "controls": {
     "pageTitle": "Biblioteca de controles",

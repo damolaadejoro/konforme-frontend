@@ -375,7 +375,9 @@
     "scanCompleteAction": "Scan terminé — Action requise",
     "awsScoreDesc": "Votre environnement AWS a obtenu {{score}}% — {{failed}} sur {{total}} vérifications échouées.",
     "newScan": "Nouveau scan",
-    "demoAccount": "Compte de démonstration"
+    "demoAccount": "Compte de démonstration",
+    "comingSoonTitle": "À venir bientôt",
+    "comingSoonDesc": "Azure, Google Cloud (GCP) et le scanning d'infrastructure on-premises sont sur notre feuille de route."
   },
   "controls": {
     "pageTitle": "Bibliothèque de contrôles",

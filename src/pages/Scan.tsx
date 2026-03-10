@@ -565,6 +565,14 @@ export default function Scan() {
               </div>
               <p className="text-xs text-navy-300">{t('scan.estDurationDesc')}</p>
             </div>
+
+            <div className="mt-4 p-3 rounded-lg bg-purple-500/8 border border-purple-500/15">
+              <div className="flex items-center gap-2 mb-1">
+                <Info size={13} className="text-purple-400" />
+                <span className="text-xs font-semibold text-purple-400">{t('scan.comingSoonTitle')}</span>
+              </div>
+              <p className="text-xs text-navy-300">{t('scan.comingSoonDesc')}</p>
+            </div>
           </Card>
         </div>
       )}

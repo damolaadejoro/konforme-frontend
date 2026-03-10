@@ -375,7 +375,9 @@
     "scanCompleteAction": "Scan Complete — Action Required",
     "awsScoreDesc": "Your AWS environment scored {{score}}% — {{failed}} of {{total}} checks failed.",
     "newScan": "New Scan",
-    "demoAccount": "Demo Account"
+    "demoAccount": "Demo Account",
+    "comingSoonTitle": "Coming Soon",
+    "comingSoonDesc": "Azure, Google Cloud (GCP), and on-premises infrastructure scanning are on our roadmap."
   },
   "controls": {
     "pageTitle": "Controls Library",
