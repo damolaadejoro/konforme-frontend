@@ -1,12 +1,11 @@
 import React from 'react'
-import type { EUCountryInfo } from '../types/country'
 
 function countryFlag(code: string): string {
   return [...code.toUpperCase()].map(c => String.fromCodePoint(0x1f1e6 + c.charCodeAt(0) - 65)).join('')
 }
 
 interface CountrySelectorProps {
-  countries: EUCountryInfo[]
+  countries: { code: string; name: string }[]
   value: string | null
   onChange: (code: string) => void
   label?: string
