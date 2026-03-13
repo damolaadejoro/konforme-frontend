@@ -99,12 +99,13 @@ export default function NIS2Overview() {
   const technicalScore = backendScore?.technicalScore ?? complianceScore.technical
   const tw = backendScore?.technicalWeight ?? 0.6
   const hw = backendScore?.humanWeight ?? 0.4
-  const overallScore = backendScore?.overallScore
-    ?? (technicalScore > 0 && assessmentScore > 0
-      ? Math.round(technicalScore * tw + assessmentScore * hw)
-      : technicalScore > 0 ? technicalScore
-      : assessmentScore > 0 ? assessmentScore
-      : 0)
+  // Always compute overall on the frontend: the backend only includes submitted
+  // assessments, but the frontend has the live/draft assessment score too.
+  const overallScore = technicalScore > 0 && assessmentScore > 0
+    ? Math.round(technicalScore * tw + assessmentScore * hw)
+    : technicalScore > 0 ? technicalScore
+    : assessmentScore > 0 ? assessmentScore
+    : 0
   const peopleScore = complianceScore.people
 
   const score = overallScore

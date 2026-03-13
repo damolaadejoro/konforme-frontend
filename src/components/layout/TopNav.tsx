@@ -5,6 +5,7 @@ import { Bell, ChevronDown, RefreshCw, Save, Check, LogOut } from 'lucide-react'
 import { formatDistanceToNow } from 'date-fns'
 import { useControlsContext } from '../../context/ControlsContext'
 import { useAuth } from '../../context/AuthContext'
+import { useAssessment } from '../../hooks/useAssessment'
 import { getCombinedScore, getStoredAuth, getCloudCredentials, isConnected, type CombinedScoreResponse, type CloudCredential } from '../../services/api'
 import LanguageSwitcher from '../LanguageSwitcher'
 
@@ -16,6 +17,7 @@ export default function TopNav() {
   const { t } = useTranslation()
   const { lastSaved, complianceScore } = useControlsContext()
   const { isAuthenticated, accountName, email, country, awsAccounts, selectedAwsAccountId, selectAwsAccount, logout } = useAuth()
+  const { projectedScore: assessmentScore } = useAssessment()
   const navigate = useNavigate()
   const [showAccountDropdown, setShowAccountDropdown] = useState(false)
   const [showUserMenu, setShowUserMenu] = useState(false)
@@ -46,7 +48,14 @@ export default function TopNav() {
   }, [selectedAwsAccountId])
 
   const selectedAccount = awsAccounts.find(a => a.id === selectedAwsAccountId)
-  const score = backendScore?.overallScore ?? complianceScore.overall
+  const technicalScore = backendScore?.technicalScore ?? complianceScore.technical
+  const tw = backendScore?.technicalWeight ?? 0.6
+  const hw = backendScore?.humanWeight ?? 0.4
+  const score = technicalScore > 0 && assessmentScore > 0
+    ? Math.round(technicalScore * tw + assessmentScore * hw)
+    : technicalScore > 0 ? technicalScore
+    : assessmentScore > 0 ? assessmentScore
+    : 0
   const displayName = isAuthenticated ? accountName : 'No Account'
   const displayId = selectedAccount?.awsAccountId ?? '—'
   const initials = displayName
