@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useCallback, useEffect } from 'react'
+import React, { createContext, useContext, useState, useCallback, useEffect, useMemo, useRef } from 'react'
 import {
   register as apiRegister,
   login as apiLogin,
@@ -56,6 +56,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   })
 
+  // Ref to avoid recreating login/register callbacks when accountId changes
+  const accountIdRef = useRef(auth.accountId)
+  useEffect(() => { accountIdRef.current = auth.accountId }, [auth.accountId])
+
   // On init, verify session by calling /auth/me (uses httpOnly cookie)
   useEffect(() => {
     getMe()
@@ -108,7 +112,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const loginFn = useCallback(async (email: string, password: string) => {
-    const previousAccountId = auth.accountId
+    const previousAccountId = accountIdRef.current
     const data = await apiLogin(email, password)
 
     if (previousAccountId && previousAccountId !== data.account_id) {
@@ -141,10 +145,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         selectedAwsAccountId: awsAccounts.length > 0 ? awsAccounts[0].id : null,
       }))
     } catch { /* ignore */ }
-  }, [auth.accountId])
+  }, [])
 
   const registerFn = useCallback(async (name: string, email: string, password: string, country?: string | null, language?: string | null) => {
-    const previousAccountId = auth.accountId
+    const previousAccountId = accountIdRef.current
     const data = await apiRegister(name, email, password, country, language)
 
     if (previousAccountId && previousAccountId !== data.account_id) {
@@ -163,7 +167,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       awsAccounts: [],
       selectedAwsAccountId: null,
     })
-  }, [auth.accountId])
+  }, [])
 
   const logoutFn = useCallback(async () => {
     await apiLogout()
@@ -217,20 +221,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setAuth(prev => ({ ...prev, language }))
   }, [])
 
+  const contextValue = useMemo<AuthContextValue>(() => ({
+    ...auth,
+    login: loginFn,
+    register: registerFn,
+    logout: logoutFn,
+    addAwsAccount,
+    removeAwsAccount,
+    selectAwsAccount,
+    setAccountName: setAccountNameFn,
+    setEmail: setEmailFn,
+    setCountry: setCountryFn,
+    setLanguage: setLanguageFn,
+  }), [auth, loginFn, registerFn, logoutFn, addAwsAccount, removeAwsAccount, selectAwsAccount, setAccountNameFn, setEmailFn, setCountryFn, setLanguageFn])
+
   return (
-    <AuthContext.Provider value={{
-      ...auth,
-      login: loginFn,
-      register: registerFn,
-      logout: logoutFn,
-      addAwsAccount,
-      removeAwsAccount,
-      selectAwsAccount,
-      setAccountName: setAccountNameFn,
-      setEmail: setEmailFn,
-      setCountry: setCountryFn,
-      setLanguage: setLanguageFn,
-    }}>
+    <AuthContext.Provider value={contextValue}>
       {children}
     </AuthContext.Provider>
   )

@@ -20,7 +20,7 @@ import {
   Loader2
 } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
-import { useControls } from '../hooks/useControls'
+import { useControlsContext } from '../context/ControlsContext'
 import { Card, Button, InfoTooltip, Tooltip } from '../components/ui'
 import { Control, ControlCategory, ControlSeverity, ControlStatus } from '../types/controls'
 import { format } from 'date-fns'
@@ -59,7 +59,8 @@ function ControlDrawer({
   onUpdate,
   onAddEvidence,
   onRemoveEvidence,
-  campaigns
+  campaigns,
+  countryOverlay,
 }: {
   control: Control
   onClose: () => void
@@ -67,6 +68,7 @@ function ControlDrawer({
   onAddEvidence: (evidence: any) => void
   onRemoveEvidence: (evidenceId: string) => void
   campaigns: any[]
+  countryOverlay: { nationalLegalReference: string | null; nationalSpecification: string | null; goesBeyondEu: boolean; additionalRequirements: string[] } | null
 }) {
   const { t } = useTranslation()
   const [isEditingStatus, setIsEditingStatus] = useState(false)
@@ -261,6 +263,49 @@ function ControlDrawer({
             </div>
             <p className="text-[14px] text-[#CBD8E8] leading-relaxed">{control.description}</p>
           </div>
+
+          {/* Country-Specific Info */}
+          {(() => {
+            const legalRef = countryOverlay?.nationalLegalReference || control.nationalLegalReference
+            const spec = countryOverlay?.nationalSpecification || control.nationalSpecification
+            const beyondEu = countryOverlay?.goesBeyondEu || control.goesBeyondEu
+            const addReqs = countryOverlay?.additionalRequirements?.length ? countryOverlay.additionalRequirements : (control.additionalRequirements || [])
+            if (!legalRef && !beyondEu && !control.isCountrySpecific) return null
+            return (
+              <div className="p-4 rounded-lg bg-amber-500/5 border border-amber-500/20">
+                <div className="flex items-center gap-2 mb-2">
+                  <label className="text-xs font-semibold text-amber-300 uppercase tracking-wider">
+                    {control.isCountrySpecific
+                      ? t('controls.nationalRequirement', 'National Requirement')
+                      : t('controls.nationalImplementation', 'National Implementation')}
+                  </label>
+                  {beyondEu && (
+                    <span className="text-xs px-2 py-0.5 rounded bg-orange-500/10 text-orange-400 border border-orange-500/20">
+                      {t('controls.goesBeyondEu', 'Beyond EU')}
+                    </span>
+                  )}
+                </div>
+                {legalRef && (
+                  <p className="text-[13px] text-amber-200 mb-1">
+                    <span className="font-medium">{t('controls.legalRef', 'Legal Reference')}:</span> {legalRef}
+                  </p>
+                )}
+                {spec && (
+                  <p className="text-[13px] text-[#CBD8E8] mb-2">{spec}</p>
+                )}
+                {addReqs.length > 0 && (
+                  <div className="mt-2">
+                    <p className="text-xs font-semibold text-[#94b4d1] mb-1">{t('controls.additionalRequirements', 'Additional Requirements')}:</p>
+                    <ul className="list-disc list-inside text-[13px] text-[#CBD8E8] space-y-1">
+                      {addReqs.map((req: string, i: number) => (
+                        <li key={i}>{req}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+            )
+          })()}
 
           {/* Maturity Status */}
           <div className="p-4 rounded-lg bg-navy-800/60 border border-navy-700">
@@ -729,20 +774,31 @@ export default function ControlsLibrary() {
     addEvidence,
     removeEvidence,
     filterControls,
-    getCampaignsForControl
-  } = useControls()
+    getCampaignsForControl,
+    getCountryOverlay,
+  } = useControlsContext()
 
   const validStatuses: ControlStatus[] = ['Not Started', 'Planned', 'Partial', 'Implemented']
   const validSeverities: ControlSeverity[] = ['critical', 'high', 'medium']
   const initialStatus = searchParams.get('status')
   const initialSeverity = searchParams.get('severity')
+  const initialArea = searchParams.get('area')
   const initialView = searchParams.get('view')
+  const openControlId = searchParams.get('open')
+
+  // Auto-open control drawer if ?open=controlId is present
+  useEffect(() => {
+    if (openControlId && controls.length > 0 && !selectedControl) {
+      const control = controls.find(c => c.id === openControlId)
+      if (control) setSelectedControl(control)
+    }
+  }, [openControlId, controls])
   const [searchQuery, setSearchQuery] = useState('')
   const [categoryFilter, setCategoryFilter] = useState<ControlCategory | ''>('')
   const [statusFilter, setStatusFilter] = useState<ControlStatus | ''>(
     validStatuses.includes(initialStatus as ControlStatus) ? (initialStatus as ControlStatus) : ''
   )
-  const [articleAreaFilter, setArticleAreaFilter] = useState('')
+  const [articleAreaFilter, setArticleAreaFilter] = useState(initialArea || '')
   const [severityFilter, setSeverityFilter] = useState<ControlSeverity | ''>(
     validSeverities.includes(initialSeverity as ControlSeverity) ? (initialSeverity as ControlSeverity) : ''
   )
@@ -953,7 +1009,9 @@ export default function ControlsLibrary() {
           </div>
         ) : (
           <div className="space-y-2">
-            {filteredControls.map((control, i) => (
+            {filteredControls.map((control, i) => {
+              const overlay = getCountryOverlay(control.article)
+              return (
               <div
                 key={control.id}
                 onClick={() => setSelectedControl(control)}
@@ -969,6 +1027,23 @@ export default function ControlsLibrary() {
                     <h3 className="text-[15px] font-semibold text-white group-hover:text-cyan-400 transition-colors truncate">
                       {control.title}
                     </h3>
+                    {control.isCountrySpecific && (
+                      <span className="text-xs px-2 py-0.5 rounded bg-violet-500/10 text-violet-400 border border-violet-500/20 flex-shrink-0">
+                        {t('controls.nationalRequirement', 'National Requirement')}
+                      </span>
+                    )}
+                    {(overlay?.goesBeyondEu || control.goesBeyondEu) && (
+                      <Tooltip content={t('controls.goesBeyondEuTooltip', 'This control has stricter national requirements than the EU baseline')}>
+                        <span className="text-xs px-2 py-0.5 rounded bg-orange-500/10 text-orange-400 border border-orange-500/20 flex-shrink-0">
+                          {t('controls.goesBeyondEu', 'Beyond EU')}
+                        </span>
+                      </Tooltip>
+                    )}
+                    {(overlay?.nationalLegalReference || control.nationalLegalReference) && (
+                      <span className="text-[10px] px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-300 border border-amber-500/20 flex-shrink-0">
+                        {overlay?.nationalLegalReference || control.nationalLegalReference}
+                      </span>
+                    )}
                     {control.isAutoPopulated && (
                       <Tooltip content={t('controls.autoTooltip')}>
                         <span className="text-xs px-2 py-0.5 rounded bg-purple-500/10 text-purple-400 border border-purple-500/20 flex-shrink-0">
@@ -1014,7 +1089,8 @@ export default function ControlsLibrary() {
                   <ChevronRight size={16} className="text-[#4a6580] group-hover:text-cyan-400 transition-colors" />
                 </div>
               </div>
-            ))}
+              )
+            })}
           </div>
         )}
       </Card>
@@ -1035,6 +1111,7 @@ export default function ControlsLibrary() {
             removeEvidence(selectedControl.id, evidenceId)
           }}
           campaigns={getCampaignsForControl(selectedControl.id)}
+          countryOverlay={getCountryOverlay(selectedControl.article)}
         />
       )}
     </div>

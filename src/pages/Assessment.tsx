@@ -28,6 +28,8 @@ export default function Assessment() {
     answeredCount,
     totalQuestions,
     progressPercent,
+    nationalRefMap,
+    additionalQuestions,
   } = useAssessment()
 
   const [activeArticle, setActiveArticle] = useState(ARTICLES[0].article)
@@ -195,17 +197,61 @@ export default function Assessment() {
           {/* Question cards */}
           {activeQuestions.map((q, i) => {
             const resp = responses[q.id]
+            const countryRef = nationalRefMap[q.id]
             return (
-              <QuestionCard
-                key={q.id}
-                question={q}
-                maturityLevel={resp?.maturityLevel}
-                notes={resp?.notes || ''}
-                onAnswer={(level, notes) => answerQuestion(q.id, level, notes)}
-                index={i}
-              />
+              <div key={q.id}>
+                {countryRef?.nationalLegalReference && (
+                  <div className="mb-1 flex items-center gap-2">
+                    <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                      {countryRef.nationalLegalReference}
+                    </span>
+                  </div>
+                )}
+                <QuestionCard
+                  question={q}
+                  maturityLevel={resp?.maturityLevel}
+                  notes={resp?.notes || ''}
+                  onAnswer={(level, notes) => answerQuestion(q.id, level, notes)}
+                  index={i}
+                />
+              </div>
             )
           })}
+
+          {/* Country-specific additional questions */}
+          {additionalQuestions.filter(q => q.article === activeArticle).length > 0 && (
+            <div className="mt-6">
+              <div className="flex items-center gap-2 mb-3">
+                <span className="inline-flex items-center px-2.5 py-1 rounded text-xs font-semibold bg-purple-500/20 text-purple-300 border border-purple-500/30">
+                  {t('assessment.nationalRequirement', 'National Requirement')}
+                </span>
+                <span className="text-xs text-[#94b4d1]">{t('assessment.countrySpecificQuestions', 'Country-specific questions')}</span>
+              </div>
+              {additionalQuestions
+                .filter(q => q.article === activeArticle)
+                .map((q, i) => {
+                  const resp = responses[q.id]
+                  return (
+                    <div key={q.id} className="mb-4">
+                      {q.nationalLegalReference && (
+                        <div className="mb-1">
+                          <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                            {q.nationalLegalReference}
+                          </span>
+                        </div>
+                      )}
+                      <QuestionCard
+                        question={q}
+                        maturityLevel={resp?.maturityLevel}
+                        notes={resp?.notes || ''}
+                        onAnswer={(level, notes) => answerQuestion(q.id, level, notes)}
+                        index={activeQuestions.length + i}
+                      />
+                    </div>
+                  )
+                })}
+            </div>
+          )}
 
           {/* Navigation footer */}
           <div className="flex justify-between pt-4">

@@ -127,6 +127,18 @@
     "scoreThreshold": "Punteggio sotto la soglia",
     "scoreThresholdDesc": "Avviso quando il punteggio scende sotto il 50%",
     "saved": "Impostazioni salvate con successo",
+    "scoringConfig": "Pesi del punteggio",
+    "scoringConfigDesc": "Regola quanto peso il tuo punteggio di conformità attribuisce ai controlli dell'infrastruttura tecnica rispetto alle risposte della valutazione organizzativa.",
+    "technicalWeight": "Tecnico",
+    "organizationalWeight": "Organizzativo",
+    "currentScore": "Punteggio attuale",
+    "previewScore": "Anteprima",
+    "grade": "Voto",
+    "resetDefaults": "Ripristina a 60/40",
+    "scoringSaved": "Pesi del punteggio salvati con successo",
+    "scoringSaveError": "Errore nel salvataggio dei pesi del punteggio",
+    "before": "Prima",
+    "after": "Dopo",
     "version": "Konforme v1.0.0 · Progettato per la conformità NIS2 · © 2024 Konforme"
   },
   "overview": {

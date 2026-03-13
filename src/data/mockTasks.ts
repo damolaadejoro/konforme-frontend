@@ -22,7 +22,7 @@ export const mockTasks: Record<string, MockTask> = {
     company: 'Acme Corp',
     taskName: 'Acknowledge Information Security Policy',
     assignedBy: 'IT Security Team',
-    dueDate: '2024-05-15',
+    dueDate: '2026-06-30',
     policyContent: {
       title: 'Information Security Policy',
       summary: [
@@ -42,7 +42,7 @@ export const mockTasks: Record<string, MockTask> = {
     company: 'Acme Corp',
     taskName: 'Security Awareness Training',
     assignedBy: 'IT Security Team',
-    dueDate: '2024-06-30'
+    dueDate: '2026-07-31'
   },
   'task-003': {
     id: 'task-003',
@@ -52,7 +52,7 @@ export const mockTasks: Record<string, MockTask> = {
     company: 'Acme Corp',
     taskName: 'Acknowledge Information Security Policy',
     assignedBy: 'IT Security Team',
-    dueDate: '2024-05-15',
+    dueDate: '2026-06-30',
     policyContent: {
       title: 'Information Security Policy',
       summary: [
@@ -72,7 +72,7 @@ export const mockTasks: Record<string, MockTask> = {
     company: 'Acme Corp',
     taskName: 'Security Awareness Training',
     assignedBy: 'IT Security Team',
-    dueDate: '2024-06-30'
+    dueDate: '2026-07-31'
   }
 }
 

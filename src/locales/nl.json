@@ -127,6 +127,18 @@
     "scoreThreshold": "Score onder drempel",
     "scoreThresholdDesc": "Waarschuwing wanneer de score onder 50% zakt",
     "saved": "Instellingen succesvol opgeslagen",
+    "scoringConfig": "Scoregewichten",
+    "scoringConfigDesc": "Pas aan hoeveel gewicht uw compliancescore geeft aan technische infrastructuurcontroles versus organisatorische beoordelingsantwoorden.",
+    "technicalWeight": "Technisch",
+    "organizationalWeight": "Organisatorisch",
+    "currentScore": "Huidige score",
+    "previewScore": "Voorbeeld",
+    "grade": "Cijfer",
+    "resetDefaults": "Terugzetten naar 60/40",
+    "scoringSaved": "Scoregewichten succesvol opgeslagen",
+    "scoringSaveError": "Fout bij het opslaan van scoregewichten",
+    "before": "Voor",
+    "after": "Na",
     "version": "Konforme v1.0.0 · Gebouwd voor NIS2-compliance · © 2024 Konforme"
   },
   "overview": {

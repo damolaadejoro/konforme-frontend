@@ -73,6 +73,18 @@
     "scoreThreshold": "Pontuação abaixo do limiar",
     "scoreThresholdDesc": "Alertar quando a pontuação desce abaixo de 50%",
     "saved": "Definições guardadas com sucesso",
+    "scoringConfig": "Pesos da pontuação",
+    "scoringConfigDesc": "Ajuste quanto peso a sua pontuação de conformidade atribui às verificações de infraestrutura técnica em comparação com as respostas da avaliação organizacional.",
+    "technicalWeight": "Técnico",
+    "organizationalWeight": "Organizacional",
+    "currentScore": "Pontuação atual",
+    "previewScore": "Pré-visualização",
+    "grade": "Nota",
+    "resetDefaults": "Repor para 60/40",
+    "scoringSaved": "Pesos da pontuação guardados com sucesso",
+    "scoringSaveError": "Erro ao guardar os pesos da pontuação",
+    "before": "Antes",
+    "after": "Depois",
     "version": "Konforme v1.0.0 · Feito para conformidade NIS2 · © 2024 Konforme"
   },
   "overview": {

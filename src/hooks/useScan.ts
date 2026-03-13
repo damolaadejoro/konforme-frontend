@@ -3,6 +3,7 @@ import { ScanCheckProgress, ScanStatus } from '../types'
 import { mockScanChecks, checkResults } from '../data/mockData'
 import {
   startScan as apiStartScan,
+  startProviderScan as apiStartProviderScan,
   getScan as apiGetScan,
   getScanHistory,
   getStoredAuth,
@@ -57,7 +58,7 @@ export function useScan(selectedAwsAccountId?: string | null) {
         } else if (scan.status === 'error') {
           if (pollingRef.current) clearInterval(pollingRef.current)
           setStatus('error')
-          setError('Scan failed. Check your IAM role permissions.')
+          setError('Scan failed. Check your permissions.')
         } else {
           setProgress(prev => Math.min(prev + 5, 90))
         }
@@ -97,7 +98,7 @@ export function useScan(selectedAwsAccountId?: string | null) {
     }
   }, [pollScan, selectedAwsAccountId])
 
-  // Real API scan
+  // Real API scan (AWS — legacy path)
   const startApiScan = useCallback(async (awsAccountId?: string) => {
     const { accountId, selectedAwsAccountId } = getStoredAuth()
     const targetAwsId = awsAccountId || selectedAwsAccountId
@@ -118,6 +119,29 @@ export function useScan(selectedAwsAccountId?: string | null) {
 
     try {
       const { scan_id } = await apiStartScan(accountId, targetAwsId)
+      pollScan(scan_id)
+    } catch (err) {
+      setStatus('error')
+      setError(err instanceof Error ? err.message : 'Failed to start scan')
+    }
+  }, [pollScan])
+
+  // Provider scan (Azure or AWS via credential ID)
+  const startProviderScanFn = useCallback(async (credentialId: string, provider: 'aws' | 'azure') => {
+    const { accountId } = getStoredAuth()
+    if (!accountId) {
+      setError('No connected account.')
+      return
+    }
+
+    setStatus('scanning')
+    setError(null)
+    setProgress(0)
+    setChecks([])
+    setScanResult(null)
+
+    try {
+      const { scan_id } = await apiStartProviderScan(accountId, credentialId, provider)
       pollScan(scan_id)
     } catch (err) {
       setStatus('error')
@@ -200,6 +224,7 @@ export function useScan(selectedAwsAccountId?: string | null) {
     error,
     resuming,
     startScan,
+    startProviderScan: startProviderScanFn,
     resetScan,
   }
 }

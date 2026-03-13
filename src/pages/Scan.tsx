@@ -17,11 +17,20 @@ import {
   ChevronUp,
   Copy,
   Check,
+  Cloud,
 } from 'lucide-react'
 import { useScan } from '../hooks/useScan'
 import { useAuth } from '../context/AuthContext'
 import { AwsAccountCredentials } from '../types'
+import {
+  getCloudCredentials,
+  addAzureCredential,
+  getStoredAuth,
+  type CloudCredential,
+} from '../services/api'
 import { Card, Button, Input, Select, SeverityBadge, ProgressBar, InfoTooltip, Tooltip as AppTooltip } from '../components/ui'
+
+type Provider = 'aws' | 'azure'
 
 const IAM_POLICY_JSON = `{
   "Version": "2012-10-17",
@@ -76,12 +85,55 @@ const REGIONS = [
   'eu-north-1', 'us-east-1', 'us-east-2', 'us-west-2', 'ap-southeast-1',
 ]
 
-function ScanTerminal({ checks, currentIndex, progress, status, scanRegion }: {
+const AWS_SCAN_DOMAINS = [
+  { article: 'Art 21(2)(i)', labelKey: 'scan.iamAccessControl', checks: 5, color: 'text-cyan-400' },
+  { article: 'Art 21(2)(a)', labelKey: 'scan.monitoringLogging', checks: 3, color: 'text-purple-400' },
+  { article: 'Art 21(2)(h)', labelKey: 'scan.encryption', checks: 4, color: 'text-blue-400' },
+  { article: 'Art 21(2)(b/e)', labelKey: 'scan.businessContinuity', checks: 3, color: 'text-emerald-400' },
+]
+
+const AZURE_SCAN_DOMAINS = [
+  { article: 'Art 21(2)(i)', labelKey: 'scan.azureAccessControl', checks: 5, color: 'text-cyan-400' },
+  { article: 'Art 21(2)(b/e)', labelKey: 'scan.azureBusinessContinuity', checks: 4, color: 'text-emerald-400' },
+  { article: 'Art 21(2)(d)', labelKey: 'scan.azureDataProtection', checks: 4, color: 'text-amber-400' },
+  { article: 'Art 21(2)(h)', labelKey: 'scan.azureEncryption', checks: 4, color: 'text-blue-400' },
+  { article: 'Art 21(2)(e)', labelKey: 'scan.azureNetwork', checks: 4, color: 'text-orange-400' },
+  { article: 'Art 21(2)(a)', labelKey: 'scan.azureLogging', checks: 4, color: 'text-purple-400' },
+]
+
+function ProviderTabs({ active, onChange }: { active: Provider; onChange: (p: Provider) => void }) {
+  const { t } = useTranslation()
+  return (
+    <div className="flex gap-1 p-1 rounded-lg bg-navy-900/60 border border-navy-700 w-fit">
+      {([
+        { id: 'aws' as Provider, label: t('scan.providerAws') },
+        { id: 'azure' as Provider, label: t('scan.providerAzure') },
+      ]).map(tab => (
+        <button
+          key={tab.id}
+          onClick={() => onChange(tab.id)}
+          className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all ${
+            active === tab.id
+              ? 'bg-cyan-500/15 text-cyan-400 border border-cyan-500/30'
+              : 'text-navy-400 hover:text-navy-200 border border-transparent'
+          }`}
+        >
+          <Cloud size={14} />
+          {tab.label}
+        </button>
+      ))}
+    </div>
+  )
+}
+
+function ScanTerminal({ checks, currentIndex, progress, status, scanRegion, provider, subscriptionId }: {
   checks: ReturnType<typeof useScan>['checks']
   currentIndex: number
   progress: number
   status: string
   scanRegion: string
+  provider: Provider
+  subscriptionId?: string
 }) {
   const { t } = useTranslation()
   const bottomRef = useRef<HTMLDivElement>(null)
@@ -91,6 +143,13 @@ function ScanTerminal({ checks, currentIndex, progress, status, scanRegion }: {
   }, [checks])
 
   const started = checks.filter(c => c.status !== 'pending')
+
+  const terminalCommand = provider === 'azure'
+    ? `$ konforme scan --provider azure --subscription ${subscriptionId || '<id>'}`
+    : `$ konforme scan --framework nis2 --region ${scanRegion}`
+
+  const initMsg = provider === 'azure' ? t('scan.initAzureSession') : t('scan.initSession')
+  const rulesetMsg = provider === 'azure' ? t('scan.loadingAzureRuleset') : t('scan.loadingRuleset')
 
   return (
     <div className="glass-card rounded-xl overflow-hidden">
@@ -128,9 +187,9 @@ function ScanTerminal({ checks, currentIndex, progress, status, scanRegion }: {
       <div className="h-96 overflow-y-auto bg-navy-950 p-4 font-mono text-xs space-y-1.5">
         {/* Boot messages */}
         <div className="text-navy-400 mb-3">
-          <p className="text-cyan-500 font-bold">$ konforme scan --framework nis2 --region {scanRegion}</p>
-          <p className="mt-1 text-navy-500">{t('scan.initSession')}</p>
-          <p className="text-navy-500">{t('scan.loadingRuleset')}</p>
+          <p className="text-cyan-500 font-bold">{terminalCommand}</p>
+          <p className="mt-1 text-navy-500">{initMsg}</p>
+          <p className="text-navy-500">{rulesetMsg}</p>
           <p className="text-navy-500">{t('scan.startingScan')}</p>
           <p className="text-navy-500 mb-3">─────────────────────────────────────────</p>
         </div>
@@ -236,7 +295,7 @@ function ScanTerminal({ checks, currentIndex, progress, status, scanRegion }: {
   )
 }
 
-function ScanComplete({ onReset, scanResult }: { onReset: () => void; scanResult: ReturnType<typeof useScan>['scanResult'] }) {
+function ScanComplete({ onReset, scanResult, provider }: { onReset: () => void; scanResult: ReturnType<typeof useScan>['scanResult']; provider: Provider }) {
   const { t } = useTranslation()
   const navigate = useNavigate()
 
@@ -269,6 +328,11 @@ function ScanComplete({ onReset, scanResult }: { onReset: () => void; scanResult
               <h3 className={`font-bold font-syne ${scoreClasses.text}`}>
                 {isCompliant ? t('scan.scanCompleteCompliant') : t('scan.scanCompleteAction')}
               </h3>
+              <span className={`text-xs px-2 py-0.5 rounded-full font-mono ${
+                provider === 'azure' ? 'bg-blue-500/15 text-blue-400' : 'bg-orange-500/15 text-orange-400'
+              }`}>
+                {provider.toUpperCase()}
+              </span>
             </div>
             <p className="text-sm text-navy-300">
               {t('scan.awsScoreDesc', { score, failed, total })}
@@ -310,9 +374,377 @@ function ScanComplete({ onReset, scanResult }: { onReset: () => void; scanResult
   )
 }
 
+function AwsIdleContent({
+  awsAccounts,
+  selectedAwsAccountId,
+  selectAwsAccount,
+  showAddForm,
+  setShowAddForm,
+  addCreds,
+  setAddCreds,
+  connectError,
+  handleAddAwsAccount,
+  addingAccount,
+  showIamPolicy,
+  setShowIamPolicy,
+  copiedPolicy,
+  setCopiedPolicy,
+  handleRunScan,
+  handleDemo,
+  resuming,
+}: {
+  awsAccounts: any[]
+  selectedAwsAccountId: string | null
+  selectAwsAccount: (id: string) => void
+  showAddForm: boolean
+  setShowAddForm: (v: boolean) => void
+  addCreds: AwsAccountCredentials
+  setAddCreds: React.Dispatch<React.SetStateAction<AwsAccountCredentials>>
+  connectError: string | null
+  handleAddAwsAccount: (e: React.FormEvent) => void
+  addingAccount: boolean
+  showIamPolicy: boolean
+  setShowIamPolicy: (v: boolean) => void
+  copiedPolicy: boolean
+  setCopiedPolicy: (v: boolean) => void
+  handleRunScan: () => void
+  handleDemo: () => void
+  resuming: boolean
+}) {
+  const { t } = useTranslation()
+  return (
+    <div className="space-y-5">
+      {/* AWS Account selector */}
+      <div className="space-y-2">
+        <div className="flex items-center justify-between">
+          <span className="text-xs text-navy-400 uppercase tracking-wider font-semibold">
+            {awsAccounts.length === 0 ? t('scan.addFirstAccount') : t('scan.awsAccounts')}
+          </span>
+          {awsAccounts.length > 0 && (
+            <Button variant="ghost" size="sm" onClick={() => setShowAddForm(!showAddForm)} className="text-cyan-400 hover:text-cyan-300">
+              {showAddForm ? t('common.cancel') : t('scan.addAccount')}
+            </Button>
+          )}
+        </div>
+        {awsAccounts.map((acc: any) => (
+          <div
+            key={acc.id}
+            onClick={() => selectAwsAccount(acc.id)}
+            className={`p-3 rounded-lg border cursor-pointer transition-all ${
+              acc.id === selectedAwsAccountId
+                ? 'bg-cyan-500/8 border-cyan-500/30'
+                : 'bg-navy-900/40 border-navy-800 hover:border-navy-600'
+            }`}
+          >
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-white">{acc.alias}</p>
+                <p className="text-xs text-navy-400 font-mono mt-0.5">{acc.awsAccountId} · {acc.awsRegion}</p>
+              </div>
+              {acc.id === selectedAwsAccountId && (
+                <div className="w-2 h-2 rounded-full bg-cyan-400" />
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Required IAM Permissions */}
+      {(showAddForm || awsAccounts.length === 0) && (
+        <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/30">
+          <div className="flex items-start gap-3">
+            <AlertTriangle size={18} className="text-amber-400 mt-0.5 flex-shrink-0" />
+            <div className="flex-1">
+              <h3 className="text-sm font-bold text-amber-300">{t('scan.iamPermissionsTitle')}</h3>
+              <p className="text-xs text-navy-300 mt-1">{t('scan.iamPermissionsDesc')}</p>
+              <button
+                type="button"
+                onClick={() => setShowIamPolicy(!showIamPolicy)}
+                className="mt-2 flex items-center gap-1.5 text-xs font-semibold text-cyan-400 hover:text-cyan-300 transition-colors"
+              >
+                {showIamPolicy ? t('scan.hideIamPolicy') : t('scan.viewIamPolicy')}
+                {showIamPolicy ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+              </button>
+              {showIamPolicy && (
+                <div className="mt-3 space-y-3">
+                  <div className="relative">
+                    <pre className="text-xs font-mono text-navy-200 bg-navy-950 rounded-lg p-3 overflow-x-auto max-h-64 overflow-y-auto border border-navy-800">
+                      {IAM_POLICY_JSON}
+                    </pre>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        navigator.clipboard.writeText(IAM_POLICY_JSON)
+                        setCopiedPolicy(true)
+                        setTimeout(() => setCopiedPolicy(false), 2000)
+                      }}
+                      className="absolute top-2 right-2 flex items-center gap-1 px-2 py-1 rounded text-xs bg-navy-800 border border-navy-700 text-navy-300 hover:text-cyan-400 hover:border-cyan-500/30 transition-colors"
+                    >
+                      {copiedPolicy ? <><Check size={12} className="text-emerald-400" /> {t('common.copied')}</> : <><Copy size={12} /> {t('common.copy')}</>}
+                    </button>
+                  </div>
+                  <div className="p-2.5 rounded-lg bg-navy-950/60 border border-navy-800">
+                    <p className="text-xs text-navy-400 leading-relaxed">{t('scan.iamSteps')}</p>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Add AWS Account form */}
+      {(showAddForm || awsAccounts.length === 0) && (
+        <form onSubmit={handleAddAwsAccount} className="space-y-3 p-4 rounded-lg bg-navy-900/60 border border-navy-700">
+          <h3 className="text-sm font-semibold text-white">
+            {awsAccounts.length === 0 ? t('scan.addFirstAccount') : t('scan.addAwsAccount')}
+          </h3>
+          <Input label={t('scan.aliasLabel')} placeholder={t('scan.aliasPlaceholder')} value={addCreds.alias} onChange={e => setAddCreds(p => ({ ...p, alias: e.target.value }))} required />
+          <Input label={t('scan.accessKeyLabel')} placeholder={t('scan.accessKeyPlaceholder')} value={addCreds.accessKeyId} onChange={e => setAddCreds(p => ({ ...p, accessKeyId: e.target.value }))} required />
+          <Input label={t('scan.secretKeyLabel')} type="password" placeholder={t('scan.secretKeyPlaceholder')} value={addCreds.secretAccessKey} onChange={e => setAddCreds(p => ({ ...p, secretAccessKey: e.target.value }))} required />
+          <Input label={t('scan.sessionTokenLabel')} placeholder={t('scan.sessionTokenPlaceholder')} value={addCreds.sessionToken} onChange={e => setAddCreds(p => ({ ...p, sessionToken: e.target.value }))} />
+          <Select label={t('scan.awsRegionLabel')} value={addCreds.region} onChange={e => setAddCreds(p => ({ ...p, region: e.target.value }))} options={REGIONS.map(r => ({ value: r, label: r }))} />
+          {connectError && (
+            <div className="p-2 rounded-lg bg-red-500/10 border border-red-500/20">
+              <p className="text-xs text-red-400">{connectError}</p>
+            </div>
+          )}
+          <Button type="submit" size="sm" loading={addingAccount} className="w-full">{t('scan.addAwsAccount')}</Button>
+        </form>
+      )}
+
+      <div className="flex gap-3">
+        <AppTooltip content={t('scan.runScanTooltip')}>
+          <Button onClick={handleRunScan} size="lg" className="flex-1" disabled={!selectedAwsAccountId || resuming}>
+            {resuming ? <RotateCcw size={16} className="animate-spin" /> : <Play size={16} />}
+            {resuming ? t('scan.checkingForScans') : t('scan.runScan')}
+          </Button>
+        </AppTooltip>
+        <AppTooltip content={t('scan.runDemoTooltip')}>
+          <Button type="button" variant="secondary" size="lg" onClick={handleDemo} disabled={resuming}>
+            <Radar size={16} />
+            {t('scan.runDemo')}
+          </Button>
+        </AppTooltip>
+      </div>
+    </div>
+  )
+}
+
+function AzureIdleContent({
+  handleRunAzureScan,
+  handleDemo,
+  resuming,
+}: {
+  handleRunAzureScan: (credId: string) => void
+  handleDemo: () => void
+  resuming: boolean
+}) {
+  const { t } = useTranslation()
+  const [azureCredentials, setAzureCredentials] = useState<CloudCredential[]>([])
+  const [selectedCredId, setSelectedCredId] = useState<string | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [showAddForm, setShowAddForm] = useState(false)
+  const [showSetupSteps, setShowSetupSteps] = useState(false)
+  const [addError, setAddError] = useState<string | null>(null)
+  const [adding, setAdding] = useState(false)
+  const [form, setForm] = useState({
+    alias: '',
+    tenantId: '',
+    clientId: '',
+    clientSecret: '',
+    subscriptionId: '',
+  })
+
+  useEffect(() => {
+    const { accountId } = getStoredAuth()
+    if (!accountId) { setLoading(false); return }
+    getCloudCredentials(accountId)
+      .then(res => {
+        const azure = res.credentials.filter(c => c.provider === 'azure')
+        setAzureCredentials(azure)
+        if (azure.length > 0 && !selectedCredId) setSelectedCredId(azure[0].id)
+        if (azure.length === 0) setShowAddForm(true)
+      })
+      .catch(() => {})
+      .finally(() => setLoading(false))
+  }, [])
+
+  const handleAddAzure = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setAddError(null)
+    setAdding(true)
+    try {
+      const { accountId } = getStoredAuth()
+      if (!accountId) throw new Error('Not connected')
+      const cred = await addAzureCredential(
+        accountId, form.alias, form.tenantId, form.clientId, form.clientSecret, form.subscriptionId
+      )
+      setAzureCredentials(prev => [...prev, cred])
+      setSelectedCredId(cred.id)
+      setShowAddForm(false)
+      setForm({ alias: '', tenantId: '', clientId: '', clientSecret: '', subscriptionId: '' })
+    } catch (err) {
+      setAddError(err instanceof Error ? err.message : 'Failed to add Azure credential')
+    } finally {
+      setAdding(false)
+    }
+  }
+
+  if (loading) {
+    return <div className="text-center py-8 text-navy-400 text-sm">Loading Azure credentials...</div>
+  }
+
+  return (
+    <div className="space-y-5">
+      {/* Azure credential selector */}
+      <div className="space-y-2">
+        <div className="flex items-center justify-between">
+          <span className="text-xs text-navy-400 uppercase tracking-wider font-semibold">
+            {azureCredentials.length === 0 ? t('scan.addFirstAzureCredential') : t('scan.azureCredentials')}
+          </span>
+          {azureCredentials.length > 0 && (
+            <Button variant="ghost" size="sm" onClick={() => setShowAddForm(!showAddForm)} className="text-cyan-400 hover:text-cyan-300">
+              {showAddForm ? t('common.cancel') : t('scan.addAccount')}
+            </Button>
+          )}
+        </div>
+        {azureCredentials.map(cred => (
+          <div
+            key={cred.id}
+            onClick={() => setSelectedCredId(cred.id)}
+            className={`p-3 rounded-lg border cursor-pointer transition-all ${
+              cred.id === selectedCredId
+                ? 'bg-cyan-500/8 border-cyan-500/30'
+                : 'bg-navy-900/40 border-navy-800 hover:border-navy-600'
+            }`}
+          >
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-white">{cred.alias}</p>
+                <p className="text-xs text-navy-400 font-mono mt-0.5">
+                  {cred.azure_subscription_id || 'No subscription ID'}
+                  {cred.azure_tenant_id && <> · Tenant: {cred.azure_tenant_id.slice(0, 8)}...</>}
+                </p>
+              </div>
+              {cred.id === selectedCredId && (
+                <div className="w-2 h-2 rounded-full bg-cyan-400" />
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Azure permissions banner */}
+      {(showAddForm || azureCredentials.length === 0) && (
+        <div className="p-4 rounded-xl bg-blue-500/10 border border-blue-500/30">
+          <div className="flex items-start gap-3">
+            <Shield size={18} className="text-blue-400 mt-0.5 flex-shrink-0" />
+            <div className="flex-1">
+              <h3 className="text-sm font-bold text-blue-300">{t('scan.azurePermissionsTitle')}</h3>
+              <p className="text-xs text-navy-300 mt-1">{t('scan.azurePermissionsDesc')}</p>
+              <button
+                type="button"
+                onClick={() => setShowSetupSteps(!showSetupSteps)}
+                className="mt-2 flex items-center gap-1.5 text-xs font-semibold text-cyan-400 hover:text-cyan-300 transition-colors"
+              >
+                {showSetupSteps ? t('scan.hideAzureSteps') : t('scan.viewAzureSteps')}
+                {showSetupSteps ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+              </button>
+              {showSetupSteps && (
+                <div className="mt-3 p-2.5 rounded-lg bg-navy-950/60 border border-navy-800">
+                  <p className="text-xs text-navy-400 leading-relaxed">{t('scan.azurePermissionsSteps')}</p>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Add Azure credential form */}
+      {(showAddForm || azureCredentials.length === 0) && (
+        <form onSubmit={handleAddAzure} className="space-y-3 p-4 rounded-lg bg-navy-900/60 border border-navy-700">
+          <h3 className="text-sm font-semibold text-white">{t('scan.addAzureCredential')}</h3>
+          <Input label={t('scan.aliasLabel')} placeholder={t('scan.aliasPlaceholder')} value={form.alias} onChange={e => setForm(p => ({ ...p, alias: e.target.value }))} required />
+          <Input label={t('scan.azureTenantId')} placeholder={t('scan.azureTenantIdPlaceholder')} value={form.tenantId} onChange={e => setForm(p => ({ ...p, tenantId: e.target.value }))} required />
+          <Input label={t('scan.azureClientId')} placeholder={t('scan.azureClientIdPlaceholder')} value={form.clientId} onChange={e => setForm(p => ({ ...p, clientId: e.target.value }))} required />
+          <Input label={t('scan.azureClientSecret')} type="password" placeholder={t('scan.azureClientSecretPlaceholder')} value={form.clientSecret} onChange={e => setForm(p => ({ ...p, clientSecret: e.target.value }))} required />
+          <Input label={t('scan.azureSubscriptionId')} placeholder={t('scan.azureSubscriptionIdPlaceholder')} value={form.subscriptionId} onChange={e => setForm(p => ({ ...p, subscriptionId: e.target.value }))} required />
+          {addError && (
+            <div className="p-2 rounded-lg bg-red-500/10 border border-red-500/20">
+              <p className="text-xs text-red-400">{addError}</p>
+            </div>
+          )}
+          <Button type="submit" size="sm" loading={adding} className="w-full">{t('scan.addAzureCredential')}</Button>
+        </form>
+      )}
+
+      <div className="flex gap-3">
+        <AppTooltip content={t('scan.runScanTooltip')}>
+          <Button onClick={() => selectedCredId && handleRunAzureScan(selectedCredId)} size="lg" className="flex-1" disabled={!selectedCredId || resuming}>
+            {resuming ? <RotateCcw size={16} className="animate-spin" /> : <Play size={16} />}
+            {resuming ? t('scan.checkingForScans') : t('scan.runScan')}
+          </Button>
+        </AppTooltip>
+        <AppTooltip content={t('scan.runDemoTooltip')}>
+          <Button type="button" variant="secondary" size="lg" onClick={handleDemo} disabled={resuming}>
+            <Radar size={16} />
+            {t('scan.runDemo')}
+          </Button>
+        </AppTooltip>
+      </div>
+    </div>
+  )
+}
+
+function ScanSidebar({ provider }: { provider: Provider }) {
+  const { t } = useTranslation()
+  const domains = provider === 'azure' ? AZURE_SCAN_DOMAINS : AWS_SCAN_DOMAINS
+
+  return (
+    <Card>
+      <h2 className="text-sm font-bold font-syne text-white mb-4 flex items-center gap-2">
+        <Terminal size={14} className="text-cyan-400" />
+        {t('scan.whatGetsScanned')}
+        <InfoTooltip content={t('scan.whatGetsScannedTooltip')} size={12} />
+      </h2>
+      <div className="space-y-2">
+        {domains.map(item => (
+          <div key={item.article + item.labelKey} className="flex items-center justify-between p-2.5 rounded-lg bg-navy-900/40">
+            <div>
+              <span className={`text-xs font-mono font-bold ${item.color}`}>{item.article}</span>
+              <p className="text-xs text-white mt-0.5">{t(item.labelKey)}</p>
+            </div>
+            <span className="text-xs text-navy-400">{t('scan.checksCount', { count: item.checks })}</span>
+          </div>
+        ))}
+      </div>
+
+      <div className="mt-4 p-3 rounded-lg bg-cyan-500/8 border border-cyan-500/15">
+        <div className="flex items-center gap-2 mb-1">
+          <Clock size={13} className="text-cyan-400" />
+          <span className="text-xs font-semibold text-cyan-400">{t('scan.estDuration')}</span>
+        </div>
+        <p className="text-xs text-navy-300">{t('scan.estDurationDesc')}</p>
+      </div>
+
+      {provider === 'aws' && (
+        <div className="mt-4 p-3 rounded-lg bg-purple-500/8 border border-purple-500/15">
+          <div className="flex items-center gap-2 mb-1">
+            <Info size={13} className="text-purple-400" />
+            <span className="text-xs font-semibold text-purple-400">{t('scan.comingSoonTitle')}</span>
+          </div>
+          <p className="text-xs text-navy-300">{t('scan.comingSoonDesc')}</p>
+        </div>
+      )}
+    </Card>
+  )
+}
+
 export default function Scan() {
   const { t } = useTranslation()
   const { accountName, awsAccounts, selectedAwsAccountId, addAwsAccount, selectAwsAccount } = useAuth()
+  const [provider, setProvider] = useState<Provider>('aws')
   const [showAddForm, setShowAddForm] = useState(awsAccounts.length === 0)
   const [addCreds, setAddCreds] = useState<AwsAccountCredentials>({
     alias: '',
@@ -325,7 +757,8 @@ export default function Scan() {
   const [addingAccount, setAddingAccount] = useState(false)
   const [showIamPolicy, setShowIamPolicy] = useState(false)
   const [copiedPolicy, setCopiedPolicy] = useState(false)
-  const { status, checks, currentCheckIndex, progress, scanResult, error, resuming, startScan, resetScan } = useScan(selectedAwsAccountId)
+  const [activeAzureCredId, setActiveAzureCredId] = useState<string | null>(null)
+  const { status, checks, currentCheckIndex, progress, scanResult, error, resuming, startScan, startProviderScan, resetScan } = useScan(selectedAwsAccountId)
 
   const selectedAccount = awsAccounts.find(a => a.id === selectedAwsAccountId)
   const scanRegion = scanResult?.region || selectedAccount?.awsRegion || addCreds.region
@@ -356,9 +789,28 @@ export default function Scan() {
     startScan('api', selectedAwsAccountId || undefined)
   }
 
+  const handleRunAzureScan = (credentialId: string) => {
+    setActiveAzureCredId(credentialId)
+    startProviderScan(credentialId, 'azure')
+  }
+
   const handleDemo = () => {
     startScan('demo')
   }
+
+  const handleReset = () => {
+    setActiveAzureCredId(null)
+    resetScan()
+  }
+
+  // Determine display info for scanning/complete states
+  const scanProvider = activeAzureCredId ? 'azure' : 'aws'
+  const displayId = scanProvider === 'azure'
+    ? (activeAzureCredId?.slice(0, 8) || '')
+    : (selectedAccount?.awsAccountId || '123456789012')
+  const displayName = scanProvider === 'azure'
+    ? 'Azure Subscription'
+    : (selectedAccount?.alias || accountName || t('scan.demoAccount'))
 
   return (
     <div className="max-w-5xl mx-auto space-y-6">
@@ -368,213 +820,60 @@ export default function Scan() {
           <InfoTooltip content={t('scan.titleTooltip')} />
         </h1>
         <p className="text-sm text-navy-300 mt-1">
-          {t('scan.subtitle')}
+          {provider === 'azure' ? t('scan.subtitle_azure') : t('scan.subtitle')}
         </p>
       </div>
 
       {status === 'idle' && (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <Card className="lg:col-span-2">
-            <div className="space-y-5">
-              <div className="flex items-center justify-between">
+        <>
+          <ProviderTabs active={provider} onChange={setProvider} />
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <Card className="lg:col-span-2">
+              <div className="flex items-center justify-between mb-5">
                 <h2 className="text-base font-bold font-syne text-white flex items-center gap-2">
                   <Link size={16} className="text-emerald-400" />
                   {accountName}
                 </h2>
+                <span className={`text-xs px-2.5 py-1 rounded-full font-mono font-semibold ${
+                  provider === 'azure' ? 'bg-blue-500/15 text-blue-400 border border-blue-500/30' : 'bg-orange-500/15 text-orange-400 border border-orange-500/30'
+                }`}>
+                  {provider.toUpperCase()}
+                </span>
               </div>
 
-              {/* AWS Account selector */}
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs text-navy-400 uppercase tracking-wider font-semibold">
-                    {awsAccounts.length === 0 ? t('scan.addFirstAccount') : t('scan.awsAccounts')}
-                  </span>
-                  {awsAccounts.length > 0 && (
-                    <Button variant="ghost" size="sm" onClick={() => setShowAddForm(!showAddForm)} className="text-cyan-400 hover:text-cyan-300">
-                      {showAddForm ? t('common.cancel') : t('scan.addAccount')}
-                    </Button>
-                  )}
-                </div>
-                {awsAccounts.map(acc => (
-                  <div
-                    key={acc.id}
-                    onClick={() => selectAwsAccount(acc.id)}
-                    className={`p-3 rounded-lg border cursor-pointer transition-all ${
-                      acc.id === selectedAwsAccountId
-                        ? 'bg-cyan-500/8 border-cyan-500/30'
-                        : 'bg-navy-900/40 border-navy-800 hover:border-navy-600'
-                    }`}
-                  >
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-sm font-medium text-white">{acc.alias}</p>
-                        <p className="text-xs text-navy-400 font-mono mt-0.5">{acc.awsAccountId} · {acc.awsRegion}</p>
-                      </div>
-                      {acc.id === selectedAwsAccountId && (
-                        <div className="w-2 h-2 rounded-full bg-cyan-400" />
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              {/* Required IAM Permissions — prominent banner */}
-              {(showAddForm || awsAccounts.length === 0) && (
-                <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/30">
-                  <div className="flex items-start gap-3">
-                    <AlertTriangle size={18} className="text-amber-400 mt-0.5 flex-shrink-0" />
-                    <div className="flex-1">
-                      <h3 className="text-sm font-bold text-amber-300">{t('scan.iamPermissionsTitle')}</h3>
-                      <p className="text-xs text-navy-300 mt-1">
-                        {t('scan.iamPermissionsDesc')}
-                      </p>
-                      <button
-                        type="button"
-                        onClick={() => setShowIamPolicy(!showIamPolicy)}
-                        className="mt-2 flex items-center gap-1.5 text-xs font-semibold text-cyan-400 hover:text-cyan-300 transition-colors"
-                      >
-                        {showIamPolicy ? t('scan.hideIamPolicy') : t('scan.viewIamPolicy')}
-                        {showIamPolicy ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
-                      </button>
-                      {showIamPolicy && (
-                        <div className="mt-3 space-y-3">
-                          <div className="relative">
-                            <pre className="text-xs font-mono text-navy-200 bg-navy-950 rounded-lg p-3 overflow-x-auto max-h-64 overflow-y-auto border border-navy-800">
-                              {IAM_POLICY_JSON}
-                            </pre>
-                            <button
-                              type="button"
-                              onClick={() => {
-                                navigator.clipboard.writeText(IAM_POLICY_JSON)
-                                setCopiedPolicy(true)
-                                setTimeout(() => setCopiedPolicy(false), 2000)
-                              }}
-                              className="absolute top-2 right-2 flex items-center gap-1 px-2 py-1 rounded text-xs bg-navy-800 border border-navy-700 text-navy-300 hover:text-cyan-400 hover:border-cyan-500/30 transition-colors"
-                            >
-                              {copiedPolicy ? <><Check size={12} className="text-emerald-400" /> {t('common.copied')}</> : <><Copy size={12} /> {t('common.copy')}</>}
-                            </button>
-                          </div>
-                          <div className="p-2.5 rounded-lg bg-navy-950/60 border border-navy-800">
-                            <p className="text-xs text-navy-400 leading-relaxed">
-                              {t('scan.iamSteps')}
-                            </p>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </div>
+              {provider === 'aws' ? (
+                <AwsIdleContent
+                  awsAccounts={awsAccounts}
+                  selectedAwsAccountId={selectedAwsAccountId}
+                  selectAwsAccount={selectAwsAccount}
+                  showAddForm={showAddForm}
+                  setShowAddForm={setShowAddForm}
+                  addCreds={addCreds}
+                  setAddCreds={setAddCreds}
+                  connectError={connectError}
+                  handleAddAwsAccount={handleAddAwsAccount}
+                  addingAccount={addingAccount}
+                  showIamPolicy={showIamPolicy}
+                  setShowIamPolicy={setShowIamPolicy}
+                  copiedPolicy={copiedPolicy}
+                  setCopiedPolicy={setCopiedPolicy}
+                  handleRunScan={handleRunScan}
+                  handleDemo={handleDemo}
+                  resuming={resuming}
+                />
+              ) : (
+                <AzureIdleContent
+                  handleRunAzureScan={handleRunAzureScan}
+                  handleDemo={handleDemo}
+                  resuming={resuming}
+                />
               )}
+            </Card>
 
-              {/* Add AWS Account form */}
-              {(showAddForm || awsAccounts.length === 0) && (
-                <form onSubmit={handleAddAwsAccount} className="space-y-3 p-4 rounded-lg bg-navy-900/60 border border-navy-700">
-                  <h3 className="text-sm font-semibold text-white">
-                    {awsAccounts.length === 0 ? t('scan.addFirstAccount') : t('scan.addAwsAccount')}
-                  </h3>
-                  <Input
-                    label={t('scan.aliasLabel')}
-                    placeholder={t('scan.aliasPlaceholder')}
-                    value={addCreds.alias}
-                    onChange={e => setAddCreds(p => ({ ...p, alias: e.target.value }))}
-                    required
-                  />
-                  <Input
-                    label={t('scan.accessKeyLabel')}
-                    placeholder={t('scan.accessKeyPlaceholder')}
-                    value={addCreds.accessKeyId}
-                    onChange={e => setAddCreds(p => ({ ...p, accessKeyId: e.target.value }))}
-                    required
-                  />
-                  <Input
-                    label={t('scan.secretKeyLabel')}
-                    type="password"
-                    placeholder={t('scan.secretKeyPlaceholder')}
-                    value={addCreds.secretAccessKey}
-                    onChange={e => setAddCreds(p => ({ ...p, secretAccessKey: e.target.value }))}
-                    required
-                  />
-                  <Input
-                    label={t('scan.sessionTokenLabel')}
-                    placeholder={t('scan.sessionTokenPlaceholder')}
-                    value={addCreds.sessionToken}
-                    onChange={e => setAddCreds(p => ({ ...p, sessionToken: e.target.value }))}
-                  />
-                  <Select
-                    label={t('scan.awsRegionLabel')}
-                    value={addCreds.region}
-                    onChange={e => setAddCreds(p => ({ ...p, region: e.target.value }))}
-                    options={REGIONS.map(r => ({ value: r, label: r }))}
-                  />
-                  {connectError && (
-                    <div className="p-2 rounded-lg bg-red-500/10 border border-red-500/20">
-                      <p className="text-xs text-red-400">{connectError}</p>
-                    </div>
-                  )}
-                  <Button type="submit" size="sm" loading={addingAccount} className="w-full">
-                    {t('scan.addAwsAccount')}
-                  </Button>
-                </form>
-              )}
-
-              <div className="flex gap-3">
-                <AppTooltip content={t('scan.runScanTooltip')}>
-                  <Button onClick={handleRunScan} size="lg" className="flex-1" disabled={!selectedAwsAccountId || resuming}>
-                    {resuming ? <RotateCcw size={16} className="animate-spin" /> : <Play size={16} />}
-                    {resuming ? t('scan.checkingForScans') : t('scan.runScan')}
-                  </Button>
-                </AppTooltip>
-                <AppTooltip content={t('scan.runDemoTooltip')}>
-                  <Button type="button" variant="secondary" size="lg" onClick={handleDemo} disabled={resuming}>
-                    <Radar size={16} />
-                    {t('scan.runDemo')}
-                  </Button>
-                </AppTooltip>
-              </div>
-            </div>
-          </Card>
-
-          {/* What we scan */}
-          <Card>
-            <h2 className="text-sm font-bold font-syne text-white mb-4 flex items-center gap-2">
-              <Terminal size={14} className="text-cyan-400" />
-              {t('scan.whatGetsScanned')}
-              <InfoTooltip content={t('scan.whatGetsScannedTooltip')} size={12} />
-            </h2>
-            <div className="space-y-2">
-              {[
-                { article: 'Art 21(2)(i)', label: t('scan.iamAccessControl'), checks: 5, color: 'text-cyan-400' },
-                { article: 'Art 21(2)(a)', label: t('scan.monitoringLogging'), checks: 3, color: 'text-purple-400' },
-                { article: 'Art 21(2)(h)', label: t('scan.encryption'), checks: 4, color: 'text-blue-400' },
-                { article: 'Art 21(2)(b/e)', label: t('scan.businessContinuity'), checks: 3, color: 'text-emerald-400' },
-              ].map(item => (
-                <div key={item.article} className="flex items-center justify-between p-2.5 rounded-lg bg-navy-900/40">
-                  <div>
-                    <span className={`text-xs font-mono font-bold ${item.color}`}>{item.article}</span>
-                    <p className="text-xs text-white mt-0.5">{item.label}</p>
-                  </div>
-                  <span className="text-xs text-navy-400">{t('scan.checksCount', { count: item.checks })}</span>
-                </div>
-              ))}
-            </div>
-
-            <div className="mt-4 p-3 rounded-lg bg-cyan-500/8 border border-cyan-500/15">
-              <div className="flex items-center gap-2 mb-1">
-                <Clock size={13} className="text-cyan-400" />
-                <span className="text-xs font-semibold text-cyan-400">{t('scan.estDuration')}</span>
-              </div>
-              <p className="text-xs text-navy-300">{t('scan.estDurationDesc')}</p>
-            </div>
-
-            <div className="mt-4 p-3 rounded-lg bg-purple-500/8 border border-purple-500/15">
-              <div className="flex items-center gap-2 mb-1">
-                <Info size={13} className="text-purple-400" />
-                <span className="text-xs font-semibold text-purple-400">{t('scan.comingSoonTitle')}</span>
-              </div>
-              <p className="text-xs text-navy-300">{t('scan.comingSoonDesc')}</p>
-            </div>
-          </Card>
-        </div>
+            <ScanSidebar provider={provider} />
+          </div>
+        </>
       )}
 
       {/* Error state */}
@@ -585,7 +884,7 @@ export default function Scan() {
             <h3 className="text-lg font-bold font-syne text-white mb-2">{t('scan.scanFailed')}</h3>
             <p className="text-sm text-navy-300 mb-4">{error || t('scan.unexpectedError')}</p>
             <div className="flex gap-3 justify-center">
-              <Button onClick={resetScan} variant="secondary">
+              <Button onClick={handleReset} variant="secondary">
                 <RotateCcw size={16} />
                 {t('scan.tryAgain')}
               </Button>
@@ -603,11 +902,16 @@ export default function Scan() {
           <div className="flex items-center gap-4 p-3 rounded-lg bg-navy-900/60 border border-navy-700">
             <Shield size={16} className="text-cyan-400" />
             <div className="flex items-center gap-4 text-sm">
-              <span className="text-white font-medium">{selectedAccount?.alias || accountName || t('scan.demoAccount')}</span>
+              <span className="text-white font-medium">{displayName}</span>
               <span className="text-navy-500">·</span>
-              <span className="text-navy-400 font-mono">{selectedAccount?.awsAccountId || '123456789012'}</span>
+              <span className="text-navy-400 font-mono">{displayId}</span>
               <span className="text-navy-500">·</span>
-              <span className="text-navy-400">{scanRegion}</span>
+              <span className={`text-xs px-2 py-0.5 rounded-full font-mono ${
+                scanProvider === 'azure' ? 'bg-blue-500/15 text-blue-400' : 'bg-orange-500/15 text-orange-400'
+              }`}>
+                {scanProvider.toUpperCase()}
+              </span>
+              {scanProvider === 'aws' && <span className="text-navy-400">{scanRegion}</span>}
             </div>
             {status === 'scanning' && (
               <div className="ml-auto flex items-center gap-2 text-xs text-cyan-400">
@@ -623,6 +927,8 @@ export default function Scan() {
             progress={progress}
             status={status}
             scanRegion={scanRegion}
+            provider={scanProvider as Provider}
+            subscriptionId={displayId}
           />
 
           <Card>
@@ -678,7 +984,7 @@ export default function Scan() {
             </div>
           </Card>
 
-          {status === 'complete' && <ScanComplete onReset={resetScan} scanResult={scanResult} />}
+          {status === 'complete' && <ScanComplete onReset={handleReset} scanResult={scanResult} provider={scanProvider as Provider} />}
         </div>
       )}
     </div>

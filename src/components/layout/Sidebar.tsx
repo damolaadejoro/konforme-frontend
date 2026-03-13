@@ -27,7 +27,7 @@ const navGroups = [
     items: [
       { path: '/controls', labelKey: 'nav.controls', icon: Shield, tooltip: 'Manage all NIS2 controls — assign owners, track status, upload evidence' },
       { path: '/assessment', labelKey: 'nav.assessment', icon: ClipboardCheck, tooltip: 'Self-assessment questionnaire to evaluate your NIS2 maturity' },
-      { path: '/scan', labelKey: 'nav.scan', icon: Radar, tooltip: 'Run automated AWS infrastructure scans against NIS2 requirements' },
+      { path: '/scan', labelKey: 'nav.scan', icon: Radar, tooltip: 'Run automated cloud infrastructure scans (AWS & Azure) against NIS2 requirements' },
     ],
   },
   {
@@ -45,7 +45,7 @@ const navGroups = [
   },
 ]
 
-const settingsItem = { path: '/settings', labelKey: 'nav.settings', icon: Settings, tooltip: 'Account and AWS connection settings' }
+const settingsItem = { path: '/settings', labelKey: 'nav.settings', icon: Settings, tooltip: 'Account and cloud provider settings' }
 
 function NavItem({ path, labelKey, icon: Icon, tooltip }: { path: string; labelKey: string; icon: typeof LayoutDashboard; tooltip: string }) {
   const { t } = useTranslation()

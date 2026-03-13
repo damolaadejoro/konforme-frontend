@@ -3,20 +3,25 @@ import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { Bell, ChevronDown, RefreshCw, Save, Check, LogOut } from 'lucide-react'
 import { formatDistanceToNow } from 'date-fns'
-import { useControls } from '../../hooks/useControls'
+import { useControlsContext } from '../../context/ControlsContext'
 import { useAuth } from '../../context/AuthContext'
-import { getCombinedScore, getStoredAuth, isConnected, type CombinedScoreResponse } from '../../services/api'
+import { getCombinedScore, getStoredAuth, getCloudCredentials, isConnected, type CombinedScoreResponse, type CloudCredential } from '../../services/api'
 import LanguageSwitcher from '../LanguageSwitcher'
+
+function countryFlag(code: string): string {
+  return [...code.toUpperCase()].map(c => String.fromCodePoint(0x1f1e6 + c.charCodeAt(0) - 65)).join('')
+}
 
 export default function TopNav() {
   const { t } = useTranslation()
-  const { lastSaved, complianceScore } = useControls()
-  const { isAuthenticated, accountName, email, awsAccounts, selectedAwsAccountId, selectAwsAccount, logout } = useAuth()
+  const { lastSaved, complianceScore } = useControlsContext()
+  const { isAuthenticated, accountName, email, country, awsAccounts, selectedAwsAccountId, selectAwsAccount, logout } = useAuth()
   const navigate = useNavigate()
   const [showAccountDropdown, setShowAccountDropdown] = useState(false)
   const [showUserMenu, setShowUserMenu] = useState(false)
   const [showNotifications, setShowNotifications] = useState(false)
   const [backendScore, setBackendScore] = useState<CombinedScoreResponse | null>(null)
+  const [azureCredentials, setAzureCredentials] = useState<CloudCredential[]>([])
   const dropdownRef = useRef<HTMLDivElement>(null)
   const userMenuRef = useRef<HTMLDivElement>(null)
   const notificationsRef = useRef<HTMLDivElement>(null)
@@ -25,13 +30,16 @@ export default function TopNav() {
     ? formatDistanceToNow(new Date(lastSaved), { addSuffix: true })
     : 'Never'
 
-  // Fetch real score from backend
+  // Fetch real score and Azure credentials from backend
   useEffect(() => {
     if (isConnected()) {
       const { accountId } = getStoredAuth()
       if (accountId) {
-        getCombinedScore(accountId, selectedAwsAccountId || undefined)
+        getCombinedScore(accountId, selectedAwsAccountId ? { awsAccountId: selectedAwsAccountId } : undefined)
           .then(setBackendScore)
+          .catch(() => {})
+        getCloudCredentials(accountId)
+          .then(data => setAzureCredentials(data.credentials.filter(c => c.provider === 'azure')))
           .catch(() => {})
       }
     }
@@ -76,6 +84,12 @@ export default function TopNav() {
         <span className="text-emerald-400 font-medium">{lastSavedText}</span>
         <span className="mx-2 text-navy-600">|</span>
         <span className="text-cyan-400 font-medium">{displayName}</span>
+        {country && (
+          <>
+            <span className="text-navy-600">·</span>
+            <span className="text-xs">{countryFlag(country)}</span>
+          </>
+        )}
         {selectedAccount && (
           <>
             <span className="text-navy-600">·</span>
@@ -87,24 +101,30 @@ export default function TopNav() {
 
       {/* Right — actions */}
       <div className="flex items-center gap-3">
-        {/* AWS Account switcher */}
-        {isAuthenticated && awsAccounts.length > 1 && (
+        {/* Cloud Account switcher */}
+        {isAuthenticated && (awsAccounts.length > 1 || azureCredentials.length > 0) && (
           <div className="relative" ref={dropdownRef}>
             <button
               onClick={() => setShowAccountDropdown(!showAccountDropdown)}
               className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-navy-900/60 border border-navy-700 hover:border-cyan-500/40 transition-all text-xs"
             >
-              <span className="text-navy-300">{selectedAccount?.alias || 'Select Account'}</span>
+              <span className="text-navy-300">{selectedAccount?.alias || 'Cloud Accounts'}</span>
               <ChevronDown size={12} className="text-navy-400" />
             </button>
             {showAccountDropdown && (
               <div className="absolute right-0 top-full mt-1 w-64 bg-navy-900 border border-navy-700 rounded-lg shadow-xl z-50 py-1">
+                {awsAccounts.length > 0 && (
+                  <div className="px-3 py-1 text-[10px] uppercase tracking-wider text-navy-500 font-semibold">AWS</div>
+                )}
                 {awsAccounts.map(acc => (
                   <button
                     key={acc.id}
                     onClick={() => { selectAwsAccount(acc.id); setShowAccountDropdown(false) }}
                     className="w-full flex items-center gap-3 px-3 py-2 hover:bg-navy-800 transition-colors text-left"
                   >
+                    <div className="w-5 h-5 rounded flex items-center justify-center bg-orange-500/10 border border-orange-500/20 flex-shrink-0">
+                      <span className="text-[8px] font-bold text-orange-400">A</span>
+                    </div>
                     <div className="flex-1 min-w-0">
                       <p className="text-xs font-medium text-white truncate">{acc.alias}</p>
                       <p className="text-[10px] text-navy-400 font-mono">{acc.awsAccountId} · {acc.awsRegion}</p>
@@ -113,6 +133,26 @@ export default function TopNav() {
                       <Check size={12} className="text-cyan-400 flex-shrink-0" />
                     )}
                   </button>
+                ))}
+                {azureCredentials.length > 0 && (
+                  <>
+                    {awsAccounts.length > 0 && <div className="border-t border-navy-800 my-1" />}
+                    <div className="px-3 py-1 text-[10px] uppercase tracking-wider text-navy-500 font-semibold">Azure</div>
+                  </>
+                )}
+                {azureCredentials.map(cred => (
+                  <div
+                    key={cred.id}
+                    className="w-full flex items-center gap-3 px-3 py-2 text-left"
+                  >
+                    <div className="w-5 h-5 rounded flex items-center justify-center bg-blue-500/10 border border-blue-500/20 flex-shrink-0">
+                      <span className="text-[8px] font-bold text-blue-400">Az</span>
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs font-medium text-white truncate">{cred.alias}</p>
+                      <p className="text-[10px] text-navy-400 font-mono">{cred.azure_subscription_id || 'Azure'}</p>
+                    </div>
+                  </div>
                 ))}
               </div>
             )}

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import {
@@ -37,6 +37,7 @@ import { useHumanFactor } from '../hooks/useHumanFactor'
 import { useOrganizational } from '../hooks/useOrganizational'
 import { useDashboardScan } from '../hooks/useDashboardScan'
 import { useScanHistory } from '../hooks/useScanHistory'
+import { getScoringConfig, isConnected } from '../services/api'
 import { format } from 'date-fns'
 
 const CustomTooltip = ({ active, payload, label }: any) => {
@@ -66,6 +67,16 @@ export default function Dashboard() {
   const { assessment: humanAssessment } = useHumanFactor()
   const { assessment: orgAssessment } = useOrganizational()
   const [scoreExplainerOpen, setScoreExplainerOpen] = useState(false)
+  const [tw, setTw] = useState(0.6)
+  const [hw, setHw] = useState(0.4)
+
+  useEffect(() => {
+    if (isConnected()) {
+      getScoringConfig()
+        .then(cfg => { setTw(cfg.technicalWeight); setHw(cfg.organizationalWeight) })
+        .catch(() => {})
+    }
+  }, [])
 
   // Loading state
   if (scanLoading) {
@@ -124,14 +135,16 @@ export default function Dashboard() {
   const hasHumanAssessment = humanAssessment.answered > 0
   const hasOrgAssessment = orgAssessment.answered > 0
 
-  // Weight: 40% technical, 30% human, 30% organizational (if assessments exist)
+  // Weight: use configurable technical/organizational split
   let combinedScore = technicalScore
   if (hasHumanAssessment && hasOrgAssessment) {
-    combinedScore = Math.round(technicalScore * 0.4 + humanScore * 0.3 + orgScore * 0.3)
+    // Split organizational weight evenly between human and org assessments
+    const halfHw = hw / 2
+    combinedScore = Math.round(technicalScore * tw + humanScore * halfHw + orgScore * halfHw)
   } else if (hasHumanAssessment) {
-    combinedScore = Math.round(technicalScore * 0.6 + humanScore * 0.4)
+    combinedScore = Math.round(technicalScore * tw + humanScore * hw)
   } else if (hasOrgAssessment) {
-    combinedScore = Math.round(technicalScore * 0.6 + orgScore * 0.4)
+    combinedScore = Math.round(technicalScore * tw + orgScore * hw)
   }
 
   const combinedColor = combinedScore >= 75 ? '#10b981' : combinedScore >= 50 ? '#f59e0b' : '#ef4444'

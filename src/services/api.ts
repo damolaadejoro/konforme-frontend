@@ -54,15 +54,18 @@ export function isAuthenticated(): boolean {
 // Backward-compatible alias
 export const isConnected = isAuthenticated
 
+// Keys that hold auth/session state — safe to clear on logout
+const AUTH_ONLY_KEYS = new Set([
+  AUTH_KEYS.accountId,
+  AUTH_KEYS.accountName,
+  AUTH_KEYS.email,
+  AUTH_KEYS.awsAccounts,
+  AUTH_KEYS.selectedAwsAccountId,
+])
+
 export function clearAuth() {
-  const keysToRemove: string[] = []
-  for (let i = 0; i < localStorage.length; i++) {
-    const key = localStorage.key(i)
-    if (key && key.startsWith('konforme_')) {
-      keysToRemove.push(key)
-    }
-  }
-  keysToRemove.forEach(k => localStorage.removeItem(k))
+  // Only clear auth keys — preserve user work (controls, assessments, campaigns, etc.)
+  AUTH_ONLY_KEYS.forEach(k => localStorage.removeItem(k))
 }
 
 // --- Refresh token logic ---
@@ -320,10 +323,179 @@ export async function updateAccount(updates: { name?: string; email?: string; co
   return data
 }
 
-// --- EU Countries ---
+// --- EU Countries (legacy) ---
 
 export async function getEUCountries(): Promise<EUCountryInfo[]> {
   return apiFetch<EUCountryInfo[]>('/countries')
+}
+
+// --- Country Data (Phase 5) ---
+
+export interface CountryListItem {
+  code: string
+  name: string
+  nameLocal: string | null
+  transpositionStatus: string
+  transpositionLawName: string | null
+  dateEffective: string | null
+  competentAuthorityName: string | null
+  researchConfidence: string | null
+}
+
+export interface CountryDetail {
+  code: string
+  name: string
+  nameLocal: string | null
+  transpositionStatus: string
+  transpositionLawName: string | null
+  transpositionLawReference: string | null
+  transpositionLawUrl: string | null
+  datePublished: string | null
+  dateEffective: string | null
+  competentAuthorityName: string | null
+  competentAuthorityUrl: string | null
+  csirtName: string | null
+  csirtUrl: string | null
+  researchConfidence: string | null
+  researchNotes: string | null
+}
+
+export interface EntityTier {
+  id: string
+  tierKey: string
+  localName: string | null
+  description: string | null
+  sectors: string[]
+  sizeThresholds: Record<string, unknown>
+  obligations: Record<string, unknown>
+  penalties: Record<string, unknown>
+}
+
+export interface CountryControl {
+  id: string
+  controlId: string
+  euArticle: string | null
+  nationalLegalReference: string | null
+  nationalSpecification: string | null
+  goesBeyondEu: boolean
+  appliesToTiers: string[]
+  additionalRequirements: string[]
+  isMandatory: boolean
+}
+
+export interface CountryDeadline {
+  id: string
+  deadlineDate: string
+  description: string | null
+  appliesToTiers: string[]
+  legalReference: string | null
+}
+
+export interface CountryAssessmentQuestion {
+  id: string
+  baseQuestionId: string | null
+  questionText: string
+  helpText: string | null
+  euArticle: string | null
+  nationalLegalReference: string | null
+  appliesToTiers: string[]
+  domain: string | null
+  weight: number
+  isAdditional: boolean
+}
+
+export async function getCountries(): Promise<CountryListItem[]> {
+  return apiFetch<CountryListItem[]>('/countries')
+}
+
+export async function getCountry(code: string): Promise<CountryDetail> {
+  return apiFetch<CountryDetail>(`/countries/${encodeURIComponent(code)}`)
+}
+
+export async function getCountryTiers(code: string): Promise<EntityTier[]> {
+  return apiFetch<EntityTier[]>(`/countries/${encodeURIComponent(code)}/tiers`)
+}
+
+export async function getCountryControls(code: string): Promise<CountryControl[]> {
+  return apiFetch<CountryControl[]>(`/countries/${encodeURIComponent(code)}/controls`)
+}
+
+export async function getCountryDeadlines(code: string): Promise<CountryDeadline[]> {
+  return apiFetch<CountryDeadline[]>(`/countries/${encodeURIComponent(code)}/deadlines`)
+}
+
+export async function getCountryAssessmentQuestions(code: string): Promise<CountryAssessmentQuestion[]> {
+  return apiFetch<CountryAssessmentQuestion[]>(`/countries/${encodeURIComponent(code)}/assessment`)
+}
+
+export async function setAccountCountry(countryCode: string, entityTier?: string | null): Promise<{
+  account_id: string
+  country_code: string
+  country_name: string
+  entity_tier: string | null
+}> {
+  return apiFetch('/accounts/country', {
+    method: 'PUT',
+    body: JSON.stringify({
+      country_code: countryCode,
+      entity_tier: entityTier || null,
+    }),
+  })
+}
+
+// --- Cloud Credentials ---
+
+export interface CloudCredential {
+  id: string
+  provider: string
+  alias: string
+  is_active: boolean
+  added_at: string
+  aws_account_id: string | null
+  aws_region: string | null
+  azure_subscription_id: string | null
+  azure_tenant_id: string | null
+}
+
+export async function getCloudCredentials(accountId: string): Promise<{ credentials: CloudCredential[] }> {
+  return apiFetch<{ credentials: CloudCredential[] }>(`/cloud-credentials/${accountId}`)
+}
+
+export async function addAzureCredential(
+  accountId: string,
+  alias: string,
+  tenantId: string,
+  clientId: string,
+  clientSecret: string,
+  subscriptionId: string
+): Promise<CloudCredential> {
+  return apiFetch<CloudCredential>(`/cloud-credentials/${accountId}/azure`, {
+    method: 'POST',
+    body: JSON.stringify({
+      alias,
+      tenant_id: tenantId,
+      client_id: clientId,
+      client_secret: clientSecret,
+      subscription_id: subscriptionId,
+    }),
+  })
+}
+
+export async function removeCloudCredential(accountId: string, credentialId: string): Promise<void> {
+  await apiFetch(`/cloud-credentials/${accountId}/${credentialId}`, { method: 'DELETE' })
+}
+
+export async function validateCloudCredential(accountId: string, credentialId: string): Promise<{ valid: boolean; provider: string }> {
+  return apiFetch(`/cloud-credentials/${accountId}/${credentialId}/validate`, { method: 'POST' })
+}
+
+// --- Provider Scan ---
+
+export async function startProviderScan(accountId: string, credentialId: string, provider: string): Promise<ScanStartResponse> {
+  return apiFetch<ScanStartResponse>(`/scan/${accountId}/provider`, {
+    method: 'POST',
+    body: JSON.stringify({ credential_id: credentialId, provider }),
+  })
 }
 
 // --- Scan ---
@@ -380,6 +552,8 @@ export interface ScanResponse {
   lowCount: number
   findings: ScanFinding[]
   domainScores: DomainScore[]
+  provider: string
+  cloudCredentialId: string | null
 }
 
 export interface ScanSummary {
@@ -395,6 +569,7 @@ export interface ScanSummary {
   highCount: number
   mediumCount: number
   lowCount: number
+  provider: string
 }
 
 export async function getLatestScan(accountId: string, awsAccountId: string): Promise<ScanResponse> {
@@ -609,6 +784,37 @@ export async function deleteEvidence(accountId: string, controlId: string, evide
   })
 }
 
+// --- Scoring Config ---
+
+export interface ScoringConfigResponse {
+  technicalWeight: number
+  organizationalWeight: number
+  domainWeights: Record<string, number> | null
+  preset: string | null
+}
+
+export interface ScoringConfigUpdateResponse extends ScoringConfigResponse {
+  previewOverallScore: number | null
+  previewGrade: string | null
+}
+
+export async function getScoringConfig(): Promise<ScoringConfigResponse> {
+  return apiFetch<ScoringConfigResponse>('/settings/scoring')
+}
+
+export async function updateScoringConfig(
+  technicalWeight: number,
+  organizationalWeight: number
+): Promise<ScoringConfigUpdateResponse> {
+  return apiFetch<ScoringConfigUpdateResponse>('/settings/scoring', {
+    method: 'PUT',
+    body: JSON.stringify({
+      technical_weight: technicalWeight,
+      organizational_weight: organizationalWeight,
+    }),
+  })
+}
+
 // --- Score ---
 
 export interface CombinedScoreResponse {
@@ -629,9 +835,15 @@ export interface CombinedScoreResponse {
   }>
 }
 
-export async function getCombinedScore(accountId: string, awsAccountId?: string): Promise<CombinedScoreResponse> {
-  const params = awsAccountId ? `?aws_account_id=${encodeURIComponent(awsAccountId)}` : ''
-  return apiFetch<CombinedScoreResponse>(`/score/${accountId}${params}`)
+export async function getCombinedScore(
+  accountId: string,
+  opts?: { awsAccountId?: string; credentialId?: string },
+): Promise<CombinedScoreResponse> {
+  const searchParams = new URLSearchParams()
+  if (opts?.awsAccountId) searchParams.set('aws_account_id', opts.awsAccountId)
+  if (opts?.credentialId) searchParams.set('credential_id', opts.credentialId)
+  const qs = searchParams.toString()
+  return apiFetch<CombinedScoreResponse>(`/score/${accountId}${qs ? `?${qs}` : ''}`)
 }
 
 // --- Report ---
@@ -673,4 +885,109 @@ export interface ReportResponse {
 
 export async function getReport(accountId: string): Promise<ReportResponse> {
   return apiFetch<ReportResponse>(`/report/${accountId}`)
+}
+
+// --- Controls ---
+
+export interface AccountControlState {
+  id: string
+  controlId: string
+  status: string
+  owner: string
+  dueDate: string | null
+  notes: string
+  isCountrySpecific: boolean
+  lastUpdated: string
+}
+
+export async function getControlStates(accountId: string): Promise<AccountControlState[]> {
+  return apiFetch<AccountControlState[]>(`/controls/${accountId}`)
+}
+
+export async function bulkUpsertControls(
+  accountId: string,
+  controls: Array<{
+    control_id: string
+    status?: string
+    owner?: string
+    due_date?: string | null
+    notes?: string
+    is_country_specific?: boolean
+  }>
+): Promise<AccountControlState[]> {
+  return apiFetch<AccountControlState[]>(`/controls/${accountId}/bulk`, {
+    method: 'PUT',
+    body: JSON.stringify({ controls }),
+  })
+}
+
+export async function updateControlState(
+  accountId: string,
+  controlId: string,
+  updates: { status?: string; owner?: string; due_date?: string | null; notes?: string }
+): Promise<AccountControlState> {
+  return apiFetch<AccountControlState>(`/controls/${accountId}/${encodeURIComponent(controlId)}`, {
+    method: 'PATCH',
+    body: JSON.stringify(updates),
+  })
+}
+
+// --- Campaigns ---
+
+export interface CampaignTaskApi {
+  id: string
+  controlId: string
+  campaignId: string
+  employeeName: string
+  employeeEmail: string
+  department: string
+  taskType: string
+  status: string
+  sentDate: string
+  completedDate: string | null
+  deadline: string
+  score: number | null
+}
+
+export interface CampaignApi {
+  id: string
+  controlId: string
+  controlName: string
+  taskType: string
+  deadline: string
+  createdAt: string
+  policyContent: string | null
+  tasks: CampaignTaskApi[]
+}
+
+export async function getCampaigns(accountId: string): Promise<CampaignApi[]> {
+  return apiFetch<CampaignApi[]>(`/campaigns/${accountId}`)
+}
+
+export async function createCampaignApi(
+  accountId: string,
+  data: {
+    control_id: string
+    control_name: string
+    task_type: string
+    deadline: string
+    employees: Array<{ employee_name: string; employee_email: string; department?: string }>
+    policy_content?: string | null
+  }
+): Promise<CampaignApi> {
+  return apiFetch<CampaignApi>(`/campaigns/${accountId}`, {
+    method: 'POST',
+    body: JSON.stringify(data),
+  })
+}
+
+export async function updateCampaignTask(
+  accountId: string,
+  taskId: string,
+  updates: { status?: string; score?: number | null }
+): Promise<CampaignTaskApi> {
+  return apiFetch<CampaignTaskApi>(`/campaigns/${accountId}/tasks/${taskId}`, {
+    method: 'PATCH',
+    body: JSON.stringify(updates),
+  })
 }

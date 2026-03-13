@@ -15,7 +15,7 @@ import {
   Award,
   Plus,
 } from 'lucide-react'
-import { useControls } from '../hooks/useControls'
+import { useControlsContext } from '../context/ControlsContext'
 import { Card, Button, StatCard, ProgressBar, InfoTooltip } from '../components/ui'
 import { EmployeeCampaign, TaskStatus, TaskType } from '../types/controls'
 import { format } from 'date-fns'
@@ -203,7 +203,7 @@ function CampaignCard({ campaign }: { campaign: EmployeeCampaign }) {
 
 export default function PeopleTasks() {
   const { t } = useTranslation()
-  const { campaigns, controls, createCampaign, employeeComplianceStats } = useControls()
+  const { campaigns, controls, createCampaign, employeeComplianceStats } = useControlsContext()
   const [showCreateForm, setShowCreateForm] = useState(false)
   const [selectedControlId, setSelectedControlId] = useState('')
   const [taskType, setTaskType] = useState<TaskType>('acknowledge')

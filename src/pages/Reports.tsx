@@ -28,7 +28,7 @@ import {
 } from 'recharts'
 import { Card, Button, SeverityBadge, ProgressBar, InfoTooltip } from '../components/ui'
 import { format } from 'date-fns'
-import { useControls } from '../hooks/useControls'
+import { useControlsContext } from '../context/ControlsContext'
 import { useAuth } from '../context/AuthContext'
 import { generateComplianceReport } from '../utils/generatePDF'
 import { useDashboardScan } from '../hooks/useDashboardScan'
@@ -227,7 +227,7 @@ export default function Reports() {
   const navigate = useNavigate()
   const [generating, setGenerating] = useState(false)
   const [showPreview, setShowPreview] = useState(true)
-  const { controls, complianceScore, articleAreas, criticalGaps } = useControls()
+  const { controls, complianceScore, articleAreas, criticalGaps, allCriticalGaps } = useControlsContext()
   const { accountName } = useAuth()
   const { scanData, loading } = useDashboardScan()
 
@@ -258,51 +258,12 @@ export default function Reports() {
     )
   }
 
-  if (!scanData) {
-    return (
-      <div className="space-y-6">
-        {/* Header */}
-        <div className="flex items-start justify-between">
-          <div>
-            <h1 className="text-2xl font-bold font-syne text-white flex items-center gap-2">
-              {t('reports.pageTitle')}
-              <InfoTooltip content={t('reports.pageTitleTooltip')} />
-            </h1>
-            <p className="text-sm text-navy-300 mt-1">
-              {t('reports.pageSubtitle')}
-            </p>
-          </div>
-          <Button
-            size="md"
-            loading={generating}
-            onClick={handleGenerate}
-          >
-            {!generating && <Download size={15} />}
-            {generating ? t('reports.generatingPdfButton') : t('reports.downloadPdfButton')}
-          </Button>
-        </div>
-
-        {/* Empty state */}
-        <Card>
-          <div className="flex flex-col items-center justify-center py-16 text-center">
-            <div className="p-4 rounded-full bg-navy-800/60 mb-4">
-              <Radar size={32} className="text-cyan-400" />
-            </div>
-            <h2 className="text-lg font-bold font-syne text-white mb-2">
-              {t('reports.noScanDataTitle', 'No scan data yet')}
-            </h2>
-            <p className="text-sm text-navy-300 mb-6 max-w-md">
-              {t('reports.noScanDataDescription', 'Run your first AWS compliance scan to generate a report.')}
-            </p>
-            <Button size="md" onClick={() => navigate('/scan')}>
-              <Radar size={15} />
-              {t('reports.runScanButton', 'Run a Scan')}
-            </Button>
-          </div>
-        </Card>
-      </div>
-    )
-  }
+  // Compute control status counts
+  const totalControls = controls.length || 1
+  const implemented = controls.filter(c => c.status === 'Implemented').length
+  const partial = controls.filter(c => c.status === 'Partial').length
+  const planned = controls.filter(c => c.status === 'Planned').length
+  const notStarted = controls.filter(c => c.status === 'Not Started').length
 
   return (
     <div className="space-y-6">
@@ -314,18 +275,20 @@ export default function Reports() {
             <InfoTooltip content={t('reports.pageTitleTooltip')} />
           </h1>
           <p className="text-sm text-navy-300 mt-1">
-            {t('reports.pageSubtitle')} · {scanData.accountName}
+            {t('reports.pageSubtitle')}{scanData ? ` · ${scanData.accountName}` : ''}
           </p>
         </div>
         <div className="flex items-center gap-3">
-          <Button
-            variant="secondary"
-            size="md"
-            onClick={() => setShowPreview(!showPreview)}
-          >
-            <Eye size={15} />
-            {showPreview ? t('reports.hidePreviewButton') : t('reports.showPreviewButton')}
-          </Button>
+          {scanData && (
+            <Button
+              variant="secondary"
+              size="md"
+              onClick={() => setShowPreview(!showPreview)}
+            >
+              <Eye size={15} />
+              {showPreview ? t('reports.hidePreviewButton') : t('reports.showPreviewButton')}
+            </Button>
+          )}
           <Button
             variant="secondary"
             size="md"
@@ -348,100 +311,226 @@ export default function Reports() {
       {/* Report metadata */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         {[
-          { icon: <Building size={15} className="text-cyan-400" />, label: t('reports.accountLabel'), value: scanData.accountName },
-          { icon: <Globe size={15} className="text-cyan-400" />, label: t('reports.regionLabel'), value: scanData.region },
-          { icon: <Calendar size={15} className="text-cyan-400" />, label: t('reports.scanDateLabel'), value: scanData.completedAt ? format(new Date(scanData.completedAt), 'MMM d, yyyy') : '—' },
           { icon: <Shield size={15} className="text-cyan-400" />, label: t('reports.frameworkLabel'), value: t('reports.frameworkValue') },
+          { icon: <Calendar size={15} className="text-cyan-400" />, label: 'Report Date', value: format(new Date(), 'MMM d, yyyy') },
+          { icon: <Building size={15} className="text-cyan-400" />, label: 'Organisation', value: accountName || '—' },
+          { icon: <Globe size={15} className="text-cyan-400" />, label: 'Overall Score', value: `${complianceScore.overall}%` },
         ].map(item => (
           <div key={item.label} className="glass-card rounded-xl p-4 flex items-center gap-3">
             <div className="p-2 rounded-lg bg-navy-800/60">{item.icon}</div>
             <div>
-              <p className="text-xs text-navy-400">{item.label}</p>
+              <p className="text-xs text-[#94b4d1]">{item.label}</p>
               <p className="text-sm font-semibold text-white">{item.value}</p>
             </div>
           </div>
         ))}
       </div>
 
-      {/* Quick stats for report */}
+      {/* ─── Organisational Controls Section ─── */}
       <Card>
         <div className="flex items-center gap-3 mb-5">
-          <BarChart2 size={16} className="text-cyan-400" />
-          <h2 className="text-base font-bold font-syne text-white">{t('reports.reportSummaryTitle')}</h2>
-          <InfoTooltip content={t('reports.reportSummaryTooltip')} size={12} />
+          <Shield size={16} className="text-cyan-400" />
+          <h2 className="text-base font-bold font-syne text-white">Organisational Controls Status</h2>
+          <InfoTooltip content="Implementation status of NIS2 Article 21 organisational and technical controls" size={12} />
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          {scanData.domainScores.map(d => (
-            <div key={d.domain} className="space-y-2">
-              <div className="flex items-center justify-between">
-                <span className="text-sm font-medium text-white">{d.domain}</span>
-                <span className={`text-sm font-bold ${d.score >= 75 ? 'text-emerald-400' : d.score >= 50 ? 'text-yellow-400' : 'text-red-400'}`}>
-                  {d.score}%
-                </span>
-              </div>
-              <ProgressBar value={d.score} />
-              <div className="flex justify-between text-xs">
-                <span className="text-navy-500 font-mono">{d.article}</span>
-                <span className="text-navy-400">{d.passed}/{d.total} {t('reports.passLabel')}</span>
-              </div>
+
+        {/* Control status summary */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+          {[
+            { label: 'Implemented', count: implemented, color: 'text-emerald-400', bg: 'bg-emerald-500/10 border-emerald-500/20' },
+            { label: 'Partial', count: partial, color: 'text-yellow-400', bg: 'bg-yellow-500/10 border-yellow-500/20' },
+            { label: 'Planned', count: planned, color: 'text-orange-400', bg: 'bg-orange-500/10 border-orange-500/20' },
+            { label: 'Not Started', count: notStarted, color: 'text-red-400', bg: 'bg-red-500/10 border-red-500/20' },
+          ].map(s => (
+            <div key={s.label} className={`rounded-lg border p-3 text-center ${s.bg}`}>
+              <div className={`text-2xl font-bold font-syne ${s.color}`}>{s.count}</div>
+              <div className="text-xs text-[#94b4d1] mt-0.5">{s.label}</div>
             </div>
           ))}
         </div>
+
+        {/* Article area breakdown */}
+        <div className="space-y-3">
+          {articleAreas.map(area => {
+            const pct = area.controlCount > 0 ? Math.round((area.implementedCount / area.controlCount) * 100) : 0
+            return (
+              <div key={area.id} className="space-y-1.5">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-mono text-[#94b4d1]">{area.article}</span>
+                    <span className="text-sm font-medium text-white">{area.name}</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <span className="text-xs text-[#94b4d1]">{area.implementedCount}/{area.controlCount}</span>
+                    <span className={`text-sm font-bold ${pct >= 75 ? 'text-emerald-400' : pct >= 50 ? 'text-yellow-400' : 'text-red-400'}`}>
+                      {pct}%
+                    </span>
+                  </div>
+                </div>
+                <ProgressBar value={pct} />
+              </div>
+            )
+          })}
+        </div>
       </Card>
 
-      {/* Findings breakdown */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      {/* Score Breakdown */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {[
+          { label: 'Technical Controls', score: complianceScore.technical, icon: <Radar size={14} className="text-cyan-400" /> },
+          { label: 'Organisational Controls', score: complianceScore.organizational, icon: <Shield size={14} className="text-cyan-400" /> },
+          { label: 'People & Culture', score: complianceScore.people, icon: <Building size={14} className="text-cyan-400" /> },
+        ].map(cat => (
+          <Card key={cat.label}>
+            <div className="flex items-center gap-2 mb-3">
+              {cat.icon}
+              <h3 className="text-sm font-bold font-syne text-white">{cat.label}</h3>
+            </div>
+            <div className={`text-3xl font-bold font-syne mb-2 ${cat.score >= 75 ? 'text-emerald-400' : cat.score >= 50 ? 'text-yellow-400' : 'text-red-400'}`}>
+              {cat.score}%
+            </div>
+            <ProgressBar value={cat.score} />
+            <p className="text-xs text-[#94b4d1] mt-2">
+              {cat.score >= 75 ? 'Good — on track for compliance' : cat.score >= 50 ? 'At risk — action needed' : 'Critical — immediate action required'}
+            </p>
+          </Card>
+        ))}
+      </div>
+
+      {/* Critical Gaps */}
+      {criticalGaps.length > 0 && (
         <Card>
           <h3 className="text-sm font-bold font-syne text-white mb-4 flex items-center gap-2">
             <AlertTriangle size={14} className="text-red-400" />
-            {t('reports.findingsToRemediateTitle')}
-            <InfoTooltip content={t('reports.findingsToRemediateTooltip')} size={12} />
+            Top Critical Gaps ({allCriticalGaps.length} total)
+            <InfoTooltip content="High and critical severity controls that are Not Started or Partial" size={12} />
           </h3>
           <div className="space-y-2">
-            {scanData.findings.filter(f => f.status === 'fail').map(f => (
-              <div key={f.id} className="flex items-center gap-3 py-1.5 border-b border-navy-800/60 last:border-0">
-                <SeverityBadge severity={f.severity as Severity} />
-                <span className="text-xs text-navy-200 flex-1 truncate">{f.checkName}</span>
-                <span className="text-xs font-mono text-navy-500">{f.article}</span>
+            {criticalGaps.map(c => (
+              <div key={c.id} className="flex items-center gap-3 py-2 border-b border-navy-800/60 last:border-0">
+                <SeverityBadge severity={c.severity as Severity} />
+                <span className="text-xs text-[#CBD8E8] flex-1 truncate">{c.title}</span>
+                <span className="text-xs font-mono text-[#94b4d1]">{c.article}</span>
+                <span className={`text-xs px-2 py-0.5 rounded-full ${
+                  c.status === 'Not Started' ? 'bg-red-500/10 text-red-400' : 'bg-yellow-500/10 text-yellow-400'
+                }`}>{c.status}</span>
               </div>
             ))}
           </div>
         </Card>
+      )}
 
-        <Card>
-          <h3 className="text-sm font-bold font-syne text-white mb-4 flex items-center gap-2">
-            <CheckCircle size={14} className="text-emerald-400" />
-            {t('reports.passingControlsTitle')}
-            <InfoTooltip content={t('reports.passingControlsTooltip')} size={12} />
-          </h3>
-          <div className="space-y-2">
-            {scanData.findings.filter(f => f.status === 'pass').map(f => (
-              <div key={f.id} className="flex items-center gap-3 py-1.5 border-b border-navy-800/60 last:border-0">
-                <CheckCircle size={13} className="text-emerald-400 flex-shrink-0" />
-                <span className="text-xs text-navy-200 flex-1 truncate">{f.checkName}</span>
-                <span className="text-xs font-mono text-navy-500">{f.article}</span>
-              </div>
-            ))}
+      {/* ─── Technical Scan Section ─── */}
+      {scanData ? (
+        <>
+          <div className="flex items-center gap-3 pt-2">
+            <Radar size={16} className="text-cyan-400" />
+            <h2 className="text-base font-bold font-syne text-white">Technical Scan Results</h2>
+            <span className="text-xs text-[#94b4d1] px-2 py-0.5 rounded-full bg-navy-800 border border-navy-700">
+              {scanData.accountName} · {scanData.completedAt ? format(new Date(scanData.completedAt), 'MMM d, yyyy') : '—'}
+            </span>
           </div>
 
-          <div className="mt-4 p-3 rounded-lg bg-emerald-500/8 border border-emerald-500/15">
-            <div className="flex items-center gap-2">
-              <TrendingUp size={14} className="text-emerald-400" />
-              <p className="text-xs text-emerald-300 font-medium">
-                {t('reports.passingControlsSummary', { passed: scanData.passed, total: scanData.totalChecks })}
+          {/* Scan quick stats */}
+          <Card>
+            <div className="flex items-center gap-3 mb-5">
+              <BarChart2 size={16} className="text-cyan-400" />
+              <h2 className="text-base font-bold font-syne text-white">{t('reports.reportSummaryTitle')}</h2>
+              <InfoTooltip content={t('reports.reportSummaryTooltip')} size={12} />
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              {scanData.domainScores.map(d => (
+                <div key={d.domain} className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-medium text-white">{d.domain}</span>
+                    <span className={`text-sm font-bold ${d.score >= 75 ? 'text-emerald-400' : d.score >= 50 ? 'text-yellow-400' : 'text-red-400'}`}>
+                      {d.score}%
+                    </span>
+                  </div>
+                  <ProgressBar value={d.score} />
+                  <div className="flex justify-between text-xs">
+                    <span className="text-[#94b4d1] font-mono">{d.article}</span>
+                    <span className="text-[#94b4d1]">{d.passed}/{d.total} {t('reports.passLabel')}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </Card>
+
+          {/* Findings breakdown */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <Card>
+              <h3 className="text-sm font-bold font-syne text-white mb-4 flex items-center gap-2">
+                <AlertTriangle size={14} className="text-red-400" />
+                {t('reports.findingsToRemediateTitle')}
+                <InfoTooltip content={t('reports.findingsToRemediateTooltip')} size={12} />
+              </h3>
+              <div className="space-y-2">
+                {scanData.findings.filter(f => f.status === 'fail').map(f => (
+                  <div key={f.id} className="flex items-center gap-3 py-1.5 border-b border-navy-800/60 last:border-0">
+                    <SeverityBadge severity={f.severity as Severity} />
+                    <span className="text-xs text-[#CBD8E8] flex-1 truncate">{f.checkName}</span>
+                    <span className="text-xs font-mono text-[#94b4d1]">{f.article}</span>
+                  </div>
+                ))}
+              </div>
+            </Card>
+
+            <Card>
+              <h3 className="text-sm font-bold font-syne text-white mb-4 flex items-center gap-2">
+                <CheckCircle size={14} className="text-emerald-400" />
+                {t('reports.passingControlsTitle')}
+                <InfoTooltip content={t('reports.passingControlsTooltip')} size={12} />
+              </h3>
+              <div className="space-y-2">
+                {scanData.findings.filter(f => f.status === 'pass').map(f => (
+                  <div key={f.id} className="flex items-center gap-3 py-1.5 border-b border-navy-800/60 last:border-0">
+                    <CheckCircle size={13} className="text-emerald-400 flex-shrink-0" />
+                    <span className="text-xs text-[#CBD8E8] flex-1 truncate">{f.checkName}</span>
+                    <span className="text-xs font-mono text-[#94b4d1]">{f.article}</span>
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-4 p-3 rounded-lg bg-emerald-500/8 border border-emerald-500/15">
+                <div className="flex items-center gap-2">
+                  <TrendingUp size={14} className="text-emerald-400" />
+                  <p className="text-xs text-emerald-300 font-medium">
+                    {t('reports.passingControlsSummary', { passed: scanData.passed, total: scanData.totalChecks })}
+                  </p>
+                </div>
+              </div>
+            </Card>
+          </div>
+        </>
+      ) : (
+        /* No scan data — show prompt to run scan */
+        <Card>
+          <div className="flex items-center gap-4 py-4">
+            <div className="p-3 rounded-full bg-navy-800/60">
+              <Radar size={24} className="text-cyan-400" />
+            </div>
+            <div className="flex-1">
+              <h3 className="text-sm font-bold font-syne text-white">Technical Scan</h3>
+              <p className="text-xs text-[#94b4d1] mt-0.5">
+                Run an AWS compliance scan to add technical findings to this report.
               </p>
             </div>
+            <Button size="sm" onClick={() => navigate('/scan')}>
+              <Radar size={14} />
+              Run a Scan
+            </Button>
           </div>
         </Card>
-      </div>
+      )}
 
-      {/* Report preview */}
-      {showPreview && (
+      {/* Report preview (only when scan data is available) */}
+      {scanData && showPreview && (
         <div className="space-y-3">
           <div className="flex items-center gap-3">
             <FileText size={15} className="text-cyan-400" />
             <h2 className="text-base font-bold font-syne text-white">{t('reports.reportPreviewTitle')}</h2>
-            <span className="text-xs text-navy-400 px-2 py-0.5 rounded-full bg-navy-800 border border-navy-700">{t('reports.pdfFormatBadge')}</span>
+            <span className="text-xs text-[#94b4d1] px-2 py-0.5 rounded-full bg-navy-800 border border-navy-700">{t('reports.pdfFormatBadge')}</span>
           </div>
           <div className="rounded-xl overflow-hidden shadow-2xl shadow-navy-950/50 ring-1 ring-navy-700">
             <ReportPreview scanData={scanData} />

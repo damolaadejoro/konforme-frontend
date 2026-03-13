@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect, useMemo, useCallback, useRef } from 'react'
 import {
   Control,
   ControlCategory,
@@ -11,8 +11,18 @@ import {
   TaskType,
   TaskStatus
 } from '../types/controls'
-import { controls as templateControls, mockCampaigns } from '../data/controlsData'
-import { mockScanResult } from '../data/mockData'
+import { controls as templateControls } from '../data/controlsData'
+import {
+  getControlStates,
+  bulkUpsertControls,
+  updateControlState,
+  getCampaigns,
+  createCampaignApi,
+  updateCampaignTask,
+  getCountryControls,
+  getCountryAssessmentQuestions,
+} from '../services/api'
+import type { AccountControlState, CampaignApi, CountryControl, CountryAssessmentQuestion } from '../services/api'
 
 // Fresh controls for new users: all statuses reset to "Not Started", no pre-filled data
 const freshControls: Control[] = templateControls.map(c => ({
@@ -26,7 +36,6 @@ const freshControls: Control[] = templateControls.map(c => ({
 
 const STORAGE_KEY = 'konforme_controls'
 const CAMPAIGNS_STORAGE_KEY = 'konforme_campaigns'
-const LAST_SAVED_KEY = 'konforme_last_saved'
 
 // Status weights for scoring
 const STATUS_WEIGHTS = {
@@ -43,66 +52,307 @@ const SEVERITY_WEIGHTS = {
   medium: 1
 }
 
+// Country overlay data attached to controls
+export interface CountryControlOverlay {
+  nationalLegalReference: string | null
+  nationalSpecification: string | null
+  goesBeyondEu: boolean
+  additionalRequirements: string[]
+}
+
+// Normalize article format: "Art 21(2)(a)" -> "Art. 21(2)(a)" to match controlsData
+function normalizeArticle(article: string): string {
+  if (article.startsWith('Art ') && !article.startsWith('Art. ')) {
+    return 'Art. ' + article.slice(4)
+  }
+  return article
+}
+
+// Map article to area name
+const ARTICLE_AREA_NAMES: Record<string, string> = {
+  'Art. 20': 'Governance',
+  'Art 20': 'Governance',
+  'Art. 21(2)(a)': 'Risk Management',
+  'Art. 21(2)(b)': 'Incident Handling',
+  'Art. 21(2)(c)': 'Business Continuity',
+  'Art. 21(2)(d)': 'Supply Chain Security',
+  'Art. 21(2)(e)': 'Secure Development',
+  'Art. 21(2)(f)': 'Effectiveness Assessment',
+  'Art. 21(2)(g)': 'Cyber Hygiene & Training',
+  'Art. 21(2)(h)': 'Cryptography & Encryption',
+  'Art. 21(2)(i)': 'Access Control & Asset Management',
+  'Art. 21(2)(j)': 'MFA & Secured Communications',
+}
+
+// Convert backend campaign to frontend EmployeeCampaign
+function mapCampaignFromApi(c: CampaignApi): EmployeeCampaign {
+  return {
+    id: c.id,
+    controlId: c.controlId,
+    controlName: c.controlName,
+    taskType: c.taskType as TaskType,
+    deadline: c.deadline,
+    createdAt: c.createdAt,
+    policyContent: c.policyContent || undefined,
+    tasks: c.tasks.map(t => ({
+      id: t.id,
+      controlId: t.controlId,
+      campaignId: t.campaignId,
+      employeeName: t.employeeName,
+      employeeEmail: t.employeeEmail,
+      department: t.department,
+      taskType: t.taskType as TaskType,
+      status: t.status as TaskStatus,
+      sentDate: t.sentDate,
+      completedDate: t.completedDate,
+      deadline: t.deadline,
+      score: t.score ?? undefined,
+    })),
+  }
+}
+
+// Merge backend state into template controls
+function mergeStateIntoControls(
+  baseControls: Control[],
+  backendStates: AccountControlState[]
+): Control[] {
+  const stateMap = new Map(backendStates.map(s => [s.controlId, s]))
+  return baseControls.map(c => {
+    const state = stateMap.get(c.id)
+    if (!state) return c
+    return {
+      ...c,
+      status: (state.status as ControlStatus) || c.status,
+      owner: state.owner || c.owner,
+      dueDate: state.dueDate,
+      notes: state.notes || c.notes,
+      isCountrySpecific: state.isCountrySpecific,
+      lastUpdated: state.lastUpdated || c.lastUpdated,
+    }
+  })
+}
+
 export function useControls() {
   const [controls, setControls] = useState<Control[]>([])
   const [campaigns, setCampaigns] = useState<EmployeeCampaign[]>([])
   const [selectedControl, setSelectedControl] = useState<Control | null>(null)
   const [lastSaved, setLastSaved] = useState<string | null>(null)
+  const [countryControlMap, setCountryControlMap] = useState<Record<string, CountryControlOverlay>>({})
+  const [loading, setLoading] = useState(true)
 
-  // Load from localStorage on mount
+  // Track whether initial load is done to avoid saving during load
+  const initialLoadDone = useRef(false)
+
+  const accountId = localStorage.getItem('konforme_account_id')
+
+  // Load controls and campaigns from backend on mount
   useEffect(() => {
-    const stored = localStorage.getItem(STORAGE_KEY)
-    const storedCampaigns = localStorage.getItem(CAMPAIGNS_STORAGE_KEY)
-    const storedLastSaved = localStorage.getItem(LAST_SAVED_KEY)
-
-    if (stored) {
-      try {
-        setControls(JSON.parse(stored))
-      } catch (e) {
-        console.error('Failed to load controls', e)
-        setControls(freshControls)
-      }
-    } else {
+    if (!accountId) {
       setControls(freshControls)
+      setLoading(false)
+      return
     }
 
-    if (storedCampaigns) {
+    let cancelled = false
+
+    async function loadData() {
       try {
-        setCampaigns(JSON.parse(storedCampaigns))
-      } catch (e) {
-        console.error('Failed to load campaigns', e)
-        setCampaigns([])
+        // Load backend state and campaigns in parallel
+        const [backendStates, backendCampaigns] = await Promise.all([
+          getControlStates(accountId!).catch(() => [] as AccountControlState[]),
+          getCampaigns(accountId!).catch(() => [] as CampaignApi[]),
+        ])
+
+        if (cancelled) return
+
+        // Migration: if backend is empty but localStorage has data, migrate it
+        if (backendStates.length === 0) {
+          const localData = localStorage.getItem(STORAGE_KEY)
+          if (localData) {
+            try {
+              const parsed = JSON.parse(localData) as Control[]
+              const toMigrate = parsed.map(c => ({
+                control_id: c.id,
+                status: c.status,
+                owner: c.owner,
+                due_date: c.dueDate || null,
+                notes: c.notes,
+                is_country_specific: c.isCountrySpecific || false,
+              }))
+              const migrated = await bulkUpsertControls(accountId!, toMigrate)
+              if (!cancelled) {
+                // Clear localStorage after successful migration
+                localStorage.removeItem(STORAGE_KEY)
+                localStorage.removeItem(CAMPAIGNS_STORAGE_KEY)
+                const merged = mergeStateIntoControls(freshControls, migrated)
+                setControls(merged)
+              }
+            } catch {
+              // Migration failed, use fresh controls and seed backend
+              if (!cancelled) {
+                const seeded = await seedBackend(accountId!)
+                const merged = mergeStateIntoControls(freshControls, seeded)
+                setControls(merged)
+              }
+            }
+          } else {
+            // No localStorage, no backend — seed backend with defaults
+            const seeded = await seedBackend(accountId!)
+            if (!cancelled) {
+              const merged = mergeStateIntoControls(freshControls, seeded)
+              setControls(merged)
+            }
+          }
+        } else {
+          // Backend has data — use it
+          if (!cancelled) {
+            const merged = mergeStateIntoControls(freshControls, backendStates)
+            setControls(merged)
+          }
+        }
+
+        // Load campaigns
+        if (!cancelled) {
+          if (backendCampaigns.length > 0) {
+            setCampaigns(backendCampaigns.map(mapCampaignFromApi))
+            // Clear legacy localStorage campaigns
+            localStorage.removeItem(CAMPAIGNS_STORAGE_KEY)
+          } else {
+            // Migrate localStorage campaigns if any
+            const localCampaigns = localStorage.getItem(CAMPAIGNS_STORAGE_KEY)
+            if (localCampaigns) {
+              try {
+                setCampaigns(JSON.parse(localCampaigns))
+                localStorage.removeItem(CAMPAIGNS_STORAGE_KEY)
+              } catch {
+                setCampaigns([])
+              }
+            }
+          }
+        }
+      } catch (err) {
+        console.error('Failed to load controls from backend', err)
+        if (!cancelled) {
+          setControls(freshControls)
+        }
+      } finally {
+        if (!cancelled) {
+          initialLoadDone.current = true
+          setLoading(false)
+        }
       }
-    } else {
-      setCampaigns([])
     }
 
-    if (storedLastSaved) {
-      setLastSaved(storedLastSaved)
-    }
-  }, [])
+    // Load country data in parallel
+    const countryCode = localStorage.getItem('konforme_country')
 
-  // Save to localStorage whenever controls or campaigns change
-  useEffect(() => {
-    if (controls.length > 0) {
-      const timestamp = new Date().toISOString()
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(controls))
-      localStorage.setItem(LAST_SAVED_KEY, timestamp)
-      setLastSaved(timestamp)
-    }
-  }, [controls])
+    loadData().then(() => {
+      if (cancelled || !countryCode) return
 
-  useEffect(() => {
-    if (campaigns.length > 0) {
-      const timestamp = new Date().toISOString()
-      localStorage.setItem(CAMPAIGNS_STORAGE_KEY, JSON.stringify(campaigns))
-      localStorage.setItem(LAST_SAVED_KEY, timestamp)
-      setLastSaved(timestamp)
-    }
-  }, [campaigns])
+      Promise.all([
+        getCountryControls(countryCode).catch(() => [] as CountryControl[]),
+        getCountryAssessmentQuestions(countryCode).catch(() => [] as CountryAssessmentQuestion[]),
+      ]).then(([countryControls, countryQuestions]) => {
+        if (cancelled) return
 
-  // Update control
-  const updateControl = (controlId: string, updates: Partial<Control>) => {
+        // Build overlay map
+        const map: Record<string, CountryControlOverlay> = {}
+        const dedupReqs = new Set<string>()
+        countryControls.forEach(cc => {
+          const key = normalizeArticle(cc.euArticle || '')
+          if (!map[key]) {
+            map[key] = {
+              nationalLegalReference: cc.nationalLegalReference,
+              nationalSpecification: cc.nationalSpecification,
+              goesBeyondEu: cc.goesBeyondEu,
+              additionalRequirements: [],
+            }
+            dedupReqs.clear()
+          }
+          if (cc.goesBeyondEu) {
+            map[key].goesBeyondEu = true
+            if (cc.nationalSpecification && !map[key].nationalSpecification) {
+              map[key].nationalSpecification = cc.nationalSpecification
+            }
+          }
+          if (cc.additionalRequirements?.length) {
+            cc.additionalRequirements.forEach(r => {
+              if (!dedupReqs.has(r)) {
+                dedupReqs.add(r)
+                map[key].additionalRequirements.push(r)
+              }
+            })
+          }
+        })
+        setCountryControlMap(map)
+
+        // Enrich controls with country data + add country-specific controls
+        setControls(prev => {
+          const baseControls = prev.filter(c => !c.isCountrySpecific)
+          const enriched = baseControls.map(c => {
+            const overlay = map[c.article]
+            if (!overlay) return c
+            return {
+              ...c,
+              nationalLegalReference: overlay.nationalLegalReference,
+              nationalSpecification: overlay.nationalSpecification,
+              goesBeyondEu: overlay.goesBeyondEu,
+              additionalRequirements: overlay.additionalRequirements,
+            }
+          })
+
+          const additionalControls: Control[] = countryQuestions
+            .filter(q => q.isAdditional)
+            .map((q, i) => {
+              const controlId = `country-ctrl-${countryCode.toLowerCase()}-${i + 1}`
+              return {
+                id: controlId,
+                title: q.questionText,
+                description: q.helpText || q.questionText,
+                article: normalizeArticle(q.euArticle || ''),
+                articleArea: ARTICLE_AREA_NAMES[normalizeArticle(q.euArticle || '')] || q.domain || 'National Requirement',
+                category: 'Organizational' as ControlCategory,
+                status: 'Not Started' as ControlStatus,
+                owner: '',
+                dueDate: null,
+                evidence: [],
+                notes: '',
+                isAutoPopulated: false,
+                isPeopleControl: false,
+                lastUpdated: new Date().toISOString(),
+                severity: 'high' as ControlSeverity,
+                isCountrySpecific: true,
+                nationalLegalReference: q.nationalLegalReference,
+              }
+            })
+
+          return [...enriched, ...additionalControls]
+        })
+      })
+    })
+
+    return () => { cancelled = true }
+  }, [accountId])
+
+  // Seed backend with default "Not Started" controls
+  async function seedBackend(acctId: string): Promise<AccountControlState[]> {
+    const items = freshControls.map(c => ({
+      control_id: c.id,
+      status: c.status,
+      owner: c.owner,
+      due_date: c.dueDate || null,
+      notes: c.notes,
+      is_country_specific: false,
+    }))
+    try {
+      return await bulkUpsertControls(acctId, items)
+    } catch {
+      return []
+    }
+  }
+
+  // Update control — saves to backend immediately
+  const updateControl = useCallback((controlId: string, updates: Partial<Control>) => {
     setControls(prev =>
       prev.map(control =>
         control.id === controlId
@@ -110,10 +360,27 @@ export function useControls() {
           : control
       )
     )
-  }
 
-  // Add evidence to control
-  const addEvidence = (controlId: string, evidence: Omit<Control['evidence'][0], 'id'>) => {
+    // Persist to backend
+    if (accountId) {
+      const backendUpdates: Record<string, unknown> = {}
+      if (updates.status !== undefined) backendUpdates.status = updates.status
+      if (updates.owner !== undefined) backendUpdates.owner = updates.owner
+      if (updates.dueDate !== undefined) backendUpdates.due_date = updates.dueDate || null
+      if (updates.notes !== undefined) backendUpdates.notes = updates.notes
+
+      if (Object.keys(backendUpdates).length > 0) {
+        updateControlState(accountId, controlId, backendUpdates as any).then(() => {
+          setLastSaved(new Date().toISOString())
+        }).catch(err => {
+          console.error('Failed to save control to backend', err)
+        })
+      }
+    }
+  }, [accountId])
+
+  // Add evidence to control (evidence is managed by a separate Evidence API, just update local state)
+  const addEvidence = useCallback((controlId: string, evidence: Omit<Control['evidence'][0], 'id'>) => {
     const newEvidence = {
       ...evidence,
       id: `ev-${Date.now()}`
@@ -130,10 +397,10 @@ export function useControls() {
           : control
       )
     )
-  }
+  }, [])
 
   // Remove evidence
-  const removeEvidence = (controlId: string, evidenceId: string) => {
+  const removeEvidence = useCallback((controlId: string, evidenceId: string) => {
     setControls(prev =>
       prev.map(control =>
         control.id === controlId
@@ -145,10 +412,10 @@ export function useControls() {
           : control
       )
     )
-  }
+  }, [])
 
-  // Create employee campaign
-  const createCampaign = (
+  // Create employee campaign — saves to backend
+  const createCampaign = useCallback((
     controlId: string,
     taskType: TaskType,
     employees: Array<{ name: string; email: string; department: string }>,
@@ -158,8 +425,44 @@ export function useControls() {
     const control = controls.find(c => c.id === controlId)
     if (!control) return
 
-    const campaignId = `camp-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`
+    if (accountId) {
+      createCampaignApi(accountId, {
+        control_id: controlId,
+        control_name: control.title,
+        task_type: taskType,
+        deadline,
+        employees: employees.map(e => ({
+          employee_name: e.name,
+          employee_email: e.email,
+          department: e.department,
+        })),
+        policy_content: policyContent || null,
+      }).then(result => {
+        setCampaigns(prev => [...prev, mapCampaignFromApi(result)])
+      }).catch(err => {
+        console.error('Failed to create campaign', err)
+        // Fallback: create locally
+        createCampaignLocally(controlId, control.title, taskType, employees, deadline, policyContent)
+      })
+    } else {
+      createCampaignLocally(controlId, control.title, taskType, employees, deadline, policyContent)
+    }
 
+    // Update control status if not already implemented
+    if (control.status === 'Not Started') {
+      updateControl(controlId, { status: 'Planned' })
+    }
+  }, [controls, accountId, updateControl])
+
+  function createCampaignLocally(
+    controlId: string,
+    controlName: string,
+    taskType: TaskType,
+    employees: Array<{ name: string; email: string; department: string }>,
+    deadline: string,
+    policyContent?: string
+  ) {
+    const campaignId = `camp-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`
     const tasks: EmployeeTask[] = employees.map(emp => ({
       id: `task-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
       controlId,
@@ -168,7 +471,7 @@ export function useControls() {
       employeeEmail: emp.email,
       department: emp.department,
       taskType,
-      status: 'pending',
+      status: 'pending' as TaskStatus,
       sentDate: new Date().toISOString(),
       completedDate: null,
       deadline
@@ -177,7 +480,7 @@ export function useControls() {
     const campaign: EmployeeCampaign = {
       id: campaignId,
       controlId,
-      controlName: control.title,
+      controlName,
       taskType,
       deadline,
       createdAt: new Date().toISOString(),
@@ -186,15 +489,10 @@ export function useControls() {
     }
 
     setCampaigns(prev => [...prev, campaign])
-
-    // Update control status if not already implemented
-    if (control.status === 'Not Started') {
-      updateControl(controlId, { status: 'Planned' })
-    }
   }
 
-  // Update task status
-  const updateTaskStatus = (taskId: string, status: TaskStatus, score?: number) => {
+  // Update task status — saves to backend
+  const updateTaskStatus = useCallback((taskId: string, status: TaskStatus, score?: number) => {
     setCampaigns(prev =>
       prev.map(campaign => ({
         ...campaign,
@@ -210,7 +508,16 @@ export function useControls() {
         )
       }))
     )
-  }
+
+    if (accountId) {
+      updateCampaignTask(accountId, taskId, {
+        status,
+        score: score ?? null,
+      }).catch(err => {
+        console.error('Failed to update campaign task', err)
+      })
+    }
+  }, [accountId])
 
   // Calculate compliance score
   const complianceScore: ComplianceScore = useMemo(() => {
@@ -234,11 +541,9 @@ export function useControls() {
       totalWeightedScore += weightedScore
       totalPossibleWeight += possibleWeight
 
-      // Category scores
       categoryScores[control.category].score += weightedScore
       categoryScores[control.category].possible += possibleWeight
 
-      // Article scores
       const article = control.article
       if (!byArticle[article]) {
         byArticle[article] = { score: 0, possible: 0 }
@@ -288,7 +593,7 @@ export function useControls() {
         areas[areaName] = {
           id: areaName.toLowerCase().replace(/\s+/g, '-'),
           name: areaName,
-          article: control.article.split('(')[0].trim(), // Extract just "Art. 21"
+          article: control.article.split('(')[0].trim(),
           controlCount: 0,
           implementedCount: 0,
           status: 'Not Started' as ControlStatus
@@ -301,7 +606,6 @@ export function useControls() {
       }
     })
 
-    // Determine status for each area
     Object.values(areas).forEach(area => {
       const implementedRatio = area.implementedCount / area.controlCount
       if (implementedRatio === 1) {
@@ -318,7 +622,7 @@ export function useControls() {
     return Object.values(areas)
   }, [controls])
 
-  // Get critical gaps (all, for count)
+  // Get critical gaps
   const allCriticalGaps = useMemo(() => {
     return controls
       .filter(c =>
@@ -326,18 +630,19 @@ export function useControls() {
         (c.severity === 'critical' || c.severity === 'high')
       )
       .sort((a, b) => {
-        // Sort by severity first
+        const aCountryPriority = (a.isCountrySpecific ? 0 : a.goesBeyondEu ? 1 : 2)
+        const bCountryPriority = (b.isCountrySpecific ? 0 : b.goesBeyondEu ? 1 : 2)
+        if (aCountryPriority !== bCountryPriority) return aCountryPriority - bCountryPriority
+
         const severityOrder = { critical: 0, high: 1, medium: 2 }
         const severityDiff = severityOrder[a.severity] - severityOrder[b.severity]
         if (severityDiff !== 0) return severityDiff
 
-        // Then by status (Not Started before Partial)
         const statusOrder = { 'Not Started': 0, 'Planned': 1, 'Partial': 2, 'Implemented': 3 }
         return statusOrder[a.status] - statusOrder[b.status]
       })
   }, [controls])
 
-  // Top 5 critical gaps for display
   const criticalGaps = useMemo(() => {
     return allCriticalGaps.slice(0, 5)
   }, [allCriticalGaps])
@@ -367,7 +672,7 @@ export function useControls() {
     })
   }
 
-  // Get campaign for control
+  // Get campaigns for control
   const getCampaignsForControl = (controlId: string) => {
     return campaigns.filter(c => c.controlId === controlId)
   }
@@ -394,6 +699,11 @@ export function useControls() {
     }
   }, [allTasks])
 
+  // Helper: get country overlay for a control by its article
+  const getCountryOverlay = (article: string): CountryControlOverlay | null => {
+    return countryControlMap[article] || countryControlMap[normalizeArticle(article)] || null
+  }
+
   return {
     controls,
     campaigns,
@@ -412,6 +722,10 @@ export function useControls() {
     getCampaignsForControl,
     allTasks,
     employeeComplianceStats,
-    lastSaved
+    lastSaved,
+    loading,
+    // Country-specific
+    countryControlMap,
+    getCountryOverlay,
   }
 }

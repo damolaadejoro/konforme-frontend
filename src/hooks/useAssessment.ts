@@ -14,7 +14,9 @@ import {
   autoSaveResponse,
   getStoredAuth,
   isConnected,
+  getCountryAssessmentQuestions,
 } from '../services/api'
+import type { CountryAssessmentQuestion } from '../services/api'
 
 const STORAGE_KEY = 'konforme_assessment_v2'
 
@@ -154,6 +156,7 @@ export function useAssessment() {
   const [loading, setLoading] = useState(true)
   const [submitting, setSubmitting] = useState(false)
   const [backendVersionId, setBackendVersionId] = useState<string | null>(null)
+  const [countryQuestions, setCountryQuestions] = useState<CountryAssessmentQuestion[]>([])
 
   // Load from localStorage on mount, then try backend
   useEffect(() => {
@@ -196,6 +199,14 @@ export function useAssessment() {
       }
     } else {
       setLoading(false)
+    }
+
+    // Load country-specific questions if country is set
+    const countryCode = localStorage.getItem('konforme_country')
+    if (countryCode) {
+      getCountryAssessmentQuestions(countryCode)
+        .then(setCountryQuestions)
+        .catch(() => {})
     }
   }, [])
 
@@ -270,6 +281,43 @@ export function useAssessment() {
     localStorage.removeItem(STORAGE_KEY)
   }, [])
 
+  // Build national reference overlay: maps base question ID -> country info
+  const nationalRefMap = useMemo(() => {
+    const map: Record<string, { nationalLegalReference: string | null; helpText: string | null; weight: number }> = {}
+    countryQuestions.forEach(cq => {
+      if (!cq.isAdditional && cq.baseQuestionId) {
+        map[cq.baseQuestionId] = {
+          nationalLegalReference: cq.nationalLegalReference,
+          helpText: cq.helpText,
+          weight: cq.weight,
+        }
+      }
+    })
+    return map
+  }, [countryQuestions])
+
+  // Additional country-only questions (appended to question list)
+  const additionalQuestions = useMemo(() => {
+    return countryQuestions
+      .filter(cq => cq.isAdditional)
+      .map(cq => ({
+        id: cq.id,
+        article: cq.euArticle || '',
+        articleTitle: cq.domain || '',
+        severity: 'high' as QuestionSeverity,
+        question: cq.questionText,
+        description: cq.helpText || '',
+        guidance: '',
+        isCountrySpecific: true,
+        nationalLegalReference: cq.nationalLegalReference,
+      }))
+  }, [countryQuestions])
+
+  // All questions = baseline + additional country questions
+  const allQuestions = useMemo(() => {
+    return [...ASSESSMENT_QUESTIONS, ...additionalQuestions]
+  }, [additionalQuestions])
+
   const overallScore = useMemo(() => calculateOverallScore(responses), [responses])
   const articleScores = useMemo(() => calculateArticleScores(responses), [responses])
   const projectedScore = useMemo(() => calculateProjectedScore(responses), [responses])
@@ -281,7 +329,8 @@ export function useAssessment() {
     [responses]
   )
 
-  const progressPercent = Math.round((answeredCount / ASSESSMENT_QUESTIONS.length) * 100)
+  const totalQuestions = allQuestions.length
+  const progressPercent = Math.round((answeredCount / totalQuestions) * 100)
 
   return {
     responses,
@@ -297,8 +346,13 @@ export function useAssessment() {
     projectedArticleScores,
     gaps,
     answeredCount,
-    totalQuestions: ASSESSMENT_QUESTIONS.length,
+    totalQuestions,
     progressPercent,
     backendVersionId,
+    // Country-specific data
+    nationalRefMap,
+    additionalQuestions,
+    allQuestions,
+    countryQuestions,
   }
 }

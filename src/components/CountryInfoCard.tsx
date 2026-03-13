@@ -35,13 +35,24 @@ export default function CountryInfoCard() {
     )
   }
 
-  const statusColor = currentCountry.nis2TranspositionStatus === 'transposed'
+  const statusColor = currentCountry.transpositionStatus === 'transposed'
     ? 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30'
-    : currentCountry.nis2TranspositionStatus === 'partial'
+    : currentCountry.transpositionStatus === 'partial'
     ? 'bg-yellow-500/15 text-yellow-400 border-yellow-500/30'
     : 'bg-red-500/15 text-red-400 border-red-500/30'
 
-  const statusLabel = t(`countryInfo.${currentCountry.nis2TranspositionStatus}`)
+  const statusLabel = t(`countryInfo.${currentCountry.transpositionStatus}`)
+
+  // Parse authority name — format is "Name (ACRONYM)" from the API
+  const authorityFull = currentCountry.competentAuthorityName || ''
+  const acronymMatch = authorityFull.match(/\(([^)]+)\)/)
+  const authorityName = acronymMatch ? authorityFull.replace(/\s*\([^)]+\)/, '').trim() : authorityFull
+  const authorityAcronym = acronymMatch ? acronymMatch[1] : ''
+  const authorityUrl = currentCountry.competentAuthorityUrl || ''
+
+  const notes = currentCountry.researchNotes
+    ? currentCountry.researchNotes.split('\n').filter(n => n.trim())
+    : []
 
   return (
     <Card>
@@ -60,45 +71,51 @@ export default function CountryInfoCard() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
             <div>
               <p className="text-navy-400 mb-0.5">{t('countryInfo.authority')}</p>
-              <p className="text-white font-medium">{currentCountry.authority.name}</p>
-              <p className="text-cyan-400 text-[11px]">({currentCountry.authority.acronym})</p>
-              <a
-                href={currentCountry.authority.website}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1 text-cyan-400 hover:text-cyan-300 mt-1"
-              >
-                {currentCountry.authority.website.replace(/^https?:\/\//, '')}
-                <ExternalLink size={10} />
-              </a>
+              <p className="text-white font-medium">{authorityName}</p>
+              {authorityAcronym && (
+                <p className="text-cyan-400 text-[11px]">({authorityAcronym})</p>
+              )}
+              {authorityUrl && (
+                <a
+                  href={authorityUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1 text-cyan-400 hover:text-cyan-300 mt-1"
+                >
+                  {authorityUrl.replace(/^https?:\/\//, '')}
+                  <ExternalLink size={10} />
+                </a>
+              )}
             </div>
 
             <div className="space-y-2">
               <div>
                 <p className="text-navy-400 mb-0.5">{t('countryInfo.nationalLaw')}</p>
-                <p className="text-white font-medium">{currentCountry.nis2NationalLaw}</p>
+                <p className="text-white font-medium">{currentCountry.transpositionLawName || '—'}</p>
               </div>
-              <a
-                href={currentCountry.reportingUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 hover:text-red-300 hover:border-red-500/40 transition-all text-[11px] font-medium"
-              >
-                <Shield size={12} />
-                {t('countryInfo.reportIncident')}
-                <ExternalLink size={10} />
-              </a>
+              {currentCountry.csirtUrl && (
+                <a
+                  href={currentCountry.csirtUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 hover:text-red-300 hover:border-red-500/40 transition-all text-[11px] font-medium"
+                >
+                  <Shield size={12} />
+                  {t('countryInfo.reportIncident')}
+                  <ExternalLink size={10} />
+                </a>
+              )}
             </div>
           </div>
 
-          {currentCountry.countryNotes && currentCountry.countryNotes.length > 0 && (
+          {notes.length > 0 && (
             <div className="mt-4 pt-3 border-t border-navy-700">
               <div className="flex items-center gap-2 mb-2">
                 <Info size={13} className="text-sky-400" />
                 <h4 className="text-xs font-bold text-sky-400 uppercase tracking-wider">{t('countryInfo.specificRequirements')}</h4>
               </div>
               <ul className="space-y-1.5">
-                {currentCountry.countryNotes.map((note, i) => (
+                {notes.map((note, i) => (
                   <li key={i} className="flex items-start gap-2 text-xs text-navy-200">
                     <span className="text-sky-400 mt-0.5">•</span>
                     <span>{note}</span>

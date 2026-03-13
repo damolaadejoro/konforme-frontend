@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import {
@@ -13,16 +13,17 @@ import {
   Activity,
   ClipboardCheck,
 } from 'lucide-react'
-import { useControls } from '../hooks/useControls'
+import { useControlsContext } from '../context/ControlsContext'
 import { Card, Button, StatCard, ProgressBar, SeverityBadge, InfoTooltip } from '../components/ui'
 import { ControlStatus } from '../types/controls'
 import CompanyNameModal from '../components/ui/CompanyNameModal'
 import { generateComplianceReport } from '../utils/generatePDF'
-import { getCombinedScore, isConnected, getStoredAuth, type CombinedScoreResponse, type AwsAccountInfo } from '../services/api'
+import { getCombinedScore, isConnected, getStoredAuth, getCloudCredentials, type CombinedScoreResponse, type CloudCredential } from '../services/api'
 import { useAssessment } from '../hooks/useAssessment'
 import { useAuth } from '../context/AuthContext'
 import NextStepBanner from '../components/NextStepBanner'
 import CountryInfoCard from '../components/CountryInfoCard'
+import DeadlinesWidget from '../components/DeadlinesWidget'
 
 const statusColors: Record<ControlStatus, string> = {
   'Not Started': '#ef4444',
@@ -41,43 +42,66 @@ const statusBgColors: Record<ControlStatus, string> = {
 export default function NIS2Overview() {
   const { t } = useTranslation()
   const navigate = useNavigate()
-  const { complianceScore, articleAreas, criticalGaps, allCriticalGaps, employeeComplianceStats, controls } = useControls()
+  const { complianceScore, articleAreas, criticalGaps, allCriticalGaps, employeeComplianceStats, controls, getCountryOverlay } = useControlsContext()
   const { projectedScore: assessmentScore, articleScores, answeredCount, totalQuestions, progressPercent: assessmentProgress } = useAssessment()
-  const { awsAccounts, selectedAwsAccountId, selectAwsAccount } = useAuth()
+  const { awsAccounts, selectedAwsAccountId, selectAwsAccount, country } = useAuth()
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isGenerating, setIsGenerating] = useState(false)
   const [backendScore, setBackendScore] = useState<CombinedScoreResponse | null>(null)
   const [perAccountScores, setPerAccountScores] = useState<Record<string, CombinedScoreResponse>>({})
+  const [azureCredentials, setAzureCredentials] = useState<CloudCredential[]>([])
   const [dashboardFilter, setDashboardFilter] = useState<string | null>(null) // null = all accounts
 
-  // Fetch real scores from backend if connected
+  // Stabilize awsAccounts reference to prevent infinite re-render loop
+  const awsAccountIds = useMemo(() => awsAccounts.map(a => a.id).join(','), [awsAccounts])
+
+  // Fetch real scores and Azure credentials from backend if connected
   useEffect(() => {
     if (isConnected()) {
       const { accountId } = getStoredAuth()
       if (accountId) {
-        // Fetch aggregate score
-        const filterAwsId = dashboardFilter || undefined
-        getCombinedScore(accountId, filterAwsId)
+        // Fetch aggregate score (or filtered by a specific provider)
+        const filterOpts = dashboardFilter
+          ? (awsAccounts.some(a => a.id === dashboardFilter)
+              ? { awsAccountId: dashboardFilter }
+              : { credentialId: dashboardFilter })
+          : undefined
+        getCombinedScore(accountId, filterOpts)
           .then(setBackendScore)
           .catch(() => {})
 
-        // Fetch per-account scores
+        // Fetch per-AWS-account scores
         if (awsAccounts.length > 0) {
           awsAccounts.forEach(acc => {
-            getCombinedScore(accountId, acc.id)
+            getCombinedScore(accountId, { awsAccountId: acc.id })
               .then(score => setPerAccountScores(prev => ({ ...prev, [acc.id]: score })))
               .catch(() => {})
           })
         }
+
+        // Fetch Azure credentials + per-credential scores
+        getCloudCredentials(accountId)
+          .then(data => {
+            const azureCreds = data.credentials.filter(c => c.provider === 'azure')
+            setAzureCredentials(azureCreds)
+            azureCreds.forEach(cred => {
+              getCombinedScore(accountId, { credentialId: cred.id })
+                .then(score => setPerAccountScores(prev => ({ ...prev, [cred.id]: score })))
+                .catch(() => {})
+            })
+          })
+          .catch(() => {})
       }
     }
-  }, [dashboardFilter, awsAccounts])
+  }, [dashboardFilter, awsAccountIds])
 
   // Prefer backend scores when available, fall back to localStorage-based scores
   const technicalScore = backendScore?.technicalScore ?? complianceScore.technical
+  const tw = backendScore?.technicalWeight ?? 0.6
+  const hw = backendScore?.humanWeight ?? 0.4
   const overallScore = backendScore?.overallScore
     ?? (technicalScore > 0 && assessmentScore > 0
-      ? Math.round(technicalScore * 0.6 + assessmentScore * 0.4)
+      ? Math.round(technicalScore * tw + assessmentScore * hw)
       : technicalScore > 0 ? technicalScore
       : assessmentScore > 0 ? assessmentScore
       : 0)
@@ -242,15 +266,18 @@ export default function NIS2Overview() {
       {/* Country Info */}
       <CountryInfoCard />
 
-      {/* AWS Account Scores */}
-      {isConnected() && awsAccounts.length > 0 && (
+      {/* Deadlines */}
+      <DeadlinesWidget countryCode={country} />
+
+      {/* Cloud Provider Scores */}
+      {isConnected() && (awsAccounts.length > 0 || azureCredentials.length > 0) && (
         <Card>
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h2 className="text-[18px] font-bold font-syne text-white">{t('overview.awsScores')}</h2>
-              <p className="text-[13px] text-[#94b4d1] mt-1">{t('overview.awsScoresDesc')}</p>
+              <h2 className="text-[18px] font-bold font-syne text-white">{t('overview.cloudScores')}</h2>
+              <p className="text-[13px] text-[#94b4d1] mt-1">{t('overview.cloudScoresDesc')}</p>
             </div>
-            {awsAccounts.length > 1 && (
+            {(awsAccounts.length + azureCredentials.length) > 1 && (
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => setDashboardFilter(null)}
@@ -271,10 +298,21 @@ export default function NIS2Overview() {
                     {acc.alias}
                   </button>
                 ))}
+                {azureCredentials.map(cred => (
+                  <button
+                    key={cred.id}
+                    onClick={() => setDashboardFilter(cred.id)}
+                    className={`px-3 py-1 rounded-lg text-xs font-medium transition-all ${
+                      dashboardFilter === cred.id ? 'bg-cyan-500/15 text-cyan-400 border border-cyan-500/30' : 'text-navy-400 hover:text-white'
+                    }`}
+                  >
+                    {cred.alias}
+                  </button>
+                ))}
               </div>
             )}
           </div>
-          <div className={`grid gap-3 ${awsAccounts.length === 1 ? 'grid-cols-1' : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'}`}>
+          <div className={`grid gap-3 ${(awsAccounts.length + azureCredentials.length) === 1 ? 'grid-cols-1' : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'}`}>
             {awsAccounts.map(acc => {
               const accScore = perAccountScores[acc.id]
               const s = accScore?.overallScore
@@ -293,8 +331,49 @@ export default function NIS2Overview() {
                 >
                   <div className="flex items-center justify-between mb-2">
                     <div>
-                      <p className="text-sm font-semibold text-white">{acc.alias}</p>
-                      <p className="text-[11px] text-navy-400 font-mono">{acc.awsAccountId} · {acc.awsRegion}</p>
+                      <div className="flex items-center gap-2">
+                        <span className="text-[10px] px-1.5 py-0.5 rounded bg-orange-500/10 text-orange-400 border border-orange-500/20 font-semibold">AWS</span>
+                        <p className="text-sm font-semibold text-white">{acc.alias}</p>
+                      </div>
+                      <p className="text-[11px] text-navy-400 font-mono mt-0.5">{acc.awsAccountId} · {acc.awsRegion}</p>
+                    </div>
+                    <div className="text-right">
+                      <div className={`text-2xl font-bold font-syne ${sColor}`}>
+                        {s != null ? `${s}%` : '—'}
+                      </div>
+                      <div className={`text-[10px] font-semibold ${sColor}`}>{grade}</div>
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-between text-[11px] text-navy-400">
+                    <span>{t('overview.lastScan')}: {lastScanDate}</span>
+                    {s != null && <ProgressBar value={s} height="h-1" />}
+                  </div>
+                </div>
+              )
+            })}
+            {azureCredentials.map(cred => {
+              const accScore = perAccountScores[cred.id]
+              const s = accScore?.overallScore
+              const grade = accScore?.grade || '—'
+              const lastScanDate = accScore?.lastTechnicalScan
+                ? new Date(accScore.lastTechnicalScan).toLocaleDateString()
+                : t('overview.noScan')
+              const sColor = s != null ? (s >= 75 ? 'text-emerald-400' : s >= 50 ? 'text-yellow-400' : 'text-red-400') : 'text-navy-400'
+              const sBg = s != null ? (s >= 75 ? 'bg-emerald-500/8 border-emerald-500/20' : s >= 50 ? 'bg-yellow-500/8 border-yellow-500/20' : 'bg-red-500/8 border-red-500/20') : 'bg-navy-900/40 border-navy-800'
+
+              return (
+                <div
+                  key={cred.id}
+                  onClick={() => setDashboardFilter(cred.id)}
+                  className={`p-4 rounded-lg border cursor-pointer transition-all hover:border-cyan-500/40 ${sBg}`}
+                >
+                  <div className="flex items-center justify-between mb-2">
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-[10px] px-1.5 py-0.5 rounded bg-blue-500/10 text-blue-400 border border-blue-500/20 font-semibold">Azure</span>
+                        <p className="text-sm font-semibold text-white">{cred.alias}</p>
+                      </div>
+                      <p className="text-[11px] text-navy-400 font-mono mt-0.5">{cred.azure_subscription_id || '—'}</p>
                     </div>
                     <div className="text-right">
                       <div className={`text-2xl font-bold font-syne ${sColor}`}>
@@ -384,7 +463,7 @@ export default function NIS2Overview() {
             return (
               <div
                 key={area.id}
-                onClick={() => navigate('/controls')}
+                onClick={() => navigate(`/controls?area=${encodeURIComponent(area.name)}`)}
                 className={`p-4 rounded-lg border cursor-pointer transition-all hover:border-cyan-500/40 ${bgClass}`}
               >
                 <div className="flex items-start justify-between mb-3">
@@ -451,7 +530,7 @@ export default function NIS2Overview() {
             {criticalGaps.map((control, i) => (
               <div
                 key={control.id}
-                onClick={() => navigate('/controls')}
+                onClick={() => navigate(`/controls?open=${encodeURIComponent(control.id)}`)}
                 className="group flex items-center gap-4 p-3 rounded-lg bg-navy-900/40 hover:bg-navy-800/60 border border-navy-800 hover:border-navy-700 cursor-pointer transition-all"
                 style={{ animationDelay: `${i * 50}ms` }}
               >
@@ -464,6 +543,21 @@ export default function NIS2Overview() {
                     <h4 className="text-[15px] font-semibold text-white group-hover:text-cyan-400 transition-colors truncate">
                       {control.title}
                     </h4>
+                    {control.isCountrySpecific && (
+                      <span className="text-[10px] px-1.5 py-0.5 rounded bg-violet-500/10 text-violet-400 border border-violet-500/20 flex-shrink-0">
+                        {t('controls.nationalRequirement', 'National Requirement')}
+                      </span>
+                    )}
+                    {(getCountryOverlay(control.article)?.goesBeyondEu || control.goesBeyondEu) && (
+                      <span className="text-[10px] px-1.5 py-0.5 rounded bg-orange-500/10 text-orange-400 border border-orange-500/20 flex-shrink-0">
+                        {t('controls.goesBeyondEu', 'Beyond EU')}
+                      </span>
+                    )}
+                    {(getCountryOverlay(control.article)?.nationalLegalReference || control.nationalLegalReference) && (
+                      <span className="text-[10px] px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-300 border border-amber-500/20 flex-shrink-0">
+                        {getCountryOverlay(control.article)?.nationalLegalReference || control.nationalLegalReference}
+                      </span>
+                    )}
                   </div>
                   <div className="flex items-center gap-3 text-[13px]">
                     <span className="text-[#94b4d1] font-mono">{control.article}</span>

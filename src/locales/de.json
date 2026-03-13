@@ -127,6 +127,18 @@
     "scoreThreshold": "Bewertung unter Schwellenwert",
     "scoreThresholdDesc": "Warnung, wenn die Bewertung unter 50% fällt",
     "saved": "Einstellungen erfolgreich gespeichert",
+    "scoringConfig": "Bewertungsgewichtung",
+    "scoringConfigDesc": "Passen Sie an, wie viel Gewicht Ihr Compliance-Score technischen Infrastrukturprüfungen im Vergleich zu organisatorischen Bewertungsantworten gibt.",
+    "technicalWeight": "Technisch",
+    "organizationalWeight": "Organisatorisch",
+    "currentScore": "Aktuelle Bewertung",
+    "previewScore": "Vorschau",
+    "grade": "Note",
+    "resetDefaults": "Auf 60/40 zurücksetzen",
+    "scoringSaved": "Bewertungsgewichtung erfolgreich gespeichert",
+    "scoringSaveError": "Fehler beim Speichern der Bewertungsgewichtung",
+    "before": "Vorher",
+    "after": "Nachher",
     "version": "Konforme v1.0.0 · Entwickelt für NIS2-Compliance · © 2024 Konforme"
   },
   "overview": {

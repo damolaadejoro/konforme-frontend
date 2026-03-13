@@ -11,7 +11,7 @@ export const controls: Control[] = [
     category: 'Organizational',
     status: 'Implemented',
     owner: 'Sarah Chen (CISO)',
-    dueDate: '2024-12-31',
+    dueDate: null,
     evidence: [
       {
         id: 'ev-001',
@@ -43,7 +43,7 @@ export const controls: Control[] = [
     category: 'Organizational',
     status: 'Partial',
     owner: 'Michael Rodriguez',
-    dueDate: '2024-06-30',
+    dueDate: null,
     evidence: [
       {
         id: 'ev-003',
@@ -202,7 +202,7 @@ export const controls: Control[] = [
     category: 'Organizational',
     status: 'Planned',
     owner: 'James Park',
-    dueDate: '2024-05-15',
+    dueDate: null,
     evidence: [],
     notes: 'Exercise scheduled for May 2024. Scenario: ransomware attack on production systems.',
     isAutoPopulated: false,
@@ -246,7 +246,7 @@ export const controls: Control[] = [
     category: 'Organizational',
     status: 'Partial',
     owner: 'Lisa Martinez',
-    dueDate: '2024-07-01',
+    dueDate: null,
     evidence: [
       {
         id: 'ev-011',
@@ -303,7 +303,7 @@ export const controls: Control[] = [
     category: 'Technical',
     status: 'Not Started',
     owner: 'David Kim',
-    dueDate: '2024-06-30',
+    dueDate: null,
     evidence: [],
     notes: 'Last test was 15 months ago. Urgent: schedule DR test by end of Q2.',
     isAutoPopulated: false,
@@ -347,7 +347,7 @@ export const controls: Control[] = [
     category: 'Organizational',
     status: 'Partial',
     owner: 'Amanda Foster',
-    dueDate: '2024-08-01',
+    dueDate: null,
     evidence: [
       {
         id: 'ev-015',
@@ -372,7 +372,7 @@ export const controls: Control[] = [
     category: 'Organizational',
     status: 'Planned',
     owner: 'Amanda Foster',
-    dueDate: '2024-09-01',
+    dueDate: null,
     evidence: [],
     notes: 'Legal team drafting security clauses. Will apply to all new contracts and renewals.',
     isAutoPopulated: false,
@@ -423,7 +423,7 @@ export const controls: Control[] = [
     category: 'Technical',
     status: 'Partial',
     owner: 'Auto-populated from AWS scan',
-    dueDate: '2024-05-01',
+    dueDate: null,
     evidence: [],
     notes: 'AWS scan detected: MFA not enabled on root account. 3 critical IAM users missing MFA.',
     isAutoPopulated: true,
@@ -440,7 +440,7 @@ export const controls: Control[] = [
     category: 'Technical',
     status: 'Partial',
     owner: 'Auto-populated from AWS scan',
-    dueDate: '2024-04-15',
+    dueDate: null,
     evidence: [],
     notes: 'AWS scan detected: 2 S3 buckets without encryption. RDS instances encrypted.',
     isAutoPopulated: true,
@@ -565,7 +565,7 @@ export const controls: Control[] = [
     category: 'People',
     status: 'Partial',
     owner: 'Sarah Chen (CISO)',
-    dueDate: '2024-06-30',
+    dueDate: null,
     evidence: [],
     notes: '142 of 180 employees completed (79%). Campaign active. Deadline: June 30.',
     isAutoPopulated: false,
@@ -582,7 +582,7 @@ export const controls: Control[] = [
     category: 'People',
     status: 'Partial',
     owner: 'Sarah Chen (CISO)',
-    dueDate: '2024-05-31',
+    dueDate: null,
     evidence: [],
     notes: '155 of 180 employees acknowledged (86%). Reminders sent to remaining 25.',
     isAutoPopulated: false,

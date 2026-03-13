@@ -20,6 +20,12 @@ export interface Control {
   isPeopleControl: boolean
   lastUpdated: string
   severity: ControlSeverity
+  // Country-specific fields
+  isCountrySpecific?: boolean
+  nationalLegalReference?: string | null
+  nationalSpecification?: string | null
+  goesBeyondEu?: boolean
+  additionalRequirements?: string[]
 }
 
 export interface Evidence {
