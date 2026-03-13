@@ -39,12 +39,18 @@ vi.mock('../hooks/useAssessment', () => ({
 }))
 
 // Mock services/api
-vi.mock('../services/api', () => ({
-  getCombinedScore: vi.fn(),
-  isConnected: vi.fn(() => false),
-  getStoredAuth: vi.fn(() => null),
-  getEUCountries: vi.fn(() => Promise.resolve([])),
-}))
+vi.mock('../services/api', async (importOriginal) => {
+  const actual = await importOriginal() as Record<string, unknown>
+  return {
+    ...actual,
+    getCombinedScore: vi.fn(),
+    isConnected: vi.fn(() => false),
+    getStoredAuth: vi.fn(() => null),
+    getEUCountries: vi.fn(() => Promise.resolve([])),
+    getCountries: vi.fn(() => Promise.resolve([])),
+    getCloudCredentials: vi.fn(() => Promise.resolve({ credentials: [] })),
+  }
+})
 
 // Mock react-i18next
 vi.mock('react-i18next', () => ({
@@ -56,9 +62,9 @@ vi.mock('react-i18next', () => ({
   initReactI18next: { type: '3rdParty', init: vi.fn() },
 }))
 
-// Mock the useControls hook
-vi.mock('../hooks/useControls', () => ({
-  useControls: () => ({
+// Mock the ControlsContext (NIS2Overview uses useControlsContext, not useControls directly)
+vi.mock('../context/ControlsContext', () => ({
+  useControlsContext: () => ({
     complianceScore: {
       overall: 75,
       technical: 80,
@@ -133,7 +139,10 @@ vi.mock('../hooks/useControls', () => ({
     filterControls: vi.fn(),
     getCampaignsForControl: vi.fn(),
     allTasks: [],
-    lastSaved: new Date().toISOString()
+    lastSaved: new Date().toISOString(),
+    loading: false,
+    countryControlMap: {},
+    getCountryOverlay: vi.fn(() => null),
   })
 }))
 
