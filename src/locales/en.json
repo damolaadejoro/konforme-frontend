@@ -884,6 +884,8 @@
     "cloudConnected": "Connected",
     "cloudConnect": "Connect",
     "cloudSkip": "Skip — I'll connect later",
+    "cloudIamPolicyTitle": "View required IAM policy (read-only)",
+    "cloudIamPolicyDesc": "Create an IAM user with programmatic access and attach this policy. Konforme only requires read-only permissions to scan your infrastructure.",
     "cloudAwsAlias": "Alias (e.g. Production)",
     "cloudAwsAccessKey": "Access Key ID",
     "cloudAwsSecretKey": "Secret Access Key",

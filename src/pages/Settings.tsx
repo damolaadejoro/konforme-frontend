@@ -10,6 +10,7 @@ import {
   type CloudCredential, type AwsAccountInfo,
 } from '../services/api'
 import CountrySelector from '../components/CountrySelector'
+import AwsIamPolicy from '../components/AwsIamPolicy'
 import LanguageSwitcher from '../components/LanguageSwitcher'
 import { useCountryData } from '../hooks/useCountryData'
 import ScoringConfig from '../components/ScoringConfig'
@@ -354,6 +355,7 @@ export default function Settings() {
         {addingProvider === 'aws' && (
           <div className="mt-4 p-4 rounded-lg bg-navy-900/60 border border-navy-700">
             <h3 className="text-sm font-semibold text-white mb-3">Add AWS Account</h3>
+            <AwsIamPolicy />
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <Input
                 label="Alias"

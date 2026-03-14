@@ -7,6 +7,7 @@ import {
 } from 'lucide-react'
 import { Card, Button, Input } from '../components/ui'
 import Logo from '../components/layout/Logo'
+import AwsIamPolicy from '../components/AwsIamPolicy'
 import { useAuth } from '../context/AuthContext'
 import {
   getCountries, getCountry, getCountryTiers,
@@ -510,6 +511,7 @@ export default function GetStarted() {
             {cloudProvider === 'aws' && (
               <Card>
                 <h3 className="text-sm font-semibold text-white mb-4">{t('getStarted.cloudAws')}</h3>
+                <AwsIamPolicy />
                 <div className="space-y-3">
                   <Input
                     label={t('getStarted.cloudAwsAlias')}

@@ -171,7 +171,7 @@ export function useAssessment() {
       }
     }
 
-    // Try to load from backend
+    // Backend is the source of truth — always prefer it over localStorage
     if (isConnected()) {
       const { accountId } = getStoredAuth()
       if (accountId) {
@@ -190,6 +190,11 @@ export function useAssessment() {
               setResponses(backendResponses)
               setIsComplete(data.assessment.status === 'submitted')
               setBackendVersionId(data.assessment.id)
+            } else {
+              // No assessment on backend for this account — clear stale localStorage data
+              setResponses({})
+              setIsComplete(false)
+              localStorage.removeItem(STORAGE_KEY)
             }
           })
           .catch(() => {})
