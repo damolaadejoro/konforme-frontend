@@ -11,7 +11,7 @@ import AwsIamPolicy from '../components/AwsIamPolicy'
 import { useAuth } from '../context/AuthContext'
 import {
   getCountries, getCountry, getCountryTiers,
-  setAccountCountry, addAwsAccount as apiAddAwsAccount, addAzureCredential,
+  setAccountCountry, addAzureCredential,
   getScoringConfig, updateScoringConfig,
   type CountryListItem, type CountryDetail, type EntityTier,
 } from '../services/api'
@@ -136,15 +136,7 @@ export default function GetStarted() {
 
     try {
       if (cloudProvider === 'aws') {
-        const acc = await apiAddAwsAccount(
-          cloudForm.alias || 'Default',
-          cloudForm.accessKeyId || '',
-          cloudForm.secretAccessKey || '',
-          cloudForm.sessionToken || null,
-          cloudForm.region || 'eu-west-1'
-        )
-        // Update auth context
-        await authAddAws(
+        const acc = await authAddAws(
           cloudForm.alias || 'Default',
           cloudForm.accessKeyId || '',
           cloudForm.secretAccessKey || '',
