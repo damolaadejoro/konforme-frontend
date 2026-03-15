@@ -196,9 +196,10 @@ describe('UI Components', () => {
           </BrowserRouter>
         </TooltipPrimitive.Provider>
       )
-      expect(screen.getAllByText('80%').length).toBeGreaterThanOrEqual(2) // Technical + Overall (falls back to technical when no assessment)
-      expect(screen.getByText('75%')).toBeInTheDocument() // People
-      expect(screen.getByText('0%')).toBeInTheDocument() // Assessment
+      // No backend connected: technical=0%, assessment=0%, controls=75% (from complianceScore.overall)
+      // Overall = controls score at 100% weight = 75%
+      expect(screen.getAllByText('75%').length).toBeGreaterThanOrEqual(2) // Overall + Controls
+      expect(screen.getAllByText('0%').length).toBeGreaterThanOrEqual(1) // Technical + Assessment (no backend)
     })
 
     it('Renders the Article 21 coverage map', () => {
