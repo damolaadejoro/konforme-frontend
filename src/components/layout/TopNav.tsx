@@ -48,14 +48,23 @@ export default function TopNav() {
   }, [selectedAwsAccountId])
 
   const selectedAccount = awsAccounts.find(a => a.id === selectedAwsAccountId)
-  const technicalScore = backendScore?.technicalScore ?? complianceScore.technical
-  const tw = backendScore?.technicalWeight ?? 0.6
-  const hw = backendScore?.humanWeight ?? 0.4
-  const score = technicalScore > 0 && assessmentScore > 0
-    ? Math.round(technicalScore * tw + assessmentScore * hw)
-    : technicalScore > 0 ? technicalScore
-    : assessmentScore > 0 ? assessmentScore
-    : 0
+
+  // Prefer backend overall score (authoritative 3-pillar); fallback to frontend calculation
+  let score: number
+  if (backendScore?.overallScore != null) {
+    score = backendScore.overallScore
+  } else {
+    const technicalScore = backendScore?.technicalScore ?? 0
+    const controlsScore = complianceScore.overall
+    const pillars: { score: number; weight: number }[] = []
+    if (technicalScore > 0) pillars.push({ score: technicalScore, weight: 0.40 })
+    if (assessmentScore > 0) pillars.push({ score: assessmentScore, weight: 0.35 })
+    if (controlsScore > 0) pillars.push({ score: controlsScore, weight: 0.25 })
+    const totalWeight = pillars.reduce((s, p) => s + p.weight, 0)
+    score = totalWeight > 0
+      ? Math.round(pillars.reduce((s, p) => s + p.score * p.weight, 0) / totalWeight)
+      : 0
+  }
   const displayName = isAuthenticated ? accountName : 'No Account'
   const displayId = selectedAccount?.awsAccountId ?? '—'
   const initials = displayName

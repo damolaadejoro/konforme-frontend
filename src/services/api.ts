@@ -821,10 +821,13 @@ export interface CombinedScoreResponse {
   overallScore: number | null
   technicalScore: number | null
   humanFactorScore: number | null
+  controlsScore: number | null
   lastTechnicalScan: string | null
   lastHumanAssessment: string | null
   technicalWeight: number
   humanWeight: number
+  assessmentWeight: number
+  controlsWeight: number
   grade: string | null
   articleBreakdown: Array<{
     article: string

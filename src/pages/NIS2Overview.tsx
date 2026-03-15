@@ -12,6 +12,7 @@ import {
   Radar,
   Activity,
   ClipboardCheck,
+  CheckSquare,
 } from 'lucide-react'
 import { useControlsContext } from '../context/ControlsContext'
 import { Card, Button, StatCard, ProgressBar, SeverityBadge, InfoTooltip } from '../components/ui'
@@ -95,18 +96,30 @@ export default function NIS2Overview() {
     }
   }, [dashboardFilter, awsAccountIds])
 
-  // Prefer backend scores when available, fall back to localStorage-based scores
-  const technicalScore = backendScore?.technicalScore ?? complianceScore.technical
-  const tw = backendScore?.technicalWeight ?? 0.6
-  const hw = backendScore?.humanWeight ?? 0.4
-  // Always compute overall on the frontend: the backend only includes submitted
-  // assessments, but the frontend has the live/draft assessment score too.
-  const overallScore = technicalScore > 0 && assessmentScore > 0
-    ? Math.round(technicalScore * tw + assessmentScore * hw)
-    : technicalScore > 0 ? technicalScore
-    : assessmentScore > 0 ? assessmentScore
-    : 0
-  const peopleScore = complianceScore.people
+  // Use backend scores when available; fall back to frontend-computed values
+  const technicalScore = backendScore?.technicalScore ?? 0
+  const controlsScore = backendScore?.controlsScore ?? complianceScore.overall
+  const assessmentScoreVal = assessmentScore
+
+  // Prefer backend overall when available (authoritative 3-pillar calculation)
+  let overallScore: number
+  if (backendScore?.overallScore != null) {
+    overallScore = backendScore.overallScore
+  } else {
+    // Frontend fallback: 3-pillar proportional weighting
+    const pillars: { score: number; weight: number }[] = []
+    if (technicalScore > 0) pillars.push({ score: technicalScore, weight: 0.40 })
+    if (assessmentScoreVal > 0) pillars.push({ score: assessmentScoreVal, weight: 0.35 })
+    if (controlsScore > 0) pillars.push({ score: controlsScore, weight: 0.25 })
+
+    const totalWeight = pillars.reduce((s, p) => s + p.weight, 0)
+    overallScore = totalWeight > 0
+      ? Math.round(pillars.reduce((s, p) => s + p.score * p.weight, 0) / totalWeight)
+      : 0
+  }
+
+  const implementedCount = controls.filter(c => c.status === 'Implemented').length
+  const totalControls = controls.length
 
   const score = overallScore
   const scoreColor = score >= 91 ? '#3b82f6' : score >= 71 ? '#10b981' : score >= 41 ? '#f59e0b' : '#ef4444'
@@ -195,10 +208,12 @@ export default function NIS2Overview() {
                   </div>
                   <div className="text-3xl font-bold font-syne text-white mb-1">{technicalScore}%</div>
                   <ProgressBar value={technicalScore} color="bg-purple-500" height="h-1.5" />
-                  {backendScore?.lastTechnicalScan && (
+                  {backendScore?.lastTechnicalScan ? (
                     <p className="text-[11px] text-[#94b4d1] mt-1">
                       {t('overview.lastScan')}: {new Date(backendScore.lastTechnicalScan).toLocaleDateString()}
                     </p>
+                  ) : (
+                    <p className="text-[11px] text-[#94b4d1] mt-1">{t('overview.noScanYet')}</p>
                   )}
                 </div>
 
@@ -216,14 +231,18 @@ export default function NIS2Overview() {
                   <p className="text-[11px] text-[#94b4d1] mt-1">{answeredCount}/{totalQuestions} {t('overview.questions')}</p>
                 </div>
 
-                <div className="p-4 rounded-lg bg-navy-900/60 border border-navy-700">
+                <div
+                  className="p-4 rounded-lg bg-navy-900/60 border border-navy-700 cursor-pointer hover:border-cyan-500/40 transition-all"
+                  onClick={() => navigate('/controls')}
+                >
                   <div className="flex items-center gap-2 mb-2">
-                    <Users size={14} className="text-emerald-400" />
-                    <span className="text-xs text-[#94b4d1] uppercase tracking-wider font-semibold">{t('overview.people')}</span>
-                    <InfoTooltip content={t('overview.peopleTooltip')} size={12} />
+                    <CheckSquare size={14} className="text-emerald-400" />
+                    <span className="text-xs text-[#94b4d1] uppercase tracking-wider font-semibold">{t('overview.controlsCard')}</span>
+                    <InfoTooltip content={t('overview.controlsCardTooltip')} size={12} />
                   </div>
-                  <div className="text-3xl font-bold font-syne text-white mb-1">{peopleScore}%</div>
-                  <ProgressBar value={peopleScore} color="bg-emerald-500" height="h-1.5" />
+                  <div className="text-3xl font-bold font-syne text-white mb-1">{controlsScore}%</div>
+                  <ProgressBar value={controlsScore} color="bg-emerald-500" height="h-1.5" />
+                  <p className="text-[11px] text-[#94b4d1] mt-1">{t('overview.controlsImplemented', { count: implementedCount, total: totalControls })}</p>
                 </div>
               </div>
 
