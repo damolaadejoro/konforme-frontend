@@ -140,7 +140,7 @@
     "scoringSaveError": "Failed to save scoring weights",
     "before": "Before",
     "after": "After",
-    "version": "Konforme v1.0.0 · Built for NIS2 compliance · © 2024 Konforme",
+    "version": "Konforme v1.0.0 · Built for NIS2 compliance · © 2025 Konforme",
     "cloudProviders": "Cloud Providers",
     "cloudProvidersDesc": "Manage connected cloud infrastructure accounts for automated scanning.",
     "addProvider": "Add Provider",
