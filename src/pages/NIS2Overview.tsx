@@ -455,11 +455,12 @@ export default function NIS2Overview() {
           icon={<Activity size={18} className="text-navy-300" />}
           accent="text-white"
           tooltip={t('overview.articleAreasTooltip')}
-          onClick={() => navigate('/controls')}
+          onClick={() => document.getElementById('coverage-map')?.scrollIntoView({ behavior: 'smooth' })}
         />
       </div>
 
       {/* NIS2 Article 21 Coverage Map */}
+      <div id="coverage-map">
       <Card>
         <div className="flex items-center justify-between mb-5">
           <div>
@@ -520,6 +521,7 @@ export default function NIS2Overview() {
           })}
         </div>
       </Card>
+      </div>
 
       {/* Critical Gaps */}
       <Card>
