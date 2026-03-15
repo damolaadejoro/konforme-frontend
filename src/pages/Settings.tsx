@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Bell, Shield, User, Cloud, Plus, Trash2, CheckCircle2, AlertCircle, Loader2 } from 'lucide-react'
+import { Bell, Shield, User, Cloud, Plus, Trash2, CheckCircle2, AlertCircle, Loader2, Scale } from 'lucide-react'
 import { Card, Button, Input, Select } from '../components/ui'
 import { useAuth } from '../context/AuthContext'
 import {
@@ -13,7 +13,6 @@ import CountrySelector from '../components/CountrySelector'
 import AwsIamPolicy from '../components/AwsIamPolicy'
 import LanguageSwitcher from '../components/LanguageSwitcher'
 import { useCountryData } from '../hooks/useCountryData'
-import ScoringConfig from '../components/ScoringConfig'
 
 function Toggle({ enabled, onToggle }: { enabled: boolean; onToggle: () => void }) {
   return (
@@ -502,8 +501,29 @@ export default function Settings() {
         </div>
       </Card>
 
-      {/* Scoring Weights */}
-      <ScoringConfig />
+      {/* Scoring Weights — now fixed 3-pillar model */}
+      <Card>
+        <div className="flex items-center gap-3 mb-2">
+          <Scale size={16} className="text-cyan-400" />
+          <h2 className="text-base font-bold font-syne text-white">{t('settings.scoringConfig')}</h2>
+        </div>
+        <p className="text-xs text-navy-400 mb-4">{t('settings.scoringConfigDesc')}</p>
+        <div className="grid grid-cols-3 gap-3">
+          <div className="p-3 rounded-lg bg-navy-900/60 border border-navy-800 text-center">
+            <p className="text-[10px] uppercase tracking-wider text-navy-500 mb-1">{t('overview.technical')}</p>
+            <p className="text-lg font-bold font-syne text-purple-400">40%</p>
+          </div>
+          <div className="p-3 rounded-lg bg-navy-900/60 border border-navy-800 text-center">
+            <p className="text-[10px] uppercase tracking-wider text-navy-500 mb-1">{t('overview.assessment')}</p>
+            <p className="text-lg font-bold font-syne text-blue-400">35%</p>
+          </div>
+          <div className="p-3 rounded-lg bg-navy-900/60 border border-navy-800 text-center">
+            <p className="text-[10px] uppercase tracking-wider text-navy-500 mb-1">{t('overview.controlsCard')}</p>
+            <p className="text-lg font-bold font-syne text-emerald-400">25%</p>
+          </div>
+        </div>
+        <p className="text-[11px] text-navy-500 mt-3">{t('settings.scoringFixedNote')}</p>
+      </Card>
 
       {/* Version */}
       <div className="text-center text-xs text-navy-600 py-4">

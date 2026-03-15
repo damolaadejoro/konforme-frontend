@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import {
   ChevronRight, ArrowLeft, CheckCircle2, Globe, Building2, Cloud,
-  Scale, Loader2, Shield, AlertCircle, Search,
+  Loader2, Shield, AlertCircle, Search,
 } from 'lucide-react'
 import { Card, Button, Input } from '../components/ui'
 import Logo from '../components/layout/Logo'
@@ -12,7 +12,6 @@ import { useAuth } from '../context/AuthContext'
 import {
   getCountries, getCountry, getCountryTiers,
   setAccountCountry, addAzureCredential,
-  getScoringConfig, updateScoringConfig,
   type CountryListItem, type CountryDetail, type EntityTier,
 } from '../services/api'
 
@@ -71,10 +70,6 @@ export default function GetStarted() {
   const [cloudError, setCloudError] = useState<string | null>(null)
   const [cloudConnected, setCloudConnected] = useState<Array<{ provider: string; alias: string }>>([])
 
-  // Step 4: Scoring
-  const [technical, setTechnical] = useState(60)
-  const [scoringSaving, setScoringSaving] = useState(false)
-
   // Load countries on mount
   useEffect(() => {
     getCountries()
@@ -99,13 +94,6 @@ export default function GetStarted() {
       .catch(() => {})
       .finally(() => setTiersLoading(false))
   }, [selectedCountryCode])
-
-  // Load scoring config
-  useEffect(() => {
-    getScoringConfig()
-      .then(cfg => setTechnical(cfg.technicalWeight))
-      .catch(() => {})
-  }, [])
 
   const filteredCountries = countries.filter(c => {
     if (!countrySearch) return true
@@ -164,15 +152,6 @@ export default function GetStarted() {
     }
   }
 
-  const handleSaveScoring = async () => {
-    setScoringSaving(true)
-    try {
-      await updateScoringConfig(technical, 100 - technical)
-    } catch { /* continue */ }
-    setScoringSaving(false)
-    setStep(4)
-  }
-
   const handleFinish = () => {
     localStorage.setItem('konforme_onboarded', 'true')
     navigate('/')
@@ -188,11 +167,10 @@ export default function GetStarted() {
     t('getStarted.stepCountry'),
     t('getStarted.stepEntity'),
     t('getStarted.stepCloud'),
-    t('getStarted.stepScoring'),
     t('getStarted.stepReady'),
   ]
 
-  const stepIcons = [Globe, Building2, Cloud, Scale, CheckCircle2]
+  const stepIcons = [Globe, Building2, Cloud, CheckCircle2]
 
   return (
     <div className="min-h-screen bg-navy-950 flex flex-col items-center px-4 py-8">
@@ -624,67 +602,8 @@ export default function GetStarted() {
           </div>
         )}
 
-        {/* Step 4: Scoring */}
+        {/* Step 4: Ready */}
         {step === 3 && (
-          <div className="animate-in fade-in duration-500">
-            <div className="text-center mb-6">
-              <h2 className="text-xl font-bold font-syne text-white">{t('getStarted.scoringTitle')}</h2>
-              <p className="text-sm text-navy-400 mt-1 max-w-lg mx-auto">{t('getStarted.scoringSubtitle')}</p>
-            </div>
-
-            <Card>
-              <div className="space-y-6">
-                <div>
-                  <div className="flex justify-between text-xs text-navy-300 mb-2">
-                    <span>{t('getStarted.scoringTechnical')}: {technical}%</span>
-                    <span>{t('getStarted.scoringOrganisational')}: {100 - technical}%</span>
-                  </div>
-                  <input
-                    type="range"
-                    min={10}
-                    max={90}
-                    step={5}
-                    value={technical}
-                    onChange={e => setTechnical(Number(e.target.value))}
-                    className="w-full accent-cyan-500"
-                  />
-                  <div className="flex justify-between mt-2">
-                    <div className="flex items-center gap-2 text-xs text-navy-400">
-                      <div className="w-3 h-3 rounded bg-cyan-500" />
-                      {t('getStarted.scoringTechnical')}
-                    </div>
-                    <div className="flex items-center gap-2 text-xs text-navy-400">
-                      <div className="w-3 h-3 rounded bg-blue-500" />
-                      {t('getStarted.scoringOrganisational')}
-                    </div>
-                  </div>
-                </div>
-
-                <button
-                  onClick={() => setTechnical(60)}
-                  className="text-xs text-cyan-400 hover:text-cyan-300 transition-colors"
-                >
-                  {t('getStarted.scoringDefault')}
-                </button>
-              </div>
-            </Card>
-
-            <div className="flex items-center justify-between mt-6">
-              <button
-                onClick={() => setStep(2)}
-                className="flex items-center gap-1 text-sm text-navy-400 hover:text-white transition-colors"
-              >
-                <ArrowLeft size={14} /> {t('getStarted.back')}
-              </button>
-              <Button onClick={handleSaveScoring} loading={scoringSaving}>
-                {t('common.next')} <ChevronRight size={16} />
-              </Button>
-            </div>
-          </div>
-        )}
-
-        {/* Step 5: Ready */}
-        {step === 4 && (
           <div className="animate-in fade-in duration-500">
             <div className="text-center mb-8">
               <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-emerald-500/10 border border-emerald-500/20 mb-4">
@@ -729,24 +648,12 @@ export default function GetStarted() {
                   </span>
                 </div>
 
-                <div className="flex items-center justify-between p-3 rounded-lg bg-navy-900/40 border border-navy-800">
-                  <div className="flex items-center gap-3">
-                    <Scale size={16} className="text-cyan-400" />
-                    <span className="text-sm text-navy-300">{t('getStarted.readyScoring')}</span>
-                  </div>
-                  <span className="text-sm font-medium text-white">
-                    {technical === 60
-                      ? t('getStarted.readyDefaultScoring')
-                      : t('getStarted.readyCustomScoring', { technical, organisational: 100 - technical })
-                    }
-                  </span>
-                </div>
               </div>
             </Card>
 
             <div className="flex items-center justify-between mt-6">
               <button
-                onClick={() => setStep(3)}
+                onClick={() => setStep(2)}
                 className="flex items-center gap-1 text-sm text-navy-400 hover:text-white transition-colors"
               >
                 <ArrowLeft size={14} /> {t('getStarted.back')}
