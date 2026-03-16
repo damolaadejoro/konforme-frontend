@@ -111,7 +111,7 @@ export default function ScoringConfig() {
     setSaving(true)
     setSaveMessage(null)
     try {
-      await updateScoringConfig(technical / 100, organizational / 100)
+      await updateScoringConfig(technical / 100, organizational / 100, 0)
       setSavedTechnical(technical)
       setSavedOrganizational(organizational)
       setSaveMessage({ type: 'success', text: t('settings.scoringSaved') })

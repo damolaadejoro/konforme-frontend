@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import {
@@ -37,7 +37,7 @@ import { useHumanFactor } from '../hooks/useHumanFactor'
 import { useOrganizational } from '../hooks/useOrganizational'
 import { useDashboardScan } from '../hooks/useDashboardScan'
 import { useScanHistory } from '../hooks/useScanHistory'
-import { getScoringConfig, isConnected } from '../services/api'
+import { useScore } from '../context/ScoreContext'
 import { format } from 'date-fns'
 
 const CustomTooltip = ({ active, payload, label }: any) => {
@@ -67,16 +67,7 @@ export default function Dashboard() {
   const { assessment: humanAssessment } = useHumanFactor()
   const { assessment: orgAssessment } = useOrganizational()
   const [scoreExplainerOpen, setScoreExplainerOpen] = useState(false)
-  const [tw, setTw] = useState(0.6)
-  const [hw, setHw] = useState(0.4)
-
-  useEffect(() => {
-    if (isConnected()) {
-      getScoringConfig()
-        .then(cfg => { setTw(cfg.technicalWeight); setHw(cfg.organizationalWeight) })
-        .catch(() => {})
-    }
-  }, [])
+  const { overallScore: contextOverallScore } = useScore()
 
   // Loading state
   if (scanLoading) {
@@ -128,24 +119,15 @@ export default function Dashboard() {
     .filter(f => f.severity === 'critical' || f.severity === 'high')
     .slice(0, 5)
 
-  // Calculate combined NIS2 compliance score
+  // Individual scores for assessment cards
   const technicalScore = score
   const humanScore = humanAssessment.score
   const orgScore = orgAssessment.score
   const hasHumanAssessment = humanAssessment.answered > 0
   const hasOrgAssessment = orgAssessment.answered > 0
 
-  // Weight: use configurable technical/organizational split
-  let combinedScore = technicalScore
-  if (hasHumanAssessment && hasOrgAssessment) {
-    // Split organizational weight evenly between human and org assessments
-    const halfHw = hw / 2
-    combinedScore = Math.round(technicalScore * tw + humanScore * halfHw + orgScore * halfHw)
-  } else if (hasHumanAssessment) {
-    combinedScore = Math.round(technicalScore * tw + humanScore * hw)
-  } else if (hasOrgAssessment) {
-    combinedScore = Math.round(technicalScore * tw + orgScore * hw)
-  }
+  // Use ScoreContext's overall score (3-pillar, user-configured weights)
+  const combinedScore = contextOverallScore > 0 ? contextOverallScore : score
 
   const combinedColor = combinedScore >= 75 ? '#10b981' : combinedScore >= 50 ? '#f59e0b' : '#ef4444'
   const combinedLabel = combinedScore >= 75 ? t('common.compliant') : combinedScore >= 50 ? t('common.atRisk') : t('common.nonCompliant')

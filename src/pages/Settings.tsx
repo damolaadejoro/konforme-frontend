@@ -7,8 +7,10 @@ import {
   updateAccount, getCloudCredentials, addAzureCredential,
   removeCloudCredential, validateCloudCredential,
   getStoredAuth, addAwsAccount, removeAwsAccount,
+  getScoringConfig, updateScoringConfig,
   type CloudCredential, type AwsAccountInfo,
 } from '../services/api'
+import { useScore } from '../context/ScoreContext'
 import CountrySelector from '../components/CountrySelector'
 import AwsIamPolicy from '../components/AwsIamPolicy'
 import LanguageSwitcher from '../components/LanguageSwitcher'
@@ -38,6 +40,7 @@ export default function Settings() {
   const { t } = useTranslation()
   const { accountName, email, country, setAccountName, setEmail, setCountry } = useAuth()
   const { countries } = useCountryData()
+  const { refreshScore } = useScore()
 
   const [name, setName] = useState(accountName || '')
   const [contactEmail, setContactEmail] = useState(email || '')
@@ -58,6 +61,77 @@ export default function Settings() {
   const [azureError, setAzureError] = useState<string | null>(null)
   const [validatingId, setValidatingId] = useState<string | null>(null)
   const [validationResult, setValidationResult] = useState<Record<string, boolean | null>>({})
+
+  // Scoring config state
+  const SCORING_PRESETS: Record<string, { technical: number; assessment: number; controls: number }> = {
+    balanced:        { technical: 40, assessment: 35, controls: 25 },
+    'technical-first': { technical: 60, assessment: 20, controls: 20 },
+    'governance-led':  { technical: 20, assessment: 50, controls: 30 },
+    'controls-focused': { technical: 20, assessment: 20, controls: 60 },
+  }
+
+  const [scoringPreset, setScoringPreset] = useState<string>('balanced')
+  const [scoringWeights, setScoringWeights] = useState({ technical: 40, assessment: 35, controls: 25 })
+  const [scoringSaving, setScoringSaving] = useState(false)
+  const [scoringLoaded, setScoringLoaded] = useState(false)
+  const [scoringMessage, setScoringMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
+  const [previewScore, setPreviewScore] = useState<{ score: number | null; grade: string | null } | null>(null)
+
+  // Load scoring config
+  useEffect(() => {
+    getScoringConfig()
+      .then(cfg => {
+        const tw = Math.round(cfg.technicalWeight * 100)
+        const aw = Math.round(cfg.assessmentWeight * 100)
+        const cw = Math.round(cfg.controlsWeight * 100)
+        setScoringWeights({ technical: tw, assessment: aw, controls: cw })
+        setScoringPreset(cfg.preset || 'balanced')
+        setScoringLoaded(true)
+      })
+      .catch(() => setScoringLoaded(true))
+  }, [])
+
+  const handleScoringPreset = (key: string) => {
+    setScoringPreset(key)
+    if (key !== 'custom') {
+      setScoringWeights(SCORING_PRESETS[key] || SCORING_PRESETS.balanced)
+    }
+    setPreviewScore(null)
+  }
+
+  const adjustScoringWeight = (key: 'technical' | 'assessment' | 'controls', value: number) => {
+    setScoringPreset('custom')
+    const others = (['technical', 'assessment', 'controls'] as const).filter(k => k !== key)
+    const remaining = 100 - value
+    const otherTotal = scoringWeights[others[0]] + scoringWeights[others[1]]
+    if (otherTotal === 0) {
+      setScoringWeights({ ...scoringWeights, [key]: value, [others[0]]: Math.round(remaining / 2), [others[1]]: remaining - Math.round(remaining / 2) })
+    } else {
+      const r0 = Math.round((scoringWeights[others[0]] / otherTotal) * remaining)
+      const r1 = remaining - r0
+      setScoringWeights({ ...scoringWeights, [key]: value, [others[0]]: r0, [others[1]]: r1 })
+    }
+    setPreviewScore(null)
+  }
+
+  const handleSaveScoring = async () => {
+    setScoringSaving(true)
+    setScoringMessage(null)
+    try {
+      const result = await updateScoringConfig(
+        scoringWeights.technical / 100,
+        scoringWeights.assessment / 100,
+        scoringWeights.controls / 100,
+        scoringPreset,
+      )
+      setPreviewScore({ score: result.previewOverallScore, grade: result.previewGrade })
+      setScoringMessage({ type: 'success', text: t('settings.scoringSaved') })
+      refreshScore()
+    } catch {
+      setScoringMessage({ type: 'error', text: t('settings.scoringSaveError') })
+    }
+    setScoringSaving(false)
+  }
 
   // Load cloud credentials
   useEffect(() => {
@@ -501,27 +575,105 @@ export default function Settings() {
         </div>
       </Card>
 
-      {/* Scoring Weights — now fixed 3-pillar model */}
+      {/* Scoring Weights — editable 3-pillar model */}
       <Card>
         <div className="flex items-center gap-3 mb-2">
           <Scale size={16} className="text-cyan-400" />
           <h2 className="text-base font-bold font-syne text-white">{t('settings.scoringConfig')}</h2>
         </div>
         <p className="text-xs text-navy-400 mb-4">{t('settings.scoringConfigDesc')}</p>
-        <div className="grid grid-cols-3 gap-3">
-          <div className="p-3 rounded-lg bg-navy-900/60 border border-navy-800 text-center">
-            <p className="text-[10px] uppercase tracking-wider text-navy-500 mb-1">{t('overview.technical')}</p>
-            <p className="text-lg font-bold font-syne text-purple-400">40%</p>
-          </div>
-          <div className="p-3 rounded-lg bg-navy-900/60 border border-navy-800 text-center">
-            <p className="text-[10px] uppercase tracking-wider text-navy-500 mb-1">{t('overview.assessment')}</p>
-            <p className="text-lg font-bold font-syne text-blue-400">35%</p>
-          </div>
-          <div className="p-3 rounded-lg bg-navy-900/60 border border-navy-800 text-center">
-            <p className="text-[10px] uppercase tracking-wider text-navy-500 mb-1">{t('overview.controlsCard')}</p>
-            <p className="text-lg font-bold font-syne text-emerald-400">25%</p>
-          </div>
+
+        {/* Preset buttons */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-4">
+          {([
+            { key: 'balanced', color: 'cyan' },
+            { key: 'technical-first', color: 'purple' },
+            { key: 'governance-led', color: 'blue' },
+            { key: 'controls-focused', color: 'emerald' },
+          ] as const).map(({ key, color }) => {
+            const isActive = scoringPreset === key
+            return (
+              <button
+                key={key}
+                onClick={() => handleScoringPreset(key)}
+                className={`p-2.5 rounded-lg border text-left transition-all ${
+                  isActive
+                    ? `border-${color}-500 bg-${color}-500/10`
+                    : 'border-navy-800 bg-navy-900/40 hover:border-navy-600'
+                }`}
+              >
+                <p className="text-xs font-semibold text-white mb-0.5">
+                  {t(`settings.preset${key.split('-').map(w => w[0].toUpperCase() + w.slice(1)).join('')}` as any)}
+                </p>
+                <p className="text-[10px] text-navy-400 leading-tight">
+                  {t(`settings.preset${key.split('-').map(w => w[0].toUpperCase() + w.slice(1)).join('')}Desc` as any)}
+                </p>
+              </button>
+            )
+          })}
         </div>
+
+        {/* Custom option */}
+        <button
+          onClick={() => handleScoringPreset('custom')}
+          className={`w-full p-2.5 rounded-lg border text-left transition-all mb-4 ${
+            scoringPreset === 'custom'
+              ? 'border-orange-500 bg-orange-500/10'
+              : 'border-navy-800 bg-navy-900/40 hover:border-navy-600'
+          }`}
+        >
+          <p className="text-xs font-semibold text-white">{t('settings.presetCustom')}</p>
+          <p className="text-[10px] text-navy-400">{t('settings.presetCustomDesc')}</p>
+        </button>
+
+        {/* Weight sliders */}
+        <div className="space-y-3 mb-4">
+          {(['technical', 'assessment', 'controls'] as const).map(key => {
+            const colors = { technical: 'purple', assessment: 'blue', controls: 'emerald' }
+            const color = colors[key]
+            return (
+              <div key={key}>
+                <div className="flex items-center justify-between mb-1">
+                  <label className="text-xs text-navy-300">{t(`settings.${key}Weight`)}</label>
+                  <span className={`text-sm font-bold text-${color}-400`}>{scoringWeights[key]}%</span>
+                </div>
+                <input
+                  type="range"
+                  min={0}
+                  max={100}
+                  step={5}
+                  value={scoringWeights[key]}
+                  onChange={e => adjustScoringWeight(key, parseInt(e.target.value))}
+                  className="w-full h-1.5 rounded-full appearance-none bg-navy-700 accent-cyan-500"
+                />
+              </div>
+            )
+          })}
+        </div>
+
+        {/* Preview + Save */}
+        <div className="flex items-center justify-between">
+          <div className="text-xs text-navy-400">
+            {previewScore && previewScore.score != null && (
+              <span>{t('settings.previewScore')}: <strong className="text-white">{previewScore.score}%</strong> ({previewScore.grade})</span>
+            )}
+          </div>
+          <Button size="sm" onClick={handleSaveScoring} loading={scoringSaving}>
+            {t('settings.saveScoringWeights')}
+          </Button>
+        </div>
+
+        {scoringMessage && (
+          <div className={`mt-3 p-2 rounded-lg text-xs flex items-center gap-2 ${
+            scoringMessage.type === 'success'
+              ? 'bg-emerald-500/10 border border-emerald-500/20 text-emerald-400'
+              : 'bg-red-500/10 border border-red-500/20 text-red-400'
+          }`}>
+            {scoringMessage.type === 'success' ? <CheckCircle2 size={12} /> : <AlertCircle size={12} />}
+            {scoringMessage.text}
+          </div>
+        )}
+
         <p className="text-[11px] text-navy-500 mt-3">{t('settings.scoringFixedNote')}</p>
       </Card>
 

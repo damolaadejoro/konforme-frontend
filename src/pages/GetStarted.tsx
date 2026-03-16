@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import {
   ChevronRight, ArrowLeft, CheckCircle2, Globe, Building2, Cloud,
-  Loader2, Shield, AlertCircle, Search,
+  Loader2, Shield, AlertCircle, Search, Scale,
 } from 'lucide-react'
 import { Card, Button, Input } from '../components/ui'
 import Logo from '../components/layout/Logo'
@@ -11,9 +11,16 @@ import AwsIamPolicy from '../components/AwsIamPolicy'
 import { useAuth } from '../context/AuthContext'
 import {
   getCountries, getCountry, getCountryTiers,
-  setAccountCountry, addAzureCredential,
+  setAccountCountry, addAzureCredential, updateScoringConfig,
   type CountryListItem, type CountryDetail, type EntityTier,
 } from '../services/api'
+
+const SCORING_PRESETS = {
+  balanced:        { technical: 0.40, assessment: 0.35, controls: 0.25 },
+  'technical-first': { technical: 0.60, assessment: 0.20, controls: 0.20 },
+  'governance-led':  { technical: 0.20, assessment: 0.50, controls: 0.30 },
+  'controls-focused': { technical: 0.20, assessment: 0.20, controls: 0.60 },
+} as const
 
 function countryFlag(code: string): string {
   return [...code.toUpperCase()].map(c => String.fromCodePoint(0x1f1e6 + c.charCodeAt(0) - 65)).join('')
@@ -63,7 +70,12 @@ export default function GetStarted() {
   const [expandedTiers, setExpandedTiers] = useState<Set<string>>(new Set())
   const [savingCountry, setSavingCountry] = useState(false)
 
-  // Step 3: Cloud
+  // Step 3: Scoring
+  const [scoringPreset, setScoringPreset] = useState<string>('balanced')
+  const [customWeights, setCustomWeights] = useState({ technical: 40, assessment: 35, controls: 25 })
+  const [scoringSaving, setScoringSaving] = useState(false)
+
+  // Step 4: Cloud
   const [cloudProvider, setCloudProvider] = useState<'aws' | 'azure' | null>(null)
   const [cloudForm, setCloudForm] = useState<Record<string, string>>({})
   const [cloudSaving, setCloudSaving] = useState(false)
@@ -117,6 +129,38 @@ export default function GetStarted() {
     setStep(2)
   }
 
+  const handleSaveScoring = async () => {
+    setScoringSaving(true)
+    try {
+      if (scoringPreset === 'custom') {
+        await updateScoringConfig(
+          customWeights.technical / 100,
+          customWeights.assessment / 100,
+          customWeights.controls / 100,
+          'custom',
+        )
+      } else {
+        const p = SCORING_PRESETS[scoringPreset as keyof typeof SCORING_PRESETS] || SCORING_PRESETS.balanced
+        await updateScoringConfig(p.technical, p.assessment, p.controls, scoringPreset)
+      }
+    } catch { /* continue anyway */ }
+    setScoringSaving(false)
+    setStep(3)
+  }
+
+  const adjustCustomWeight = (key: 'technical' | 'assessment' | 'controls', value: number) => {
+    const others = (['technical', 'assessment', 'controls'] as const).filter(k => k !== key)
+    const remaining = 100 - value
+    const otherTotal = customWeights[others[0]] + customWeights[others[1]]
+    if (otherTotal === 0) {
+      setCustomWeights({ ...customWeights, [key]: value, [others[0]]: Math.round(remaining / 2), [others[1]]: remaining - Math.round(remaining / 2) })
+    } else {
+      const r0 = Math.round((customWeights[others[0]] / otherTotal) * remaining)
+      const r1 = remaining - r0
+      setCustomWeights({ ...customWeights, [key]: value, [others[0]]: r0, [others[1]]: r1 })
+    }
+  }
+
   const handleCloudConnect = async () => {
     if (!cloudProvider) return
     setCloudSaving(true)
@@ -166,11 +210,12 @@ export default function GetStarted() {
   const stepLabels = [
     t('getStarted.stepCountry'),
     t('getStarted.stepEntity'),
+    t('getStarted.stepScoring'),
     t('getStarted.stepCloud'),
     t('getStarted.stepReady'),
   ]
 
-  const stepIcons = [Globe, Building2, Cloud, CheckCircle2]
+  const stepIcons = [Globe, Building2, Scale, Cloud, CheckCircle2]
 
   return (
     <div className="min-h-screen bg-navy-950 flex flex-col items-center px-4 py-8">
@@ -426,8 +471,122 @@ export default function GetStarted() {
           </div>
         )}
 
-        {/* Step 3: Cloud Provider */}
+        {/* Step 3: Scoring Preferences */}
         {step === 2 && (
+          <div className="animate-in fade-in duration-500">
+            <div className="text-center mb-6">
+              <h2 className="text-xl font-bold font-syne text-white">{t('getStarted.scoringTitle')}</h2>
+              <p className="text-sm text-navy-400 mt-1 max-w-lg mx-auto">{t('getStarted.scoringSubtitle')}</p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {([
+                { key: 'balanced', color: 'cyan' },
+                { key: 'technical-first', color: 'purple' },
+                { key: 'governance-led', color: 'blue' },
+                { key: 'controls-focused', color: 'emerald' },
+              ] as const).map(({ key, color }) => {
+                const p = SCORING_PRESETS[key]
+                const isSelected = scoringPreset === key
+                return (
+                  <button
+                    key={key}
+                    onClick={() => setScoringPreset(key)}
+                    className={`p-4 rounded-xl border text-left transition-all ${
+                      isSelected
+                        ? `border-${color}-500 bg-${color}-500/10 ring-1 ring-${color}-500/20`
+                        : 'border-navy-800 bg-navy-900/40 hover:border-navy-600'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between mb-2">
+                      <h3 className="text-sm font-semibold text-white">
+                        {t(`settings.preset${key.split('-').map(w => w[0].toUpperCase() + w.slice(1)).join('')}` as any)}
+                      </h3>
+                      {isSelected && <CheckCircle2 size={16} className={`text-${color}-400`} />}
+                    </div>
+                    <p className="text-xs text-navy-400 mb-3">
+                      {t(`settings.preset${key.split('-').map(w => w[0].toUpperCase() + w.slice(1)).join('')}Desc` as any)}
+                    </p>
+                    <div className="flex gap-2 text-[10px]">
+                      <span className="px-1.5 py-0.5 rounded bg-purple-500/15 text-purple-300">{Math.round(p.technical * 100)}% Tech</span>
+                      <span className="px-1.5 py-0.5 rounded bg-blue-500/15 text-blue-300">{Math.round(p.assessment * 100)}% Assess</span>
+                      <span className="px-1.5 py-0.5 rounded bg-emerald-500/15 text-emerald-300">{Math.round(p.controls * 100)}% Ctrl</span>
+                    </div>
+                  </button>
+                )
+              })}
+            </div>
+
+            {/* Custom option */}
+            <button
+              onClick={() => setScoringPreset('custom')}
+              className={`w-full mt-3 p-4 rounded-xl border text-left transition-all ${
+                scoringPreset === 'custom'
+                  ? 'border-orange-500 bg-orange-500/10 ring-1 ring-orange-500/20'
+                  : 'border-navy-800 bg-navy-900/40 hover:border-navy-600'
+              }`}
+            >
+              <div className="flex items-center justify-between mb-1">
+                <h3 className="text-sm font-semibold text-white">{t('settings.presetCustom')}</h3>
+                {scoringPreset === 'custom' && <CheckCircle2 size={16} className="text-orange-400" />}
+              </div>
+              <p className="text-xs text-navy-400">{t('settings.presetCustomDesc')}</p>
+            </button>
+
+            {/* Custom sliders */}
+            {scoringPreset === 'custom' && (
+              <Card className="mt-4">
+                {(['technical', 'assessment', 'controls'] as const).map(key => {
+                  const colors = { technical: 'purple', assessment: 'blue', controls: 'emerald' }
+                  const color = colors[key]
+                  return (
+                    <div key={key} className="mb-4 last:mb-0">
+                      <div className="flex items-center justify-between mb-1">
+                        <label className="text-xs text-navy-300 capitalize">{t(`settings.${key}Weight`)}</label>
+                        <span className={`text-sm font-bold text-${color}-400`}>{customWeights[key]}%</span>
+                      </div>
+                      <input
+                        type="range"
+                        min={0}
+                        max={100}
+                        step={5}
+                        value={customWeights[key]}
+                        onChange={e => adjustCustomWeight(key, parseInt(e.target.value))}
+                        className="w-full h-1.5 rounded-full appearance-none bg-navy-700 accent-cyan-500"
+                      />
+                    </div>
+                  )
+                })}
+                <p className="text-[10px] text-navy-500 mt-2">
+                  Total: {customWeights.technical + customWeights.assessment + customWeights.controls}%
+                </p>
+              </Card>
+            )}
+
+            <div className="flex items-center justify-between mt-6">
+              <button
+                onClick={() => setStep(1)}
+                className="flex items-center gap-1 text-sm text-navy-400 hover:text-white transition-colors"
+              >
+                <ArrowLeft size={14} /> {t('getStarted.back')}
+              </button>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => setStep(3)}
+                  className="text-sm text-navy-400 hover:text-white transition-colors"
+                >
+                  {t('getStarted.scoringSkip')}
+                </button>
+                <Button onClick={handleSaveScoring} loading={scoringSaving}>
+                  {t('common.next')} <ChevronRight size={16} />
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Step 4: Cloud Provider */}
+        {step === 3 && (
           <div className="animate-in fade-in duration-500">
             <div className="text-center mb-6">
               <h2 className="text-xl font-bold font-syne text-white">{t('getStarted.cloudTitle')}</h2>
@@ -578,7 +737,7 @@ export default function GetStarted() {
 
             <div className="flex items-center justify-between mt-6">
               <button
-                onClick={() => setStep(1)}
+                onClick={() => setStep(2)}
                 className="flex items-center gap-1 text-sm text-navy-400 hover:text-white transition-colors"
               >
                 <ArrowLeft size={14} /> {t('getStarted.back')}
@@ -586,14 +745,14 @@ export default function GetStarted() {
               <div className="flex gap-2">
                 {!cloudProvider && (
                   <button
-                    onClick={() => setStep(3)}
+                    onClick={() => setStep(4)}
                     className="text-sm text-navy-400 hover:text-white transition-colors"
                   >
                     {t('getStarted.cloudSkip')}
                   </button>
                 )}
                 {cloudConnected.length > 0 && !cloudProvider && (
-                  <Button onClick={() => setStep(3)}>
+                  <Button onClick={() => setStep(4)}>
                     {t('common.next')} <ChevronRight size={16} />
                   </Button>
                 )}
@@ -602,8 +761,8 @@ export default function GetStarted() {
           </div>
         )}
 
-        {/* Step 4: Ready */}
-        {step === 3 && (
+        {/* Step 5: Ready */}
+        {step === 4 && (
           <div className="animate-in fade-in duration-500">
             <div className="text-center mb-8">
               <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-emerald-500/10 border border-emerald-500/20 mb-4">
@@ -637,6 +796,19 @@ export default function GetStarted() {
 
                 <div className="flex items-center justify-between p-3 rounded-lg bg-navy-900/40 border border-navy-800">
                   <div className="flex items-center gap-3">
+                    <Scale size={16} className="text-cyan-400" />
+                    <span className="text-sm text-navy-300">{t('getStarted.readyScoring')}</span>
+                  </div>
+                  <span className="text-sm font-medium text-white">
+                    {scoringPreset === 'custom'
+                      ? t('getStarted.readyCustomScoring', { technical: customWeights.technical, assessment: customWeights.assessment, controls: customWeights.controls })
+                      : t('getStarted.readyDefaultScoring')
+                    }
+                  </span>
+                </div>
+
+                <div className="flex items-center justify-between p-3 rounded-lg bg-navy-900/40 border border-navy-800">
+                  <div className="flex items-center gap-3">
                     <Cloud size={16} className="text-cyan-400" />
                     <span className="text-sm text-navy-300">{t('getStarted.readyCloud')}</span>
                   </div>
@@ -653,7 +825,7 @@ export default function GetStarted() {
 
             <div className="flex items-center justify-between mt-6">
               <button
-                onClick={() => setStep(2)}
+                onClick={() => setStep(3)}
                 className="flex items-center gap-1 text-sm text-navy-400 hover:text-white transition-colors"
               >
                 <ArrowLeft size={14} /> {t('getStarted.back')}

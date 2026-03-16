@@ -788,8 +788,8 @@ export async function deleteEvidence(accountId: string, controlId: string, evide
 
 export interface ScoringConfigResponse {
   technicalWeight: number
-  organizationalWeight: number
-  domainWeights: Record<string, number> | null
+  assessmentWeight: number
+  controlsWeight: number
   preset: string | null
 }
 
@@ -804,13 +804,17 @@ export async function getScoringConfig(): Promise<ScoringConfigResponse> {
 
 export async function updateScoringConfig(
   technicalWeight: number,
-  organizationalWeight: number
+  assessmentWeight: number,
+  controlsWeight: number,
+  preset?: string,
 ): Promise<ScoringConfigUpdateResponse> {
   return apiFetch<ScoringConfigUpdateResponse>('/settings/scoring', {
     method: 'PUT',
     body: JSON.stringify({
       technical_weight: technicalWeight,
-      organizational_weight: organizationalWeight,
+      assessment_weight: assessmentWeight,
+      controls_weight: controlsWeight,
+      preset: preset ?? null,
     }),
   })
 }
