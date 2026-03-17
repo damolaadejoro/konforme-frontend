@@ -15,7 +15,8 @@
     "sectionOverview": "PANORAMICA",
     "sectionAssess": "VALUTARE",
     "sectionRemediate": "RIMEDIARE",
-    "sectionReport": "RAPPORTO"
+    "sectionReport": "RAPPORTO",
+    "team": "Team"
   },
   "common": {
     "save": "Salva modifiche",
@@ -916,5 +917,34 @@
     "nationalLaw": "Legge nazionale",
     "noCountry": "Selezioni il suo paese nelle Impostazioni per vedere l'autorità nazionale NIS2 e i contatti per la segnalazione.",
     "goToSettings": "Vai alle impostazioni"
+  },
+  "team": {
+    "pageTitle": "Team",
+    "pageSubtitle": "Gestisci i membri e i ruoli del team",
+    "inviteButton": "Invita membri",
+    "inviteTitle": "Invita membri del team",
+    "emailsLabel": "Indirizzi e-mail (uno per riga o separati da virgole)",
+    "roleLabel": "Ruolo",
+    "roleMember": "Membro",
+    "roleAdmin": "Admin",
+    "roleOwner": "Proprietario",
+    "sendInvites": "Invia inviti",
+    "nameHeader": "Nome",
+    "emailHeader": "E-mail",
+    "roleHeader": "Ruolo",
+    "statusHeader": "Stato",
+    "actionsHeader": "Azioni",
+    "pending": "In attesa",
+    "active": "Attivo",
+    "unverified": "Non verificato",
+    "noMembers": "Nessun membro ancora. Invita il tuo primo membro.",
+    "removeConfirm": "Rimuovere questo membro dal team?",
+    "noAccess": "Non hai il permesso di gestire il team.",
+    "inviteExpired": "Questo link di invito non è valido o è scaduto.",
+    "joinOrg": "Unisciti al team",
+    "invitedAs": "Sei stato invitato a unirti al team.",
+    "acceptInvite": "Accetta e unisciti",
+    "welcomeToTeam": "Benvenuto nel team!",
+    "canNowLogin": "Ora puoi accedere con la tua e-mail e password."
   }
 }

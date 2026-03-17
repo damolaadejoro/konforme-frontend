@@ -9,6 +9,7 @@ import {
   ChevronRight,
   Shield,
   Users,
+  UsersRound,
   ClipboardCheck,
   ListTodo,
 } from 'lucide-react'
@@ -46,6 +47,7 @@ const navGroups = [
 ]
 
 const settingsItem = { path: '/settings', labelKey: 'nav.settings', icon: Settings, tooltip: 'Account and cloud provider settings' }
+const teamItem = { path: '/team', labelKey: 'nav.team', icon: UsersRound, tooltip: 'Manage team members and roles' }
 
 function NavItem({ path, labelKey, icon: Icon, tooltip }: { path: string; labelKey: string; icon: typeof LayoutDashboard; tooltip: string }) {
   const { t } = useTranslation()
@@ -103,8 +105,9 @@ export default function Sidebar() {
           </div>
         ))}
 
-        {/* Settings — separate from groups */}
+        {/* Settings & Team — separate from groups */}
         <div className="pt-2">
+          <NavItem {...teamItem} />
           <NavItem {...settingsItem} />
         </div>
       </nav>

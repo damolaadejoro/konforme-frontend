@@ -15,7 +15,8 @@
     "sectionOverview": "APERÇU",
     "sectionAssess": "ÉVALUER",
     "sectionRemediate": "REMÉDIER",
-    "sectionReport": "RAPPORT"
+    "sectionReport": "RAPPORT",
+    "team": "Équipe"
   },
   "common": {
     "save": "Enregistrer les modifications",
@@ -1112,5 +1113,34 @@
     "nationalLaw": "Loi nationale",
     "noCountry": "Sélectionnez votre pays dans les Paramètres pour voir votre autorité nationale NIS2 et les contacts de signalement.",
     "goToSettings": "Aller aux paramètres"
+  },
+  "team": {
+    "pageTitle": "Équipe",
+    "pageSubtitle": "Gérer les membres et les rôles de l'équipe",
+    "inviteButton": "Inviter des membres",
+    "inviteTitle": "Inviter des membres",
+    "emailsLabel": "Adresses e-mail (une par ligne ou séparées par des virgules)",
+    "roleLabel": "Rôle",
+    "roleMember": "Membre",
+    "roleAdmin": "Admin",
+    "roleOwner": "Propriétaire",
+    "sendInvites": "Envoyer les invitations",
+    "nameHeader": "Nom",
+    "emailHeader": "E-mail",
+    "roleHeader": "Rôle",
+    "statusHeader": "Statut",
+    "actionsHeader": "Actions",
+    "pending": "En attente",
+    "active": "Actif",
+    "unverified": "Non vérifié",
+    "noMembers": "Aucun membre pour l'instant. Invitez votre premier membre.",
+    "removeConfirm": "Retirer ce membre de l'équipe ?",
+    "noAccess": "Vous n'avez pas la permission de gérer l'équipe.",
+    "inviteExpired": "Ce lien d'invitation est invalide ou a expiré.",
+    "joinOrg": "Rejoindre l'équipe",
+    "invitedAs": "Vous avez été invité à rejoindre l'équipe.",
+    "acceptInvite": "Accepter et rejoindre",
+    "welcomeToTeam": "Bienvenue dans l'équipe !",
+    "canNowLogin": "Vous pouvez maintenant vous connecter avec votre e-mail et votre mot de passe."
   }
 }

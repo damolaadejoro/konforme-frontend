@@ -15,7 +15,8 @@
     "sectionOverview": "OVERVIEW",
     "sectionAssess": "ASSESS",
     "sectionRemediate": "REMEDIATE",
-    "sectionReport": "REPORT"
+    "sectionReport": "REPORT",
+    "team": "Team"
   },
   "common": {
     "save": "Save Changes",
@@ -106,7 +107,15 @@
     "validationPasswordNumber": "Password must include a number",
     "validationConfirmRequired": "Please confirm your password",
     "validationPasswordsMismatch": "Passwords do not match",
-    "validationNameRequired": "Name is required"
+    "validationNameRequired": "Name is required",
+    "verifyEmailBanner": "Please verify your email. Check your inbox or",
+    "resendVerification": "resend",
+    "verificationSent": "Sent!",
+    "verifyingEmail": "Verifying your email...",
+    "emailVerified": "Email verified!",
+    "emailVerifiedDesc": "Your email has been successfully verified. You can now use all features.",
+    "verificationFailed": "Verification failed",
+    "verificationFailedDesc": "The verification link is invalid or has expired. Please request a new one."
   },
   "settings": {
     "title": "Settings",
@@ -1233,5 +1242,34 @@
     "nationalLaw": "National Law",
     "noCountry": "Select your country in Settings to see your national NIS2 authority and reporting contacts.",
     "goToSettings": "Go to Settings"
+  },
+  "team": {
+    "pageTitle": "Team",
+    "pageSubtitle": "Manage team members and roles",
+    "inviteButton": "Invite Members",
+    "inviteTitle": "Invite Team Members",
+    "emailsLabel": "Email addresses (one per line or comma-separated)",
+    "roleLabel": "Role",
+    "roleMember": "Member",
+    "roleAdmin": "Admin",
+    "roleOwner": "Owner",
+    "sendInvites": "Send Invites",
+    "nameHeader": "Name",
+    "emailHeader": "Email",
+    "roleHeader": "Role",
+    "statusHeader": "Status",
+    "actionsHeader": "Actions",
+    "pending": "Pending",
+    "active": "Active",
+    "unverified": "Unverified",
+    "noMembers": "No team members yet. Invite your first member.",
+    "removeConfirm": "Remove this member from the team?",
+    "noAccess": "You don't have permission to manage the team.",
+    "inviteExpired": "This invitation link is invalid or has expired.",
+    "joinOrg": "Join the team",
+    "invitedAs": "You've been invited to join the team.",
+    "acceptInvite": "Accept & Join",
+    "welcomeToTeam": "Welcome to the team!",
+    "canNowLogin": "You can now sign in with your email and password."
   }
 }

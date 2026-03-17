@@ -15,7 +15,8 @@
     "sectionOverview": "VISÃO GERAL",
     "sectionAssess": "AVALIAR",
     "sectionRemediate": "REMEDIAR",
-    "sectionReport": "RELATÓRIO"
+    "sectionReport": "RELATÓRIO",
+    "team": "Equipa"
   },
   "common": {
     "save": "Guardar Alterações",
@@ -567,5 +568,34 @@
     "tipReports": "Gere o seu primeiro relatório de conformidade",
     "goToDashboard": "Ir para o painel",
     "back": "Voltar"
+  },
+  "team": {
+    "pageTitle": "Equipa",
+    "pageSubtitle": "Gerir membros e funções da equipa",
+    "inviteButton": "Convidar membros",
+    "inviteTitle": "Convidar membros da equipa",
+    "emailsLabel": "Endereços de e-mail (um por linha ou separados por vírgulas)",
+    "roleLabel": "Função",
+    "roleMember": "Membro",
+    "roleAdmin": "Admin",
+    "roleOwner": "Proprietário",
+    "sendInvites": "Enviar convites",
+    "nameHeader": "Nome",
+    "emailHeader": "E-mail",
+    "roleHeader": "Função",
+    "statusHeader": "Estado",
+    "actionsHeader": "Ações",
+    "pending": "Pendente",
+    "active": "Ativo",
+    "unverified": "Não verificado",
+    "noMembers": "Ainda sem membros. Convide o seu primeiro membro.",
+    "removeConfirm": "Remover este membro da equipa?",
+    "noAccess": "Não tem permissão para gerir a equipa.",
+    "inviteExpired": "Este link de convite é inválido ou expirou.",
+    "joinOrg": "Juntar-se à equipa",
+    "invitedAs": "Foi convidado a juntar-se à equipa.",
+    "acceptInvite": "Aceitar e juntar-se",
+    "welcomeToTeam": "Bem-vindo à equipa!",
+    "canNowLogin": "Agora pode iniciar sessão com o seu e-mail e palavra-passe."
   }
 }

@@ -17,6 +17,9 @@ interface AuthState {
   accountId: string | null
   accountName: string | null
   email: string | null
+  emailVerified: boolean
+  userId: string | null
+  role: string | null
   country: string | null
   language: string | null
   isAuthenticated: boolean
@@ -34,6 +37,7 @@ interface AuthContextValue extends AuthState {
   selectAwsAccount: (awsAccountId: string) => void
   setAccountName: (name: string) => void
   setEmail: (email: string) => void
+  setEmailVerified: (verified: boolean) => void
   setCountry: (country: string) => void
   setLanguage: (language: string) => void
 }
@@ -47,7 +51,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       accountId: stored.accountId,
       accountName: stored.accountName,
       email: stored.email,
-      country: localStorage.getItem('konforme_country'),
+      emailVerified: false,
+      userId: null,
+      role: null,
+      country: null,
       language: localStorage.getItem('konforme_language') || 'en',
       isAuthenticated: checkAuth(),
       loading: true,
@@ -67,13 +74,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         localStorage.setItem('konforme_account_id', info.account_id)
         localStorage.setItem('konforme_account_name', info.account_name)
         localStorage.setItem('konforme_email', info.email)
-        if (info.country) localStorage.setItem('konforme_country', info.country)
         if (info.language) localStorage.setItem('konforme_language', info.language)
         setAuth(prev => ({
           ...prev,
           accountId: info.account_id,
           accountName: info.account_name,
           email: info.email,
+          emailVerified: info.email_verified ?? false,
+          userId: (info as any).user_id || prev.userId,
+          role: (info as any).role || prev.role,
           country: info.country || prev.country,
           language: info.language || prev.language,
           isAuthenticated: true,
@@ -105,7 +114,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         // No valid session — clear local state
         clearAuth()
         setAuth({
-          accountId: null, accountName: null, email: null, country: null, language: 'en',
+          accountId: null, accountName: null, email: null, emailVerified: false,
+          userId: null, role: null, country: null, language: 'en',
           isAuthenticated: false, loading: false, awsAccounts: [], selectedAwsAccountId: null,
         })
       })
@@ -124,6 +134,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       accountId: data.account_id,
       accountName: data.account_name,
       email: data.email,
+      emailVerified: data.email_verified ?? false,
+      userId: (data as any).user_id || null,
+      role: (data as any).role || null,
       country: data.country,
       language: data.language || 'en',
       isAuthenticated: true,
@@ -160,6 +173,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       accountId: data.account_id,
       accountName: data.account_name,
       email: data.email,
+      emailVerified: data.email_verified ?? false,
+      userId: (data as any).user_id || null,
+      role: (data as any).role || null,
       country: data.country,
       language: data.language || 'en',
       isAuthenticated: true,
@@ -221,6 +237,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setAuth(prev => ({ ...prev, language }))
   }, [])
 
+  const setEmailVerifiedFn = useCallback((verified: boolean) => {
+    setAuth(prev => ({ ...prev, emailVerified: verified }))
+  }, [])
+
   const contextValue = useMemo<AuthContextValue>(() => ({
     ...auth,
     login: loginFn,
@@ -231,9 +251,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     selectAwsAccount,
     setAccountName: setAccountNameFn,
     setEmail: setEmailFn,
+    setEmailVerified: setEmailVerifiedFn,
     setCountry: setCountryFn,
     setLanguage: setLanguageFn,
-  }), [auth, loginFn, registerFn, logoutFn, addAwsAccount, removeAwsAccount, selectAwsAccount, setAccountNameFn, setEmailFn, setCountryFn, setLanguageFn])
+  }), [auth, loginFn, registerFn, logoutFn, addAwsAccount, removeAwsAccount, selectAwsAccount, setAccountNameFn, setEmailFn, setEmailVerifiedFn, setCountryFn, setLanguageFn])
 
   return (
     <AuthContext.Provider value={contextValue}>

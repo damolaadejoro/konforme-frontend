@@ -173,6 +173,7 @@ interface AuthResponseRaw {
   account_id: string
   account_name: string
   email: string
+  email_verified: boolean
   country: string | null
   language: string | null
 }
@@ -216,14 +217,25 @@ export async function logout(): Promise<void> {
   clearAuth()
 }
 
-export async function getMe(): Promise<{ account_id: string; account_name: string; email: string; country: string | null; language: string | null }> {
+export async function getMe(): Promise<{ account_id: string; account_name: string; email: string; email_verified: boolean; country: string | null; language: string | null }> {
   return apiFetch('/auth/me')
 }
 
-export async function resetPassword(email: string, newPassword: string): Promise<void> {
+export async function resendVerification(): Promise<{ detail: string }> {
+  return apiFetch('/auth/resend-verification', { method: 'POST' })
+}
+
+export async function forgotPassword(email: string): Promise<void> {
+  await apiFetch('/auth/forgot-password', {
+    method: 'POST',
+    body: JSON.stringify({ email }),
+  })
+}
+
+export async function resetPassword(token: string, newPassword: string): Promise<void> {
   await apiFetch('/auth/reset-password', {
     method: 'POST',
-    body: JSON.stringify({ email, new_password: newPassword }),
+    body: JSON.stringify({ token, new_password: newPassword }),
   })
 }
 
@@ -987,6 +999,54 @@ export async function createCampaignApi(
     body: JSON.stringify(data),
   })
 }
+
+// --- Team ---
+
+export interface TeamMember {
+  id: string
+  name: string
+  email: string
+  role: string
+  emailVerified: boolean
+  isActive: boolean
+  inviteAccepted: boolean
+  createdAt: string
+}
+
+export async function getTeamMembers(): Promise<TeamMember[]> {
+  return apiFetch<TeamMember[]>('/team/members')
+}
+
+export async function inviteTeamMembers(emails: string[], role: string = 'member'): Promise<TeamMember[]> {
+  return apiFetch<TeamMember[]>('/team/invite', {
+    method: 'POST',
+    body: JSON.stringify({ emails, role }),
+  })
+}
+
+export async function getInviteInfo(token: string): Promise<{ email: string; org_name: string; token: string }> {
+  return apiFetch(`/team/accept-invite?token=${encodeURIComponent(token)}`)
+}
+
+export async function acceptInvite(token: string, name: string, password: string): Promise<{ detail: string }> {
+  return apiFetch('/team/accept-invite', {
+    method: 'POST',
+    body: JSON.stringify({ token, name, password }),
+  })
+}
+
+export async function updateMemberRole(userId: string, role: string): Promise<TeamMember> {
+  return apiFetch<TeamMember>(`/team/members/${userId}/role`, {
+    method: 'PUT',
+    body: JSON.stringify({ role }),
+  })
+}
+
+export async function removeMember(userId: string): Promise<void> {
+  await apiFetch(`/team/members/${userId}`, { method: 'DELETE' })
+}
+
+// --- Campaigns ---
 
 export async function updateCampaignTask(
   accountId: string,

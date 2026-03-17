@@ -15,7 +15,8 @@
     "sectionOverview": "OVERZICHT",
     "sectionAssess": "BEOORDELEN",
     "sectionRemediate": "HERSTELLEN",
-    "sectionReport": "RAPPORT"
+    "sectionReport": "RAPPORT",
+    "team": "Team"
   },
   "common": {
     "save": "Wijzigingen opslaan",
@@ -916,5 +917,34 @@
     "nationalLaw": "Nationale wet",
     "noCountry": "Selecteer uw land in Instellingen om uw nationale NIS2-autoriteit en meldingscontacten te zien.",
     "goToSettings": "Naar instellingen"
+  },
+  "team": {
+    "pageTitle": "Team",
+    "pageSubtitle": "Beheer teamleden en rollen",
+    "inviteButton": "Leden uitnodigen",
+    "inviteTitle": "Teamleden uitnodigen",
+    "emailsLabel": "E-mailadressen (één per regel of kommagescheiden)",
+    "roleLabel": "Rol",
+    "roleMember": "Lid",
+    "roleAdmin": "Admin",
+    "roleOwner": "Eigenaar",
+    "sendInvites": "Uitnodigingen versturen",
+    "nameHeader": "Naam",
+    "emailHeader": "E-mail",
+    "roleHeader": "Rol",
+    "statusHeader": "Status",
+    "actionsHeader": "Acties",
+    "pending": "In afwachting",
+    "active": "Actief",
+    "unverified": "Niet geverifieerd",
+    "noMembers": "Nog geen teamleden. Nodig uw eerste lid uit.",
+    "removeConfirm": "Dit lid uit het team verwijderen?",
+    "noAccess": "U heeft geen toestemming om het team te beheren.",
+    "inviteExpired": "Deze uitnodigingslink is ongeldig of verlopen.",
+    "joinOrg": "Word lid van het team",
+    "invitedAs": "U bent uitgenodigd om lid te worden van het team.",
+    "acceptInvite": "Accepteren en toetreden",
+    "welcomeToTeam": "Welkom in het team!",
+    "canNowLogin": "U kunt nu inloggen met uw e-mail en wachtwoord."
   }
 }

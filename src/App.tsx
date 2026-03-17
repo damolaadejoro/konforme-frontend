@@ -25,6 +25,10 @@ import Login from './pages/Login'
 import Register from './pages/Register'
 import ResetPassword from './pages/ResetPassword'
 import GetStarted from './pages/GetStarted'
+import VerifyEmail from './pages/VerifyEmail'
+import AcceptInvite from './pages/AcceptInvite'
+import Team from './pages/Team'
+import TaskComplete from './pages/TaskComplete'
 
 export default function App() {
   return (
@@ -36,11 +40,14 @@ export default function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/reset-password" element={<ResetPassword />} />
+          <Route path="/verify-email" element={<VerifyEmail />} />
+          <Route path="/accept-invite" element={<AcceptInvite />} />
 
           {/* Post-registration onboarding - no sidebar */}
           <Route path="/get-started" element={<ProtectedRoute><GetStarted /></ProtectedRoute>} />
 
-          {/* Employee task page - no layout wrapper (separate experience) */}
+          {/* Employee task pages - no layout wrapper (separate experience) */}
+          <Route path="/task/complete/:token" element={<TaskComplete />} />
           <Route path="/task/:taskId" element={<EmployeeTaskPage />} />
 
           {/* Admin dashboard routes - protected */}
@@ -74,6 +81,7 @@ export default function App() {
             <Route path="people-tasks" element={<PeopleTasks />} />
             <Route path="reports" element={<Reports />} />
             <Route path="settings" element={<Settings />} />
+            <Route path="team" element={<Team />} />
 
             {/* Backwards-compat redirects */}
             <Route path="human-factor" element={<Navigate to="/assessment/human-factor" replace />} />

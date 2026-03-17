@@ -15,7 +15,8 @@
     "sectionOverview": "RESUMEN",
     "sectionAssess": "EVALUAR",
     "sectionRemediate": "REMEDIAR",
-    "sectionReport": "INFORME"
+    "sectionReport": "INFORME",
+    "team": "Equipo"
   },
   "common": {
     "save": "Guardar cambios",
@@ -1112,5 +1113,34 @@
     "nationalLaw": "Ley nacional",
     "noCountry": "Seleccione su país en Configuración para ver su autoridad nacional NIS2 y contactos de reporte.",
     "goToSettings": "Ir a configuración"
+  },
+  "team": {
+    "pageTitle": "Equipo",
+    "pageSubtitle": "Gestionar miembros y roles del equipo",
+    "inviteButton": "Invitar miembros",
+    "inviteTitle": "Invitar miembros del equipo",
+    "emailsLabel": "Direcciones de correo (una por línea o separadas por comas)",
+    "roleLabel": "Rol",
+    "roleMember": "Miembro",
+    "roleAdmin": "Admin",
+    "roleOwner": "Propietario",
+    "sendInvites": "Enviar invitaciones",
+    "nameHeader": "Nombre",
+    "emailHeader": "Correo",
+    "roleHeader": "Rol",
+    "statusHeader": "Estado",
+    "actionsHeader": "Acciones",
+    "pending": "Pendiente",
+    "active": "Activo",
+    "unverified": "No verificado",
+    "noMembers": "Aún no hay miembros. Invite a su primer miembro.",
+    "removeConfirm": "¿Eliminar este miembro del equipo?",
+    "noAccess": "No tiene permiso para gestionar el equipo.",
+    "inviteExpired": "Este enlace de invitación es inválido o ha expirado.",
+    "joinOrg": "Unirse al equipo",
+    "invitedAs": "Ha sido invitado a unirse al equipo.",
+    "acceptInvite": "Aceptar y unirse",
+    "welcomeToTeam": "¡Bienvenido al equipo!",
+    "canNowLogin": "Ahora puede iniciar sesión con su correo y contraseña."
   }
 }

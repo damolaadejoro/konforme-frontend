@@ -15,7 +15,8 @@
     "sectionOverview": "ÜBERSICHT",
     "sectionAssess": "BEWERTEN",
     "sectionRemediate": "BEHEBEN",
-    "sectionReport": "BERICHT"
+    "sectionReport": "BERICHT",
+    "team": "Team"
   },
   "common": {
     "save": "Änderungen speichern",
@@ -1112,5 +1113,34 @@
     "nationalLaw": "Nationales Gesetz",
     "noCountry": "Wählen Sie Ihr Land in den Einstellungen aus, um Ihre nationale NIS2-Behörde und Meldekontakte zu sehen.",
     "goToSettings": "Zu den Einstellungen"
+  },
+  "team": {
+    "pageTitle": "Team",
+    "pageSubtitle": "Teammitglieder und Rollen verwalten",
+    "inviteButton": "Mitglieder einladen",
+    "inviteTitle": "Teammitglieder einladen",
+    "emailsLabel": "E-Mail-Adressen (eine pro Zeile oder kommagetrennt)",
+    "roleLabel": "Rolle",
+    "roleMember": "Mitglied",
+    "roleAdmin": "Admin",
+    "roleOwner": "Inhaber",
+    "sendInvites": "Einladungen senden",
+    "nameHeader": "Name",
+    "emailHeader": "E-Mail",
+    "roleHeader": "Rolle",
+    "statusHeader": "Status",
+    "actionsHeader": "Aktionen",
+    "pending": "Ausstehend",
+    "active": "Aktiv",
+    "unverified": "Nicht verifiziert",
+    "noMembers": "Noch keine Teammitglieder. Laden Sie Ihr erstes Mitglied ein.",
+    "removeConfirm": "Dieses Mitglied aus dem Team entfernen?",
+    "noAccess": "Sie haben keine Berechtigung, das Team zu verwalten.",
+    "inviteExpired": "Dieser Einladungslink ist ungültig oder abgelaufen.",
+    "joinOrg": "Dem Team beitreten",
+    "invitedAs": "Sie wurden eingeladen, dem Team beizutreten.",
+    "acceptInvite": "Annehmen & Beitreten",
+    "welcomeToTeam": "Willkommen im Team!",
+    "canNowLogin": "Sie können sich jetzt mit Ihrer E-Mail und Ihrem Passwort anmelden."
   }
 }
