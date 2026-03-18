@@ -9,7 +9,9 @@ export default function VerificationBanner() {
   const [sending, setSending] = useState(false)
   const [sent, setSent] = useState(false)
 
-  if (!isAuthenticated || emailVerified) return null
+  const emailEnabled = import.meta.env.VITE_EMAIL_ENABLED === 'true'
+
+  if (!isAuthenticated || emailVerified || !emailEnabled) return null
 
   const handleResend = async () => {
     setSending(true)
