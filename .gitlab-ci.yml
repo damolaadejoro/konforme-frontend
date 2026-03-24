@@ -20,7 +20,7 @@ frontend-build:
   before_script:
     - npm ci
   script:
-    - VITE_API_URL=${VITE_API_URL} npm run build
+    - VITE_API_URL=${VITE_API_URL} VITE_EMAIL_ENABLED=${VITE_EMAIL_ENABLED} npm run build
   artifacts:
     paths:
       - dist/

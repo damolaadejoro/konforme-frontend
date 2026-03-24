@@ -153,7 +153,7 @@ export default function ResetPassword() {
                 {t('resetPassword.emailSentTitle', 'Check your email')}
               </h2>
               <p className="text-sm text-navy-400 mb-6">
-                {t('resetPassword.emailSentDescription', 'If an account exists with that email, we\'ve sent a password reset link. Check your inbox and spam folder.')}
+                {t('resetPassword.emailSentDescription', 'We\'ve sent a password reset link to your email. Check your inbox and spam folder.')}
               </p>
               <Button onClick={() => navigate('/login')} size="lg" className="w-full">
                 {t('resetPassword.goToSignInButton')}
