@@ -1,7 +1,9 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useSearchParams, Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useAuth } from '../context/AuthContext'
+import { Card, Button } from '../components/ui'
+import Logo from '../components/layout/Logo'
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
 const API_BASE = `${API_URL}/api/v1`
@@ -35,57 +37,66 @@ export default function VerifyEmail() {
   }, [token, setEmailVerified])
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
-      <div className="max-w-md w-full bg-white rounded-lg shadow-sm p-8 text-center">
-        <div className="text-2xl font-bold text-indigo-600 mb-6">Konforme</div>
+    <div className="min-h-screen bg-navy-950 flex items-center justify-center px-4">
+      <div className="w-full max-w-md">
+        <div className="text-center mb-8">
+          <div className="inline-flex items-center justify-center mb-4">
+            <Logo size="lg" showText={false} />
+          </div>
+        </div>
 
-        {status === 'loading' && (
-          <p className="text-gray-600">{t('auth.verifyingEmail', 'Verifying your email...')}</p>
-        )}
+        <Card>
+          <div className="p-2 text-center">
+            {status === 'loading' && (
+              <div>
+                <div className="w-8 h-8 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+                <p className="text-navy-400 text-sm">{t('auth.verifyingEmail')}</p>
+              </div>
+            )}
 
-        {status === 'success' && (
-          <>
-            <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-              </svg>
-            </div>
-            <h1 className="text-xl font-semibold text-gray-900 mb-2">
-              {t('auth.emailVerified', 'Email verified!')}
-            </h1>
-            <p className="text-gray-600 mb-6">
-              {t('auth.emailVerifiedDesc', 'Your email has been successfully verified. You can now use all features.')}
-            </p>
-            <Link
-              to="/"
-              className="inline-block bg-indigo-600 text-white px-6 py-2.5 rounded-lg font-medium hover:bg-indigo-700 transition-colors"
-            >
-              {t('common.goToDashboard', 'Dashboard')}
-            </Link>
-          </>
-        )}
+            {status === 'success' && (
+              <>
+                <div className="w-14 h-14 bg-emerald-500/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <svg className="w-7 h-7 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <h1 className="text-xl font-semibold font-syne text-white mb-2">
+                  {t('auth.emailVerified')}
+                </h1>
+                <p className="text-navy-400 text-sm mb-6">
+                  {t('auth.verifySuccessClose')}
+                </p>
+                <Link to="/get-started">
+                  <Button variant="secondary" size="sm">
+                    {t('auth.continueSetup')}
+                  </Button>
+                </Link>
+              </>
+            )}
 
-        {status === 'error' && (
-          <>
-            <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <svg className="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </div>
-            <h1 className="text-xl font-semibold text-gray-900 mb-2">
-              {t('auth.verificationFailed', 'Verification failed')}
-            </h1>
-            <p className="text-gray-600 mb-6">
-              {t('auth.verificationFailedDesc', 'The verification link is invalid or has expired. Please request a new one.')}
-            </p>
-            <Link
-              to="/"
-              className="inline-block bg-indigo-600 text-white px-6 py-2.5 rounded-lg font-medium hover:bg-indigo-700 transition-colors"
-            >
-              {t('common.goToDashboard', 'Dashboard')}
-            </Link>
-          </>
-        )}
+            {status === 'error' && (
+              <>
+                <div className="w-14 h-14 bg-red-500/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <svg className="w-7 h-7 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </div>
+                <h1 className="text-xl font-semibold font-syne text-white mb-2">
+                  {t('auth.verificationFailed')}
+                </h1>
+                <p className="text-navy-400 text-sm mb-6">
+                  {t('auth.verificationFailedDesc')}
+                </p>
+                <Link to="/login">
+                  <Button variant="secondary" size="sm">
+                    {t('auth.backToSignIn')}
+                  </Button>
+                </Link>
+              </>
+            )}
+          </div>
+        </Card>
       </div>
     </div>
   )

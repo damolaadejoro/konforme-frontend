@@ -105,7 +105,7 @@ export default function Register() {
     setLoading(true)
     try {
       await register(name, email, password, country)
-      navigate('/get-started')
+      navigate('/verify-pending')
     } catch (err) {
       setServerError(err instanceof Error ? err.message : 'Registration failed. Please try again.')
     } finally {

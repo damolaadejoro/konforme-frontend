@@ -225,6 +225,13 @@ export async function resendVerification(): Promise<{ detail: string }> {
   return apiFetch('/auth/resend-verification', { method: 'POST' })
 }
 
+export async function updateEmail(email: string): Promise<{ detail: string }> {
+  return apiFetch('/auth/update-email', {
+    method: 'PUT',
+    body: JSON.stringify({ email }),
+  })
+}
+
 export async function forgotPassword(email: string): Promise<void> {
   await apiFetch('/auth/forgot-password', {
     method: 'POST',

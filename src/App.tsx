@@ -26,6 +26,7 @@ import Register from './pages/Register'
 import ResetPassword from './pages/ResetPassword'
 import GetStarted from './pages/GetStarted'
 import VerifyEmail from './pages/VerifyEmail'
+import VerifyPending from './pages/VerifyPending'
 import AcceptInvite from './pages/AcceptInvite'
 import Team from './pages/Team'
 import TaskComplete from './pages/TaskComplete'
@@ -42,6 +43,13 @@ export default function App() {
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/verify-email" element={<VerifyEmail />} />
           <Route path="/accept-invite" element={<AcceptInvite />} />
+
+          {/* Email verification pending - no sidebar, no verification required */}
+          <Route path="/verify-pending" element={
+            <ProtectedRoute requireVerification={false}>
+              <VerifyPending />
+            </ProtectedRoute>
+          } />
 
           {/* Post-registration onboarding - no sidebar */}
           <Route path="/get-started" element={<ProtectedRoute><GetStarted /></ProtectedRoute>} />

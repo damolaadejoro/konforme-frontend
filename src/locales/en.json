@@ -115,7 +115,18 @@
     "emailVerified": "Email verified!",
     "emailVerifiedDesc": "Your email has been successfully verified. You can now use all features.",
     "verificationFailed": "Verification failed",
-    "verificationFailedDesc": "The verification link is invalid or has expired. Please request a new one."
+    "verificationFailedDesc": "The verification link is invalid or has expired. Please request a new one.",
+    "verifyPendingTitle": "Check your email",
+    "verifyPendingSent": "We sent a verification link to",
+    "verifyPendingResend": "Resend",
+    "verifyPendingResendIn": "Resend in {{seconds}}s",
+    "verifyPendingWrongEmail": "Wrong email?",
+    "verifyPendingUpdateEmail": "Update & Resend",
+    "verifyPendingSpamHint": "Check your spam folder if you don't see it",
+    "verifyPendingVerified": "Email verified! Redirecting...",
+    "verifySuccessClose": "Your email has been verified. You can close this tab.",
+    "continueSetup": "Continue Setup",
+    "backToSignIn": "Back to Sign In"
   },
   "settings": {
     "title": "Settings",
