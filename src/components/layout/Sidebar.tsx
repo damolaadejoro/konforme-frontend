@@ -99,7 +99,7 @@ export default function Sidebar() {
       </div>
 
       {/* Nav */}
-      <nav className="flex-1 px-3 py-4 space-y-1">
+      <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
         {navGroups.map(({ sectionKey, items }) => (
           <div key={sectionKey}>
             <div className="text-[10px] uppercase tracking-wider text-navy-500 font-semibold px-3 pt-4 pb-1">
