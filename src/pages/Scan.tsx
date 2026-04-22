@@ -21,11 +21,12 @@ import {
 } from 'lucide-react'
 import { useScan } from '../hooks/useScan'
 import { useAuth } from '../context/AuthContext'
-import { AwsAccountCredentials } from '../types'
 import {
   getCloudCredentials,
-  addAzureCredential,
   getStoredAuth,
+  initiateAwsRoleConnection,
+  completeAwsRoleConnection,
+  initiateAzureOAuth,
   type CloudCredential,
 } from '../services/api'
 import { Card, Button, Input, Select, SeverityBadge, ProgressBar, InfoTooltip, Tooltip as AppTooltip } from '../components/ui'
@@ -376,56 +377,100 @@ function ScanComplete({ onReset, scanResult, provider }: { onReset: () => void; 
 
 function AwsIdleContent({
   awsAccounts,
+  credentials,
   selectedAwsAccountId,
+  selectedCredId,
   selectAwsAccount,
+  selectCredential,
   showAddForm,
   setShowAddForm,
-  addCreds,
-  setAddCreds,
-  connectError,
-  handleAddAwsAccount,
-  addingAccount,
-  showIamPolicy,
-  setShowIamPolicy,
-  copiedPolicy,
-  setCopiedPolicy,
   handleRunScan,
+  handleRunProviderScan,
   handleDemo,
   resuming,
 }: {
   awsAccounts: any[]
+  credentials: CloudCredential[]
   selectedAwsAccountId: string | null
+  selectedCredId: string | null
   selectAwsAccount: (id: string) => void
+  selectCredential: (id: string) => void
   showAddForm: boolean
   setShowAddForm: (v: boolean) => void
-  addCreds: AwsAccountCredentials
-  setAddCreds: React.Dispatch<React.SetStateAction<AwsAccountCredentials>>
-  connectError: string | null
-  handleAddAwsAccount: (e: React.FormEvent) => void
-  addingAccount: boolean
-  showIamPolicy: boolean
-  setShowIamPolicy: (v: boolean) => void
-  copiedPolicy: boolean
-  setCopiedPolicy: (v: boolean) => void
   handleRunScan: () => void
+  handleRunProviderScan: (credId: string) => void
   handleDemo: () => void
   resuming: boolean
 }) {
   const { t } = useTranslation()
+  const awsCredentials = credentials.filter(c => c.provider === 'aws')
+  const hasAnyAccount = awsAccounts.length > 0 || awsCredentials.length > 0
+
+  // Role connection state
+  const [roleStep, setRoleStep] = useState<'init' | 'pending'>('init')
+  const [roleForm, setRoleForm] = useState({ alias: '', region: 'eu-west-1', roleArn: '' })
+  const [pendingCredId, setPendingCredId] = useState<string | null>(null)
+  const [cfUrl, setCfUrl] = useState<string | null>(null)
+  const [saving, setSaving] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  const handleInitiate = async () => {
+    const { accountId } = getStoredAuth()
+    if (!accountId) return
+    setSaving(true)
+    setError(null)
+    try {
+      const result = await initiateAwsRoleConnection(accountId, roleForm.alias || 'AWS', roleForm.region)
+      setPendingCredId(result.credential_id)
+      setCfUrl(result.cf_url)
+      setRoleStep('pending')
+      window.open(result.cf_url, '_blank')
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to initiate')
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  const handleComplete = async () => {
+    const { accountId } = getStoredAuth()
+    if (!accountId || !pendingCredId) return
+    setSaving(true)
+    setError(null)
+    try {
+      const cred = await completeAwsRoleConnection(accountId, pendingCredId, roleForm.roleArn, roleForm.region)
+      selectCredential(cred.id)
+      setShowAddForm(false)
+      setRoleStep('init')
+      setRoleForm({ alias: '', region: 'eu-west-1', roleArn: '' })
+      setPendingCredId(null)
+      setCfUrl(null)
+      // Reload page to refresh credential list
+      window.location.reload()
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to verify role')
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  const canScan = selectedAwsAccountId || selectedCredId
+
   return (
     <div className="space-y-5">
-      {/* AWS Account selector */}
+      {/* Account/credential selector */}
       <div className="space-y-2">
         <div className="flex items-center justify-between">
           <span className="text-xs text-navy-400 uppercase tracking-wider font-semibold">
-            {awsAccounts.length === 0 ? t('scan.addFirstAccount') : t('scan.awsAccounts')}
+            {!hasAnyAccount ? t('scan.addFirstAccount') : t('scan.awsAccounts')}
           </span>
-          {awsAccounts.length > 0 && (
+          {hasAnyAccount && (
             <Button variant="ghost" size="sm" onClick={() => setShowAddForm(!showAddForm)} className="text-cyan-400 hover:text-cyan-300">
               {showAddForm ? t('common.cancel') : t('scan.addAccount')}
             </Button>
           )}
         </div>
+        {/* Legacy key-based accounts */}
         {awsAccounts.map((acc: any) => (
           <div
             key={acc.id}
@@ -441,81 +486,88 @@ function AwsIdleContent({
                 <p className="text-sm font-medium text-white">{acc.alias}</p>
                 <p className="text-xs text-navy-400 font-mono mt-0.5">{acc.awsAccountId} · {acc.awsRegion}</p>
               </div>
-              {acc.id === selectedAwsAccountId && (
-                <div className="w-2 h-2 rounded-full bg-cyan-400" />
-              )}
+              {acc.id === selectedAwsAccountId && <div className="w-2 h-2 rounded-full bg-cyan-400" />}
+            </div>
+          </div>
+        ))}
+        {/* Role-based credentials */}
+        {awsCredentials.map(cred => (
+          <div
+            key={cred.id}
+            onClick={() => selectCredential(cred.id)}
+            className={`p-3 rounded-lg border cursor-pointer transition-all ${
+              cred.id === selectedCredId
+                ? 'bg-cyan-500/8 border-cyan-500/30'
+                : 'bg-navy-900/40 border-navy-800 hover:border-navy-600'
+            }`}
+          >
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-white">{cred.alias}</p>
+                <p className="text-xs text-navy-400 font-mono mt-0.5">
+                  {cred.aws_account_id || 'AWS'} · {cred.aws_region || 'eu-west-1'}
+                  {cred.connection_type === 'role' && <span className="text-cyan-400 ml-1">· IAM Role</span>}
+                </p>
+              </div>
+              {cred.id === selectedCredId && <div className="w-2 h-2 rounded-full bg-cyan-400" />}
             </div>
           </div>
         ))}
       </div>
 
-      {/* Required IAM Permissions */}
-      {(showAddForm || awsAccounts.length === 0) && (
-        <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/30">
-          <div className="flex items-start gap-3">
-            <AlertTriangle size={18} className="text-amber-400 mt-0.5 flex-shrink-0" />
-            <div className="flex-1">
-              <h3 className="text-sm font-bold text-amber-300">{t('scan.iamPermissionsTitle')}</h3>
-              <p className="text-xs text-navy-300 mt-1">{t('scan.iamPermissionsDesc')}</p>
-              <button
-                type="button"
-                onClick={() => setShowIamPolicy(!showIamPolicy)}
-                className="mt-2 flex items-center gap-1.5 text-xs font-semibold text-cyan-400 hover:text-cyan-300 transition-colors"
-              >
-                {showIamPolicy ? t('scan.hideIamPolicy') : t('scan.viewIamPolicy')}
-                {showIamPolicy ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
-              </button>
-              {showIamPolicy && (
-                <div className="mt-3 space-y-3">
-                  <div className="relative">
-                    <pre className="text-xs font-mono text-navy-200 bg-navy-950 rounded-lg p-3 overflow-x-auto max-h-64 overflow-y-auto border border-navy-800">
-                      {IAM_POLICY_JSON}
-                    </pre>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        navigator.clipboard.writeText(IAM_POLICY_JSON)
-                        setCopiedPolicy(true)
-                        setTimeout(() => setCopiedPolicy(false), 2000)
-                      }}
-                      className="absolute top-2 right-2 flex items-center gap-1 px-2 py-1 rounded text-xs bg-navy-800 border border-navy-700 text-navy-300 hover:text-cyan-400 hover:border-cyan-500/30 transition-colors"
-                    >
-                      {copiedPolicy ? <><Check size={12} className="text-emerald-400" /> {t('common.copied')}</> : <><Copy size={12} /> {t('common.copy')}</>}
-                    </button>
-                  </div>
-                  <div className="p-2.5 rounded-lg bg-navy-950/60 border border-navy-800">
-                    <p className="text-xs text-navy-400 leading-relaxed">{t('scan.iamSteps')}</p>
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
+      {/* Add AWS — CloudFormation role flow */}
+      {(showAddForm || !hasAnyAccount) && (
+        <div className="space-y-3 p-4 rounded-lg bg-navy-900/60 border border-navy-700">
+          <h3 className="text-sm font-semibold text-white">{t('settings.awsConnectTitle')}</h3>
+          <p className="text-xs text-navy-400">{t('settings.awsConnectDesc')}</p>
 
-      {/* Add AWS Account form */}
-      {(showAddForm || awsAccounts.length === 0) && (
-        <form onSubmit={handleAddAwsAccount} className="space-y-3 p-4 rounded-lg bg-navy-900/60 border border-navy-700">
-          <h3 className="text-sm font-semibold text-white">
-            {awsAccounts.length === 0 ? t('scan.addFirstAccount') : t('scan.addAwsAccount')}
-          </h3>
-          <Input label={t('scan.aliasLabel')} placeholder={t('scan.aliasPlaceholder')} value={addCreds.alias} onChange={e => setAddCreds(p => ({ ...p, alias: e.target.value }))} required />
-          <Input label={t('scan.accessKeyLabel')} placeholder={t('scan.accessKeyPlaceholder')} value={addCreds.accessKeyId} onChange={e => setAddCreds(p => ({ ...p, accessKeyId: e.target.value }))} required />
-          <Input label={t('scan.secretKeyLabel')} type="password" placeholder={t('scan.secretKeyPlaceholder')} value={addCreds.secretAccessKey} onChange={e => setAddCreds(p => ({ ...p, secretAccessKey: e.target.value }))} required />
-          <Input label={t('scan.sessionTokenLabel')} placeholder={t('scan.sessionTokenPlaceholder')} value={addCreds.sessionToken} onChange={e => setAddCreds(p => ({ ...p, sessionToken: e.target.value }))} />
-          <Select label={t('scan.awsRegionLabel')} value={addCreds.region} onChange={e => setAddCreds(p => ({ ...p, region: e.target.value }))} options={REGIONS.map(r => ({ value: r, label: r }))} />
-          {connectError && (
+          {roleStep === 'init' && (
+            <>
+              <Input label={t('scan.aliasLabel')} placeholder={t('scan.aliasPlaceholder')} value={roleForm.alias} onChange={e => setRoleForm(p => ({ ...p, alias: e.target.value }))} />
+              <Select label={t('scan.awsRegionLabel')} value={roleForm.region} onChange={e => setRoleForm(p => ({ ...p, region: e.target.value }))} options={REGIONS.map(r => ({ value: r, label: r }))} />
+              <Button size="sm" onClick={handleInitiate} loading={saving} className="w-full">{t('settings.awsDeployStack')}</Button>
+            </>
+          )}
+
+          {roleStep === 'pending' && (
+            <>
+              <div className="p-3 rounded-lg bg-cyan-500/10 border border-cyan-500/20">
+                <p className="text-xs text-cyan-300 font-medium mb-1">{t('settings.awsStep2Title')}</p>
+                <ol className="text-xs text-navy-300 space-y-1 list-decimal list-inside">
+                  <li>{t('settings.awsStep2Line1')}</li>
+                  <li>{t('settings.awsStep2Line2')}</li>
+                  <li>{t('settings.awsStep2Line3')}</li>
+                </ol>
+                {cfUrl && (
+                  <a href={cfUrl} target="_blank" rel="noopener noreferrer" className="inline-block mt-2 text-xs text-cyan-400 hover:text-cyan-300 underline">
+                    {t('settings.awsOpenCfConsole')}
+                  </a>
+                )}
+              </div>
+              <Input label={t('settings.awsRoleArn')} value={roleForm.roleArn} onChange={e => setRoleForm(p => ({ ...p, roleArn: e.target.value }))} placeholder="arn:aws:iam::123456789012:role/KonformeAuditRole" />
+              <Button size="sm" onClick={handleComplete} loading={saving} className="w-full">{t('settings.awsVerifyConnect')}</Button>
+            </>
+          )}
+
+          {error && (
             <div className="p-2 rounded-lg bg-red-500/10 border border-red-500/20">
-              <p className="text-xs text-red-400">{connectError}</p>
+              <p className="text-xs text-red-400">{error}</p>
             </div>
           )}
-          <Button type="submit" size="sm" loading={addingAccount} className="w-full">{t('scan.addAwsAccount')}</Button>
-        </form>
+        </div>
       )}
 
       <div className="flex gap-3">
         <AppTooltip content={t('scan.runScanTooltip')}>
-          <Button onClick={handleRunScan} size="lg" className="flex-1" disabled={!selectedAwsAccountId || resuming}>
+          <Button
+            onClick={() => {
+              if (selectedCredId) handleRunProviderScan(selectedCredId)
+              else handleRunScan()
+            }}
+            size="lg"
+            className="flex-1"
+            disabled={!canScan || resuming}
+          >
             {resuming ? <RotateCcw size={16} className="animate-spin" /> : <Play size={16} />}
             {resuming ? t('scan.checkingForScans') : t('scan.runScan')}
           </Button>
@@ -545,16 +597,9 @@ function AzureIdleContent({
   const [selectedCredId, setSelectedCredId] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
   const [showAddForm, setShowAddForm] = useState(false)
-  const [showSetupSteps, setShowSetupSteps] = useState(false)
   const [addError, setAddError] = useState<string | null>(null)
   const [adding, setAdding] = useState(false)
-  const [form, setForm] = useState({
-    alias: '',
-    tenantId: '',
-    clientId: '',
-    clientSecret: '',
-    subscriptionId: '',
-  })
+  const [form, setForm] = useState({ alias: '', subscriptionId: '' })
 
   useEffect(() => {
     const { accountId } = getStoredAuth()
@@ -570,22 +615,16 @@ function AzureIdleContent({
       .finally(() => setLoading(false))
   }, [])
 
-  const handleAddAzure = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setAddError(null)
+  const handleAzureOAuth = async () => {
+    const { accountId } = getStoredAuth()
+    if (!accountId) return
     setAdding(true)
+    setAddError(null)
     try {
-      const { accountId } = getStoredAuth()
-      if (!accountId) throw new Error('Not connected')
-      const cred = await addAzureCredential(
-        accountId, form.alias, form.tenantId, form.clientId, form.clientSecret, form.subscriptionId
-      )
-      setAzureCredentials(prev => [...prev, cred])
-      setSelectedCredId(cred.id)
-      setShowAddForm(false)
-      setForm({ alias: '', tenantId: '', clientId: '', clientSecret: '', subscriptionId: '' })
+      const result = await initiateAzureOAuth(accountId, form.alias || 'Azure', form.subscriptionId)
+      window.location.href = result.auth_url
     } catch (err) {
-      setAddError(err instanceof Error ? err.message : 'Failed to add Azure credential')
+      setAddError(err instanceof Error ? err.message : 'Failed to initiate Azure connection')
     } finally {
       setAdding(false)
     }
@@ -624,7 +663,7 @@ function AzureIdleContent({
                 <p className="text-sm font-medium text-white">{cred.alias}</p>
                 <p className="text-xs text-navy-400 font-mono mt-0.5">
                   {cred.azure_subscription_id || 'No subscription ID'}
-                  {cred.azure_tenant_id && <> · Tenant: {cred.azure_tenant_id.slice(0, 8)}...</>}
+                  {cred.connection_type === 'oauth' && <span className="text-blue-400 ml-1">· OAuth</span>}
                 </p>
               </div>
               {cred.id === selectedCredId && (
@@ -635,48 +674,20 @@ function AzureIdleContent({
         ))}
       </div>
 
-      {/* Azure permissions banner */}
+      {/* Add Azure — OAuth flow */}
       {(showAddForm || azureCredentials.length === 0) && (
-        <div className="p-4 rounded-xl bg-blue-500/10 border border-blue-500/30">
-          <div className="flex items-start gap-3">
-            <Shield size={18} className="text-blue-400 mt-0.5 flex-shrink-0" />
-            <div className="flex-1">
-              <h3 className="text-sm font-bold text-blue-300">{t('scan.azurePermissionsTitle')}</h3>
-              <p className="text-xs text-navy-300 mt-1">{t('scan.azurePermissionsDesc')}</p>
-              <button
-                type="button"
-                onClick={() => setShowSetupSteps(!showSetupSteps)}
-                className="mt-2 flex items-center gap-1.5 text-xs font-semibold text-cyan-400 hover:text-cyan-300 transition-colors"
-              >
-                {showSetupSteps ? t('scan.hideAzureSteps') : t('scan.viewAzureSteps')}
-                {showSetupSteps ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
-              </button>
-              {showSetupSteps && (
-                <div className="mt-3 p-2.5 rounded-lg bg-navy-950/60 border border-navy-800">
-                  <p className="text-xs text-navy-400 leading-relaxed">{t('scan.azurePermissionsSteps')}</p>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Add Azure credential form */}
-      {(showAddForm || azureCredentials.length === 0) && (
-        <form onSubmit={handleAddAzure} className="space-y-3 p-4 rounded-lg bg-navy-900/60 border border-navy-700">
-          <h3 className="text-sm font-semibold text-white">{t('scan.addAzureCredential')}</h3>
-          <Input label={t('scan.aliasLabel')} placeholder={t('scan.aliasPlaceholder')} value={form.alias} onChange={e => setForm(p => ({ ...p, alias: e.target.value }))} required />
-          <Input label={t('scan.azureTenantId')} placeholder={t('scan.azureTenantIdPlaceholder')} value={form.tenantId} onChange={e => setForm(p => ({ ...p, tenantId: e.target.value }))} required />
-          <Input label={t('scan.azureClientId')} placeholder={t('scan.azureClientIdPlaceholder')} value={form.clientId} onChange={e => setForm(p => ({ ...p, clientId: e.target.value }))} required />
-          <Input label={t('scan.azureClientSecret')} type="password" placeholder={t('scan.azureClientSecretPlaceholder')} value={form.clientSecret} onChange={e => setForm(p => ({ ...p, clientSecret: e.target.value }))} required />
-          <Input label={t('scan.azureSubscriptionId')} placeholder={t('scan.azureSubscriptionIdPlaceholder')} value={form.subscriptionId} onChange={e => setForm(p => ({ ...p, subscriptionId: e.target.value }))} required />
+        <div className="space-y-3 p-4 rounded-lg bg-navy-900/60 border border-navy-700">
+          <h3 className="text-sm font-semibold text-white">{t('settings.azureConnectTitle')}</h3>
+          <p className="text-xs text-navy-400">{t('settings.azureConnectDesc')}</p>
+          <Input label={t('scan.aliasLabel')} placeholder={t('scan.aliasPlaceholder')} value={form.alias} onChange={e => setForm(p => ({ ...p, alias: e.target.value }))} />
+          <Input label={t('settings.azureSubscriptionId')} placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" value={form.subscriptionId} onChange={e => setForm(p => ({ ...p, subscriptionId: e.target.value }))} />
           {addError && (
             <div className="p-2 rounded-lg bg-red-500/10 border border-red-500/20">
               <p className="text-xs text-red-400">{addError}</p>
             </div>
           )}
-          <Button type="submit" size="sm" loading={adding} className="w-full">{t('scan.addAzureCredential')}</Button>
-        </form>
+          <Button size="sm" onClick={handleAzureOAuth} loading={adding} className="w-full">{t('settings.azureConnectViaMicrosoft')}</Button>
+        </div>
       )}
 
       <div className="flex gap-3">
@@ -743,50 +754,33 @@ function ScanSidebar({ provider }: { provider: Provider }) {
 
 export default function Scan() {
   const { t } = useTranslation()
-  const { accountName, awsAccounts, selectedAwsAccountId, addAwsAccount, selectAwsAccount } = useAuth()
+  const { accountName, awsAccounts, selectedAwsAccountId, selectAwsAccount } = useAuth()
   const [provider, setProvider] = useState<Provider>('aws')
   const [showAddForm, setShowAddForm] = useState(awsAccounts.length === 0)
-  const [addCreds, setAddCreds] = useState<AwsAccountCredentials>({
-    alias: '',
-    accessKeyId: '',
-    secretAccessKey: '',
-    sessionToken: '',
-    region: 'eu-west-1',
-  })
-  const [connectError, setConnectError] = useState<string | null>(null)
-  const [addingAccount, setAddingAccount] = useState(false)
-  const [showIamPolicy, setShowIamPolicy] = useState(false)
-  const [copiedPolicy, setCopiedPolicy] = useState(false)
   const [activeAzureCredId, setActiveAzureCredId] = useState<string | null>(null)
+  const [selectedAwsCredId, setSelectedAwsCredId] = useState<string | null>(null)
+  const [allCredentials, setAllCredentials] = useState<CloudCredential[]>([])
   const { status, checks, currentCheckIndex, progress, scanResult, error, resuming, startScan, startProviderScan, resetScan } = useScan(selectedAwsAccountId)
 
-  const selectedAccount = awsAccounts.find(a => a.id === selectedAwsAccountId)
-  const scanRegion = scanResult?.region || selectedAccount?.awsRegion || addCreds.region
+  // Load all cloud credentials
+  useEffect(() => {
+    const { accountId } = getStoredAuth()
+    if (!accountId) return
+    getCloudCredentials(accountId)
+      .then(res => setAllCredentials(res.credentials))
+      .catch(() => {})
+  }, [])
 
-  const handleAddAwsAccount = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setConnectError(null)
-    setAddingAccount(true)
-    try {
-      const newAcc = await addAwsAccount(
-        addCreds.alias,
-        addCreds.accessKeyId,
-        addCreds.secretAccessKey,
-        addCreds.sessionToken || null,
-        addCreds.region
-      )
-      selectAwsAccount(newAcc.id)
-      setShowAddForm(false)
-      setAddCreds({ alias: '', accessKeyId: '', secretAccessKey: '', sessionToken: '', region: 'eu-west-1' })
-    } catch (err) {
-      setConnectError(err instanceof Error ? err.message : 'Failed to add AWS account')
-    } finally {
-      setAddingAccount(false)
-    }
-  }
+  const selectedAccount = awsAccounts.find(a => a.id === selectedAwsAccountId)
+  const scanRegion = scanResult?.region || selectedAccount?.awsRegion || 'eu-west-1'
 
   const handleRunScan = () => {
     startScan('api', selectedAwsAccountId || undefined)
+  }
+
+  const handleRunAwsProviderScan = (credentialId: string) => {
+    setSelectedAwsCredId(credentialId)
+    startProviderScan(credentialId, 'aws')
   }
 
   const handleRunAzureScan = (credentialId: string) => {
@@ -800,7 +794,19 @@ export default function Scan() {
 
   const handleReset = () => {
     setActiveAzureCredId(null)
+    setSelectedAwsCredId(null)
     resetScan()
+  }
+
+  const selectAwsCredential = (id: string) => {
+    setSelectedAwsCredId(id)
+    // Deselect legacy account when selecting a credential
+    selectAwsAccount('')
+  }
+
+  const handleSelectLegacyAwsAccount = (id: string) => {
+    selectAwsAccount(id)
+    setSelectedAwsCredId(null)
   }
 
   // Determine display info for scanning/complete states
@@ -845,20 +851,15 @@ export default function Scan() {
               {provider === 'aws' ? (
                 <AwsIdleContent
                   awsAccounts={awsAccounts}
+                  credentials={allCredentials}
                   selectedAwsAccountId={selectedAwsAccountId}
-                  selectAwsAccount={selectAwsAccount}
+                  selectedCredId={selectedAwsCredId}
+                  selectAwsAccount={handleSelectLegacyAwsAccount}
+                  selectCredential={selectAwsCredential}
                   showAddForm={showAddForm}
                   setShowAddForm={setShowAddForm}
-                  addCreds={addCreds}
-                  setAddCreds={setAddCreds}
-                  connectError={connectError}
-                  handleAddAwsAccount={handleAddAwsAccount}
-                  addingAccount={addingAccount}
-                  showIamPolicy={showIamPolicy}
-                  setShowIamPolicy={setShowIamPolicy}
-                  copiedPolicy={copiedPolicy}
-                  setCopiedPolicy={setCopiedPolicy}
                   handleRunScan={handleRunScan}
+                  handleRunProviderScan={handleRunAwsProviderScan}
                   handleDemo={handleDemo}
                   resuming={resuming}
                 />

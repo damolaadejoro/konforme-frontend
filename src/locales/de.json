@@ -16,7 +16,10 @@
     "sectionAssess": "BEWERTEN",
     "sectionRemediate": "BEHEBEN",
     "sectionReport": "BERICHT",
-    "team": "Team"
+    "team": "Team",
+    "scope": "Geltungsbereich",
+    "evidence": "Nachweise",
+    "activity": "Aktivität"
   },
   "common": {
     "save": "Änderungen speichern",
@@ -73,7 +76,8 @@
     "copied": "Kopiert!",
     "goToDashboard": "Dashboard",
     "goToSettings": "Zu den Einstellungen",
-    "reportGenerateFailed": "Bericht konnte nicht erstellt werden. Bitte versuchen Sie es erneut."
+    "reportGenerateFailed": "Bericht konnte nicht erstellt werden. Bitte versuchen Sie es erneut.",
+    "neverSaved": "Nie"
   },
   "auth": {
     "signIn": "Bei Konforme anmelden",
@@ -107,7 +111,26 @@
     "validationPasswordNumber": "Passwort muss eine Zahl enthalten",
     "validationConfirmRequired": "Bitte bestätigen Sie Ihr Passwort",
     "validationPasswordsMismatch": "Passwörter stimmen nicht überein",
-    "validationNameRequired": "Name ist erforderlich"
+    "validationNameRequired": "Name ist erforderlich",
+    "verifyEmailBanner": "Bitte bestätigen Sie Ihre E-Mail-Adresse, um fortzufahren.",
+    "resendVerification": "Bestätigungs-E-Mail erneut senden",
+    "verificationSent": "Bestätigungs-E-Mail gesendet!",
+    "verifyingEmail": "E-Mail wird bestätigt...",
+    "emailVerified": "E-Mail bestätigt!",
+    "emailVerifiedDesc": "Ihr Konto wurde erfolgreich bestätigt.",
+    "verificationFailed": "Bestätigung fehlgeschlagen",
+    "verificationFailedDesc": "Der Bestätigungslink ist ungültig oder abgelaufen.",
+    "verifyPendingTitle": "Bestätigen Sie Ihre E-Mail",
+    "verifyPendingSent": "Wir haben eine Bestätigungs-E-Mail gesendet an",
+    "verifyPendingResend": "E-Mail erneut senden",
+    "verifyPendingResendIn": "Erneut senden in {{seconds}}s",
+    "verifyPendingWrongEmail": "E-Mail bearbeiten",
+    "verifyPendingUpdateEmail": "E-Mail aktualisieren",
+    "verifyPendingSpamHint": "Nicht gefunden? Prüfen Sie Ihren Spam-Ordner.",
+    "verifyPendingVerified": "Bestätigt! Weiterleitung...",
+    "verifySuccessClose": "Diesen Tab schließen",
+    "continueSetup": "Einrichtung fortsetzen",
+    "backToSignIn": "Zurück zur Anmeldung"
   },
   "settings": {
     "title": "Einstellungen",
@@ -153,7 +176,46 @@
     "saveScoringWeights": "Gewichtungen speichern",
     "before": "Vorher",
     "after": "Nachher",
-    "version": "Konforme v1.0.0 · Entwickelt für NIS2-Compliance · © 2026 Konforme"
+    "version": "Konforme v1.0.0 · Entwickelt für NIS2-Compliance · © 2026 Konforme",
+    "cloudProviders": "Cloud-Anbieter",
+    "cloudProvidersDesc": "Verwalten Sie Ihre Cloud-Anbieter-Verbindungen",
+    "addProvider": "Anbieter hinzufügen",
+    "selectProvider": "Anbieter auswählen",
+    "noProviders": "Keine Cloud-Anbieter",
+    "noProvidersDesc": "Verbinden Sie Ihren ersten Cloud-Anbieter, um technische Scans zu starten.",
+    "providerAws": "Amazon Web Services",
+    "providerAzure": "Microsoft Azure",
+    "providerConnected": "Verbunden",
+    "providerRegion": "Region",
+    "providerSubscription": "Abonnement",
+    "providerTenant": "Mandant",
+    "removeProvider": "Anbieter entfernen",
+    "removeProviderConfirm": "Möchten Sie diesen Cloud-Anbieter wirklich entfernen?",
+    "validateProvider": "Anmeldedaten überprüfen",
+    "validationSuccess": "Anmeldedaten erfolgreich überprüft!",
+    "validationFailed": "Überprüfung fehlgeschlagen. Bitte prüfen Sie Ihre Anmeldedaten.",
+    "awsConnectTitle": "AWS-Konto verbinden",
+    "awsConnectDesc": "Erstellen Sie eine schreibgeschützte IAM-Rolle über CloudFormation — keine Zugriffsschlüssel erforderlich.",
+    "awsAlias": "Alias",
+    "awsRegion": "Region",
+    "awsDeployStack": "CloudFormation Stack bereitstellen",
+    "awsStep2Title": "Einrichtung in AWS abschließen",
+    "awsStep2Line1": "Die CloudFormation-Konsole wurde in einem neuen Tab geöffnet — klicken Sie auf 'Create stack'",
+    "awsStep2Line2": "Warten Sie auf den Status CREATE_COMPLETE",
+    "awsStep2Line3": "Kopieren Sie die Role ARN aus dem Outputs-Tab und fügen Sie sie unten ein",
+    "awsOpenCfConsole": "CloudFormation-Konsole erneut öffnen",
+    "awsRoleArn": "Role ARN",
+    "awsVerifyConnect": "Überprüfen & Verbinden",
+    "awsLegacyTitle": "AWS-Konto hinzufügen (Zugriffsschlüssel)",
+    "useLegacyKeys": "Zugriffsschlüssel verwenden",
+    "useLegacyCredentials": "Service Principal verwenden",
+    "useSecureConnection": "Sichere Verbindung verwenden (empfohlen)",
+    "azureConnectTitle": "Azure-Abonnement verbinden",
+    "azureConnectDesc": "Melden Sie sich mit Microsoft an und gewähren Sie schreibgeschützten Zugriff — keine Geheimnisse erforderlich.",
+    "azureAlias": "Alias",
+    "azureSubscriptionId": "Abonnement-ID",
+    "azureConnectViaMicrosoft": "Über Microsoft verbinden",
+    "azureLegacyTitle": "Azure-Anmeldedaten hinzufügen (Service Principal)"
   },
   "overview": {
     "title": "NIS2-Compliance-Übersicht",
@@ -220,7 +282,19 @@
     "peopleTasksDesc": "Mitarbeiterschulungen und Richtlinienbestätigungen über alle Kampagnen verfolgen",
     "viewCampaigns": "Kampagnen anzeigen",
     "questions": "Fragen",
-    "ofControls": "{{implemented}} von {{count}} Kontrollen"
+    "ofControls": "{{implemented}} von {{count}} Kontrollen",
+    "cloudScores": "Cloud-Bewertungen",
+    "cloudScoresDesc": "Compliance-Bewertungen pro Anbieter aus technischen Scans",
+    "deadlines": "Fristen",
+    "deadlinesDesc": "Bevorstehende Compliance-Fristen",
+    "noDeadlines": "Keine anstehenden Fristen",
+    "daysRemaining": "{{days}} Tage verbleibend",
+    "deadlinePassed": "Frist überschritten",
+    "countryBadge": "Land",
+    "entityBadge": "Entität",
+    "noCountrySet": "Kein Land ausgewählt",
+    "noCountrySetDesc": "Wählen Sie Ihr Land in den Einstellungen, um die nationale NIS2-Behörde zu sehen.",
+    "selectCountry": "Land auswählen"
   },
   "assessment": {
     "title": "NIS2-Reifebewertung",
@@ -407,7 +481,35 @@
     "newScan": "Neuer Scan",
     "demoAccount": "Demo-Konto",
     "comingSoonTitle": "Demnächst verfügbar",
-    "comingSoonDesc": "Azure, Google Cloud (GCP) und On-Premises-Infrastruktur-Scanning sind auf unserer Roadmap."
+    "comingSoonDesc": "Azure, Google Cloud (GCP) und On-Premises-Infrastruktur-Scanning sind auf unserer Roadmap.",
+    "providerAws": "AWS",
+    "providerAzure": "Azure",
+    "azureCredentials": "Azure-Anmeldedaten",
+    "addAzureCredential": "Azure-Anmeldedaten hinzufügen",
+    "addFirstAzureCredential": "Fügen Sie Ihre erste Azure-Anmeldedaten hinzu",
+    "azureTenantId": "Mandanten-ID",
+    "azureTenantIdPlaceholder": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+    "azureClientId": "Client-ID",
+    "azureClientIdPlaceholder": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+    "azureClientSecret": "Client-Geheimnis",
+    "azureClientSecretPlaceholder": "Ihr Azure-Client-Geheimnis",
+    "azureSubscriptionId": "Abonnement-ID",
+    "azureSubscriptionIdPlaceholder": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+    "azurePermissionsTitle": "Erforderliche Azure-Berechtigungen",
+    "azurePermissionsDesc": "Erstellen Sie eine App-Registrierung mit Leseberechtigungen für Ihr Azure-Abonnement.",
+    "azurePermissionsSteps": "Schritte zur Konfiguration",
+    "viewAzureSteps": "Azure-Schritte anzeigen",
+    "hideAzureSteps": "Azure-Schritte ausblenden",
+    "azureAccessControl": "Zugriffskontrolle",
+    "azureBusinessContinuity": "Geschäftskontinuität",
+    "azureDataProtection": "Datenschutz",
+    "azureEncryption": "Verschlüsselung",
+    "azureNetwork": "Netzwerk",
+    "azureLogging": "Protokollierung",
+    "initAzureSession": "Azure-Sitzung initialisieren",
+    "loadingAzureRuleset": "Azure-Regelwerk wird geladen...",
+    "noAzureCredentialSelected": "Keine Azure-Anmeldedaten ausgewählt",
+    "subtitle_azure": "Scannen Sie Ihr Azure-Abonnement auf NIS2-Compliance"
   },
   "controls": {
     "pageTitle": "Kontrollbibliothek",
@@ -479,7 +581,216 @@
     "sendTasksButton": "Aufgaben senden",
     "lastUpdated": "Zuletzt aktualisiert:",
     "severityLabel": "Schweregrad",
-    "allSeverities": "Alle Schweregrade"
+    "allSeverities": "Alle Schweregrade",
+    "ctrl-001": {
+      "title": "Informationssicherheitsrichtlinie",
+      "description": "Eine formelle, von der Geschäftsleitung genehmigte und allen Mitarbeitern kommunizierte Informationssicherheitsrichtlinie. Muss Geltungsbereich, Verantwortlichkeiten, akzeptable Nutzung, Datenklassifizierung und Vorfallreaktion abdecken."
+    },
+    "ctrl-002": {
+      "title": "Jährlicher Risikobewertungsprozess",
+      "description": "Regelmäßige Risikobewertungen zur Identifizierung von Bedrohungen, Schwachstellen und Auswirkungen auf kritische Dienste. Muss ein anerkanntes Rahmenwerk verwenden (ISO 27005, NIST)."
+    },
+    "ctrl-003": {
+      "title": "Risikoregister gepflegt und überprüft",
+      "description": "Aktives Risikoregister zur Verfolgung aller identifizierten Cybersicherheitsrisiken mit Eintrittswahrscheinlichkeit, Auswirkung, Maßnahmenplänen und Verantwortlichen."
+    },
+    "ctrl-004": {
+      "title": "Sicherheitsrollen und Verantwortlichkeiten definiert",
+      "description": "Klare Verantwortlichkeiten mit dokumentierter RACI-Matrix für Sicherheitsfunktionen. Rollen wie CISO, Sicherheitsteam, Systemverantwortliche müssen formal definiert sein."
+    },
+    "ctrl-005": {
+      "title": "Vorfallreaktionsplan dokumentiert",
+      "description": "Formaler Vorfallreaktionsprozess mit Erkennung, Eindämmung, Beseitigung, Wiederherstellung und Lessons Learned. Muss Eskalationspfade und Kommunikationsvorlagen enthalten."
+    },
+    "ctrl-006": {
+      "title": "Vorfallklassifizierung und Eskalationsprozess",
+      "description": "Definierte Schweregrade (Kritisch, Hoch, Mittel, Niedrig) mit klaren Eskalationskriterien, Reaktions-SLAs und Meldepflichten."
+    },
+    "ctrl-007": {
+      "title": "CSIRT-Registrierung abgeschlossen",
+      "description": "Organisation beim nationalen Computer Security Incident Response Team (CSIRT) für die obligatorische Vorfallmeldung registriert."
+    },
+    "ctrl-008": {
+      "title": "Vorfallreaktions-Planübung durchgeführt (letzte 12 Monate)",
+      "description": "Regelmäßige Überprüfung des Vorfallreaktionsplans durch Planübungen oder Simulationen."
+    },
+    "ctrl-009": {
+      "title": "24-Stunden-Meldeprozess an Behörden definiert",
+      "description": "Klarer Prozess für die Frühwarnung an Behörden innerhalb von 24 Stunden nach Erkennung eines erheblichen Vorfalls."
+    },
+    "ctrl-010": {
+      "title": "Business-Continuity-Plan dokumentiert",
+      "description": "BCP zur Sicherstellung kritischer Dienste bei Störungen. Muss kritische Funktionen, Abhängigkeiten, Ersatzmaßnahmen und Kommunikationspläne abdecken."
+    },
+    "ctrl-011": {
+      "title": "Disaster-Recovery-Plan mit RTO/RPO-Zielen",
+      "description": "DR-Plan mit definiertem Recovery Time Objective (RTO) und Recovery Point Objective (RPO) für jedes kritische System."
+    },
+    "ctrl-012": {
+      "title": "DR-Plan getestet (letzte 12 Monate)",
+      "description": "Regelmäßige Überprüfung des Disaster-Recovery-Plans durch Simulationen oder vollständige Failover-Tests."
+    },
+    "ctrl-013": {
+      "title": "Backups kritischer Systeme regelmäßig getestet",
+      "description": "Regelmäßige Wiederherstellungstests zur Überprüfung der Backup-Integrität und Wiederherstellungsverfahren. Vierteljährliche Tests erforderlich."
+    },
+    "ctrl-014": {
+      "title": "Bewertungsprozess für Lieferanten-Cybersicherheit",
+      "description": "Prozess zur Bewertung der Cybersicherheitspraktiken kritischer Lieferanten, einschließlich Sicherheitsfragebögen und Zertifizierungsanforderungen."
+    },
+    "ctrl-015": {
+      "title": "Sicherheitsanforderungen in Lieferantenverträgen",
+      "description": "Vertragliche Sicherheitsverpflichtungen einschließlich Benachrichtigung bei Sicherheitsverletzungen, Auditrecht, Datenschutz und Sicherheitszertifizierungen."
+    },
+    "ctrl-016": {
+      "title": "Verwaltungsprozess für Drittanbieterzugang",
+      "description": "Formale Genehmigung, MFA-Durchsetzung und Überwachung des Drittanbieterzugangs zu Systemen. Vierteljährliche Zugriffsüberprüfungen erforderlich."
+    },
+    "ctrl-017": {
+      "title": "MFA auf allen kritischen Systemen aktiviert",
+      "description": "Multi-Faktor-Authentifizierung auf allen kritischen Systemen, Administratorkonten und Fernzugriffen durchgesetzt."
+    },
+    "ctrl-018": {
+      "title": "Datenverschlüsselung im Ruhezustand und bei Übertragung",
+      "description": "Verschlüsselung sensibler Daten mit genehmigten Algorithmen (AES-256, TLS 1.3) für ruhende und übertragene Daten."
+    },
+    "ctrl-019": {
+      "title": "Netzwerksicherheitsüberwachung eingerichtet",
+      "description": "Aktive Überwachung des Netzwerkverkehrs, Intrusion Detection und Protokollierung von Sicherheitsereignissen."
+    },
+    "ctrl-020": {
+      "title": "Schwachstellenmanagementprozess",
+      "description": "Regelmäßige Schwachstellenscans, Patch-Management und Nachverfolgung der Behebung für alle Systeme."
+    },
+    "ctrl-021": {
+      "title": "Kryptographie- und Schlüsselverwaltungsrichtlinie",
+      "description": "Richtlinie für Verschlüsselungsalgorithmen, Schlüssellebenszyklus und sichere Schlüsselspeicherung mittels KMS oder HSM."
+    },
+    "ctrl-022": {
+      "title": "Patch-Management-Prozess",
+      "description": "Systematischer Prozess für die Anwendung von Sicherheitspatches auf Betriebssysteme, Anwendungen und Firmware."
+    },
+    "ctrl-023": {
+      "title": "Sicherheitsbewusstseinsschulung für alle Mitarbeiter abgeschlossen",
+      "description": "Jährlich verpflichtende Sicherheitsbewusstseinsschulung zu Phishing, Passwortsicherheit, Datenhandhabung und Vorfallmeldung."
+    },
+    "ctrl-024": {
+      "title": "Informationssicherheitsrichtlinie von allen Mitarbeitern bestätigt",
+      "description": "Alle Mitarbeiter müssen die Informationssicherheitsrichtlinie jährlich lesen und formal bestätigen."
+    },
+    "ctrl-025": {
+      "title": "Sicherer Einarbeitungsprozess für neue Mitarbeiter",
+      "description": "Sicherheits-Checkliste für die Einarbeitung mit Hintergrundprüfungen, NDA-Unterzeichnung, Sicherheitsschulung und Zugriffsbereitstellung."
+    },
+    "ctrl-026": {
+      "title": "Zugangsentzug am selben Tag bei Mitarbeiteraustritt",
+      "description": "Prozess zur Deaktivierung aller Systemzugriffe innerhalb von 1 Stunde nach Mitarbeiteraustritt. Geräterückgabe und Austrittsgespräch."
+    },
+    "ctrl-027": {
+      "title": "Hintergrundprüfungen für privilegierten Zugang durchgeführt",
+      "description": "Hintergrundüberprüfung für Rollen mit Administratorrechten oder Zugang zu sensiblen Daten (Systemadministratoren, Datenbankadministratoren, Finanzen, Personalwesen)."
+    },
+    "ctrl-028": {
+      "title": "Jährliche Zugriffsüberprüfung abgeschlossen",
+      "description": "Vierteljährliche Zugriffszertifizierung, bei der Vorgesetzte die Zugriffsrechte ihrer Teammitglieder überprüfen und bestätigen."
+    },
+    "ctrl-029": {
+      "title": "Genehmigung der Cybersicherheitsmaßnahmen durch Leitungsorgan",
+      "description": "Das Leitungsorgan hat die Cybersicherheits-Risikomanagementmaßnahmen gemäß NIS2 Artikel 20(1) formal genehmigt. Die Genehmigung ist in Sitzungsprotokollen dokumentiert und umfasst Risikobereitschaft, Cybersicherheitsstrategie, Budgetzuweisung und Verantwortungsstruktur. Die Genehmigung muss bei wesentlichen Änderungen oder mindestens jährlich erneuert werden."
+    },
+    "ctrl-030": {
+      "title": "Cybersicherheitsaufsicht und Berichterstattung des Leitungsorgans",
+      "description": "Das Leitungsorgan erhält und überprüft Cybersicherheitsstatusberichte in regelmäßigen Abständen (mindestens vierteljährlich) mit wesentlichen Risikokennzahlen, aktuellen Vorfällen, Compliance-Status, Schulungsabschlussquoten und aufkommenden Bedrohungen. Dies gewährleistet die fortlaufende Sichtbarkeit auf Vorstandsebene und ermöglicht fundierte Entscheidungen gemäß den Aufsichtspflichten von NIS2 Artikel 20(1)."
+    },
+    "ctrl-031": {
+      "title": "Cybersicherheitsschulung des Leitungsorgans",
+      "description": "Alle Mitglieder des Leitungsorgans haben eine Cybersicherheitsschulung abgeschlossen, die ausreicht, um Risiken zu erkennen, Cybersicherheits-Risikomanagementmaßnahmen zu bewerten und deren Auswirkungen auf die Dienste des Unternehmens zu verstehen. Die Schulung muss jährlich erneuert werden und die aktuelle Bedrohungslandschaft, regulatorische Verpflichtungen und Verantwortlichkeiten auf Vorstandsebene abdecken. Dies ist eine Pflichtanforderung gemäß NIS2 Artikel 20(2)."
+    },
+    "ctrl-032": {
+      "title": "Benannte Sicherheitsführungsrolle",
+      "description": "Ein benannter Chief Information Security Officer (CISO) oder eine gleichwertige Sicherheitsführungsrolle ist formal ernannt mit direkter Berichtslinie an die Geschäftsleitung oder das Leitungsorgan. Die Rolle hat klar definierte Verantwortlichkeiten, Entscheidungsbefugnis für Cybersicherheitsangelegenheiten und ein dediziertes Budget."
+    },
+    "ctrl-033": {
+      "title": "Sicherheitsaudit- und Penetrationstestprogramm",
+      "description": "Regelmäßige Sicherheitsaudits und Penetrationstests durch qualifizierte unabhängige Prüfer zur Validierung der Wirksamkeit von Cybersicherheits-Risikomanagementmaßnahmen. Tests müssen sowohl externe als auch interne Angriffsflächen kritischer Systeme abdecken. Alle Feststellungen werden mit Schweregradenbewertungen dokumentiert und bis zur Behebung mit erneuter Prüfung verfolgt. Setzt die Anforderung von NIS2 Artikel 21(2)(f) zur Bewertung der Wirksamkeit der Maßnahmen um."
+    },
+    "ctrl-034": {
+      "title": "Cybersicherheits-KPIs und Metrikenprogramm",
+      "description": "Definierte Cybersicherheits-Leistungskennzahlen (KPIs) werden regelmäßig verfolgt und dem Leitungsorgan berichtet, um die Wirksamkeit der Risikomanagementmaßnahmen zu messen. KPIs umfassen sowohl Frühindikatoren (Schulungsabschluss, Patch-Compliance, MFA-Abdeckung) als auch Spätindikatoren (Vorfälle, mittlere Erkennungszeit, mittlere Reaktionszeit). Trends werden zur kontinuierlichen Verbesserung analysiert."
+    },
+    "ctrl-035": {
+      "title": "Nachverfolgung der Behebung von Audit- und Bewertungsfeststellungen",
+      "description": "Alle Feststellungen aus Sicherheitsaudits, Penetrationstests, Risikobewertungen und Compliance-Prüfungen werden in einem zentralen Register mit zugewiesenen Verantwortlichen, Zielterminen für die Behebung und aktuellem Status erfasst. Offene Feststellungen werden mindestens monatlich überprüft. Überfällige kritische und hohe Feststellungen werden an die Geschäftsleitung eskaliert. Die Abschluss erfordert Nachweis der Behebung und Verifikation."
+    },
+    "ctrl-036": {
+      "title": "Kontinuierlicher Verbesserungsprozess",
+      "description": "Ein dokumentierter kontinuierlicher Verbesserungsprozess stellt sicher, dass Erkenntnisse aus Vorfällen, Audits, Penetrationstests, Bedrohungsinformationen und regulatorischen Änderungen systematisch in Richtlinienaktualisierungen, Kontrollverbesserungen und Risikoneubewertungen einfließen. Dies schließt die Feedback-Schleife zwischen Wirksamkeitsbewertung und Risikomanagement und stellt sicher, dass Maßnahmen mit der Bedrohungslandschaft weiterentwickelt werden."
+    },
+    "ctrl-037": {
+      "title": "Phishing-Simulation und Reaktionsprogramm",
+      "description": "Regelmäßige simulierte Phishing-Kampagnen werden mindestens vierteljährlich durchgeführt, um das Bewusstsein der Mitarbeiter zu testen und die Bereitschaft in der Praxis zu messen. Klickraten werden pro Kampagne und pro Person verfolgt. Mitarbeiter, die wiederholt versagen, erhalten gezieltes Zusatztraining. Ergebnisse und Trends werden der Geschäftsleitung zur Information der Schulungsprioritäten berichtet."
+    },
+    "ctrl-038": {
+      "title": "Cyber-Hygiene-Mindeststandard durchgesetzt",
+      "description": "Grundlegende Cyber-Hygiene-Praktiken sind in Richtlinien dokumentiert und soweit möglich durch technische Kontrollen durchgesetzt. Umfasst automatische Software-Updates, Bildschirmsperre (maximal 5 Minuten), Passwort-Manager-Nutzung, Clean-Desk-Richtlinie und Einschränkungen für Wechselmedien. NIS2 Artikel 21(2)(g) verlangt ausdrücklich grundlegende Cyber-Hygiene-Praktiken als Mindestmaßnahme."
+    },
+    "ctrl-039": {
+      "title": "Datenklassifizierung mit Verschlüsselungsanforderungen",
+      "description": "Ein Datenklassifizierungsschema definiert Sensitivitätsstufen (Öffentlich, Intern, Vertraulich, Eingeschränkt) mit entsprechenden Verschlüsselungsanforderungen pro Stufe. Klassifizierungshinweise werden Dateneigentümern für einheitliche Anwendung bereitgestellt. Das Schema wird jährlich überprüft und bei Änderung der geschäftlichen oder regulatorischen Anforderungen aktualisiert. Unterstützt die NIS2-Artikel-21(2)(h)-Anforderung für Kryptographierichtlinien."
+    },
+    "ctrl-040": {
+      "title": "Kontinuierliche oder adaptive Authentifizierung für Hochrisikozugriffe",
+      "description": "Kontinuierliche oder adaptive Authentifizierungsmechanismen passen die Sicherheitsanforderungen basierend auf Risikosignalen wie Standort, Gerätezustand, Benutzerverhalten und Zugriffszeit für Hochrisikoszenarien an. Veraltete Authentifizierungsprotokolle (NTLM, Basisauthentifizierung), die die Multi-Faktor-Authentifizierung umgehen, werden blockiert. NIS2 Artikel 21(2)(j) verweist ausdrücklich auf kontinuierliche Authentifizierungslösungen."
+    },
+    "ctrl-041": {
+      "title": "Gesicherte Sprach-, Video- und Textkommunikation",
+      "description": "Ende-zu-Ende-verschlüsselte Kommunikationskanäle sind genehmigt und werden für sensible Geschäftskommunikation einschließlich Sprache, Video und Text verwendet. Eine Liste genehmigter Tools wird gepflegt, allen Mitarbeitern kommuniziert und regelmäßig überprüft. Tools werden auf Ende-zu-Ende-Verschlüsselung verifiziert. NIS2 Artikel 21(2)(j) verlangt ausdrücklich gesicherte Sprach-, Video- und Textkommunikation."
+    },
+    "ctrl-042": {
+      "title": "Gesichertes Notfallkommunikationssystem",
+      "description": "Ein voreingerichtetes Notfallkommunikationssystem ist betriebsbereit und kann unabhängig funktionieren, wenn primäre Kommunikationskanäle während eines Cybersicherheitsvorfalls kompromittiert werden. Kontaktlisten werden gepflegt und sind offline zugänglich. Das System wird bei Business-Continuity- und Vorfallreaktionsübungen getestet. NIS2 Artikel 21(2)(j) verlangt ausdrücklich gesicherte Notfallkommunikationssysteme innerhalb des Unternehmens."
+    },
+    "ctrl-043": {
+      "title": "MFA-Umgehungsprävention und -Überwachung",
+      "description": "Kontrollen sind vorhanden, um Multi-Faktor-Authentifizierungs-Umgehungsangriffe zu verhindern und zu erkennen, einschließlich MFA-Ermüdung (Push-Bombing), Adversary-in-the-Middle-Token-Diebstahl und SIM-Swap-Angriffe. Push-Benachrichtigungs-Ratenbegrenzung ist aktiviert. SMS-basierte MFA wird zugunsten phishingresistenter Methoden wie FIDO2-Hardware-Token oder Passkeys eingestellt. Überwachungsalarme bei MFA-Umgehungsversuchen."
+    }
+  },
+  "scope": {
+    "pageTitle": "Geltungsbereich & Geschäftsprozesse",
+    "pageSubtitle": "Definieren Sie Ihre kritischen Geschäftsprozesse und ordnen Sie anwendbare NIS2-Kontrollen zu",
+    "viewProcesses": "Prozesse",
+    "viewSoA": "Anwendbarkeitserklärung",
+    "addProcess": "Prozess hinzufügen",
+    "addFirstProcess": "Ersten Prozess hinzufügen",
+    "statProcesses": "Geschäftsprozesse",
+    "statCritical": "Kritische Prozesse",
+    "statControls": "Verfügbare Kontrollen",
+    "createProcess": "Neuer Geschäftsprozess",
+    "editProcess": "Geschäftsprozess bearbeiten",
+    "fieldName": "Prozessname",
+    "fieldNamePlaceholder": "z.B. Kundendatenverarbeitung",
+    "fieldDescription": "Beschreibung",
+    "fieldDescriptionPlaceholder": "Was macht dieser Prozess und warum ist er wichtig?",
+    "fieldOwner": "Verantwortlicher",
+    "fieldOwnerPlaceholder": "z.B. CTO, IT-Leiter",
+    "fieldCritical": "Kritischer Geschäftsprozess",
+    "emptyTitle": "Noch keine Geschäftsprozesse",
+    "emptyDescription": "Beginnen Sie mit der Definition Ihrer kritischen Geschäftsprozesse. Dies hilft Ihnen festzulegen, welche NIS2-Kontrollen für Ihre Organisation gelten.",
+    "badgeCritical": "KRITISCH",
+    "owner": "Verantwortlicher",
+    "controlsLinked": "Kontrollen verknüpft",
+    "applicable": "anwendbar",
+    "controlMapping": "Kontrollzuordnung",
+    "applicableYes": "Anwendbar",
+    "applicableNo": "Nicht anwendbar",
+    "soaTitle": "Anwendbarkeitserklärung",
+    "soaDescription": "Übersicht aller Kontrollen und ihrer Anwendbarkeit auf Ihre Geschäftsprozesse.",
+    "soaEmpty": "Fügen Sie Geschäftsprozesse hinzu und verknüpfen Sie Kontrollen, um die Anwendbarkeitserklärung zu erstellen.",
+    "soaColControl": "Kontroll-ID",
+    "soaColTitle": "Titel",
+    "soaColApplicable": "Anwendbar",
+    "soaColProcesses": "Verknüpfte Prozesse",
+    "soaColJustification": "Begründung"
   },
   "remediation": {
     "pageTitle": "Behebungsaufgaben",
@@ -522,7 +833,47 @@
     "dismissButton": "Zurückstellen",
     "createdLabel": "Erstellt:",
     "assignedLabel": "Zugewiesen:",
-    "dueLabel": "Fällig:"
+    "dueLabel": "Fällig:",
+    "closeButton": "Schließen",
+    "closeTitle": "Aufgabe schließen",
+    "closeDescription": "Geben Sie eine Abschlussnotiz oder einen Nachweis an, um diese Aufgabe zu schließen.",
+    "closureNotePlaceholder": "Beschreiben Sie, wie dies gelöst wurde...",
+    "closeConfirm": "Aufgabe schließen",
+    "closureNoteLabel": "Abschluss",
+    "dismissTitle": "Aufgabe verwerfen",
+    "dismissDescription": "Bitte geben Sie einen Grund für das Verwerfen dieser Aufgabe an.",
+    "dismissReasonPlaceholder": "Grund für das Verwerfen...",
+    "dismissConfirm": "Verwerfen",
+    "dismissedReasonLabel": "Verworfen",
+    "rescheduleButton": "Verschieben",
+    "rescheduleTitle": "Aufgabe verschieben",
+    "rescheduleWarning": "Diese Aufgabe wurde bereits {{count}} Mal verschoben.",
+    "newDueDate": "Neues Fälligkeitsdatum",
+    "rescheduleCategory": "Kategorie",
+    "categoryResource": "Ressourcenbeschränkung",
+    "categoryDependency": "Abhängigkeit",
+    "categoryScopeChange": "Umfangsänderung",
+    "categoryOther": "Sonstiges",
+    "rescheduleReason": "Grund",
+    "rescheduleReasonPlaceholder": "Warum wird diese Aufgabe verschoben?",
+    "rescheduleConfirm": "Verschieben",
+    "createPlanTitle": "Maßnahmenplan erstellen",
+    "createPlanButton": "Neuer Plan",
+    "createPlanConfirm": "Plan erstellen",
+    "planTitleLabel": "Plantitel",
+    "planTitlePlaceholder": "z.B. Plan zur Verbesserung der Netzwerksicherheit",
+    "treatmentTypeLabel": "Behandlungsart",
+    "treatmentMitigate": "Mindern",
+    "treatmentTransfer": "Übertragen",
+    "treatmentAvoid": "Vermeiden",
+    "treatmentAccept": "Akzeptieren",
+    "targetDateLabel": "Zieldatum",
+    "planDescriptionPlaceholder": "Beschreiben Sie den Plan...",
+    "plansHeading": "Behandlungspläne",
+    "tasks": "Aufgaben",
+    "autoGenerated": "Auto",
+    "chronicSlip": "Chronische Verzögerung",
+    "rescheduled": "{{count}}x verschoben"
   },
   "reports": {
     "pageTitle": "Compliance-Bericht",
@@ -636,7 +987,74 @@
     "employeeEmailsPlaceholder": "Geben Sie eine E-Mail pro Zeile ein",
     "deadlineLabel": "Frist",
     "cancelButton": "Abbrechen",
-    "createButtonLabel": "Kampagne erstellen"
+    "createButtonLabel": "Kampagne erstellen",
+    "policyTemplateLabel": "Richtlinienvorlage",
+    "policyTemplatePlaceholder": "Vorlage auswählen...",
+    "policyTemplateNone": "Keine Vorlage (benutzerdefiniert)",
+    "policyTemplateRecommended": "Empfohlen",
+    "policyTemplateOther": "Andere Vorlagen",
+    "tabs": {
+      "campaigns": "Kampagnen",
+      "continuous": "Kontinuierliche Compliance",
+      "myTasks": "Meine Aufgaben",
+      "history": "Verlauf"
+    },
+    "continuous": {
+      "healthScore": "Gesundheitswert",
+      "overdue": "Überfällig",
+      "totalActive": "Aktive Aufgaben",
+      "completedPeriod": "In diesem Zeitraum abgeschlossen",
+      "article21Coverage": "Artikel 21(2) Abdeckung",
+      "article21Subtitle": "Compliance über alle 10 NIS2-Unterabschnitte",
+      "tasks": "Aufgaben",
+      "emptyTitle": "Noch keine kontinuierlichen Compliance-Aufgaben",
+      "emptyDescription": "Richten Sie die Baseline ein, um ~50 wiederkehrende Compliance-Aufgaben zu erstellen, die alle NIS2 Artikel 21(2) Unterabschnitte abdecken.",
+      "setupBaseline": "Baseline einrichten",
+      "refreshBaseline": "Baseline aktualisieren",
+      "taskList": "Aufgaben",
+      "allPhases": "Alle Phasen",
+      "allTypes": "Alle Typen",
+      "baseline": "Baseline",
+      "noMatchingTasks": "Keine Aufgaben entsprechen den aktuellen Filtern"
+    },
+    "myTasks": {
+      "overdue": "Überfällig",
+      "pending": "Ausstehend",
+      "completed": "Abgeschlossen",
+      "complete": "Abschließen",
+      "emptyTitle": "Keine Aufgaben zugewiesen",
+      "emptyDescription": "Aufgaben erscheinen hier, wenn die Baseline eingerichtet oder Ihnen zugewiesen wird.",
+      "confirmCompletion": "Abschluss bestätigen",
+      "attestationResponse": "Bestätigungsantwort (optional)",
+      "responsePlaceholder": "Notizen oder Kommentare hinzufügen...",
+      "confirmButton": "Ich bestätige",
+      "alreadyCompleted": "Bereits für diesen Zeitraum abgeschlossen"
+    },
+    "history": {
+      "title": "Abschlussverlauf",
+      "subtitle": "Vergangene Abschlüsse für jede Aufgabe anzeigen",
+      "emptyTitle": "Noch keine Aufgaben",
+      "emptyDescription": "Der Abschlussverlauf erscheint hier, sobald Aufgaben eingerichtet und abgeschlossen sind.",
+      "noCompletions": "Noch keine Abschlüsse für diese Aufgabe verzeichnet."
+    },
+    "taskTypes": {
+      "attestation": "Bestätigung",
+      "process_check": "Prozessprüfung",
+      "evidence_submission": "Nachweiseinreichung",
+      "policy_ack": "Richtlinienbestätigung",
+      "training": "Schulung"
+    },
+    "frequencies": {
+      "one_off": "Einmalig",
+      "monthly": "Monatlich",
+      "quarterly": "Vierteljährlich",
+      "annual": "Jährlich"
+    },
+    "status": {
+      "completed": "Abgeschlossen",
+      "overdue": "Überfällig",
+      "pending": "Ausstehend"
+    }
   },
   "humanFactor": {
     "pageTitle": "Bewertung des Menschlichen Faktors",
@@ -811,7 +1229,81 @@
     "tipAssessment": "Probieren Sie die Bewertungs-Tabs für Technik, Organisation und den menschlichen Faktor",
     "tipReports": "Erstellen Sie Ihren ersten Compliance-Bericht",
     "goToDashboard": "Zum Dashboard",
-    "back": "Zurück"
+    "back": "Zurück",
+    "stepCountry": "Land",
+    "stepEntity": "Entitätstyp",
+    "stepCloud": "Cloud-Anbieter",
+    "stepScoring": "Bewertung",
+    "stepReady": "Fertig",
+    "countryTitle": "Wählen Sie Ihr Land",
+    "countrySubtitle": "Wählen Sie den EU-Mitgliedstaat, in dem Ihre Organisation ansässig ist. Dies bestimmt, welche nationale NIS2-Umsetzung gilt.",
+    "countrySearchPlaceholder": "Länder suchen...",
+    "countryTransposed": "Umgesetzt",
+    "countryPartial": "Teilweise umgesetzt",
+    "countryPending": "Umsetzung ausstehend",
+    "countryNotTransposed": "Nicht umgesetzt",
+    "countryUnknown": "Status unbekannt",
+    "countryLaw": "Nationales Gesetz",
+    "countryAuthority": "Zuständige Behörde",
+    "countryEffective": "In Kraft",
+    "entityTitle": "Klassifizieren Sie Ihre Entität",
+    "entitySubtitle": "NIS2 unterscheidet zwischen wesentlichen und wichtigen Einrichtungen. Ihre Klassifizierung bestimmt Meldepflichten, Aufsichtsniveau und Bußgeldgrenzen.",
+    "entityEssential": "Wesentlich",
+    "entityImportant": "Wichtig",
+    "entitySectors": "Sektoren",
+    "entityObligations": "Pflichten",
+    "entityPenalties": "Bußgelder",
+    "entitySkip": "Noch unsicher — vorerst überspringen",
+    "cloudTitle": "Cloud-Anbieter verbinden",
+    "cloudSubtitle": "Verbinden Sie Ihre Cloud-Infrastruktur für automatisierte technische Scans. Sie können mehrere Anbieter verbinden.",
+    "cloudAws": "Amazon Web Services",
+    "cloudAzure": "Microsoft Azure",
+    "cloudAwsDesc": "Verbinden Sie mit IAM-Zugriffsschlüsseln, um Ihre AWS-Infrastruktur zu scannen.",
+    "cloudAzureDesc": "Verbinden Sie mit einem Service Principal, um Ihr Azure-Abonnement zu scannen.",
+    "cloudConnected": "Verbunden",
+    "cloudConnect": "Verbinden",
+    "cloudSkip": "Überspringen — später verbinden",
+    "cloudIamPolicyTitle": "Erforderliche IAM-Richtlinie anzeigen (schreibgeschützt)",
+    "cloudIamPolicyDesc": "Erstellen Sie einen IAM-Benutzer mit programmatischem Zugriff und fügen Sie diese Richtlinie hinzu. Konforme benötigt nur Leseberechtigungen zum Scannen Ihrer Infrastruktur.",
+    "cloudAwsAlias": "Alias (z.B. Produktion)",
+    "cloudAwsAccessKey": "Access Key ID",
+    "cloudAwsSecretKey": "Secret Access Key",
+    "cloudAwsSessionToken": "Session Token (optional)",
+    "cloudAwsRegion": "Region",
+    "cloudAzureTenantId": "Tenant ID",
+    "cloudAzureClientId": "Client ID (App ID)",
+    "cloudAzureClientSecret": "Client Secret",
+    "cloudAzureSubscriptionId": "Subscription ID",
+    "cloudAzureAlias": "Alias (z.B. Produktion)",
+    "cloudValidating": "Anmeldedaten werden überprüft...",
+    "cloudValidationFailed": "Überprüfung der Anmeldedaten fehlgeschlagen. Bitte überprüfen Sie Ihre Angaben.",
+    "cloudAdded": "Cloud-Anbieter erfolgreich verbunden!",
+    "cloudAwsRoleDesc": "Erstellen Sie eine schreibgeschützte IAM-Rolle über CloudFormation — keine Zugriffsschlüssel erforderlich.",
+    "cloudAwsStep2Title": "Einrichtung in AWS abschließen",
+    "cloudAwsStep2Line1": "Klicken Sie in der CloudFormation-Konsole auf 'Create stack'",
+    "cloudAwsStep2Line2": "Warten Sie auf den Status CREATE_COMPLETE",
+    "cloudAwsStep2Line3": "Kopieren Sie die Role ARN aus Outputs und fügen Sie sie ein",
+    "cloudAwsOpenConsole": "CloudFormation-Konsole erneut öffnen",
+    "cloudAwsRoleArn": "Role ARN",
+    "cloudAwsDeployStack": "Stack in AWS bereitstellen",
+    "cloudAwsVerify": "Überprüfen & Verbinden",
+    "cloudAzureOAuthDesc": "Melden Sie sich mit Microsoft an und gewähren Sie schreibgeschützten Zugriff — keine Geheimnisse erforderlich.",
+    "cloudAzureConnectViaMicrosoft": "Über Microsoft verbinden",
+    "scoringTitle": "Bewertungseinstellungen",
+    "scoringSubtitle": "Wählen Sie, wie die 3 Compliance-Säulen in Ihrer Gesamtbewertung gewichtet werden. Sie können dies später in den Einstellungen ändern.",
+    "scoringSkip": "Überspringen — Standardgewichtung verwenden",
+    "readyTitle": "Alles bereit!",
+    "readySubtitle": "Ihr Konforme-Arbeitsbereich ist konfiguriert und einsatzbereit.",
+    "readyCountry": "Land",
+    "readyEntity": "Entitätstyp",
+    "readyCloud": "Cloud-Anbieter",
+    "readyScoring": "Bewertung",
+    "readyNoCountry": "Nicht ausgewählt",
+    "readyNoEntity": "Nicht klassifiziert",
+    "readyNoCloud": "Keine verbunden",
+    "readyCloudCount": "{{count}} verbunden",
+    "readyDefaultScoring": "Ausgewogen (40/35/25)",
+    "readyCustomScoring": "{{technical}}% / {{assessment}}% / {{controls}}%"
   },
   "resetPassword": {
     "pageTitle": "Passwort zurücksetzen",
@@ -1112,7 +1604,8 @@
     "pending": "Ausstehend",
     "nationalLaw": "Nationales Gesetz",
     "noCountry": "Wählen Sie Ihr Land in den Einstellungen aus, um Ihre nationale NIS2-Behörde und Meldekontakte zu sehen.",
-    "goToSettings": "Zu den Einstellungen"
+    "goToSettings": "Zu den Einstellungen",
+    "not_transposed": "Nicht umgesetzt"
   },
   "team": {
     "pageTitle": "Team",
@@ -1142,5 +1635,404 @@
     "acceptInvite": "Annehmen & Beitreten",
     "welcomeToTeam": "Willkommen im Team!",
     "canNowLogin": "Sie können sich jetzt mit Ihrer E-Mail und Ihrem Passwort anmelden."
+  },
+  "policyTemplates": {
+    "tpl-isp": {
+      "title": "Informationssicherheitsrichtlinie",
+      "summary1": "Sie sind jederzeit für den Schutz von Unternehmensdaten, -systemen und -informationswerten verantwortlich.",
+      "summary2": "Alle sensiblen Daten müssen gemäß ihrer Klassifizierungsstufe (Öffentlich, Intern, Vertraulich, Eingeschränkt) eingestuft und behandelt werden.",
+      "summary3": "Passwörter müssen die Mindestanforderungen an Komplexität erfüllen und dürfen niemals an Dritte weitergegeben werden, auch nicht an IT-Mitarbeiter.",
+      "summary4": "Alle Sicherheitsvorfälle, vermutete Verstöße oder Richtlinienverletzungen müssen unverzüglich dem IT-Sicherheitsteam gemeldet werden.",
+      "summary5": "Der Zugang zu Systemen und Daten wird nach dem Prinzip der geringsten Berechtigung gewährt und unterliegt einer regelmäßigen Überprüfung.",
+      "summary6": "Persönliche Geräte, die für die Arbeit genutzt werden, müssen den Sicherheitsstandards des Unternehmens entsprechen, einschließlich Verschlüsselung und Bildschirmsperre.",
+      "summary7": "Verstöße gegen diese Richtlinie können disziplinarische Maßnahmen bis hin zur Kündigung nach sich ziehen und unter NIS2 auch rechtliche Konsequenzen haben."
+    },
+    "tpl-aup": {
+      "title": "Richtlinie zur akzeptablen Nutzung",
+      "summary1": "IT-Ressourcen des Unternehmens (E-Mail, Internet, Geräte, Cloud-Dienste) werden für geschäftliche Zwecke und begrenzte persönliche Nutzung bereitgestellt.",
+      "summary2": "Die Installation nicht autorisierter Software, die Deaktivierung von Sicherheitstools oder der Versuch, Zugangskontrollen zu umgehen, ist verboten.",
+      "summary3": "Unternehmens-E-Mails dürfen nicht für persönliche Finanztransaktionen, Kettenbriefe oder Kommunikation verwendet werden, die den Ruf des Unternehmens schädigen könnte.",
+      "summary4": "Die Internetnutzung wird zu Sicherheitszwecken überwacht. Der Zugriff auf illegale, anstößige oder schädliche Inhalte ist streng verboten.",
+      "summary5": "Wechselmedien (USB-Sticks, externe Festplatten) dürfen ohne vorherige Genehmigung der IT-Sicherheit nicht an Unternehmenssysteme angeschlossen werden.",
+      "summary6": "Sie müssen Ihren Arbeitsplatz sperren, wenn Sie ihn unbeaufsichtigt lassen. Die Bildschirmsperre muss sich innerhalb von 5 Minuten Inaktivität aktivieren."
+    },
+    "tpl-irp": {
+      "title": "Richtlinie zur Vorfallreaktion",
+      "summary1": "Ein Sicherheitsvorfall ist jedes Ereignis, das die Vertraulichkeit, Integrität oder Verfügbarkeit von Unternehmensdaten oder -systemen gefährdet.",
+      "summary2": "Bei Verdacht auf einen Sicherheitsvorfall (Phishing, unbefugter Zugriff, Datenleck, Malware) melden Sie dies sofort dem IT-Sicherheitsteam — untersuchen Sie nicht selbst.",
+      "summary3": "Vorfälle werden nach Schweregrad klassifiziert: Kritisch (unmittelbare Geschäftsauswirkung), Hoch (erhebliches Risiko), Mittel (begrenzte Auswirkung), Niedrig (geringfügig).",
+      "summary4": "Gemäß NIS2 müssen erhebliche Vorfälle innerhalb von 24 Stunden an die nationalen Behörden gemeldet werden. Verzögerungen bei der internen Meldung können eine rechtzeitige Benachrichtigung verhindern.",
+      "summary5": "Löschen, ändern oder vernichten Sie keine Beweise im Zusammenhang mit einem Sicherheitsvorfall. Bewahren Sie Protokolle, E-Mails, Screenshots und betroffene Systeme auf.",
+      "summary6": "Nach Behebung eines Vorfalls wird eine Nachuntersuchung Ursachen und Verbesserungen identifizieren. Ihre Mitwirkung an diesen Nachbesprechungen ist verpflichtend."
+    },
+    "tpl-bcp": {
+      "title": "Business-Continuity-Richtlinie",
+      "summary1": "Kritische Geschäftsfunktionen wurden identifiziert und priorisiert. Ihre Rolle kann als kritisch eingestuft sein — erkundigen Sie sich bei Ihrem Vorgesetzten.",
+      "summary2": "Wenn Primärsysteme ausfallen, befolgen Sie die dokumentierten Alternativverfahren für Ihre Abteilung. Diese sind im Unternehmensintranet verfügbar.",
+      "summary3": "Bei einer größeren Störung wird die Kommunikation über die festgelegten Notfallkommunikationskanäle koordiniert. Stellen Sie sicher, dass Ihre Kontaktdaten aktuell sind.",
+      "summary4": "Recovery Time Objectives (RTO) und Recovery Point Objectives (RPO) wurden für alle kritischen Systeme definiert. Die Einhaltung dieser Ziele ist verpflichtend.",
+      "summary5": "Business-Continuity- und Disaster-Recovery-Pläne werden mindestens jährlich getestet. Sie können zur Teilnahme an Übungen und Simulationen aufgefordert werden.",
+      "summary6": "Wenn Sie eine Situation erkennen, die kritische Dienste unterbrechen könnte, melden Sie dies sofort Ihrem Vorgesetzten und dem IT-Sicherheitsteam."
+    },
+    "tpl-acc": {
+      "title": "Richtlinie für Zugriffskontrolle und Identitätsmanagement",
+      "summary1": "Der Zugang zu Systemen und Daten wird nach dem Prinzip der geringsten Berechtigung gewährt — Sie erhalten nur den für Ihre Rolle erforderlichen Mindestzugang.",
+      "summary2": "Multi-Faktor-Authentifizierung (MFA) ist für alle kritischen Systeme obligatorisch. Teilen Sie niemals Ihre MFA-Token, Codes oder Hardware-Schlüssel.",
+      "summary3": "Bei Rollen- oder Verantwortungswechsel werden Ihre Zugriffsrechte überprüft und angepasst. Melden Sie nicht mehr benötigte Zugriffe.",
+      "summary4": "Alle Zugriffsrechte werden vierteljährlich von Vorgesetzten überprüft. Sie können gebeten werden, die Angemessenheit Ihrer aktuellen Zugriffsstufen zu bestätigen.",
+      "summary5": "Beim Verlassen der Organisation werden alle Systemzugriffe innerhalb von 1 Stunde widerrufen. Geben Sie alle Unternehmensgeräte und Zugangstoken am letzten Tag zurück.",
+      "summary6": "Das Teilen von Zugangsdaten, die Nutzung eines fremden Kontos oder das Zulassen, dass andere Ihr Konto nutzen, ist streng verboten.",
+      "summary7": "Privilegierter Zugang (Admin-Rechte) erfordert zusätzliche Kontrollen einschließlich erweiterter Protokollierung, zeitlich begrenzter Sitzungen und Hintergrundüberprüfung."
+    },
+    "tpl-sup": {
+      "title": "Richtlinie zur Lieferketten- und Drittanbietersicherheit",
+      "summary1": "Alle Drittanbieter mit Zugang zu Unternehmenssystemen oder -daten müssen vor der Beauftragung eine Cybersicherheitsbewertung bestehen.",
+      "summary2": "Lieferantenverträge müssen Sicherheitsverpflichtungen enthalten: Meldung von Sicherheitsverletzungen innerhalb von 24 Stunden, Auditrecht, Datenschutzanforderungen und Sicherheitszertifizierungen.",
+      "summary3": "Drittanbieterzugang erfordert formale Genehmigung, MFA-Durchsetzung und unterliegt Überwachung und vierteljährlichen Überprüfungen.",
+      "summary4": "Sie dürfen Unternehmens-Zugangsdaten, Systemzugang oder sensible Daten ohne vorherige schriftliche Genehmigung der IT-Sicherheit nicht an Dritte weitergeben.",
+      "summary5": "Führen Sie ein Inventar aller in Ihrer Abteilung genutzten Drittanbieter-Tools, Integrationen und Dienste. Melden Sie neue Tools vor der Bereitstellung an die IT-Sicherheit.",
+      "summary6": "Wenn ein Anbieter einen Sicherheitsvorfall meldet oder Sie vermuten, dass ein Drittanbieter kompromittiert wurde, melden Sie dies sofort dem IT-Sicherheitsteam."
+    },
+    "tpl-enc": {
+      "title": "Richtlinie für Datenschutz und Verschlüsselung",
+      "summary1": "Alle sensiblen Daten müssen im Ruhezustand (auf Datenträgern) und bei der Übertragung (über Netzwerke) mit genehmigten Algorithmen (AES-256, TLS 1.3) verschlüsselt werden.",
+      "summary2": "Daten müssen vor der Speicherung oder Übertragung klassifiziert werden: Öffentlich, Intern, Vertraulich oder Eingeschränkt. Verschlüsselungsanforderungen steigen mit der Klassifizierungsstufe.",
+      "summary3": "Verschlüsselungsschlüssel müssen sicher in genehmigten Schlüsselmanagementsystemen (KMS/HSM) gespeichert werden. Bewahren Sie Schlüssel niemals zusammen mit den geschützten Daten auf.",
+      "summary4": "Das Versenden vertraulicher oder eingeschränkter Daten über unverschlüsselte E-Mails, Messaging-Apps oder File-Sharing-Dienste ist verboten, sofern keine genehmigten verschlüsselten Kanäle verwendet werden.",
+      "summary5": "Alle tragbaren Geräte (Laptops, Telefone, USB-Sticks) mit Unternehmensdaten müssen eine vollständige Festplattenverschlüsselung aktiviert haben.",
+      "summary6": "Wenn Sie unverschlüsselte sensible Daten entdecken oder einen Verschlüsselungsfehler vermuten, melden Sie dies sofort dem IT-Sicherheitsteam."
+    },
+    "tpl-hyg": {
+      "title": "Richtlinie für Cyber-Hygiene und Sicherheitsbewusstsein",
+      "summary1": "Alle Mitarbeiter müssen eine jährliche Sicherheitsbewusstseinsschulung absolvieren. Neue Mitarbeiter müssen die Schulung in der ersten Woche abschließen.",
+      "summary2": "Halten Sie alle Software und Betriebssysteme auf dem neuesten Stand. Aktivieren Sie automatische Updates. Verschieben oder verzögern Sie keine Sicherheitspatches.",
+      "summary3": "Verwenden Sie den vom Unternehmen genehmigten Passwort-Manager für alle Arbeitskonten. Passwörter müssen pro Dienst einzigartig sein — verwenden Sie niemals Passwörter mehrfach.",
+      "summary4": "Seien Sie wachsam gegenüber Phishing: Überprüfen Sie Absenderadressen, klicken Sie nicht auf verdächtige Links und melden Sie alle verdächtigen Phishing-E-Mails an die IT-Sicherheit.",
+      "summary5": "Befolgen Sie die Clean-Desk-Richtlinie: Verschließen Sie sensible Dokumente, wenn Sie Ihren Arbeitsplatz verlassen. Lassen Sie gedruckte Materialien mit sensiblen Informationen nicht unbeaufsichtigt.",
+      "summary6": "Wechselmedien (USB-Sticks, externe Festplatten) sind eingeschränkt. Verwenden Sie nur vom Unternehmen genehmigte Geräte und scannen Sie vor der Nutzung auf Malware.",
+      "summary7": "Die Organisation führt regelmäßig Phishing-Simulationen durch. Mitarbeiter, die wiederholt versagen, erhalten gezieltes Zusatztraining."
+    }
+  },
+  "quizBank": {
+    "quiz-001": {
+      "question": "Was sollten Sie tun, wenn Sie eine verdächtige E-Mail mit einem unerwarteten Anhang erhalten?",
+      "option1": "Den Anhang öffnen, um zu prüfen, ob er legitim ist",
+      "option2": "Sie an Kollegen weiterleiten, um deren Meinung einzuholen",
+      "option3": "Sie dem IT-Sicherheitsteam melden, ohne sie zu öffnen",
+      "option4": "Sie löschen und vergessen",
+      "explanation": "Das Melden verdächtiger E-Mails an das IT-Sicherheitsteam ermöglicht die Untersuchung und den Schutz der gesamten Organisation. Öffnen Sie niemals unerwartete Anhänge."
+    },
+    "quiz-002": {
+      "question": "Was ist der sicherste Umgang mit Ihren Arbeitspasswörtern?",
+      "option1": "Dasselbe Passwort für alle Arbeitskonten verwenden",
+      "option2": "Für jedes Konto ein einzigartiges starkes Passwort verwenden und diese in einem genehmigten Passwort-Manager speichern",
+      "option3": "Sie auf einen Klebezettel am Bildschirm schreiben",
+      "option4": "Sie mit Ihrem Vorgesetzten teilen, damit dieser bei Bedarf zugreifen kann",
+      "explanation": "Einzigartige starke Passwörter in einem genehmigten Passwort-Manager verhindern Credential-Stuffing-Angriffe und begrenzen die Auswirkungen bei Kompromittierung eines Kontos."
+    },
+    "quiz-003": {
+      "question": "Was ist Phishing?",
+      "option1": "Ein Netzwerkleistungsproblem durch hohen Datenverkehr",
+      "option2": "Ein Angriff, der Menschen dazu verleitet, Zugangsdaten preiszugeben oder schädliche Links anzuklicken",
+      "option3": "Eine Methode zum Testen von Firewall-Konfigurationen",
+      "option4": "Eine Art Antivirensoftware für E-Mail-Scanning",
+      "explanation": "Phishing ist der häufigste Cyberangriffsvektor. Angreifer geben sich als vertrauenswürdige Stellen aus, um Zugangsdaten zu stehlen, Malware zu installieren oder Zugang zu Systemen zu erlangen."
+    },
+    "quiz-004": {
+      "question": "Was sollten Sie tun, wenn Sie Ihren Arbeitsplatz verlassen, auch nur kurz?",
+      "option1": "Alles offen lassen — Sie sind gleich zurück",
+      "option2": "Einen Kollegen bitten, auf Ihren Bildschirm zu achten",
+      "option3": "Ihren Bildschirm sofort sperren",
+      "option4": "Den Monitor ausschalten, aber die Sitzung offen lassen",
+      "explanation": "Das Sperren Ihres Bildschirms (Win+L oder Cmd+Ctrl+Q) dauert Sekunden und verhindert unbefugten Zugriff auf Ihre Sitzung, E-Mails und sensible Daten."
+    },
+    "quiz-005": {
+      "question": "Wen sollten Sie zuerst kontaktieren, wenn Sie einen Sicherheitsvorfall vermuten?",
+      "option1": "Das IT-Sicherheitsteam oder Ihren direkten Vorgesetzten",
+      "option2": "Ihren persönlichen IT-Kontakt außerhalb des Unternehmens",
+      "option3": "Niemanden — versuchen Sie zunächst, es selbst zu beheben",
+      "option4": "In sozialen Medien posten, um andere zu warnen",
+      "explanation": "Schnelle Meldung an das IT-Sicherheitsteam minimiert den Schaden. Unter NIS2 müssen Organisationen bedeutende Vorfälle innerhalb von 24 Stunden an Behörden melden."
+    },
+    "quiz-006": {
+      "question": "Wie schnell muss ein bedeutender Sicherheitsvorfall gemäß NIS2 der nationalen Behörde gemeldet werden?",
+      "option1": "Innerhalb von 7 Tagen",
+      "option2": "Innerhalb von 24 Stunden (Frühwarnung) und 72 Stunden (vollständige Meldung)",
+      "option3": "Innerhalb von 30 Tagen",
+      "option4": "Nur wenn der Vorfall zu finanziellem Verlust führt",
+      "explanation": "NIS2 Artikel 23 verlangt eine Frühwarnung innerhalb von 24 Stunden und eine detaillierte Meldung innerhalb von 72 Stunden nach Kenntnis eines bedeutenden Vorfalls."
+    },
+    "quiz-007": {
+      "question": "Was ist die richtige Reihenfolge der Schritte in einem Incident-Response-Prozess?",
+      "option1": "Wiederherstellung, Erkennung, Eindämmung, Lessons Learned",
+      "option2": "Eindämmung, Erkennung, Wiederherstellung, Benachrichtigung",
+      "option3": "Benachrichtigung, Wiederherstellung, Erkennung, Eindämmung",
+      "option4": "Erkennung, Eindämmung, Wiederherstellung, Lessons Learned",
+      "explanation": "Der Standard-Incident-Response-Lebenszyklus ist: Erkennung und Analyse, Eindämmung, Beseitigung und Wiederherstellung, dann Nachbereitung (Lessons Learned)."
+    },
+    "quiz-008": {
+      "question": "Was sollte ein Vorfallsbericht enthalten?",
+      "option1": "Nur den Namen der Person, die den Vorfall verursacht hat",
+      "option2": "Eine kurze einzeilige Zusammenfassung ohne technische Details",
+      "option3": "Datum, Beschreibung, betroffene Systeme, ergriffene Maßnahmen und Auswirkungsbewertung",
+      "option4": "Nur die finanziellen Kosten des Vorfalls",
+      "explanation": "Ein gründlicher Vorfallsbericht ermöglicht Ursachenanalyse, unterstützt die NIS2-Compliance-Anforderungen und hilft, ähnliche Vorfälle in Zukunft zu verhindern."
+    },
+    "quiz-009": {
+      "question": "Was bedeutet das Prinzip der geringsten Berechtigung?",
+      "option1": "Benutzer sollten nur die für ihre Aufgabe minimal erforderlichen Zugriffsrechte haben",
+      "option2": "Nur Führungskräfte sollten Zugang zu IT-Systemen haben",
+      "option3": "Jeder sollte vollen Admin-Zugriff haben, um Engpässe zu vermeiden",
+      "option4": "Zugriffsrechte sollten nur überprüft werden, wenn jemand das Unternehmen verlässt",
+      "explanation": "Geringste Berechtigung begrenzt den Schadensradius bei Kompromittierung eines Kontos und reduziert das Risiko versehentlicher Datenexposition oder -änderung."
+    },
+    "quiz-010": {
+      "question": "Warum ist Multi-Faktor-Authentifizierung (MFA) wichtig?",
+      "option1": "Sie macht Anmeldungen schneller und bequemer",
+      "option2": "Sie ersetzt die Notwendigkeit starker Passwörter",
+      "option3": "Sie ist nur für IT-Administratoren erforderlich",
+      "option4": "Sie fügt eine zusätzliche Sicherheitsebene über Passwörter hinaus hinzu und macht kompromittierte Zugangsdaten für Angreifer weniger nützlich",
+      "explanation": "MFA stellt sicher, dass gestohlene Passwörter allein keinen Zugang gewähren können. NIS2 erwartet von Organisationen die Implementierung starker Authentifizierung für kritische Systeme."
+    },
+    "quiz-011": {
+      "question": "Was sollte geschehen, wenn ein Mitarbeiter innerhalb der Organisation die Rolle wechselt?",
+      "option1": "Seine Zugriffsrechte bleiben gleich, da er weiterhin Mitarbeiter ist",
+      "option2": "Seine Zugriffsrechte sollten überprüft und an die neue Rolle angepasst werden",
+      "option3": "Er sollte zusätzliche Zugriffsrechte zu seinen bestehenden Berechtigungen erhalten",
+      "option4": "Zugriffsüberprüfungen finden nur jährlich statt, daher ist keine sofortige Maßnahme erforderlich",
+      "explanation": "Rollenwechsel erfordern eine zeitnahe Zugriffsüberprüfung, um Berechtigungsausweitung zu verhindern. Benutzer sollten nur Berechtigungen für ihre aktuellen Aufgaben behalten."
+    },
+    "quiz-012": {
+      "question": "Was ist die empfohlene Maßnahme, wenn ein Mitarbeiter die Organisation verlässt?",
+      "option1": "Alle Konten deaktivieren und den Zugang sofort am letzten Arbeitstag widerrufen",
+      "option2": "Konten 30 Tage aktiv lassen, falls er zurückkehrt",
+      "option3": "Nur E-Mail deaktivieren — andere Systeme können warten",
+      "option4": "Seine Zugangsdaten an seinen Nachfolger übertragen",
+      "explanation": "Sofortige Kontodeaktivierung verhindert, dass ehemalige Mitarbeiter auf Systeme zugreifen. Dies umfasst VPN, Cloud-Dienste, E-Mail und physischen Zugang."
+    },
+    "quiz-013": {
+      "question": "Wie gehen Sie korrekt mit vertraulichen Dokumenten um, die Sie nicht mehr benötigen?",
+      "option1": "In den normalen Büromülleimer werfen",
+      "option2": "Auf dem Schreibtisch für das Reinigungspersonal liegen lassen",
+      "option3": "Einen Kreuzschnitt-Aktenvernichter oder sicheren Entsorgungsbehälter verwenden",
+      "option4": "Für persönliche Unterlagen mit nach Hause nehmen",
+      "explanation": "Vertrauliche Dokumente müssen sicher vernichtet werden, um Datenlecks zu verhindern. Kreuzschnitt-Aktenvernichtung oder sichere Entsorgungsdienste sind gemäß Datenschutzvorschriften erforderlich."
+    },
+    "quiz-014": {
+      "question": "Wann ist Verschlüsselung bei der Datenübertragung erforderlich?",
+      "option1": "Nur beim Senden von Daten an externe Partner",
+      "option2": "Immer wenn sensible oder vertrauliche Daten übertragen werden, ob intern oder extern",
+      "option3": "Nur wenn der Empfänger es ausdrücklich anfordert",
+      "option4": "Verschlüsselung ist optional und wird nur für Finanzdaten empfohlen",
+      "explanation": "NIS2 verlangt eine angemessene Verschlüsselung für Daten während der Übertragung. Alle sensiblen Datenübertragungen sollten TLS/HTTPS oder gleichwertige Verschlüsselung verwenden."
+    },
+    "quiz-015": {
+      "question": "Welches der folgenden ist eine bewährte Praxis für die Datenklassifizierung?",
+      "option1": "Alle Daten als vertraulich klassifizieren, um sicher zu sein",
+      "option2": "Nur Daten klassifizieren, die in der Cloud gespeichert sind",
+      "option3": "Jeden Mitarbeiter selbst entscheiden lassen, wie er seine Daten klassifiziert",
+      "option4": "Klassifizierungsstufen (Öffentlich, Intern, Vertraulich, Eingeschränkt) basierend auf Sensibilität und Auswirkung einer Offenlegung anwenden",
+      "explanation": "Richtige Klassifizierung stellt sicher, dass angemessene Sicherheitskontrollen verhältnismäßig angewandt werden. Überklassifizierung verschwendet Ressourcen; Unterklassifizierung schafft Risiken."
+    },
+    "quiz-016": {
+      "question": "Was sollten Sie tun, wenn Sie versehentlich sensible Daten an den falschen Empfänger senden?",
+      "option1": "Sofort Ihren Vorgesetzten und das IT-Sicherheitsteam benachrichtigen",
+      "option2": "Eine Folge-E-Mail senden mit der Bitte, die Daten zu löschen",
+      "option3": "Ignorieren — Fehler passieren",
+      "option4": "Abwarten, ob der Empfänger es bemerkt",
+      "explanation": "Versehentliche Datenexposition ist ein Sicherheitsvorfall, der gemeldet werden muss. Schnelles Handeln ermöglicht der Organisation, die Auswirkungen zu bewerten und Korrekturmaßnahmen zu ergreifen."
+    },
+    "quiz-017": {
+      "question": "Warum ist Lieferkettensicherheit unter NIS2 wichtig?",
+      "option1": "Sie betrifft nur Produktionsunternehmen",
+      "option2": "NIS2 befasst sich nicht mit Lieferkettensicherheit",
+      "option3": "Ein Sicherheitsvorfall bei einem Lieferanten kann Ihre Organisation gefährden, und NIS2 verlangt das Management von Drittanbieterrisiken",
+      "option4": "Sie ist nur wichtig, wenn Lieferanten physischen Zugang zu Ihren Büros haben",
+      "explanation": "NIS2 Artikel 21(2)(d) verlangt ausdrücklich Maßnahmen zur Lieferkettensicherheit. Aufsehenerregende Vorfälle (SolarWinds, Kaseya) haben gezeigt, dass Lieferantenkompromittierungen sich kaskadieren können."
+    },
+    "quiz-018": {
+      "question": "Was sollten Sie überprüfen, bevor Sie einem Drittanbieter Zugang zu Ihren Systemen gewähren?",
+      "option1": "Dass er eine Sicherheitsbewertung bestanden hat und angemessene Sicherheitskontrollen vorweisen kann",
+      "option2": "Dass es sich um eine bekannte Marke handelt",
+      "option3": "Dass er seit mehr als einem Jahr Lieferant ist",
+      "option4": "Nichts Besonderes — wenn das Management ihn genehmigt hat, reicht das",
+      "explanation": "Lieferanten-Risikobewertungen sollten Sicherheitszertifizierungen (ISO 27001, SOC 2), Sicherheitsrichtlinien, Incident-Response-Fähigkeiten und Datenverarbeitungspraktiken prüfen."
+    },
+    "quiz-019": {
+      "question": "Was ist eine Kernanforderung für Verträge mit kritischen IKT-Dienstleistern unter NIS2?",
+      "option1": "Sie müssen unabhängig von der Leistung jährlich erneuert werden",
+      "option2": "Sie müssen Sicherheitspflichten, Meldepflichten bei Vorfällen und Auditrechte enthalten",
+      "option3": "Sie müssen von der nationalen Cybersicherheitsbehörde unterzeichnet werden",
+      "option4": "Sie benötigen nur standardmäßige kommerzielle Bedingungen",
+      "explanation": "NIS2 verlangt, dass Verträge mit kritischen Lieferanten spezifische Sicherheitsbestimmungen, Vorfallsbenachrichtigungsklauseln und das Recht zur Prüfung ihrer Sicherheitslage enthalten."
+    },
+    "quiz-020": {
+      "question": "Wie sollten Sie vorgehen, wenn ein Drittanbieter einen Datenschutzverstoß meldet, der Ihre Daten betrifft?",
+      "option1": "Abwarten, bis der Anbieter das Problem vollständig behoben hat",
+      "option2": "Den Vertrag sofort kündigen",
+      "option3": "Ignorieren, wenn der Anbieter sagt, die Auswirkung sei minimal",
+      "option4": "Ihren Incident-Response-Prozess aktivieren, die Auswirkungen auf Ihre Organisation bewerten und die Behörden benachrichtigen, falls erforderlich",
+      "explanation": "Ein Lieferantenvorfall, der Ihre Daten betrifft, ist auch Ihr Vorfall. Sie müssen die Auswirkungen bewerten, Ihren Incident-Response-Plan aktivieren und die NIS2-Meldefristen einhalten."
+    },
+    "quiz-021": {
+      "question": "Was ist der Hauptzweck eines Business-Continuity-Plans (BCP)?",
+      "option1": "Die finanzielle Leistung des Unternehmens zu dokumentieren",
+      "option2": "Sicherzustellen, dass kritische Geschäftsfunktionen während und nach einer Störung fortgesetzt werden können",
+      "option3": "Alle Mitarbeiter und ihre Kontaktdaten aufzulisten",
+      "option4": "Prüfer nur mit Dokumentation zufriedenzustellen",
+      "explanation": "Ein BCP stellt sicher, dass wesentliche Dienste während Krisen verfügbar bleiben. NIS2 Artikel 21(2)(c) verlangt Maßnahmen zur Geschäftskontinuität und zum Krisenmanagement."
+    },
+    "quiz-022": {
+      "question": "Wie oft sollte die Wiederherstellung von Backups getestet werden?",
+      "option1": "Regelmäßig, mindestens vierteljährlich, um zu überprüfen, dass Backups erfolgreich wiederhergestellt werden können",
+      "option2": "Nur wenn eine echte Katastrophe eintritt",
+      "option3": "Einmal bei der Ersteinrichtung des Backup-Systems",
+      "option4": "Tests sind nicht erforderlich, wenn Backups automatisiert sind",
+      "explanation": "Ungetestete Backups können im Ernstfall versagen. Regelmäßige Wiederherstellungstests überprüfen die Datenintegrität und stellen sicher, dass Recovery-Zeitziele tatsächlich erreicht werden können."
+    },
+    "quiz-023": {
+      "question": "Was ist ein Recovery Time Objective (RTO)?",
+      "option1": "Die Zeit, die benötigt wird, um einen Vorfall zu erkennen",
+      "option2": "Die Gesamtkosten der Wiederherstellung nach einer Katastrophe",
+      "option3": "Die maximal akzeptable Zeit zur Wiederherstellung eines Systems oder Dienstes nach einer Störung",
+      "option4": "Die Anzahl der für die Notfallwiederherstellung benötigten Mitarbeiter",
+      "explanation": "RTO definiert, wie schnell ein System wiederhergestellt werden muss. Es bestimmt Entscheidungen über Backup-Strategien, Redundanz und Disaster-Recovery-Infrastruktur."
+    },
+    "quiz-024": {
+      "question": "Welche Rolle spielt Krisenkommunikation bei der Geschäftskontinuität?",
+      "option1": "Sie ist nur für die PR-Abteilung wichtig",
+      "option2": "Sie ist optional und nur bei öffentlichkeitswirksamen Vorfällen erforderlich",
+      "option3": "Sie wird automatisch von IT-Systemen übernommen",
+      "option4": "Sie stellt sicher, dass Stakeholder, Mitarbeiter und Behörden bei einer Störung zeitnah und korrekt informiert werden",
+      "explanation": "Klare Krisenkommunikation reduziert Verwirrung, erhält Vertrauen und erfüllt NIS2-Anforderungen zur rechtzeitigen Benachrichtigung betroffener Parteien und Behörden."
+    }
+  },
+  "countryNotes": {
+    "AT": [
+      "Das vorherige NISG 2024 wurde vom Nationalrat am 3. Juli 2024 abgelehnt",
+      "Das NISG 2026 erforderte eine Zweidrittelmehrheit zur Verabschiedung",
+      "Inkrafttreten verschoben auf 1. Oktober 2026",
+      "Österreich gehört zu den wenigen EU-Staaten, die zunächst eine Ablehnung der NIS2-Umsetzung erlebten"
+    ],
+    "BE": [
+      "Belgien war eines der ersten EU-Länder, das die NIS2 umsetzte",
+      "Das CyberFundamentals (CyFun) Framework ist der primäre Compliance-Mechanismus",
+      "Das CCB betreibt das SafeOnWeb-Portal für Orientierungshilfe",
+      "Selbstbewertung des CyFun-Niveaus oder ISO 27001-Konformität bis 18. April 2026"
+    ],
+    "DE": [
+      "Deutschland verfehlte die ursprüngliche Frist im Oktober 2024 aufgrund des Koalitionsbruchs und der Neuwahlen",
+      "Der Gesetzentwurf musste nach den Bundestagswahlen im Februar 2025 neu eingebracht werden",
+      "Keine allgemeine Übergangsfrist — Pflichten gelten sofort ab Inkrafttreten",
+      "BSI-Registrierungsportal seit 6. Januar 2026 geöffnet",
+      "ELSTER-Digitalzertifikate für die Einrichtung des Unternehmenskontos (MUK) erforderlich",
+      "Unternehmen wählen ihr eigenes Sicherheitsframework, wenn keine sektorspezifischen Regelungen gelten"
+    ],
+    "ES": [
+      "Spanien hat die NIS2 bis März 2026 noch NICHT umgesetzt",
+      "Der Gesetzesentwurf (anteproyecto) wurde im Januar 2025 vom Ministerrat genehmigt",
+      "Die parlamentarische Bearbeitung läuft — noch keine BOE-Veröffentlichung",
+      "Vertragsverletzungsverfahren der Europäischen Kommission sind aktiv",
+      "Der aktuelle NIS1-Rahmen (RDL 12/2018) bleibt als Übergangsmaßnahme in Kraft",
+      "Multi-Behörden-Modell vorgeschlagen: CCN-CERT für öffentlichen Sektor, INCIBE für Privatsektor"
+    ],
+    "FR": [
+      "Frankreich hat die NIS2 bis März 2026 noch NICHT vollständig umgesetzt",
+      "Das 'Loi Résilience' bündelt NIS2 mit der CER-Richtlinien-Umsetzung",
+      "Vom Senat angenommen; Plenarsdebatte der Nationalversammlung noch nicht geplant",
+      "Französische Umsetzung wahrscheinlich auf Juli 2026 verschoben",
+      "ANSSI betreibt bereits das Beta-Portal MonEspaceNIS2 für Unternehmensregistrierung",
+      "Digitalministerin Anne Le Hénanff wurde zur Dringlichkeit der Terminplanung gedrängt"
+    ],
+    "IE": [
+      "Irland hat die NIS2 bis März 2026 noch NICHT umgesetzt",
+      "Verzögert durch Wahlen 2024",
+      "NIS1-Rahmen gilt weiter als Übergangsmaßnahme",
+      "Gesetzentwurf bleibt laut Regierungserklärungen legislative Priorität",
+      "NCSC veröffentlicht aktiv vorbereitende Leitlinien"
+    ],
+    "IT": [
+      "Italien war einer der ersten EU-Mitgliedstaaten, der die NIS2 umsetzte",
+      "ACN veröffentlichte das Umsetzungsframework im April 2025",
+      "Registrierung ist eine jährlich wiederkehrende Pflicht (Januar-Februar jedes Jahres)",
+      "Italien fügte einzigartige nationale Sektoren in Anhang IV hinzu (Nahverkehr, Kulturorganisationen usw.)",
+      "Bußgelder für die öffentliche Verwaltung sind deutlich niedriger als für den Privatsektor",
+      "18-monatige Umsetzungsfrist ab ACN-Benachrichtigung für Compliance-Maßnahmen"
+    ],
+    "NL": [
+      "Die Niederlande haben die NIS2 bis März 2026 noch NICHT umgesetzt",
+      "Plenardebatte in der Tweede Kamer für 23. März 2026 geplant",
+      "Voraussichtliches Inkrafttreten Q2 2026",
+      "NCSC-Registrierungsportal (mijn.ncsc.nl) erfordert eHerkenning eID",
+      "Justiz, Erste und Zweite Kammer und De Nederlandsche Bank sind ausgenommen"
+    ],
+    "PL": [
+      "7-jähriger Gesetzgebungsprozess im Februar 2026 abgeschlossen",
+      "Unternehmen haben 6 Monate zur Registrierung als Schlüssel-/wichtige Einrichtungen",
+      "12-monatige Frist für die Umsetzung von Risikomanagement-Maßnahmen",
+      "S46-Vorfallmeldesystem mit 12-monatiger Einführungsfrist"
+    ],
+    "PT": [
+      "CNCS ist die zuständige Behörde für alle NIS2-Verpflichtungen",
+      "Gesetz tritt am 03.04.2026 in Kraft — 8 Tage nach letzter Überprüfung",
+      "24-Stunden-Vorfallmeldung für bedeutende Vorfälle obligatorisch; einzigartige Ende-der-Auswirkung-Meldung ebenfalls innerhalb von 24h",
+      "Umfasst Einrichtungen der öffentlichen Verwaltung über den NIS2-Grundumfang hinaus (Relevante öffentliche Einrichtungsgruppen A und B)",
+      "Cybersicherheitsbeauftragter muss Vorstandsmitglied oder direkt unterstellt sein — Ernennungsfrist 4. Mai 2026",
+      "Managementschulung ist gemäß Art. 25 obligatorisch (Regelmäßigkeit der Cybersicherheitsschulungen)",
+      "Wichtige technische/organisatorische Maßnahmen (Art. 27-30) haben eine 24-monatige verzögerte Durchsetzung bis CNCS-Ergänzungsvorschriften",
+      "Das Gesetz stellt eine tiefgreifende Neugestaltung des portugiesischen Cybersicherheitsrechtsrahmens dar und ersetzt Gesetz 46/2018",
+      "Krisenbüro bestehend aus Einrichtungen der inneren Sicherheit, Verteidigung und Strafverfolgung",
+      "Wichtige Einrichtungen: niedrigere Bußgeldgrenze (EUR 7M / 1,4%) vs. wesentliche Einrichtungen (EUR 10M / 2%)"
+    ]
+  },
+  "controlCategories": {
+    "riskManagement": "Risikomanagement",
+    "incidentHandling": "Vorfallbehandlung",
+    "businessContinuity": "Geschäftskontinuität",
+    "supplyChainSecurity": "Lieferkettensicherheit",
+    "secureDevelopment": "Sichere Entwicklung",
+    "effectivenessAssessment": "Wirksamkeitsbewertung",
+    "cyberHygieneTraining": "Cyberhygiene und Schulung",
+    "cryptographyEncryption": "Kryptographie und Verschlüsselung",
+    "accessControlAssetMgmt": "Zugriffskontrolle und Vermögensverwaltung",
+    "mfaSecuredComms": "MFA und gesicherte Kommunikation",
+    "governance": "Governance",
+    "monitoring": "Überwachung",
+    "securityOperations": "Sicherheitsoperationen",
+    "trainingAwareness": "Schulung und Sensibilisierung",
+    "hrSecurity": "HR-Sicherheit",
+    "cryptography": "Kryptographie"
+  },
+  "evidence": {
+    "title": "Nachweise",
+    "libraryTitle": "Nachweisbibliothek",
+    "libraryDesc": "Alle Nachweisdateien Ihrer Organisation verwalten",
+    "upload": "Hochladen",
+    "uploading": "Wird hochgeladen...",
+    "dropOrClick": "Dateien hierher ziehen oder klicken",
+    "noFiles": "Keine Nachweisdateien angehängt",
+    "linkFromLibrary": "Aus Bibliothek verknüpfen",
+    "libraryEmpty": "Noch keine Dateien in der Bibliothek",
+    "download": "Herunterladen",
+    "delete": "Löschen",
+    "confirmDelete": "Diese Nachweisdatei löschen?",
+    "filename": "Dateiname",
+    "size": "Größe",
+    "uploadedBy": "Hochgeladen von",
+    "date": "Datum",
+    "tags": "Tags",
+    "links": "Verknüpfungen",
+    "searchPlaceholder": "Nach Dateiname, Beschreibung oder Tag suchen...",
+    "showing": "Zeige",
+    "of": "von"
+  },
+  "activity": {
+    "title": "Aktivitätsprotokoll",
+    "description": "Manipulationssicheres Audit-Protokoll aller Compliance-Aktionen",
+    "verifyChain": "Kette verifizieren",
+    "chainValid": "Hash-Kette verifiziert: {{total}} Ereignisse, alle intakt.",
+    "chainBroken": "Kette unterbrochen bei Ereignis #{{id}}. {{checked}} von {{total}} geprüft.",
+    "searchPlaceholder": "Nach Benutzer, Entität suchen...",
+    "noEvents": "Noch keine Aktivität aufgezeichnet"
   }
 }

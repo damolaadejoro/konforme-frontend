@@ -10,7 +10,7 @@ function countryFlag(code: string): string {
 }
 
 export default function CountryInfoCard() {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const { currentCountry, loading } = useCountryData()
   const navigate = useNavigate()
 
@@ -50,9 +50,15 @@ export default function CountryInfoCard() {
   const authorityAcronym = acronymMatch ? acronymMatch[1] : ''
   const authorityUrl = currentCountry.competentAuthorityUrl || ''
 
-  const notes = currentCountry.researchNotes
-    ? currentCountry.researchNotes.split('\n').filter(n => n.trim())
-    : []
+  // Use translated notes from locale files, fall back to API data for English
+  const translatedNotes = i18n.language !== 'en'
+    ? (t(`countryNotes.${currentCountry.code}`, { returnObjects: true }) as string[] | string)
+    : null
+  const notes = Array.isArray(translatedNotes) && translatedNotes.length > 0
+    ? translatedNotes
+    : currentCountry.researchNotes
+      ? currentCountry.researchNotes.split('\n').filter(n => n.trim())
+      : []
 
   return (
     <Card>

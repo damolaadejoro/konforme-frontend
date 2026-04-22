@@ -16,7 +16,10 @@
     "sectionAssess": "VALUTARE",
     "sectionRemediate": "RIMEDIARE",
     "sectionReport": "RAPPORTO",
-    "team": "Team"
+    "team": "Team",
+    "scope": "Ambito",
+    "evidence": "Prove",
+    "activity": "Attività"
   },
   "common": {
     "save": "Salva modifiche",
@@ -73,7 +76,8 @@
     "copied": "Copiato!",
     "goToDashboard": "Cruscotto",
     "goToSettings": "Vai alle impostazioni",
-    "reportGenerateFailed": "Generazione del report fallita. Riprovare."
+    "reportGenerateFailed": "Generazione del report fallita. Riprovare.",
+    "neverSaved": "Mai"
   },
   "auth": {
     "signIn": "Accedi a Konforme",
@@ -107,7 +111,26 @@
     "validationPasswordNumber": "La password deve includere un numero",
     "validationConfirmRequired": "Confermi la sua password",
     "validationPasswordsMismatch": "Le password non corrispondono",
-    "validationNameRequired": "Il nome è obbligatorio"
+    "validationNameRequired": "Il nome è obbligatorio",
+    "verifyEmailBanner": "Verifica il tuo indirizzo e-mail per continuare.",
+    "resendVerification": "Reinvia e-mail di verifica",
+    "verificationSent": "E-mail di verifica inviata!",
+    "verifyingEmail": "Verifica e-mail in corso...",
+    "emailVerified": "E-mail verificata!",
+    "emailVerifiedDesc": "Il tuo account è stato verificato con successo.",
+    "verificationFailed": "Verifica fallita",
+    "verificationFailedDesc": "Il link di verifica è invalido o scaduto.",
+    "verifyPendingTitle": "Verifica la tua e-mail",
+    "verifyPendingSent": "Abbiamo inviato un'e-mail di verifica a",
+    "verifyPendingResend": "Reinvia e-mail",
+    "verifyPendingResendIn": "Reinvia tra {{seconds}}s",
+    "verifyPendingWrongEmail": "Modifica e-mail",
+    "verifyPendingUpdateEmail": "Aggiorna e-mail",
+    "verifyPendingSpamHint": "Non la trovi? Controlla la cartella spam.",
+    "verifyPendingVerified": "Verificata! Reindirizzamento...",
+    "verifySuccessClose": "Chiudi questa scheda",
+    "continueSetup": "Continua configurazione",
+    "backToSignIn": "Torna all'accesso"
   },
   "settings": {
     "title": "Impostazioni",
@@ -153,7 +176,46 @@
     "saveScoringWeights": "Salva pesi",
     "before": "Prima",
     "after": "Dopo",
-    "version": "Konforme v1.0.0 · Progettato per la conformità NIS2 · © 2026 Konforme"
+    "version": "Konforme v1.0.0 · Progettato per la conformità NIS2 · © 2026 Konforme",
+    "cloudProviders": "Provider cloud",
+    "cloudProvidersDesc": "Gestisci le connessioni ai provider cloud",
+    "addProvider": "Aggiungi provider",
+    "selectProvider": "Seleziona provider",
+    "noProviders": "Nessun provider cloud",
+    "noProvidersDesc": "Connetti il tuo primo provider cloud per avviare le scansioni tecniche.",
+    "providerAws": "Amazon Web Services",
+    "providerAzure": "Microsoft Azure",
+    "providerConnected": "Connesso",
+    "providerRegion": "Regione",
+    "providerSubscription": "Sottoscrizione",
+    "providerTenant": "Tenant",
+    "removeProvider": "Rimuovi provider",
+    "removeProviderConfirm": "Sei sicuro di voler rimuovere questo provider cloud?",
+    "validateProvider": "Valida credenziali",
+    "validationSuccess": "Credenziali validate con successo!",
+    "validationFailed": "Validazione fallita. Controlla le tue credenziali.",
+    "awsConnectTitle": "Connetti account AWS",
+    "awsConnectDesc": "Distribuisci un ruolo IAM in sola lettura tramite CloudFormation — nessuna chiave di accesso necessaria.",
+    "awsAlias": "Alias",
+    "awsRegion": "Regione",
+    "awsDeployStack": "Distribuisci Stack CloudFormation",
+    "awsStep2Title": "Completa la configurazione in AWS",
+    "awsStep2Line1": "La console CloudFormation si è aperta in una nuova scheda — clicca 'Create stack'",
+    "awsStep2Line2": "Attendi lo stato CREATE_COMPLETE",
+    "awsStep2Line3": "Copia il Role ARN dalla scheda Outputs e incollalo qui sotto",
+    "awsOpenCfConsole": "Riapri la console CloudFormation",
+    "awsRoleArn": "Role ARN",
+    "awsVerifyConnect": "Verifica e Connetti",
+    "awsLegacyTitle": "Aggiungi account AWS (Chiavi di accesso)",
+    "useLegacyKeys": "Usa chiavi di accesso",
+    "useLegacyCredentials": "Usa service principal",
+    "useSecureConnection": "Usa connessione sicura (consigliato)",
+    "azureConnectTitle": "Connetti sottoscrizione Azure",
+    "azureConnectDesc": "Accedi con Microsoft e concedi accesso in sola lettura — nessun segreto necessario.",
+    "azureAlias": "Alias",
+    "azureSubscriptionId": "ID sottoscrizione",
+    "azureConnectViaMicrosoft": "Connetti tramite Microsoft",
+    "azureLegacyTitle": "Aggiungi credenziali Azure (Service Principal)"
   },
   "overview": {
     "title": "Panoramica della conformità NIS2",
@@ -220,7 +282,19 @@
     "peopleTasksDesc": "Monitora formazione dei dipendenti e conferme delle politiche in tutte le campagne",
     "viewCampaigns": "Vedi campagne",
     "questions": "domande",
-    "ofControls": "{{implemented}} di {{count}} controlli"
+    "ofControls": "{{implemented}} di {{count}} controlli",
+    "cloudScores": "Punteggi cloud",
+    "cloudScoresDesc": "Punteggi di conformità per provider dalle scansioni tecniche",
+    "deadlines": "Scadenze",
+    "deadlinesDesc": "Scadenze di conformità in arrivo",
+    "noDeadlines": "Nessuna scadenza in arrivo",
+    "daysRemaining": "{{days}} giorni rimanenti",
+    "deadlinePassed": "Scadenza superata",
+    "countryBadge": "Paese",
+    "entityBadge": "Entità",
+    "noCountrySet": "Nessun paese selezionato",
+    "noCountrySetDesc": "Seleziona il tuo paese nelle Impostazioni per vedere l'autorità NIS2 nazionale.",
+    "selectCountry": "Seleziona paese"
   },
   "assessment": {
     "title": "Valutazione della maturità NIS2",
@@ -407,7 +481,35 @@
     "newScan": "Nuova scansione",
     "demoAccount": "Account demo",
     "comingSoonTitle": "Prossimamente",
-    "comingSoonDesc": "Azure, Google Cloud (GCP) e la scansione dell'infrastruttura on-premises sono sulla nostra roadmap."
+    "comingSoonDesc": "Azure, Google Cloud (GCP) e la scansione dell'infrastruttura on-premises sono sulla nostra roadmap.",
+    "providerAws": "AWS",
+    "providerAzure": "Azure",
+    "azureCredentials": "Credenziali Azure",
+    "addAzureCredential": "Aggiungi credenziali Azure",
+    "addFirstAzureCredential": "Aggiungi le tue prime credenziali Azure",
+    "azureTenantId": "ID Tenant",
+    "azureTenantIdPlaceholder": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+    "azureClientId": "ID Client",
+    "azureClientIdPlaceholder": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+    "azureClientSecret": "Segreto Client",
+    "azureClientSecretPlaceholder": "Il tuo segreto client Azure",
+    "azureSubscriptionId": "ID Sottoscrizione",
+    "azureSubscriptionIdPlaceholder": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+    "azurePermissionsTitle": "Permessi Azure richiesti",
+    "azurePermissionsDesc": "Crea una registrazione app con permessi di lettura sulla tua sottoscrizione Azure.",
+    "azurePermissionsSteps": "Passaggi di configurazione",
+    "viewAzureSteps": "Mostra passaggi Azure",
+    "hideAzureSteps": "Nascondi passaggi Azure",
+    "azureAccessControl": "Controllo accessi",
+    "azureBusinessContinuity": "Continuità operativa",
+    "azureDataProtection": "Protezione dati",
+    "azureEncryption": "Crittografia",
+    "azureNetwork": "Rete",
+    "azureLogging": "Registrazione",
+    "initAzureSession": "Inizializza sessione Azure",
+    "loadingAzureRuleset": "Caricamento regole Azure...",
+    "noAzureCredentialSelected": "Nessuna credenziale Azure selezionata",
+    "subtitle_azure": "Scansiona la tua sottoscrizione Azure per la conformità NIS2"
   },
   "controls": {
     "pageTitle": "Libreria dei controlli",
@@ -479,7 +581,216 @@
     "sendTasksButton": "Invia attività",
     "lastUpdated": "Ultimo aggiornamento:",
     "severityLabel": "Severità",
-    "allSeverities": "Tutte le severità"
+    "allSeverities": "Tutte le severità",
+    "ctrl-001": {
+      "title": "Documento di politica di sicurezza delle informazioni",
+      "description": "Una politica formale di sicurezza delle informazioni approvata dalla direzione e comunicata a tutto il personale. Deve coprire ambito, responsabilità, uso accettabile, classificazione dei dati e risposta agli incidenti."
+    },
+    "ctrl-002": {
+      "title": "Processo annuale di valutazione dei rischi",
+      "description": "Valutazioni periodiche dei rischi per identificare minacce, vulnerabilità e impatti sui servizi critici. Deve utilizzare un framework riconosciuto (ISO 27005, NIST)."
+    },
+    "ctrl-003": {
+      "title": "Registro dei rischi mantenuto e rivisto",
+      "description": "Registro attivo dei rischi che traccia tutti i rischi di cybersicurezza identificati con probabilità, impatto, piani di mitigazione e responsabili."
+    },
+    "ctrl-004": {
+      "title": "Ruoli e responsabilità di sicurezza definiti",
+      "description": "Responsabilità chiare con matrice RACI documentata per le funzioni di sicurezza. Ruoli come CISO, team di sicurezza, proprietari di sistemi devono essere formalmente definiti."
+    },
+    "ctrl-005": {
+      "title": "Piano di risposta agli incidenti documentato",
+      "description": "Processo formale di risposta agli incidenti che copre rilevamento, contenimento, eradicazione, ripristino e lezioni apprese. Deve includere percorsi di escalation e modelli di comunicazione."
+    },
+    "ctrl-006": {
+      "title": "Processo di classificazione ed escalation degli incidenti",
+      "description": "Livelli di severità definiti (Critico, Alto, Medio, Basso) con criteri di escalation chiari, SLA di risposta e requisiti di notifica."
+    },
+    "ctrl-007": {
+      "title": "Registrazione al CSIRT completata",
+      "description": "Organizzazione registrata presso il team nazionale di risposta agli incidenti di sicurezza informatica (CSIRT) per la segnalazione obbligatoria degli incidenti."
+    },
+    "ctrl-008": {
+      "title": "Esercitazione tabletop di risposta agli incidenti condotta (ultimi 12 mesi)",
+      "description": "Test regolari del piano di risposta agli incidenti tramite esercitazioni tabletop o simulazioni."
+    },
+    "ctrl-009": {
+      "title": "Processo di notifica alle autorità entro 24 ore definito",
+      "description": "Processo chiaro di allerta precoce alle autorità entro 24 ore dal rilevamento di un incidente significativo."
+    },
+    "ctrl-010": {
+      "title": "Piano di continuità operativa documentato",
+      "description": "BCP che garantisce la continuità dei servizi critici durante le interruzioni. Deve coprire funzioni critiche, dipendenze, disposizioni alternative e piani di comunicazione."
+    },
+    "ctrl-011": {
+      "title": "Piano di disaster recovery con obiettivi RTO/RPO",
+      "description": "Piano DR con obiettivo di tempo di ripristino (RTO) e obiettivo di punto di ripristino (RPO) definiti per ogni sistema critico."
+    },
+    "ctrl-012": {
+      "title": "Piano DR testato (ultimi 12 mesi)",
+      "description": "Test regolari del piano di disaster recovery tramite simulazioni o test completi di failover."
+    },
+    "ctrl-013": {
+      "title": "Backup dei sistemi critici testati regolarmente",
+      "description": "Test regolari di ripristino per verificare l'integrità dei backup e le procedure di ripristino. Test trimestrali richiesti."
+    },
+    "ctrl-014": {
+      "title": "Processo di valutazione della cybersicurezza dei fornitori",
+      "description": "Processo per valutare le pratiche di cybersicurezza dei fornitori critici, inclusi questionari di sicurezza e requisiti di certificazione."
+    },
+    "ctrl-015": {
+      "title": "Requisiti di sicurezza nei contratti con i fornitori",
+      "description": "Obblighi contrattuali di sicurezza inclusa la notifica di violazione, diritto di audit, protezione dei dati e certificazioni di sicurezza."
+    },
+    "ctrl-016": {
+      "title": "Processo di gestione degli accessi di terze parti",
+      "description": "Approvazione formale, applicazione MFA e monitoraggio degli accessi di terze parti ai sistemi. Revisioni trimestrali degli accessi richieste."
+    },
+    "ctrl-017": {
+      "title": "MFA abilitata su tutti i sistemi critici",
+      "description": "Autenticazione multifattore applicata su tutti i sistemi critici, account amministratore e accesso remoto."
+    },
+    "ctrl-018": {
+      "title": "Cifratura dei dati a riposo e in transito",
+      "description": "Cifratura dei dati sensibili con algoritmi approvati (AES-256, TLS 1.3) per i dati a riposo e in transito."
+    },
+    "ctrl-019": {
+      "title": "Monitoraggio della sicurezza di rete implementato",
+      "description": "Monitoraggio attivo del traffico di rete, rilevamento delle intrusioni e registrazione degli eventi di sicurezza."
+    },
+    "ctrl-020": {
+      "title": "Processo di gestione delle vulnerabilità",
+      "description": "Scansioni regolari delle vulnerabilità, gestione delle patch e tracciamento della remediation per tutti i sistemi."
+    },
+    "ctrl-021": {
+      "title": "Politica di crittografia e gestione delle chiavi",
+      "description": "Politica che disciplina gli algoritmi di cifratura, il ciclo di vita delle chiavi e l'archiviazione sicura delle chiavi tramite KMS o HSM."
+    },
+    "ctrl-022": {
+      "title": "Processo di gestione delle patch",
+      "description": "Processo sistematico per l'applicazione delle patch di sicurezza ai sistemi operativi, applicazioni e firmware."
+    },
+    "ctrl-023": {
+      "title": "Formazione sulla consapevolezza della sicurezza completata da tutto il personale",
+      "description": "Formazione annuale obbligatoria sulla consapevolezza della sicurezza che copre phishing, sicurezza delle password, gestione dei dati e segnalazione degli incidenti."
+    },
+    "ctrl-024": {
+      "title": "Politica di sicurezza delle informazioni riconosciuta da tutto il personale",
+      "description": "Tutti i dipendenti devono leggere e riconoscere formalmente la politica di sicurezza delle informazioni annualmente."
+    },
+    "ctrl-025": {
+      "title": "Processo di onboarding sicuro per i nuovi dipendenti",
+      "description": "Checklist di sicurezza per l'onboarding che include verifiche dei precedenti, firma NDA, formazione sulla sicurezza e provisioning degli accessi."
+    },
+    "ctrl-026": {
+      "title": "Revoca degli accessi nello stesso giorno di uscita del dipendente",
+      "description": "Processo che garantisce la disattivazione di tutti gli accessi al sistema entro 1 ora dall'uscita del dipendente. Ritiro delle attrezzature e colloquio di uscita."
+    },
+    "ctrl-027": {
+      "title": "Verifiche dei precedenti per accesso privilegiato condotte",
+      "description": "Verifica dei precedenti per ruoli con diritti di amministratore o accesso a dati sensibili (amministratori di sistema, DBA, finanza, risorse umane)."
+    },
+    "ctrl-028": {
+      "title": "Revisione annuale degli accessi completata",
+      "description": "Certificazione trimestrale degli accessi in cui i responsabili esaminano e certificano i diritti di accesso dei membri del proprio team."
+    },
+    "ctrl-029": {
+      "title": "Approvazione delle misure di cybersicurezza da parte dell'organo di gestione",
+      "description": "L'organo di gestione ha formalmente approvato le misure di gestione del rischio di cybersicurezza come richiesto dall'articolo 20(1) di NIS2. L'approvazione è documentata nei verbali del consiglio coprendo propensione al rischio, strategia di cybersicurezza, allocazione del budget e struttura di responsabilità. L'approvazione deve essere rinnovata in caso di cambiamenti significativi o almeno annualmente."
+    },
+    "ctrl-030": {
+      "title": "Supervisione e reportistica sulla cybersicurezza dell'organo di gestione",
+      "description": "L'organo di gestione riceve e rivede i rapporti sullo stato della cybersicurezza a intervalli regolari (minimo trimestrali) coprendo metriche chiave di rischio, incidenti recenti, stato di conformità, tassi di completamento della formazione e minacce emergenti. Ciò garantisce una visibilità continua a livello di consiglio e consente un processo decisionale informato come richiesto dagli obblighi di supervisione dell'articolo 20(1) di NIS2."
+    },
+    "ctrl-031": {
+      "title": "Formazione sulla cybersicurezza dell'organo di gestione",
+      "description": "Tutti i membri dell'organo di gestione hanno completato una formazione sulla cybersicurezza sufficiente per identificare i rischi, valutare le misure di gestione del rischio di cybersicurezza e comprendere il loro impatto sui servizi dell'entità. La formazione deve essere rinnovata annualmente e coprire il panorama attuale delle minacce, gli obblighi normativi e le responsabilità a livello di consiglio. Si tratta di un requisito obbligatorio ai sensi dell'articolo 20(2) di NIS2."
+    },
+    "ctrl-032": {
+      "title": "Ruolo di leadership nella sicurezza designato",
+      "description": "Un Chief Information Security Officer (CISO) designato o un ruolo equivalente di leadership nella sicurezza è formalmente nominato con riporto diretto all'alta direzione o all'organo di gestione. Il ruolo ha responsabilità chiaramente definite, autorità decisionale per le questioni di cybersicurezza e un budget dedicato."
+    },
+    "ctrl-033": {
+      "title": "Programma di audit di sicurezza e penetration testing",
+      "description": "Audit di sicurezza regolari e penetration test da parte di tester indipendenti qualificati per validare l'efficacia delle misure di gestione del rischio di cybersicurezza. I test devono coprire le superfici di attacco esterne e interne dei sistemi critici. Tutti i risultati sono documentati con valutazioni di severità e tracciati fino alla remediation con ri-test. Implementa il requisito dell'articolo 21(2)(f) di NIS2 di valutare l'efficacia delle misure."
+    },
+    "ctrl-034": {
+      "title": "Programma di KPI e metriche di cybersicurezza",
+      "description": "Indicatori chiave di prestazione (KPI) di cybersicurezza definiti vengono monitorati regolarmente e riportati all'organo di gestione per misurare l'efficacia delle misure di gestione del rischio. I KPI includono indicatori anticipatori (completamento formazione, conformità patch, copertura MFA) e indicatori ritardati (incidenti, tempo medio di rilevamento, tempo medio di risposta). Le tendenze vengono analizzate per promuovere il miglioramento continuo."
+    },
+    "ctrl-035": {
+      "title": "Tracciamento della remediation dei risultati di audit e valutazione",
+      "description": "Tutti i risultati di audit di sicurezza, penetration test, valutazioni dei rischi e revisioni di conformità sono registrati in un registro centrale con responsabili assegnati, scadenze di remediation target e stato attuale. I risultati aperti vengono revisionati almeno mensilmente. I risultati critici e alti scaduti vengono escalati alla direzione. La chiusura richiede evidenza della remediation e verifica."
+    },
+    "ctrl-036": {
+      "title": "Processo di miglioramento continuo",
+      "description": "Un processo documentato di miglioramento continuo garantisce che le lezioni apprese da incidenti, audit, penetration test, intelligence sulle minacce e cambiamenti normativi vengano sistematicamente reinseriti negli aggiornamenti delle politiche, miglioramenti dei controlli e rivalutazioni dei rischi. Ciò chiude il ciclo di feedback tra valutazione dell'efficacia e gestione del rischio, garantendo che le misure evolvano con il panorama delle minacce."
+    },
+    "ctrl-037": {
+      "title": "Programma di simulazione e risposta al phishing",
+      "description": "Campagne simulate di phishing vengono condotte almeno trimestralmente per testare la consapevolezza dei dipendenti e misurare la preparazione nel mondo reale. I tassi di clic vengono tracciati per campagna e per individuo. I dipendenti che falliscono ripetutamente ricevono formazione aggiuntiva mirata. I risultati e le tendenze vengono riportati alla direzione per informare le priorità formative."
+    },
+    "ctrl-038": {
+      "title": "Livello base di igiene informatica applicato",
+      "description": "Le pratiche base di igiene informatica sono documentate nelle politiche e applicate tramite controlli tecnici dove possibile. Copre aggiornamenti software automatici, timeout di blocco schermo (massimo 5 minuti), uso di gestori di password, politica di scrivania pulita e restrizioni sui supporti rimovibili. L'articolo 21(2)(g) di NIS2 richiede esplicitamente pratiche base di igiene informatica come misura minima."
+    },
+    "ctrl-039": {
+      "title": "Classificazione dei dati con requisiti di cifratura",
+      "description": "Uno schema di classificazione dei dati definisce i livelli di sensibilità (Pubblico, Interno, Riservato, Ristretto) con requisiti di cifratura corrispondenti per livello. Le linee guida di classificazione vengono fornite ai proprietari dei dati per un'applicazione coerente. Lo schema viene rivisto annualmente e aggiornato quando cambiano i requisiti aziendali o normativi. Supporta il requisito dell'articolo 21(2)(h) di NIS2 per le politiche di crittografia."
+    },
+    "ctrl-040": {
+      "title": "Autenticazione continua o adattiva per accesso ad alto rischio",
+      "description": "I meccanismi di autenticazione continua o adattiva adeguano i requisiti di sicurezza basandosi su segnali di rischio come posizione, postura del dispositivo, comportamento dell'utente e orario di accesso per scenari ad alto rischio. I protocolli di autenticazione legacy (NTLM, autenticazione di base) che aggirano l'autenticazione multifattore sono bloccati. L'articolo 21(2)(j) di NIS2 fa esplicito riferimento alle soluzioni di autenticazione continua."
+    },
+    "ctrl-041": {
+      "title": "Comunicazioni vocali, video e testuali protette",
+      "description": "Canali di comunicazione crittografati end-to-end sono approvati e utilizzati per comunicazioni aziendali sensibili includendo voce, video e testo. Un elenco di strumenti approvati viene mantenuto, comunicato a tutto il personale e rivisto periodicamente. Gli strumenti vengono verificati per fornire crittografia end-to-end. L'articolo 21(2)(j) di NIS2 richiede esplicitamente comunicazioni vocali, video e testuali protette."
+    },
+    "ctrl-042": {
+      "title": "Sistema di comunicazione di emergenza protetto",
+      "description": "Un sistema di comunicazione di emergenza prestabilito è operativo e può funzionare in modo indipendente se i canali di comunicazione primari vengono compromessi durante un incidente di cybersicurezza. Le liste dei contatti vengono mantenute e sono accessibili offline. Il sistema viene testato durante gli esercizi di continuità operativa e risposta agli incidenti. L'articolo 21(2)(j) di NIS2 richiede esplicitamente sistemi di comunicazione di emergenza protetti all'interno dell'entità."
+    },
+    "ctrl-043": {
+      "title": "Prevenzione e monitoraggio dell'elusione MFA",
+      "description": "Sono presenti controlli per prevenire e rilevare attacchi di elusione dell'autenticazione multifattore inclusi affaticamento MFA (push bombing), furto di token adversary-in-the-middle e attacchi SIM swap. La limitazione della frequenza delle notifiche push è attivata. L'MFA basata su SMS è deprecata a favore di metodi resistenti al phishing come token hardware FIDO2 o passkey. Avvisi di monitoraggio sui tentativi di elusione MFA."
+    }
+  },
+  "scope": {
+    "pageTitle": "Ambito e processi aziendali",
+    "pageSubtitle": "Definisci i tuoi processi aziendali critici e mappa i controlli NIS2 applicabili",
+    "viewProcesses": "Processi",
+    "viewSoA": "Dichiarazione di applicabilità",
+    "addProcess": "Aggiungi processo",
+    "addFirstProcess": "Aggiungi il tuo primo processo",
+    "statProcesses": "Processi aziendali",
+    "statCritical": "Processi critici",
+    "statControls": "Controlli disponibili",
+    "createProcess": "Nuovo processo aziendale",
+    "editProcess": "Modifica processo aziendale",
+    "fieldName": "Nome del processo",
+    "fieldNamePlaceholder": "es. Elaborazione dati clienti",
+    "fieldDescription": "Descrizione",
+    "fieldDescriptionPlaceholder": "Cosa fa questo processo e perché è importante?",
+    "fieldOwner": "Responsabile",
+    "fieldOwnerPlaceholder": "es. CTO, Responsabile IT",
+    "fieldCritical": "Processo aziendale critico",
+    "emptyTitle": "Nessun processo aziendale ancora",
+    "emptyDescription": "Inizia definendo i tuoi processi aziendali critici. Questo ti aiuta a determinare quali controlli NIS2 si applicano alla tua organizzazione.",
+    "badgeCritical": "CRITICO",
+    "owner": "Responsabile",
+    "controlsLinked": "controlli collegati",
+    "applicable": "applicabile",
+    "controlMapping": "Mappatura dei controlli",
+    "applicableYes": "Applicabile",
+    "applicableNo": "Non applicabile",
+    "soaTitle": "Dichiarazione di applicabilità",
+    "soaDescription": "Panoramica di tutti i controlli e della loro applicabilità ai tuoi processi aziendali.",
+    "soaEmpty": "Aggiungi processi aziendali e collega controlli per generare la dichiarazione di applicabilità.",
+    "soaColControl": "ID controllo",
+    "soaColTitle": "Titolo",
+    "soaColApplicable": "Applicabile",
+    "soaColProcesses": "Processi collegati",
+    "soaColJustification": "Giustificazione"
   },
   "remediation": {
     "pageTitle": "Attività di rimediazione",
@@ -522,7 +833,47 @@
     "dismissButton": "Archivia",
     "createdLabel": "Creato:",
     "assignedLabel": "Assegnato:",
-    "dueLabel": "Scadenza:"
+    "dueLabel": "Scadenza:",
+    "closeButton": "Chiudi",
+    "closeTitle": "Chiudi Attività",
+    "closeDescription": "Fornisci una nota di chiusura o una prova per chiudere questa attività.",
+    "closureNotePlaceholder": "Descrivi come è stato risolto...",
+    "closeConfirm": "Chiudi Attività",
+    "closureNoteLabel": "Chiusura",
+    "dismissTitle": "Ignora Attività",
+    "dismissDescription": "Fornisci un motivo per ignorare questa attività.",
+    "dismissReasonPlaceholder": "Motivo per ignorare...",
+    "dismissConfirm": "Ignora",
+    "dismissedReasonLabel": "Ignorata",
+    "rescheduleButton": "Riprogramma",
+    "rescheduleTitle": "Riprogramma Attività",
+    "rescheduleWarning": "Questa attività è già stata riprogrammata {{count}} volte.",
+    "newDueDate": "Nuova Data di Scadenza",
+    "rescheduleCategory": "Categoria",
+    "categoryResource": "Vincolo di Risorse",
+    "categoryDependency": "Dipendenza",
+    "categoryScopeChange": "Cambio di Ambito",
+    "categoryOther": "Altro",
+    "rescheduleReason": "Motivo",
+    "rescheduleReasonPlaceholder": "Perché viene riprogrammata?",
+    "rescheduleConfirm": "Riprogramma",
+    "createPlanTitle": "Crea Piano di Rimedio",
+    "createPlanButton": "Nuovo Piano",
+    "createPlanConfirm": "Crea Piano",
+    "planTitleLabel": "Titolo del Piano",
+    "planTitlePlaceholder": "es. Piano di Miglioramento della Sicurezza di Rete",
+    "treatmentTypeLabel": "Tipo di Trattamento",
+    "treatmentMitigate": "Mitigare",
+    "treatmentTransfer": "Trasferire",
+    "treatmentAvoid": "Evitare",
+    "treatmentAccept": "Accettare",
+    "targetDateLabel": "Data Obiettivo",
+    "planDescriptionPlaceholder": "Descrivi il piano...",
+    "plansHeading": "Piani di Trattamento",
+    "tasks": "attività",
+    "autoGenerated": "Auto",
+    "chronicSlip": "Ritardo cronico",
+    "rescheduled": "{{count}}x riprogrammata"
   },
   "reports": {
     "pageTitle": "Report di conformità",
@@ -636,7 +987,74 @@
     "employeeEmailsPlaceholder": "Inserisca un'e-mail per riga",
     "deadlineLabel": "Scadenza",
     "cancelButton": "Annulla",
-    "createButtonLabel": "Crea campagna"
+    "createButtonLabel": "Crea campagna",
+    "policyTemplateLabel": "Modello di politica",
+    "policyTemplatePlaceholder": "Seleziona modello...",
+    "policyTemplateNone": "Nessun modello (personalizzato)",
+    "policyTemplateRecommended": "Consigliato",
+    "policyTemplateOther": "Altri modelli",
+    "tabs": {
+      "campaigns": "Campagne",
+      "continuous": "Conformità Continua",
+      "myTasks": "Le Mie Attività",
+      "history": "Cronologia"
+    },
+    "continuous": {
+      "healthScore": "Punteggio di Salute",
+      "overdue": "Scadute",
+      "totalActive": "Attività Attive",
+      "completedPeriod": "Completate in questo Periodo",
+      "article21Coverage": "Copertura Articolo 21(2)",
+      "article21Subtitle": "Conformità in tutte le 10 sottosezioni NIS2",
+      "tasks": "attività",
+      "emptyTitle": "Nessuna attività di conformità continua",
+      "emptyDescription": "Configura la baseline per creare ~50 attività ricorrenti che coprono tutte le sottosezioni dell'Articolo 21(2) NIS2.",
+      "setupBaseline": "Configura Baseline",
+      "refreshBaseline": "Aggiorna Baseline",
+      "taskList": "Attività",
+      "allPhases": "Tutte le Fasi",
+      "allTypes": "Tutti i Tipi",
+      "baseline": "Baseline",
+      "noMatchingTasks": "Nessuna attività corrisponde ai filtri attuali"
+    },
+    "myTasks": {
+      "overdue": "Scadute",
+      "pending": "In attesa",
+      "completed": "Completate",
+      "complete": "Completa",
+      "emptyTitle": "Nessuna attività assegnata",
+      "emptyDescription": "Le attività appariranno qui quando la baseline sarà configurata o quando ti saranno assegnate.",
+      "confirmCompletion": "Conferma Completamento",
+      "attestationResponse": "Risposta di Attestazione (opzionale)",
+      "responsePlaceholder": "Aggiungi note o commenti...",
+      "confirmButton": "Confermo",
+      "alreadyCompleted": "Già completata per questo periodo"
+    },
+    "history": {
+      "title": "Cronologia Completamenti",
+      "subtitle": "Visualizza i completamenti passati per ogni attività",
+      "emptyTitle": "Nessuna attività",
+      "emptyDescription": "La cronologia apparirà qui quando le attività saranno configurate e completate.",
+      "noCompletions": "Nessun completamento registrato per questa attività."
+    },
+    "taskTypes": {
+      "attestation": "Attestazione",
+      "process_check": "Verifica Processo",
+      "evidence_submission": "Invio Prove",
+      "policy_ack": "Accettazione Policy",
+      "training": "Formazione"
+    },
+    "frequencies": {
+      "one_off": "Una tantum",
+      "monthly": "Mensile",
+      "quarterly": "Trimestrale",
+      "annual": "Annuale"
+    },
+    "status": {
+      "completed": "Completata",
+      "overdue": "Scaduta",
+      "pending": "In attesa"
+    }
   },
   "humanFactor": {
     "pageTitle": "Valutazione del fattore umano",
@@ -811,7 +1229,81 @@
     "tipAssessment": "Prova le schede di valutazione per Tecnico, Organizzativo e Fattore umano",
     "tipReports": "Genera il tuo primo rapporto di conformità",
     "goToDashboard": "Vai al cruscotto",
-    "back": "Indietro"
+    "back": "Indietro",
+    "stepCountry": "Paese",
+    "stepEntity": "Tipo di entità",
+    "stepCloud": "Provider cloud",
+    "stepScoring": "Punteggio",
+    "stepReady": "Pronto",
+    "countryTitle": "Seleziona il tuo paese",
+    "countrySubtitle": "Scegli lo Stato membro dell'UE in cui è stabilita la tua organizzazione. Questo determina quale recepimento nazionale NIS2 si applica.",
+    "countrySearchPlaceholder": "Cerca paesi...",
+    "countryTransposed": "Recepita",
+    "countryPartial": "Parzialmente recepita",
+    "countryPending": "Recepimento in corso",
+    "countryNotTransposed": "Non recepita",
+    "countryUnknown": "Stato sconosciuto",
+    "countryLaw": "Legge nazionale",
+    "countryAuthority": "Autorità competente",
+    "countryEffective": "In vigore",
+    "entityTitle": "Classifica la tua entità",
+    "entitySubtitle": "La NIS2 distingue tra entità essenziali e importanti. La tua classificazione determina gli obblighi di segnalazione, il livello di supervisione e le soglie sanzionatorie.",
+    "entityEssential": "Essenziale",
+    "entityImportant": "Importante",
+    "entitySectors": "Settori",
+    "entityObligations": "Obblighi",
+    "entityPenalties": "Sanzioni",
+    "entitySkip": "Non sono ancora sicuro — salta per ora",
+    "cloudTitle": "Connetti un provider cloud",
+    "cloudSubtitle": "Collega la tua infrastruttura cloud per la scansione tecnica automatizzata. Puoi connettere più provider.",
+    "cloudAws": "Amazon Web Services",
+    "cloudAzure": "Microsoft Azure",
+    "cloudAwsDesc": "Connettiti con le chiavi di accesso IAM per scansionare la tua infrastruttura AWS.",
+    "cloudAzureDesc": "Connettiti con un service principal per scansionare la tua sottoscrizione Azure.",
+    "cloudConnected": "Connesso",
+    "cloudConnect": "Connetti",
+    "cloudSkip": "Salta — mi connetterò più tardi",
+    "cloudIamPolicyTitle": "Visualizza la policy IAM richiesta (sola lettura)",
+    "cloudIamPolicyDesc": "Crea un utente IAM con accesso programmatico e allega questa policy. Konforme richiede solo permessi di sola lettura per scansionare la tua infrastruttura.",
+    "cloudAwsAlias": "Alias (es. Produzione)",
+    "cloudAwsAccessKey": "Access Key ID",
+    "cloudAwsSecretKey": "Secret Access Key",
+    "cloudAwsSessionToken": "Session Token (opzionale)",
+    "cloudAwsRegion": "Regione",
+    "cloudAzureTenantId": "Tenant ID",
+    "cloudAzureClientId": "Client ID (App ID)",
+    "cloudAzureClientSecret": "Client Secret",
+    "cloudAzureSubscriptionId": "Subscription ID",
+    "cloudAzureAlias": "Alias (es. Produzione)",
+    "cloudValidating": "Validazione credenziali in corso...",
+    "cloudValidationFailed": "Validazione delle credenziali fallita. Controlla i valori inseriti.",
+    "cloudAdded": "Provider cloud connesso con successo!",
+    "cloudAwsRoleDesc": "Distribuisci un ruolo IAM in sola lettura tramite CloudFormation — nessuna chiave necessaria.",
+    "cloudAwsStep2Title": "Completa la configurazione in AWS",
+    "cloudAwsStep2Line1": "Clicca 'Create stack' nella console CloudFormation",
+    "cloudAwsStep2Line2": "Attendi lo stato CREATE_COMPLETE",
+    "cloudAwsStep2Line3": "Copia il Role ARN da Outputs e incollalo qui sotto",
+    "cloudAwsOpenConsole": "Riapri la console CloudFormation",
+    "cloudAwsRoleArn": "Role ARN",
+    "cloudAwsDeployStack": "Distribuisci Stack in AWS",
+    "cloudAwsVerify": "Verifica e Connetti",
+    "cloudAzureOAuthDesc": "Accedi con Microsoft e concedi accesso in sola lettura — nessun segreto necessario.",
+    "cloudAzureConnectViaMicrosoft": "Connetti tramite Microsoft",
+    "scoringTitle": "Preferenze di punteggio",
+    "scoringSubtitle": "Scegli come i 3 pilastri di conformità vengono ponderati nel tuo punteggio complessivo. Puoi modificarlo in seguito nelle Impostazioni.",
+    "scoringSkip": "Salta — usa i pesi predefiniti",
+    "readyTitle": "Tutto pronto!",
+    "readySubtitle": "Il tuo spazio di lavoro Konforme è configurato e pronto all'uso.",
+    "readyCountry": "Paese",
+    "readyEntity": "Tipo di entità",
+    "readyCloud": "Provider cloud",
+    "readyScoring": "Punteggio",
+    "readyNoCountry": "Non selezionato",
+    "readyNoEntity": "Non classificato",
+    "readyNoCloud": "Nessuno connesso",
+    "readyCloudCount": "{{count}} connesso/i",
+    "readyDefaultScoring": "Bilanciato (40/35/25)",
+    "readyCustomScoring": "{{technical}}% / {{assessment}}% / {{controls}}%"
   },
   "resetPassword": {
     "pageTitle": "Reimposta password",
@@ -855,55 +1347,251 @@
     "dismissAriaLabel": "Chiudi banner"
   },
   "questions": {
-    "nis2-020-01": { "question": "L'organo di gestione ha approvato formalmente le misure di gestione del rischio di cybersicurezza?", "description": "L'Articolo 20 di NIS2 richiede che l'organo di gestione approvi e supervisioni le misure di gestione del rischio di cybersicurezza.", "guidance": "Presenti la strategia di cybersicurezza al consiglio di amministrazione. Documenti l'approvazione nei verbali. Includa propensione al rischio, budget e KPI." },
-    "nis2-020-02": { "question": "L'organo di gestione rivede i rapporti sullo stato della cybersicurezza almeno trimestralmente?", "description": "I rapporti regolari a livello di consiglio assicurano visibilità continua della postura di cybersicurezza e dei rischi emergenti.", "guidance": "Produca dashboard trimestrali: metriche chiave, incidenti recenti, stato di conformità, completamento formazione, risultati di audit." },
-    "nis2-020-03": { "question": "I membri dell'organo di gestione hanno completato la formazione in cybersicurezza per il loro ruolo di supervisione?", "description": "NIS2 impone che i membri dell'organo di gestione intraprendano formazione per acquisire conoscenze sufficienti a identificare i rischi.", "guidance": "Pianifichi briefing annuali di cybersicurezza per i dirigenti. Copra il panorama delle minacce, gli obblighi normativi e le responsabilità del consiglio." },
-    "nis2-020-04": { "question": "Esiste un CISO designato o equivalente con riporto diretto alla dirigenza?", "description": "Una chiara responsabilità richiede un leader della sicurezza dedicato con autorità e visibilità a livello dirigenziale.", "guidance": "Nomini un CISO che riporti al CEO o al consiglio. Definisca responsabilità, autorità e budget per iscritto." },
-    "nis2-21a-01": { "question": "Esiste una politica formale di sicurezza delle informazioni rivista almeno annualmente?", "description": "Una politica SI documentata è la base. Deve essere rivista e aggiornata per riflettere i cambiamenti nelle minacce e nel business.", "guidance": "Crei o aggiorni la politica SI coprendo ambito, obiettivi, ruoli, uso accettabile, classificazione e calendario di revisione." },
-    "nis2-21a-02": { "question": "Viene condotta una valutazione annuale dei rischi utilizzando una metodologia riconosciuta (ISO 27005, NIST RMF)?", "description": "La valutazione sistematica dei rischi identifica e prioritizza le minacce. Un framework riconosciuto assicura completezza.", "guidance": "Adotti ISO 27005 o NIST RMF. Documenti asset, minacce, vulnerabilità, probabilità, impatto e piani di trattamento." },
-    "nis2-21a-03": { "question": "I rischi di cybersicurezza sono nel registro dei rischi aziendali con responsabili e piani di trattamento?", "description": "I rischi cyber devono essere integrati nella gestione dei rischi aziendali, non isolati nell'IT.", "guidance": "Aggiunga i rischi cyber al registro dei rischi aziendali. Valuti per probabilità e impatto. Assegni responsabili. Riveda trimestralmente." },
-    "nis2-21a-04": { "question": "I ruoli e le responsabilità di sicurezza sono chiaramente definiti e comunicati (matrice RACI)?", "description": "Responsabilità chiare prevengono lacune. Una matrice RACI mappa chi è Responsabile, Approvatore, Consultato e Informato.", "guidance": "Crei una matrice RACI di sicurezza. Comunichi i ruoli durante l'inserimento e le revisioni annuali delle politiche." },
-    "nis2-21b-01": { "question": "Esiste un piano di risposta agli incidenti documentato che copra dal rilevamento alle lezioni apprese?", "description": "Un IRP completo copre preparazione, rilevamento, contenimento, eradicazione, ripristino e revisione post-incidente.", "guidance": "Documenti l'IRP con fasi, ruoli, modelli di comunicazione e percorsi di escalation. Testi annualmente." },
-    "nis2-21b-02": { "question": "Sono definiti livelli di severità degli incidenti con percorsi di escalation e SLA di risposta?", "description": "La classificazione assicura una risposta proporzionata. Gli SLA stabiliscono aspettative per triage e risoluzione.", "guidance": "Definisca livelli di severità (P1-P4). Mappi percorsi di escalation. Fissi SLA: P1 entro 1 ora, P2 entro 4 ore." },
-    "nis2-21b-03": { "question": "È registrato presso il suo CSIRT nazionale e ha testato il processo di notifica entro 24 ore?", "description": "NIS2 richiede un allarme precoce al CSIRT entro 24 ore da un incidente significativo.", "guidance": "Si registri presso il CSIRT nazionale. Documenti il processo di notifica. Conduca un esercizio tabletop testando la notifica in 24h." },
-    "nis2-21b-04": { "question": "Esiste un registro degli incidenti che documenta tutti gli eventi, le indagini e le revisioni post-incidente?", "description": "Un registro dimostra responsabilità, consente l'analisi delle tendenze e supporta i rapporti normativi.", "guidance": "Usi un sistema di ticketing per registrare tutti gli incidenti. Registri: data, segnalatore, severità, indagine, risoluzione, lezioni apprese." },
-    "nis2-21b-05": { "question": "Il piano di risposta agli incidenti è stato testato attraverso esercizi tabletop o simulazioni negli ultimi 12 mesi?", "description": "Un IRP non testato può fallire sotto pressione. I test regolari validano procedure, ruoli e flussi di comunicazione.", "guidance": "Conduca almeno esercizi tabletop annuali simulando scenari realistici. Includa team interfunzionali. Documenti i risultati e aggiorni l'IRP." },
-    "nis2-21c-01": { "question": "Esiste un BCP documentato che identifica funzioni critiche, dipendenze e priorità di ripristino?", "description": "Un BCP assicura che l'organizzazione possa mantenere le operazioni essenziali durante e dopo un'interruzione.", "guidance": "Conduca una BIA per identificare le funzioni critiche. Documenti dipendenze, priorità di ripristino e piani di comunicazione." },
-    "nis2-21c-02": { "question": "Esistono piani DR con RTO/RPO definiti per tutti i sistemi critici?", "description": "Recovery Time Objective e Recovery Point Objective definiscono tempi di inattività e perdita di dati accettabili.", "guidance": "Definisca RTO/RPO per sistema critico. Documenti le procedure DR includendo passaggi di failover e team responsabili." },
-    "nis2-21c-03": { "question": "I piani BCP/DR sono stati testati negli ultimi 12 mesi (tabletop, simulazione o failover)?", "description": "I piani non testati possono fallire quando necessari. I test regolari validano le procedure e creano automatismi.", "guidance": "Pianifichi test BCP/DR annuali. Inizi con esercizi tabletop, progredisca a test di failover completi per i sistemi critici." },
-    "nis2-21c-04": { "question": "I ripristini dei backup vengono testati regolarmente e l'integrità dei backup verificata?", "description": "I backup sono utili solo se possono essere ripristinati. I test regolari verificano l'integrità dei dati e le procedure di recupero.", "guidance": "Testi il ripristino dei backup mensilmente per i sistemi critici. Verifichi l'integrità dei dati. Documenti i risultati e rimedi i guasti." },
-    "nis2-21c-05": { "question": "Esiste un piano di comunicazione di crisi che copra notifica interna, segnalazione normativa e gestione dei media?", "description": "Durante una crisi, la comunicazione chiara è fondamentale. Ritardi o disinformazione peggiorano l'impatto e possono violare i requisiti di notifica NIS2.", "guidance": "Documenti modelli di comunicazione, designazione del portavoce, catene di notifica e procedure di gestione dei media. Testi durante gli esercizi BCP." },
-    "nis2-21d-01": { "question": "Esiste un processo formale per valutare la postura di cybersicurezza dei fornitori?", "description": "Gli attacchi alla catena di fornitura sono un vettore primario. Valutare i fornitori prima dell'impegno riduce il rischio di terze parti.", "guidance": "Richieda ai fornitori di compilare questionari di sicurezza. Esamini report SOC 2/ISO 27001. Valuti annualmente." },
-    "nis2-21d-02": { "question": "I contratti includono obblighi di sicurezza allineati a NIS2 (notifica di violazione, diritti di audit)?", "description": "Gli obblighi contrattuali assicurano che i fornitori mantengano standard di sicurezza e la notifichino degli incidenti.", "guidance": "Aggiunga clausole contrattuali: notifica di violazione entro 24h, diritto di audit, assicurazione, residenza dei dati, approvazione dei sub-responsabili." },
-    "nis2-21d-03": { "question": "Esiste un registro delle integrazioni di terze parti, livelli di accesso e dati trattati?", "description": "Non può proteggere ciò che non conosce. Un registro completo consente la valutazione dei rischi e il controllo degli accessi.", "guidance": "Inventari tutti gli strumenti SaaS, API, connessioni fornitori. Documenti: dati accessibili, responsabile, dettagli contrattuali, data di revisione." },
-    "nis2-21d-04": { "question": "L'accesso di terze parti richiede approvazione, MFA, limiti di tempo e monitoraggio?", "description": "L'accesso non controllato dei fornitori è un vettore di violazione comune. Controlli rigorosi limitano l'esposizione.", "guidance": "Richieda approvazione formale per l'accesso dei fornitori. Imponga MFA, fissi sessioni a tempo limitato, abiliti la registrazione di audit." },
-    "nis2-21e-01": { "question": "Esiste una politica formale di gestione delle vulnerabilità con tempistiche di rimediazione?", "description": "Una politica definisce come le vulnerabilità vengono identificate, valutate, prioritizzate e rimediate entro tempistiche stabilite.", "guidance": "Definisca SLA di rimediazione: Critico 24h, Alto 7g, Medio 30g, Basso 90g. Monitori la conformità. Usi CVSS per la valutazione." },
-    "nis2-21e-02": { "question": "I requisiti di sicurezza vengono verificati durante l'acquisizione, lo sviluppo e la manutenzione dei sistemi?", "description": "La sicurezza deve essere integrata nel SDLC, non aggiunta dopo. I requisiti devono essere verificati in ogni fase.", "guidance": "Integri gate di sicurezza nel SDLC: modellazione delle minacce, revisione del codice sicuro, SAST/DAST, test di penetrazione prima del rilascio." },
-    "nis2-21e-03": { "question": "Esiste un processo di divulgazione responsabile delle vulnerabilità e monitoraggio delle dipendenze?", "description": "Un processo di divulgazione gestisce le vulnerabilità segnalate. Il monitoraggio delle dipendenze rileva CVE noti nelle librerie.", "guidance": "Pubblichi una security.txt / politica di divulgazione delle vulnerabilità. Monitori le dipendenze con Dependabot/Snyk. Riveda settimanalmente." },
-    "nis2-21e-04": { "question": "Le vulnerabilità critiche/alte vengono rimediate entro gli SLA definiti?", "description": "Identificare le vulnerabilità è utile solo se vengono corrette. La conformità agli SLA dimostra maturità operativa.", "guidance": "Monitori le metriche di conformità SLA. Escali le vulnerabilità critiche/alte scadute alla dirigenza. Riferisca mensilmente." },
-    "nis2-21e-05": { "question": "Sono integrati strumenti di scansione di sicurezza automatizzati (SAST, DAST, scansione dipendenze) nella pipeline CI/CD?", "description": "Le revisioni manuali di sicurezza non scalano. La scansione automatizzata rileva le vulnerabilità comuni in modo precoce e coerente.", "guidance": "Integri SAST (es. SonarQube, Semgrep) e scansione dipendenze (Dependabot, Snyk) in CI/CD. Faccia fallire le build sui risultati critici." },
-    "nis2-21f-01": { "question": "I controlli vengono testati tramite audit, test di penetrazione o esercizi red team?", "description": "I test validano che i controlli funzionino come previsto. Senza test, la conformità è teorica.", "guidance": "Conduca test di penetrazione annuali. Esegua audit interni trimestrali. Consideri esercizi red team per i sistemi critici." },
-    "nis2-21f-02": { "question": "I KPI di cybersicurezza vengono monitorati (MTTD, MTTR, conformità delle patch, ecc.)?", "description": "I KPI forniscono una misurazione oggettiva della postura di sicurezza e identificano le aree che necessitano miglioramento.", "guidance": "Monitori: MTTD, MTTR, tasso di conformità delle patch, tasso di clic phishing, completamento formazione, conteggio vulnerabilità aperte." },
-    "nis2-21f-03": { "question": "I risultati degli audit vengono monitorati fino alla rimediazione con responsabili e scadenze?", "description": "I risultati degli audit senza follow-up non forniscono valore. Il monitoraggio assicura responsabilità e chiusura.", "guidance": "Registri tutti i risultati degli audit in un tracker. Assegni responsabili e scadenze. Riveda i progressi mensilmente. Escali gli elementi scaduti." },
-    "nis2-21f-04": { "question": "Un processo di miglioramento continuo alimenta audit/incidenti/intelligence delle minacce negli aggiornamenti delle politiche?", "description": "Le lezioni apprese devono guidare i miglioramenti delle politiche e dei controlli. Questo chiude il ciclo di feedback.", "guidance": "Dopo audit e incidenti maggiori, aggiorni le politiche e i controlli pertinenti. Documenti i cambiamenti e le motivazioni." },
-    "nis2-21g-01": { "question": "La formazione obbligatoria sulla sicurezza viene fornita all'assunzione e rinnovata annualmente?", "description": "Tutto il personale deve ricevere formazione di base sulla sicurezza. Il rinnovo annuale mantiene le conoscenze aggiornate.", "guidance": "Implementi formazione di inserimento coprendo: politiche password, MFA, phishing, gestione dati, segnalazione incidenti. Rinnovi annualmente." },
-    "nis2-21g-02": { "question": "Le simulazioni di phishing vengono condotte almeno trimestralmente con risultati monitorati?", "description": "Le campagne simulate misurano la preparazione reale e identificano le persone che necessitano di formazione aggiuntiva.", "guidance": "Esegua simulazioni di phishing trimestrali. Fornisca feedback immediato a chi clicca. Monitori metriche e tendenze nel tempo." },
-    "nis2-21g-03": { "question": "Viene fornita formazione sulla sicurezza specifica per ruolo al personale tecnico?", "description": "Gli ingegneri e gli amministratori necessitano di formazione specializzata oltre la consapevolezza generale (codifica sicura, sicurezza cloud).", "guidance": "Fornisca formazione: Sviluppatori (OWASP, codifica sicura), Amministratori (minimo privilegio, registrazione), Ingegneri cloud (IAM, crittografia)." },
-    "nis2-21g-04": { "question": "I requisiti di cyber igiene sono documentati e applicati (aggiornamenti, blocco schermo, password)?", "description": "Le pratiche di igiene di base riducono la superficie di attacco. Devono essere documentate e applicate, non solo raccomandate.", "guidance": "Documenti i requisiti di igiene: aggiornamenti automatici abilitati, blocco schermo dopo 5 min, gestore password richiesto, politica scrivania pulita." },
-    "nis2-21h-01": { "question": "Esiste una politica formale di crittografia che specifichi algoritmi approvati e lunghezze minime delle chiavi?", "description": "Una politica di crittografia previene l'uso di algoritmi deboli o obsoleti e assicura standard coerenti.", "guidance": "Definisca algoritmi approvati (AES-256, RSA-2048+, SHA-256+). Vieti algoritmi obsoleti. Riveda annualmente." },
-    "nis2-21h-02": { "question": "Esiste un ciclo di vita di gestione delle chiavi che copra generazione, rotazione, revoca e distruzione?", "description": "Una cattiva gestione delle chiavi mina la crittografia. Le chiavi devono essere gestite correttamente durante tutto il loro ciclo di vita.", "guidance": "Documenti le procedure di gestione delle chiavi. Usi HSM per le chiavi critiche. Ruoti le chiavi secondo la politica. Distrugga in sicurezza le chiavi dismesse." },
-    "nis2-21h-03": { "question": "I dati sono classificati con requisiti di crittografia definiti per livello di classificazione?", "description": "Non tutti i dati necessitano della stessa protezione. La classificazione guida controlli di crittografia proporzionati.", "guidance": "Definisca livelli di classificazione dei dati (Pubblico, Interno, Riservato, Limitato). Mappi i requisiti di crittografia per livello." },
-    "nis2-21h-04": { "question": "La crittografia è applicata a riposo e in transito, con TLS 1.2+ per le comunicazioni esterne?", "description": "I dati devono essere protetti sia a riposo (disco/database) che in transito (rete). TLS 1.2 è lo standard minimo.", "guidance": "Abiliti la crittografia a riposo per tutti i database e lo storage. Imponga TLS 1.2+ per tutte le connessioni esterne. Disabiliti TLS 1.0/1.1." },
-    "nis2-21i-01": { "question": "Esiste una politica di controllo degli accessi con minimo privilegio, RBAC e revisioni trimestrali?", "description": "Il controllo degli accessi è fondamentale. Il minimo privilegio limita il raggio d'azione; RBAC semplifica la gestione; le revisioni rilevano le derive.", "guidance": "Documenti il modello RBAC, i workflow di approvazione, il calendario di revisione. Conduca revisioni trimestrali degli accessi. Rimuova gli accessi inutilizzati." },
-    "nis2-21i-02": { "question": "L'inserimento include formazione sulla sicurezza, NDA e provisioning basato sui ruoli prima dell'accesso?", "description": "Un inserimento coerente previene lacune. La formazione e gli accordi legali devono precedere l'accesso al sistema.", "guidance": "Checklist di inserimento: NDA firmato, formazione sicurezza completata, accesso basato sul ruolo assegnato, hardware consegnato." },
-    "nis2-21i-03": { "question": "Esiste la revoca dell'account nello stesso giorno della partenza con una checklist di offboarding formale?", "description": "Un offboarding ritardato crea rischi. I dipendenti in partenza devono perdere l'accesso immediatamente.", "guidance": "HR notifica l'IT lo stesso giorno. Disabiliti gli account entro 1 ora. Revochi: e-mail, VPN, SSO, servizi cloud, badge fisici." },
-    "nis2-21i-04": { "question": "Esiste un inventario degli asset (hardware, software, dati) con responsabili e classificazione?", "description": "Non può proteggere ciò che non conosce. Un inventario completo degli asset è la base per la gestione dei rischi.", "guidance": "Mantenga un inventario di tutti gli asset hardware, software e dati. Assegni responsabili. Classifichi per sensibilità. Riveda trimestralmente." },
-    "nis2-21i-05": { "question": "L'accesso privilegiato è gestito con controlli aggiuntivi (PAM, sessioni a tempo limitato, registrazione avanzata)?", "description": "Gli account privilegiati sono obiettivi primari per gli attaccanti. I controlli di accesso standard sono insufficienti per l'accesso amministrativo.", "guidance": "Implementi una soluzione PAM. Richieda accesso just-in-time per le attività admin. Registri tutte le sessioni privilegiate. Riveda l'accesso privilegiato mensilmente." },
-    "nis2-21i-06": { "question": "Vengono effettuati controlli dei precedenti o di sicurezza per il personale in ruoli con accesso elevato?", "description": "Il personale con accesso privilegiato o che gestisce dati sensibili presenta un rischio maggiore. Lo screening pre-assunzione riduce la minaccia interna.", "guidance": "Effettui controlli dei precedenti per i ruoli privilegiati prima di concedere l'accesso. Definisca quali ruoli richiedono controlli. Riveda la politica annualmente." },
-    "nis2-21j-01": { "question": "L'MFA è imposto per i sistemi critici utilizzando token hardware o app di autenticazione (non SMS)?", "description": "L'MFA basato su SMS è vulnerabile agli attacchi SIM-swap. Sono richiesti token hardware o app di autenticazione.", "guidance": "Imponga MFA per tutti i sistemi critici. Usi token hardware (FIDO2/U2F) o app di autenticazione. Blocchi l'MFA basato su SMS." },
-    "nis2-21j-02": { "question": "Vengono utilizzati canali crittografati end-to-end per comunicazioni sensibili vocali, video e testuali?", "description": "Le comunicazioni sensibili devono essere protette dall'intercettazione con crittografia end-to-end.", "guidance": "Usi strumenti E2E crittografati per comunicazioni sensibili (Signal, Teams con E2E, e-mail crittografata). Documenti i canali approvati." },
-    "nis2-21j-03": { "question": "Le comunicazioni di emergenza protette sono operative se i sistemi primari sono compromessi?", "description": "Se le comunicazioni primarie sono in down durante un incidente, ha bisogno di un canale di backup pre-stabilito e testato.", "guidance": "Stabilisca comunicazioni out-of-band (app di messaggistica separata, telefono satellitare, dispositivi personali). Testi durante gli esercizi DR." },
-    "nis2-21j-04": { "question": "L'autenticazione legacy è bloccata e l'autenticazione continua/adattiva è usata per l'accesso ad alto rischio?", "description": "I protocolli di autenticazione legacy aggirano l'MFA. L'autenticazione adattiva regola i requisiti in base ai segnali di rischio.", "guidance": "Blocchi l'autenticazione legacy (NTLM, basic auth). Implementi politiche di accesso condizionale. Usi MFA adattivo per gli accessi ad alto rischio." }
+    "nis2-020-01": {
+      "question": "L'organo di gestione ha approvato formalmente le misure di gestione del rischio di cybersicurezza?",
+      "description": "L'Articolo 20 di NIS2 richiede che l'organo di gestione approvi e supervisioni le misure di gestione del rischio di cybersicurezza.",
+      "guidance": "Presenti la strategia di cybersicurezza al consiglio di amministrazione. Documenti l'approvazione nei verbali. Includa propensione al rischio, budget e KPI."
+    },
+    "nis2-020-02": {
+      "question": "L'organo di gestione rivede i rapporti sullo stato della cybersicurezza almeno trimestralmente?",
+      "description": "I rapporti regolari a livello di consiglio assicurano visibilità continua della postura di cybersicurezza e dei rischi emergenti.",
+      "guidance": "Produca dashboard trimestrali: metriche chiave, incidenti recenti, stato di conformità, completamento formazione, risultati di audit."
+    },
+    "nis2-020-03": {
+      "question": "I membri dell'organo di gestione hanno completato la formazione in cybersicurezza per il loro ruolo di supervisione?",
+      "description": "NIS2 impone che i membri dell'organo di gestione intraprendano formazione per acquisire conoscenze sufficienti a identificare i rischi.",
+      "guidance": "Pianifichi briefing annuali di cybersicurezza per i dirigenti. Copra il panorama delle minacce, gli obblighi normativi e le responsabilità del consiglio."
+    },
+    "nis2-020-04": {
+      "question": "Esiste un CISO designato o equivalente con riporto diretto alla dirigenza?",
+      "description": "Una chiara responsabilità richiede un leader della sicurezza dedicato con autorità e visibilità a livello dirigenziale.",
+      "guidance": "Nomini un CISO che riporti al CEO o al consiglio. Definisca responsabilità, autorità e budget per iscritto."
+    },
+    "nis2-21a-01": {
+      "question": "Esiste una politica formale di sicurezza delle informazioni rivista almeno annualmente?",
+      "description": "Una politica SI documentata è la base. Deve essere rivista e aggiornata per riflettere i cambiamenti nelle minacce e nel business.",
+      "guidance": "Crei o aggiorni la politica SI coprendo ambito, obiettivi, ruoli, uso accettabile, classificazione e calendario di revisione."
+    },
+    "nis2-21a-02": {
+      "question": "Viene condotta una valutazione annuale dei rischi utilizzando una metodologia riconosciuta (ISO 27005, NIST RMF)?",
+      "description": "La valutazione sistematica dei rischi identifica e prioritizza le minacce. Un framework riconosciuto assicura completezza.",
+      "guidance": "Adotti ISO 27005 o NIST RMF. Documenti asset, minacce, vulnerabilità, probabilità, impatto e piani di trattamento."
+    },
+    "nis2-21a-03": {
+      "question": "I rischi di cybersicurezza sono nel registro dei rischi aziendali con responsabili e piani di trattamento?",
+      "description": "I rischi cyber devono essere integrati nella gestione dei rischi aziendali, non isolati nell'IT.",
+      "guidance": "Aggiunga i rischi cyber al registro dei rischi aziendali. Valuti per probabilità e impatto. Assegni responsabili. Riveda trimestralmente."
+    },
+    "nis2-21a-04": {
+      "question": "I ruoli e le responsabilità di sicurezza sono chiaramente definiti e comunicati (matrice RACI)?",
+      "description": "Responsabilità chiare prevengono lacune. Una matrice RACI mappa chi è Responsabile, Approvatore, Consultato e Informato.",
+      "guidance": "Crei una matrice RACI di sicurezza. Comunichi i ruoli durante l'inserimento e le revisioni annuali delle politiche."
+    },
+    "nis2-21b-01": {
+      "question": "Esiste un piano di risposta agli incidenti documentato che copra dal rilevamento alle lezioni apprese?",
+      "description": "Un IRP completo copre preparazione, rilevamento, contenimento, eradicazione, ripristino e revisione post-incidente.",
+      "guidance": "Documenti l'IRP con fasi, ruoli, modelli di comunicazione e percorsi di escalation. Testi annualmente."
+    },
+    "nis2-21b-02": {
+      "question": "Sono definiti livelli di severità degli incidenti con percorsi di escalation e SLA di risposta?",
+      "description": "La classificazione assicura una risposta proporzionata. Gli SLA stabiliscono aspettative per triage e risoluzione.",
+      "guidance": "Definisca livelli di severità (P1-P4). Mappi percorsi di escalation. Fissi SLA: P1 entro 1 ora, P2 entro 4 ore."
+    },
+    "nis2-21b-03": {
+      "question": "È registrato presso il suo CSIRT nazionale e ha testato il processo di notifica entro 24 ore?",
+      "description": "NIS2 richiede un allarme precoce al CSIRT entro 24 ore da un incidente significativo.",
+      "guidance": "Si registri presso il CSIRT nazionale. Documenti il processo di notifica. Conduca un esercizio tabletop testando la notifica in 24h."
+    },
+    "nis2-21b-04": {
+      "question": "Esiste un registro degli incidenti che documenta tutti gli eventi, le indagini e le revisioni post-incidente?",
+      "description": "Un registro dimostra responsabilità, consente l'analisi delle tendenze e supporta i rapporti normativi.",
+      "guidance": "Usi un sistema di ticketing per registrare tutti gli incidenti. Registri: data, segnalatore, severità, indagine, risoluzione, lezioni apprese."
+    },
+    "nis2-21b-05": {
+      "question": "Il piano di risposta agli incidenti è stato testato attraverso esercizi tabletop o simulazioni negli ultimi 12 mesi?",
+      "description": "Un IRP non testato può fallire sotto pressione. I test regolari validano procedure, ruoli e flussi di comunicazione.",
+      "guidance": "Conduca almeno esercizi tabletop annuali simulando scenari realistici. Includa team interfunzionali. Documenti i risultati e aggiorni l'IRP."
+    },
+    "nis2-21c-01": {
+      "question": "Esiste un BCP documentato che identifica funzioni critiche, dipendenze e priorità di ripristino?",
+      "description": "Un BCP assicura che l'organizzazione possa mantenere le operazioni essenziali durante e dopo un'interruzione.",
+      "guidance": "Conduca una BIA per identificare le funzioni critiche. Documenti dipendenze, priorità di ripristino e piani di comunicazione."
+    },
+    "nis2-21c-02": {
+      "question": "Esistono piani DR con RTO/RPO definiti per tutti i sistemi critici?",
+      "description": "Recovery Time Objective e Recovery Point Objective definiscono tempi di inattività e perdita di dati accettabili.",
+      "guidance": "Definisca RTO/RPO per sistema critico. Documenti le procedure DR includendo passaggi di failover e team responsabili."
+    },
+    "nis2-21c-03": {
+      "question": "I piani BCP/DR sono stati testati negli ultimi 12 mesi (tabletop, simulazione o failover)?",
+      "description": "I piani non testati possono fallire quando necessari. I test regolari validano le procedure e creano automatismi.",
+      "guidance": "Pianifichi test BCP/DR annuali. Inizi con esercizi tabletop, progredisca a test di failover completi per i sistemi critici."
+    },
+    "nis2-21c-04": {
+      "question": "I ripristini dei backup vengono testati regolarmente e l'integrità dei backup verificata?",
+      "description": "I backup sono utili solo se possono essere ripristinati. I test regolari verificano l'integrità dei dati e le procedure di recupero.",
+      "guidance": "Testi il ripristino dei backup mensilmente per i sistemi critici. Verifichi l'integrità dei dati. Documenti i risultati e rimedi i guasti."
+    },
+    "nis2-21c-05": {
+      "question": "Esiste un piano di comunicazione di crisi che copra notifica interna, segnalazione normativa e gestione dei media?",
+      "description": "Durante una crisi, la comunicazione chiara è fondamentale. Ritardi o disinformazione peggiorano l'impatto e possono violare i requisiti di notifica NIS2.",
+      "guidance": "Documenti modelli di comunicazione, designazione del portavoce, catene di notifica e procedure di gestione dei media. Testi durante gli esercizi BCP."
+    },
+    "nis2-21d-01": {
+      "question": "Esiste un processo formale per valutare la postura di cybersicurezza dei fornitori?",
+      "description": "Gli attacchi alla catena di fornitura sono un vettore primario. Valutare i fornitori prima dell'impegno riduce il rischio di terze parti.",
+      "guidance": "Richieda ai fornitori di compilare questionari di sicurezza. Esamini report SOC 2/ISO 27001. Valuti annualmente."
+    },
+    "nis2-21d-02": {
+      "question": "I contratti includono obblighi di sicurezza allineati a NIS2 (notifica di violazione, diritti di audit)?",
+      "description": "Gli obblighi contrattuali assicurano che i fornitori mantengano standard di sicurezza e la notifichino degli incidenti.",
+      "guidance": "Aggiunga clausole contrattuali: notifica di violazione entro 24h, diritto di audit, assicurazione, residenza dei dati, approvazione dei sub-responsabili."
+    },
+    "nis2-21d-03": {
+      "question": "Esiste un registro delle integrazioni di terze parti, livelli di accesso e dati trattati?",
+      "description": "Non può proteggere ciò che non conosce. Un registro completo consente la valutazione dei rischi e il controllo degli accessi.",
+      "guidance": "Inventari tutti gli strumenti SaaS, API, connessioni fornitori. Documenti: dati accessibili, responsabile, dettagli contrattuali, data di revisione."
+    },
+    "nis2-21d-04": {
+      "question": "L'accesso di terze parti richiede approvazione, MFA, limiti di tempo e monitoraggio?",
+      "description": "L'accesso non controllato dei fornitori è un vettore di violazione comune. Controlli rigorosi limitano l'esposizione.",
+      "guidance": "Richieda approvazione formale per l'accesso dei fornitori. Imponga MFA, fissi sessioni a tempo limitato, abiliti la registrazione di audit."
+    },
+    "nis2-21e-01": {
+      "question": "Esiste una politica formale di gestione delle vulnerabilità con tempistiche di rimediazione?",
+      "description": "Una politica definisce come le vulnerabilità vengono identificate, valutate, prioritizzate e rimediate entro tempistiche stabilite.",
+      "guidance": "Definisca SLA di rimediazione: Critico 24h, Alto 7g, Medio 30g, Basso 90g. Monitori la conformità. Usi CVSS per la valutazione."
+    },
+    "nis2-21e-02": {
+      "question": "I requisiti di sicurezza vengono verificati durante l'acquisizione, lo sviluppo e la manutenzione dei sistemi?",
+      "description": "La sicurezza deve essere integrata nel SDLC, non aggiunta dopo. I requisiti devono essere verificati in ogni fase.",
+      "guidance": "Integri gate di sicurezza nel SDLC: modellazione delle minacce, revisione del codice sicuro, SAST/DAST, test di penetrazione prima del rilascio."
+    },
+    "nis2-21e-03": {
+      "question": "Esiste un processo di divulgazione responsabile delle vulnerabilità e monitoraggio delle dipendenze?",
+      "description": "Un processo di divulgazione gestisce le vulnerabilità segnalate. Il monitoraggio delle dipendenze rileva CVE noti nelle librerie.",
+      "guidance": "Pubblichi una security.txt / politica di divulgazione delle vulnerabilità. Monitori le dipendenze con Dependabot/Snyk. Riveda settimanalmente."
+    },
+    "nis2-21e-04": {
+      "question": "Le vulnerabilità critiche/alte vengono rimediate entro gli SLA definiti?",
+      "description": "Identificare le vulnerabilità è utile solo se vengono corrette. La conformità agli SLA dimostra maturità operativa.",
+      "guidance": "Monitori le metriche di conformità SLA. Escali le vulnerabilità critiche/alte scadute alla dirigenza. Riferisca mensilmente."
+    },
+    "nis2-21e-05": {
+      "question": "Sono integrati strumenti di scansione di sicurezza automatizzati (SAST, DAST, scansione dipendenze) nella pipeline CI/CD?",
+      "description": "Le revisioni manuali di sicurezza non scalano. La scansione automatizzata rileva le vulnerabilità comuni in modo precoce e coerente.",
+      "guidance": "Integri SAST (es. SonarQube, Semgrep) e scansione dipendenze (Dependabot, Snyk) in CI/CD. Faccia fallire le build sui risultati critici."
+    },
+    "nis2-21f-01": {
+      "question": "I controlli vengono testati tramite audit, test di penetrazione o esercizi red team?",
+      "description": "I test validano che i controlli funzionino come previsto. Senza test, la conformità è teorica.",
+      "guidance": "Conduca test di penetrazione annuali. Esegua audit interni trimestrali. Consideri esercizi red team per i sistemi critici."
+    },
+    "nis2-21f-02": {
+      "question": "I KPI di cybersicurezza vengono monitorati (MTTD, MTTR, conformità delle patch, ecc.)?",
+      "description": "I KPI forniscono una misurazione oggettiva della postura di sicurezza e identificano le aree che necessitano miglioramento.",
+      "guidance": "Monitori: MTTD, MTTR, tasso di conformità delle patch, tasso di clic phishing, completamento formazione, conteggio vulnerabilità aperte."
+    },
+    "nis2-21f-03": {
+      "question": "I risultati degli audit vengono monitorati fino alla rimediazione con responsabili e scadenze?",
+      "description": "I risultati degli audit senza follow-up non forniscono valore. Il monitoraggio assicura responsabilità e chiusura.",
+      "guidance": "Registri tutti i risultati degli audit in un tracker. Assegni responsabili e scadenze. Riveda i progressi mensilmente. Escali gli elementi scaduti."
+    },
+    "nis2-21f-04": {
+      "question": "Un processo di miglioramento continuo alimenta audit/incidenti/intelligence delle minacce negli aggiornamenti delle politiche?",
+      "description": "Le lezioni apprese devono guidare i miglioramenti delle politiche e dei controlli. Questo chiude il ciclo di feedback.",
+      "guidance": "Dopo audit e incidenti maggiori, aggiorni le politiche e i controlli pertinenti. Documenti i cambiamenti e le motivazioni."
+    },
+    "nis2-21g-01": {
+      "question": "La formazione obbligatoria sulla sicurezza viene fornita all'assunzione e rinnovata annualmente?",
+      "description": "Tutto il personale deve ricevere formazione di base sulla sicurezza. Il rinnovo annuale mantiene le conoscenze aggiornate.",
+      "guidance": "Implementi formazione di inserimento coprendo: politiche password, MFA, phishing, gestione dati, segnalazione incidenti. Rinnovi annualmente."
+    },
+    "nis2-21g-02": {
+      "question": "Le simulazioni di phishing vengono condotte almeno trimestralmente con risultati monitorati?",
+      "description": "Le campagne simulate misurano la preparazione reale e identificano le persone che necessitano di formazione aggiuntiva.",
+      "guidance": "Esegua simulazioni di phishing trimestrali. Fornisca feedback immediato a chi clicca. Monitori metriche e tendenze nel tempo."
+    },
+    "nis2-21g-03": {
+      "question": "Viene fornita formazione sulla sicurezza specifica per ruolo al personale tecnico?",
+      "description": "Gli ingegneri e gli amministratori necessitano di formazione specializzata oltre la consapevolezza generale (codifica sicura, sicurezza cloud).",
+      "guidance": "Fornisca formazione: Sviluppatori (OWASP, codifica sicura), Amministratori (minimo privilegio, registrazione), Ingegneri cloud (IAM, crittografia)."
+    },
+    "nis2-21g-04": {
+      "question": "I requisiti di cyber igiene sono documentati e applicati (aggiornamenti, blocco schermo, password)?",
+      "description": "Le pratiche di igiene di base riducono la superficie di attacco. Devono essere documentate e applicate, non solo raccomandate.",
+      "guidance": "Documenti i requisiti di igiene: aggiornamenti automatici abilitati, blocco schermo dopo 5 min, gestore password richiesto, politica scrivania pulita."
+    },
+    "nis2-21h-01": {
+      "question": "Esiste una politica formale di crittografia che specifichi algoritmi approvati e lunghezze minime delle chiavi?",
+      "description": "Una politica di crittografia previene l'uso di algoritmi deboli o obsoleti e assicura standard coerenti.",
+      "guidance": "Definisca algoritmi approvati (AES-256, RSA-2048+, SHA-256+). Vieti algoritmi obsoleti. Riveda annualmente."
+    },
+    "nis2-21h-02": {
+      "question": "Esiste un ciclo di vita di gestione delle chiavi che copra generazione, rotazione, revoca e distruzione?",
+      "description": "Una cattiva gestione delle chiavi mina la crittografia. Le chiavi devono essere gestite correttamente durante tutto il loro ciclo di vita.",
+      "guidance": "Documenti le procedure di gestione delle chiavi. Usi HSM per le chiavi critiche. Ruoti le chiavi secondo la politica. Distrugga in sicurezza le chiavi dismesse."
+    },
+    "nis2-21h-03": {
+      "question": "I dati sono classificati con requisiti di crittografia definiti per livello di classificazione?",
+      "description": "Non tutti i dati necessitano della stessa protezione. La classificazione guida controlli di crittografia proporzionati.",
+      "guidance": "Definisca livelli di classificazione dei dati (Pubblico, Interno, Riservato, Limitato). Mappi i requisiti di crittografia per livello."
+    },
+    "nis2-21h-04": {
+      "question": "La crittografia è applicata a riposo e in transito, con TLS 1.2+ per le comunicazioni esterne?",
+      "description": "I dati devono essere protetti sia a riposo (disco/database) che in transito (rete). TLS 1.2 è lo standard minimo.",
+      "guidance": "Abiliti la crittografia a riposo per tutti i database e lo storage. Imponga TLS 1.2+ per tutte le connessioni esterne. Disabiliti TLS 1.0/1.1."
+    },
+    "nis2-21i-01": {
+      "question": "Esiste una politica di controllo degli accessi con minimo privilegio, RBAC e revisioni trimestrali?",
+      "description": "Il controllo degli accessi è fondamentale. Il minimo privilegio limita il raggio d'azione; RBAC semplifica la gestione; le revisioni rilevano le derive.",
+      "guidance": "Documenti il modello RBAC, i workflow di approvazione, il calendario di revisione. Conduca revisioni trimestrali degli accessi. Rimuova gli accessi inutilizzati."
+    },
+    "nis2-21i-02": {
+      "question": "L'inserimento include formazione sulla sicurezza, NDA e provisioning basato sui ruoli prima dell'accesso?",
+      "description": "Un inserimento coerente previene lacune. La formazione e gli accordi legali devono precedere l'accesso al sistema.",
+      "guidance": "Checklist di inserimento: NDA firmato, formazione sicurezza completata, accesso basato sul ruolo assegnato, hardware consegnato."
+    },
+    "nis2-21i-03": {
+      "question": "Esiste la revoca dell'account nello stesso giorno della partenza con una checklist di offboarding formale?",
+      "description": "Un offboarding ritardato crea rischi. I dipendenti in partenza devono perdere l'accesso immediatamente.",
+      "guidance": "HR notifica l'IT lo stesso giorno. Disabiliti gli account entro 1 ora. Revochi: e-mail, VPN, SSO, servizi cloud, badge fisici."
+    },
+    "nis2-21i-04": {
+      "question": "Esiste un inventario degli asset (hardware, software, dati) con responsabili e classificazione?",
+      "description": "Non può proteggere ciò che non conosce. Un inventario completo degli asset è la base per la gestione dei rischi.",
+      "guidance": "Mantenga un inventario di tutti gli asset hardware, software e dati. Assegni responsabili. Classifichi per sensibilità. Riveda trimestralmente."
+    },
+    "nis2-21i-05": {
+      "question": "L'accesso privilegiato è gestito con controlli aggiuntivi (PAM, sessioni a tempo limitato, registrazione avanzata)?",
+      "description": "Gli account privilegiati sono obiettivi primari per gli attaccanti. I controlli di accesso standard sono insufficienti per l'accesso amministrativo.",
+      "guidance": "Implementi una soluzione PAM. Richieda accesso just-in-time per le attività admin. Registri tutte le sessioni privilegiate. Riveda l'accesso privilegiato mensilmente."
+    },
+    "nis2-21i-06": {
+      "question": "Vengono effettuati controlli dei precedenti o di sicurezza per il personale in ruoli con accesso elevato?",
+      "description": "Il personale con accesso privilegiato o che gestisce dati sensibili presenta un rischio maggiore. Lo screening pre-assunzione riduce la minaccia interna.",
+      "guidance": "Effettui controlli dei precedenti per i ruoli privilegiati prima di concedere l'accesso. Definisca quali ruoli richiedono controlli. Riveda la politica annualmente."
+    },
+    "nis2-21j-01": {
+      "question": "L'MFA è imposto per i sistemi critici utilizzando token hardware o app di autenticazione (non SMS)?",
+      "description": "L'MFA basato su SMS è vulnerabile agli attacchi SIM-swap. Sono richiesti token hardware o app di autenticazione.",
+      "guidance": "Imponga MFA per tutti i sistemi critici. Usi token hardware (FIDO2/U2F) o app di autenticazione. Blocchi l'MFA basato su SMS."
+    },
+    "nis2-21j-02": {
+      "question": "Vengono utilizzati canali crittografati end-to-end per comunicazioni sensibili vocali, video e testuali?",
+      "description": "Le comunicazioni sensibili devono essere protette dall'intercettazione con crittografia end-to-end.",
+      "guidance": "Usi strumenti E2E crittografati per comunicazioni sensibili (Signal, Teams con E2E, e-mail crittografata). Documenti i canali approvati."
+    },
+    "nis2-21j-03": {
+      "question": "Le comunicazioni di emergenza protette sono operative se i sistemi primari sono compromessi?",
+      "description": "Se le comunicazioni primarie sono in down durante un incidente, ha bisogno di un canale di backup pre-stabilito e testato.",
+      "guidance": "Stabilisca comunicazioni out-of-band (app di messaggistica separata, telefono satellitare, dispositivi personali). Testi durante gli esercizi DR."
+    },
+    "nis2-21j-04": {
+      "question": "L'autenticazione legacy è bloccata e l'autenticazione continua/adattiva è usata per l'accesso ad alto rischio?",
+      "description": "I protocolli di autenticazione legacy aggirano l'MFA. L'autenticazione adattiva regola i requisiti in base ai segnali di rischio.",
+      "guidance": "Blocchi l'autenticazione legacy (NTLM, basic auth). Implementi politiche di accesso condizionale. Usi MFA adattivo per gli accessi ad alto rischio."
+    }
   },
   "countryInfo": {
     "title": "Autorità nazionale NIS2",
@@ -916,7 +1604,8 @@
     "pending": "In attesa",
     "nationalLaw": "Legge nazionale",
     "noCountry": "Selezioni il suo paese nelle Impostazioni per vedere l'autorità nazionale NIS2 e i contatti per la segnalazione.",
-    "goToSettings": "Vai alle impostazioni"
+    "goToSettings": "Vai alle impostazioni",
+    "not_transposed": "Non recepita"
   },
   "team": {
     "pageTitle": "Team",
@@ -946,5 +1635,404 @@
     "acceptInvite": "Accetta e unisciti",
     "welcomeToTeam": "Benvenuto nel team!",
     "canNowLogin": "Ora puoi accedere con la tua e-mail e password."
+  },
+  "policyTemplates": {
+    "tpl-isp": {
+      "title": "Politica di sicurezza delle informazioni",
+      "summary1": "Siete responsabili della protezione dei dati, dei sistemi e degli asset informativi aziendali in ogni momento.",
+      "summary2": "Tutti i dati sensibili devono essere classificati e gestiti secondo il loro livello di classificazione (Pubblico, Interno, Riservato, Ristretto).",
+      "summary3": "Le password devono soddisfare i requisiti minimi di complessità e non devono mai essere condivise con nessuno, incluso il personale IT.",
+      "summary4": "Tutti gli incidenti di sicurezza, le violazioni sospette o le infrazioni alla politica devono essere segnalati immediatamente al team di sicurezza informatica.",
+      "summary5": "L'accesso ai sistemi e ai dati è concesso sulla base del principio del minimo privilegio ed è soggetto a revisione periodica.",
+      "summary6": "I dispositivi personali utilizzati per il lavoro devono rispettare gli standard di sicurezza aziendali, inclusi cifratura e blocco schermo.",
+      "summary7": "Le violazioni di questa politica possono comportare provvedimenti disciplinari, fino al licenziamento, e possono avere conseguenze legali ai sensi di NIS2."
+    },
+    "tpl-aup": {
+      "title": "Politica di utilizzo accettabile",
+      "summary1": "Le risorse IT aziendali (e-mail, internet, dispositivi, servizi cloud) sono fornite per scopi lavorativi e per un uso personale limitato.",
+      "summary2": "È vietato installare software non autorizzato, disattivare strumenti di sicurezza o tentare di aggirare i controlli di accesso.",
+      "summary3": "L'e-mail aziendale non deve essere utilizzata per transazioni finanziarie personali, catene di messaggi o comunicazioni che possano danneggiare la reputazione dell'organizzazione.",
+      "summary4": "L'utilizzo di internet è monitorato per finalità di sicurezza. L'accesso a contenuti illegali, offensivi o dannosi è severamente vietato.",
+      "summary5": "I supporti rimovibili (chiavette USB, dischi esterni) non devono essere collegati ai sistemi aziendali senza la preventiva approvazione della sicurezza informatica.",
+      "summary6": "È necessario bloccare la postazione di lavoro quando la si lascia incustodita. Il blocco schermo deve attivarsi entro 5 minuti di inattività."
+    },
+    "tpl-irp": {
+      "title": "Politica di risposta agli incidenti",
+      "summary1": "Un incidente di sicurezza è qualsiasi evento che compromette o minaccia la riservatezza, l'integrità o la disponibilità dei dati o sistemi aziendali.",
+      "summary2": "Se sospettate un incidente di sicurezza (phishing, accesso non autorizzato, fuga di dati, malware), segnalatelo immediatamente al team di sicurezza informatica — non tentate di indagare da soli.",
+      "summary3": "Gli incidenti sono classificati per severità: Critico (impatto aziendale immediato), Alto (rischio significativo), Medio (impatto limitato), Basso (problema minore).",
+      "summary4": "Ai sensi di NIS2, gli incidenti significativi devono essere segnalati alle autorità nazionali entro 24 ore. I ritardi nella segnalazione interna possono impedire la notifica tempestiva.",
+      "summary5": "Non cancellate, modificate o distruggete prove relative a un incidente di sicurezza. Conservate log, e-mail, screenshot e sistemi interessati.",
+      "summary6": "Dopo la risoluzione di un incidente, un'analisi post-incidente identificherà le cause e i miglioramenti. La vostra cooperazione in queste analisi è obbligatoria."
+    },
+    "tpl-bcp": {
+      "title": "Politica di continuità operativa",
+      "summary1": "Le funzioni aziendali critiche sono state identificate e prioritizzate. Il vostro ruolo potrebbe essere classificato come critico — verificate con il vostro responsabile in caso di dubbio.",
+      "summary2": "Se i sistemi principali non sono disponibili, seguite le procedure alternative documentate per il vostro reparto. Sono disponibili sulla intranet aziendale.",
+      "summary3": "In caso di interruzione significativa, la comunicazione sarà coordinata attraverso i canali di comunicazione di emergenza designati. Assicuratevi che i vostri dati di contatto siano aggiornati.",
+      "summary4": "Gli obiettivi di tempo di ripristino (RTO) e di punto di ripristino (RPO) sono stati definiti per tutti i sistemi critici. Il rispetto di questi obiettivi è obbligatorio.",
+      "summary5": "I piani di continuità operativa e disaster recovery vengono testati almeno annualmente. Vi potrebbe essere richiesto di partecipare a esercitazioni e simulazioni.",
+      "summary6": "Se identificate una situazione che potrebbe interrompere i servizi critici, segnalatela immediatamente al vostro responsabile e al team di sicurezza informatica."
+    },
+    "tpl-acc": {
+      "title": "Politica di controllo degli accessi e gestione delle identità",
+      "summary1": "L'accesso ai sistemi e ai dati è concesso sulla base del principio del minimo privilegio — ricevete solo l'accesso minimo necessario per il vostro ruolo.",
+      "summary2": "L'autenticazione multifattore (MFA) è obbligatoria per tutti i sistemi critici. Non condividete mai i vostri token MFA, codici o chiavi hardware.",
+      "summary3": "In caso di cambio di ruolo o responsabilità, i vostri diritti di accesso saranno rivisti e adeguati. Segnalate qualsiasi accesso di cui non avete più bisogno.",
+      "summary4": "Tutti i diritti di accesso vengono rivisti trimestralmente dai responsabili. Vi potrebbe essere chiesto di confermare che i vostri livelli di accesso attuali siano ancora appropriati.",
+      "summary5": "Al momento dell'uscita dall'organizzazione, tutti gli accessi ai sistemi saranno revocati entro 1 ora. Restituite tutti i dispositivi e token di accesso aziendali nell'ultimo giorno.",
+      "summary6": "La condivisione di credenziali, l'uso dell'account di un'altra persona o il permettere ad altri di usare il proprio account è severamente vietato.",
+      "summary7": "L'accesso privilegiato (diritti di amministratore) richiede controlli aggiuntivi inclusi logging avanzato, sessioni a tempo limitato e verifica dei precedenti."
+    },
+    "tpl-sup": {
+      "title": "Politica di sicurezza della catena di fornitura e terze parti",
+      "summary1": "Tutti i fornitori terzi con accesso ai sistemi o dati aziendali devono superare una valutazione di cybersicurezza prima dell'ingaggio.",
+      "summary2": "I contratti con i fornitori devono includere obblighi di sicurezza: notifica di violazione entro 24 ore, diritto di audit, requisiti di protezione dati e certificazioni di sicurezza.",
+      "summary3": "L'accesso ai sistemi da parte di terzi richiede approvazione formale, applicazione MFA ed è soggetto a monitoraggio e revisioni trimestrali.",
+      "summary4": "Non dovete condividere credenziali aziendali, accesso ai sistemi o dati sensibili con terze parti senza la preventiva approvazione scritta della sicurezza informatica.",
+      "summary5": "Mantenete un inventario di tutti gli strumenti, integrazioni e servizi di terze parti utilizzati nel vostro reparto. Segnalate nuovi strumenti alla sicurezza informatica prima del loro utilizzo.",
+      "summary6": "Se un fornitore segnala un incidente di sicurezza o sospettate che una terza parte sia stata compromessa, segnalatelo immediatamente al team di sicurezza informatica."
+    },
+    "tpl-enc": {
+      "title": "Politica di protezione dei dati e cifratura",
+      "summary1": "Tutti i dati sensibili devono essere cifrati a riposo (su disco) e in transito (sulle reti) utilizzando algoritmi approvati (AES-256, TLS 1.3).",
+      "summary2": "I dati devono essere classificati prima dell'archiviazione o trasmissione: Pubblico, Interno, Riservato o Ristretto. I requisiti di cifratura aumentano con il livello di classificazione.",
+      "summary3": "Le chiavi di cifratura devono essere conservate in modo sicuro in sistemi di gestione delle chiavi approvati (KMS/HSM). Non conservate mai le chiavi insieme ai dati che proteggono.",
+      "summary4": "L'invio di dati riservati o ristretti tramite e-mail non cifrate, app di messaggistica o servizi di condivisione file è vietato, a meno che non si utilizzino canali cifrati approvati.",
+      "summary5": "Tutti i dispositivi portatili (laptop, telefoni, chiavette USB) contenenti dati aziendali devono avere la cifratura completa del disco attivata.",
+      "summary6": "Se scoprite dati sensibili non cifrati o sospettate un malfunzionamento della cifratura, segnalatelo immediatamente al team di sicurezza informatica."
+    },
+    "tpl-hyg": {
+      "title": "Politica di igiene informatica e consapevolezza della sicurezza",
+      "summary1": "Tutti i dipendenti devono completare la formazione annuale sulla consapevolezza della sicurezza. I nuovi dipendenti devono completarla nella prima settimana.",
+      "summary2": "Mantenete tutti i software e sistemi operativi aggiornati. Attivate gli aggiornamenti automatici. Non ritardate le patch di sicurezza.",
+      "summary3": "Utilizzate il gestore di password approvato dall'azienda per tutti gli account lavorativi. Le password devono essere uniche per servizio — non riutilizzate mai le password.",
+      "summary4": "Siate vigili sul phishing: verificate gli indirizzi del mittente, non cliccate su link sospetti e segnalate tutte le e-mail sospette alla sicurezza informatica.",
+      "summary5": "Rispettate la politica della scrivania pulita: chiudete a chiave i documenti sensibili quando lasciate la postazione. Non lasciate materiali stampati con informazioni sensibili incustoditi.",
+      "summary6": "I supporti rimovibili (chiavette USB, dischi esterni) sono soggetti a restrizioni. Utilizzate solo dispositivi approvati dall'azienda e scansionateli per malware prima dell'uso.",
+      "summary7": "L'organizzazione conduce regolarmente simulazioni di phishing. I dipendenti che falliscono ripetutamente riceveranno formazione aggiuntiva mirata."
+    }
+  },
+  "quizBank": {
+    "quiz-001": {
+      "question": "Cosa dovete fare se ricevete un'e-mail sospetta con un allegato inatteso?",
+      "option1": "Aprire l'allegato per verificare se è legittimo",
+      "option2": "Inoltrarlo ai colleghi per avere la loro opinione",
+      "option3": "Segnalarlo al team di sicurezza informatica senza aprirlo",
+      "option4": "Eliminarlo e dimenticarsene",
+      "explanation": "Segnalare le e-mail sospette al team di sicurezza informatica consente di indagare e proteggere l'intera organizzazione. Non aprite mai allegati inattesi."
+    },
+    "quiz-002": {
+      "question": "Qual è il modo più sicuro di gestire le vostre password di lavoro?",
+      "option1": "Usare la stessa password per tutti gli account di lavoro",
+      "option2": "Usare una password unica e forte per ogni account e conservarle in un gestore di password approvato",
+      "option3": "Scriverle su un post-it vicino allo schermo",
+      "option4": "Condividerle con il proprio responsabile per permettere l'accesso in caso di necessità",
+      "explanation": "Password uniche e forti conservate in un gestore approvato prevengono gli attacchi di credential stuffing e limitano l'impatto se un account viene compromesso."
+    },
+    "quiz-003": {
+      "question": "Cos'è il phishing?",
+      "option1": "Un problema di prestazioni di rete causato da traffico elevato",
+      "option2": "Un attacco che inganna le persone inducendole a rivelare credenziali o a cliccare su link malevoli",
+      "option3": "Un metodo per testare le configurazioni del firewall",
+      "option4": "Un tipo di software antivirus per la scansione delle e-mail",
+      "explanation": "Il phishing è il vettore di attacco informatico più comune. Gli aggressori impersonano entità fidate per rubare credenziali, installare malware o ottenere accesso ai sistemi."
+    },
+    "quiz-004": {
+      "question": "Cosa dovete fare quando lasciate la vostra postazione di lavoro, anche brevemente?",
+      "option1": "Lasciare tutto aperto — tornerete subito",
+      "option2": "Chiedere a un collega di sorvegliare lo schermo",
+      "option3": "Bloccare immediatamente lo schermo",
+      "option4": "Spegnere il monitor ma lasciare la sessione aperta",
+      "explanation": "Bloccare lo schermo (Win+L o Cmd+Ctrl+Q) richiede pochi secondi e impedisce l'accesso non autorizzato alla sessione, alle e-mail e ai dati sensibili."
+    },
+    "quiz-005": {
+      "question": "Chi dovete contattare per primo se sospettate un incidente di sicurezza?",
+      "option1": "Il team di sicurezza informatica o il vostro responsabile diretto",
+      "option2": "Il vostro contatto informatico personale al di fuori dell'azienda",
+      "option3": "Nessuno — provate prima a risolvere da soli",
+      "option4": "Pubblicare sui social media per avvisare gli altri",
+      "explanation": "Una segnalazione rapida al team di sicurezza informatica minimizza i danni. In base alla NIS2, le organizzazioni devono segnalare gli incidenti significativi alle autorità entro 24 ore."
+    },
+    "quiz-006": {
+      "question": "Secondo la NIS2, entro quanto tempo un incidente di sicurezza significativo deve essere segnalato all'autorità nazionale?",
+      "option1": "Entro 7 giorni",
+      "option2": "Entro 24 ore (preallarme) e 72 ore (notifica completa)",
+      "option3": "Entro 30 giorni",
+      "option4": "Solo se l'incidente comporta perdite finanziarie",
+      "explanation": "L'articolo 23 della NIS2 richiede un preallarme entro 24 ore e una notifica dettagliata entro 72 ore dalla conoscenza di un incidente significativo."
+    },
+    "quiz-007": {
+      "question": "Qual è l'ordine corretto delle fasi di un processo di risposta agli incidenti?",
+      "option1": "Ripristino, Rilevamento, Contenimento, Lezioni apprese",
+      "option2": "Contenimento, Rilevamento, Ripristino, Notifica",
+      "option3": "Notifica, Ripristino, Rilevamento, Contenimento",
+      "option4": "Rilevamento, Contenimento, Ripristino, Lezioni apprese",
+      "explanation": "Il ciclo standard di risposta agli incidenti è: Rilevamento e analisi, Contenimento, Eradicazione e Ripristino, poi Revisione post-incidente (lezioni apprese)."
+    },
+    "quiz-008": {
+      "question": "Cosa deve contenere un rapporto di incidente?",
+      "option1": "Solo il nome della persona che ha causato l'incidente",
+      "option2": "Un breve riassunto di una riga senza dettagli tecnici",
+      "option3": "Data, descrizione, sistemi interessati, azioni intraprese e valutazione dell'impatto",
+      "option4": "Solo il costo finanziario dell'incidente",
+      "explanation": "Un rapporto d'incidente accurato consente l'analisi delle cause profonde, supporta i requisiti di conformità NIS2 e aiuta a prevenire incidenti simili in futuro."
+    },
+    "quiz-009": {
+      "question": "Cosa significa il principio del minimo privilegio?",
+      "option1": "Gli utenti devono disporre solo dei diritti di accesso minimi necessari per la loro funzione lavorativa",
+      "option2": "Solo i dirigenti dovrebbero avere accesso ai sistemi informatici",
+      "option3": "Tutti dovrebbero avere accesso amministratore completo per evitare colli di bottiglia",
+      "option4": "I diritti di accesso devono essere rivisti solo quando qualcuno lascia l'azienda",
+      "explanation": "Il minimo privilegio limita il raggio d'impatto in caso di compromissione di un account e riduce il rischio di esposizione o modifica accidentale dei dati."
+    },
+    "quiz-010": {
+      "question": "Perché l'autenticazione a più fattori (MFA) è importante?",
+      "option1": "Rende gli accessi più rapidi e comodi",
+      "option2": "Sostituisce la necessità di password forti",
+      "option3": "È richiesta solo per gli amministratori IT",
+      "option4": "Aggiunge un ulteriore livello di sicurezza oltre alle password, rendendo le credenziali compromesse meno utili per gli aggressori",
+      "explanation": "La MFA garantisce che le password rubate da sole non possano concedere l'accesso. La NIS2 prevede che le organizzazioni implementino un'autenticazione forte per i sistemi critici."
+    },
+    "quiz-011": {
+      "question": "Cosa deve accadere quando un dipendente cambia ruolo all'interno dell'organizzazione?",
+      "option1": "I suoi diritti di accesso rimangono invariati poiché è ancora un dipendente",
+      "option2": "I suoi diritti di accesso devono essere rivisti e adeguati al nuovo ruolo",
+      "option3": "Deve ricevere accessi aggiuntivi oltre ai permessi esistenti",
+      "option4": "Le revisioni degli accessi avvengono solo annualmente, quindi non è necessaria un'azione immediata",
+      "explanation": "I cambi di ruolo richiedono una revisione tempestiva degli accessi per prevenire l'accumulo di privilegi. Gli utenti devono mantenere solo i permessi necessari per le responsabilità attuali."
+    },
+    "quiz-012": {
+      "question": "Qual è l'azione raccomandata quando un dipendente lascia l'organizzazione?",
+      "option1": "Disattivare tutti gli account e revocare l'accesso immediatamente l'ultimo giorno lavorativo",
+      "option2": "Mantenere gli account attivi per 30 giorni nel caso in cui ritorni",
+      "option3": "Disattivare solo l'e-mail — gli altri sistemi possono attendere",
+      "option4": "Trasferire le sue credenziali al sostituto",
+      "explanation": "La disattivazione immediata degli account impedisce agli ex dipendenti di accedere ai sistemi. Ciò include VPN, servizi cloud, e-mail e accesso fisico."
+    },
+    "quiz-013": {
+      "question": "Qual è il modo corretto di gestire i documenti riservati di cui non avete più bisogno?",
+      "option1": "Gettarli nel cestino ordinario dell'ufficio",
+      "option2": "Lasciarli sulla scrivania per il personale delle pulizie",
+      "option3": "Utilizzare un distruggidocumenti a taglio incrociato o un contenitore di smaltimento sicuro",
+      "option4": "Portarli a casa per archivio personale",
+      "explanation": "I documenti riservati devono essere distrutti in modo sicuro per prevenire fughe di dati. La distruzione a taglio incrociato o i servizi di smaltimento sicuro sono richiesti dalla normativa sulla protezione dei dati."
+    },
+    "quiz-014": {
+      "question": "Quando è richiesta la cifratura nella trasmissione dei dati?",
+      "option1": "Solo quando si inviano dati a partner esterni",
+      "option2": "Ogni volta che vengono trasmessi dati sensibili o riservati, sia internamente che esternamente",
+      "option3": "Solo quando il destinatario lo richiede specificamente",
+      "option4": "La cifratura è facoltativa e consigliata solo per i dati finanziari",
+      "explanation": "La NIS2 richiede una cifratura adeguata per i dati in transito. Tutte le trasmissioni di dati sensibili devono utilizzare TLS/HTTPS o cifratura equivalente."
+    },
+    "quiz-015": {
+      "question": "Quale delle seguenti è una buona pratica per la classificazione dei dati?",
+      "option1": "Classificare tutti i dati come riservati per sicurezza",
+      "option2": "Classificare solo i dati archiviati nel cloud",
+      "option3": "Lasciare che ogni dipendente decida come classificare i propri dati",
+      "option4": "Applicare livelli di classificazione (Pubblico, Interno, Riservato, Ristretto) in base alla sensibilità e all'impatto della divulgazione",
+      "explanation": "Una classificazione corretta garantisce che vengano applicati controlli di sicurezza proporzionati. L'eccessiva classificazione spreca risorse; la classificazione insufficiente crea rischi."
+    },
+    "quiz-016": {
+      "question": "Cosa dovete fare se inviate accidentalmente dati sensibili al destinatario sbagliato?",
+      "option1": "Informare immediatamente il vostro responsabile e il team di sicurezza informatica",
+      "option2": "Inviare un'e-mail di follow-up chiedendo di eliminarli",
+      "option3": "Ignorare la cosa — gli errori capitano",
+      "option4": "Aspettare per vedere se il destinatario se ne accorge",
+      "explanation": "L'esposizione accidentale di dati è un incidente di sicurezza che deve essere segnalato. Un'azione rapida consente all'organizzazione di valutare l'impatto e adottare misure correttive."
+    },
+    "quiz-017": {
+      "question": "Perché la sicurezza della catena di approvvigionamento è importante secondo la NIS2?",
+      "option1": "Riguarda solo le aziende manifatturiere",
+      "option2": "La NIS2 non affronta la sicurezza della catena di approvvigionamento",
+      "option3": "Una violazione presso un fornitore può compromettere la vostra organizzazione, e la NIS2 richiede la gestione dei rischi di terze parti",
+      "option4": "È importante solo se i fornitori hanno accesso fisico ai vostri uffici",
+      "explanation": "L'articolo 21(2)(d) della NIS2 richiede esplicitamente misure di sicurezza della catena di approvvigionamento. Violazioni di alto profilo (SolarWinds, Kaseya) hanno dimostrato che le compromissioni dei fornitori possono propagarsi a cascata."
+    },
+    "quiz-018": {
+      "question": "Cosa dovete verificare prima di concedere a un fornitore terzo l'accesso ai vostri sistemi?",
+      "option1": "Che abbia superato una valutazione di sicurezza e disponga di controlli di sicurezza adeguati",
+      "option2": "Che sia un marchio noto",
+      "option3": "Che sia fornitore da più di un anno",
+      "option4": "Nulla di speciale — se la direzione lo ha approvato, è sufficiente",
+      "explanation": "Le valutazioni del rischio dei fornitori devono esaminare le certificazioni di sicurezza (ISO 27001, SOC 2), le politiche di sicurezza, le capacità di risposta agli incidenti e le pratiche di trattamento dei dati."
+    },
+    "quiz-019": {
+      "question": "Qual è un requisito chiave per i contratti con i fornitori di servizi ICT critici secondo la NIS2?",
+      "option1": "Devono essere rinnovati annualmente indipendentemente dalle prestazioni",
+      "option2": "Devono includere obblighi di sicurezza, requisiti di notifica delle violazioni e diritti di audit",
+      "option3": "Devono essere firmati dall'autorità nazionale di cybersicurezza",
+      "option4": "Necessitano solo di condizioni commerciali standard",
+      "explanation": "La NIS2 richiede che i contratti con i fornitori critici includano disposizioni di sicurezza specifiche, clausole di notifica degli incidenti e il diritto di verificare la loro postura di sicurezza."
+    },
+    "quiz-020": {
+      "question": "Come dovete gestire una situazione in cui un fornitore terzo segnala una violazione dei dati che interessa i vostri dati?",
+      "option1": "Attendere che il fornitore risolva completamente il problema",
+      "option2": "Risolvere immediatamente il contratto",
+      "option3": "Ignorare se il fornitore dice che l'impatto è minimo",
+      "option4": "Attivare il processo di risposta agli incidenti, valutare l'impatto sulla vostra organizzazione e notificare le autorità se necessario",
+      "explanation": "Una violazione del fornitore che interessa i vostri dati è anche un vostro incidente. Dovete valutare l'impatto, attivare il piano di risposta agli incidenti e rispettare le scadenze di notifica NIS2."
+    },
+    "quiz-021": {
+      "question": "Qual è l'obiettivo principale di un Piano di Continuità Operativa (PCO)?",
+      "option1": "Documentare le prestazioni finanziarie dell'azienda",
+      "option2": "Garantire che le funzioni aziendali critiche possano continuare durante e dopo un'interruzione",
+      "option3": "Elencare tutti i dipendenti e i loro dati di contatto",
+      "option4": "Soddisfare i revisori solo con la documentazione",
+      "explanation": "Un PCO garantisce che i servizi essenziali rimangano disponibili durante le crisi. L'articolo 21(2)(c) della NIS2 richiede misure di continuità operativa e gestione delle crisi."
+    },
+    "quiz-022": {
+      "question": "Con quale frequenza deve essere testato il ripristino dei backup?",
+      "option1": "Regolarmente, almeno trimestralmente, per verificare che i backup possano essere ripristinati con successo",
+      "option2": "Solo quando si verifica un vero disastro",
+      "option3": "Una sola volta quando il sistema di backup viene configurato",
+      "option4": "I test non sono necessari se i backup sono automatizzati",
+      "explanation": "I backup non testati possono fallire quando servono di più. I test di ripristino regolari verificano l'integrità dei dati e assicurano che gli obiettivi di tempo di ripristino possano essere effettivamente raggiunti."
+    },
+    "quiz-023": {
+      "question": "Cos'è un Recovery Time Objective (RTO)?",
+      "option1": "Il tempo necessario per rilevare un incidente",
+      "option2": "Il costo totale del ripristino dopo un disastro",
+      "option3": "Il tempo massimo accettabile per ripristinare un sistema o servizio dopo un'interruzione",
+      "option4": "Il numero di personale necessario per il disaster recovery",
+      "explanation": "L'RTO definisce la velocità con cui un sistema deve essere ripristinato. Determina le decisioni sulle strategie di backup, la ridondanza e l'infrastruttura di disaster recovery."
+    },
+    "quiz-024": {
+      "question": "Quale ruolo svolge la comunicazione di crisi nella continuità operativa?",
+      "option1": "È importante solo per il dipartimento delle relazioni pubbliche",
+      "option2": "È facoltativa e necessaria solo per incidenti che riguardano il pubblico",
+      "option3": "Viene gestita automaticamente dai sistemi informatici",
+      "option4": "Garantisce che le parti interessate, i dipendenti e le autorità siano informati tempestivamente e accuratamente durante un'interruzione",
+      "explanation": "Una comunicazione di crisi chiara riduce la confusione, mantiene la fiducia e soddisfa i requisiti NIS2 di notifica tempestiva alle parti interessate e alle autorità."
+    }
+  },
+  "countryNotes": {
+    "AT": [
+      "Il precedente NISG 2024 è stato respinto dal Nationalrat il 3 luglio 2024",
+      "Il NISG 2026 ha richiesto la maggioranza dei due terzi per l'approvazione",
+      "Entrata in vigore rinviata al 1° ottobre 2026",
+      "L'Austria tra i pochi paesi UE che inizialmente hanno subito il rifiuto del recepimento NIS2"
+    ],
+    "BE": [
+      "Il Belgio è stato tra i primi paesi UE a recepire la NIS2",
+      "Il framework CyberFundamentals (CyFun) è il principale meccanismo di conformità",
+      "Il CCB gestisce il portale SafeOnWeb per l'orientamento delle entità",
+      "Autovalutazione del livello CyFun o conformità ISO 27001 entro il 18 aprile 2026"
+    ],
+    "DE": [
+      "La Germania ha mancato la scadenza originale di ottobre 2024 a causa del crollo della coalizione e delle elezioni anticipate",
+      "Il disegno di legge ha dovuto essere reintrodotto dopo le elezioni federali di febbraio 2025",
+      "Nessun periodo di transizione generale — gli obblighi si applicano immediatamente dall'entrata in vigore",
+      "Portale di registrazione BSI aperto il 6 gennaio 2026",
+      "Certificati digitali ELSTER necessari per la configurazione dell'account aziendale (MUK)",
+      "Le entità scelgono il proprio framework di sicurezza se non si applicano normative settoriali specifiche"
+    ],
+    "ES": [
+      "La Spagna NON ha ancora recepito la NIS2 a marzo 2026",
+      "L'anteproyecto de ley è stato approvato dal Consiglio dei Ministri a gennaio 2025",
+      "L'iter parlamentare è in corso — nessuna pubblicazione BOE ancora",
+      "Le procedure di infrazione della Commissione Europea sono attive",
+      "L'attuale framework NIS1 (RDL 12/2018) resta in vigore come misura transitoria",
+      "Modello multi-autorità proposto: CCN-CERT per il settore pubblico, INCIBE per il settore privato"
+    ],
+    "FR": [
+      "La Francia NON ha ancora pienamente recepito la NIS2 a marzo 2026",
+      "La 'Loi Résilience' raggruppa NIS2 con il recepimento della direttiva CER",
+      "Adottata dal Senato; dibattito in sessione plenaria dell'Assemblea Nazionale non ancora programmato",
+      "Il recepimento francese probabilmente rinviato a luglio 2026",
+      "L'ANSSI gestisce già il portale beta MonEspaceNIS2 per la registrazione delle entità",
+      "La Ministra del Digitale Anne Le Hénanff è stata sollecitata sull'urgenza della programmazione"
+    ],
+    "IE": [
+      "L'Irlanda NON ha ancora recepito la NIS2 a marzo 2026",
+      "Ritardata dalle elezioni del 2024",
+      "Il framework NIS1 continua come misura transitoria",
+      "Il disegno di legge resta priorità legislativa secondo le dichiarazioni del governo",
+      "Il NCSC pubblica attivamente linee guida preparatorie"
+    ],
+    "IT": [
+      "L'Italia è stata tra i primi Stati membri UE a recepire la NIS2",
+      "L'ACN ha pubblicato il framework di implementazione ad aprile 2025",
+      "La registrazione è un obbligo annuale ricorrente (gennaio-febbraio di ogni anno)",
+      "L'Italia ha aggiunto settori nazionali unici nell'Allegato IV (trasporto locale, organizzazioni culturali, ecc.)",
+      "Le sanzioni per la pubblica amministrazione sono significativamente inferiori a quelle del settore privato",
+      "Periodo di implementazione di 18 mesi dalla notifica dell'ACN per le misure di conformità"
+    ],
+    "NL": [
+      "I Paesi Bassi NON hanno ancora recepito la NIS2 a marzo 2026",
+      "Dibattito in sessione plenaria alla Tweede Kamer previsto per il 23 marzo 2026",
+      "Entrata in vigore prevista per il Q2 2026",
+      "Il portale di registrazione NCSC (mijn.ncsc.nl) richiede eID eHerkenning",
+      "Il potere giudiziario, la Prima e Seconda Camera e De Nederlandsche Bank sono esenti"
+    ],
+    "PL": [
+      "Processo legislativo di 7 anni concluso a febbraio 2026",
+      "Le entità hanno 6 mesi per registrarsi come entità chiave/importanti",
+      "Scadenza di 12 mesi per l'implementazione delle misure di gestione del rischio",
+      "Sistema di segnalazione incidenti S46 con scadenza di adozione di 12 mesi"
+    ],
+    "PT": [
+      "Il CNCS è l'autorità competente per tutti gli obblighi NIS2",
+      "La legge entra in vigore il 03/04/2026 — 8 giorni dall'ultima verifica",
+      "Notifica degli incidenti in 24 ore obbligatoria per incidenti significativi; notifica unica di fine impatto anche entro 24h",
+      "Copre le entità della pubblica amministrazione oltre l'ambito base NIS2 (Gruppi A e B di Entità Pubbliche Rilevanti)",
+      "Il responsabile della cybersicurezza deve essere membro del CdA o direttamente subordinato — scadenza nomina 4 maggio 2026",
+      "La formazione manageriale è obbligatoria ai sensi dell'Art. 25 (regolarità delle azioni di formazione in cybersicurezza)",
+      "Le misure tecniche/organizzative chiave (Art. 27-30) hanno un'applicazione differita di 24 mesi in attesa di regolamenti supplementari del CNCS",
+      "La legge rappresenta una profonda riformulazione del quadro giuridico portoghese in materia di cybersicurezza, sostituendo la Legge 46/2018",
+      "Ufficio di Crisi composto da entità responsabili della sicurezza interna, difesa e indagini penali",
+      "Entità importanti: tetto sanzionatorio inferiore (EUR 7M / 1,4%) vs entità essenziali (EUR 10M / 2%)"
+    ]
+  },
+  "controlCategories": {
+    "riskManagement": "Gestione dei rischi",
+    "incidentHandling": "Gestione degli incidenti",
+    "businessContinuity": "Continuità operativa",
+    "supplyChainSecurity": "Sicurezza della catena di fornitura",
+    "secureDevelopment": "Sviluppo sicuro",
+    "effectivenessAssessment": "Valutazione dell'efficacia",
+    "cyberHygieneTraining": "Igiene informatica e formazione",
+    "cryptographyEncryption": "Crittografia e cifratura",
+    "accessControlAssetMgmt": "Controllo degli accessi e gestione degli asset",
+    "mfaSecuredComms": "MFA e comunicazioni sicure",
+    "governance": "Governance",
+    "monitoring": "Monitoraggio",
+    "securityOperations": "Operazioni di sicurezza",
+    "trainingAwareness": "Formazione e sensibilizzazione",
+    "hrSecurity": "Sicurezza HR",
+    "cryptography": "Crittografia"
+  },
+  "evidence": {
+    "title": "Prove",
+    "libraryTitle": "Archivio prove",
+    "libraryDesc": "Gestisci tutti i file di prova della tua organizzazione",
+    "upload": "Carica",
+    "uploading": "Caricamento...",
+    "dropOrClick": "Trascina i file qui o clicca",
+    "noFiles": "Nessun file di prova allegato",
+    "linkFromLibrary": "Collega dall'archivio",
+    "libraryEmpty": "Nessun file nell'archivio prove",
+    "download": "Scarica",
+    "delete": "Elimina",
+    "confirmDelete": "Eliminare questo file di prova?",
+    "filename": "Nome file",
+    "size": "Dimensione",
+    "uploadedBy": "Caricato da",
+    "date": "Data",
+    "tags": "Tag",
+    "links": "Collegamenti",
+    "searchPlaceholder": "Cerca per nome file, descrizione o tag...",
+    "showing": "Visualizzazione",
+    "of": "di"
+  },
+  "activity": {
+    "title": "Registro attività",
+    "description": "Registro di audit a prova di manomissione",
+    "verifyChain": "Verifica catena",
+    "chainValid": "Catena hash verificata: {{total}} eventi, tutti intatti.",
+    "chainBroken": "Catena interrotta all'evento #{{id}}. {{checked}} di {{total}} verificati.",
+    "searchPlaceholder": "Cerca per utente, entità...",
+    "noEvents": "Nessuna attività registrata"
   }
 }

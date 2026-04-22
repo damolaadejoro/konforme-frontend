@@ -8,6 +8,8 @@ import {
   removeCloudCredential, validateCloudCredential,
   getStoredAuth, addAwsAccount, removeAwsAccount,
   getScoringConfig, updateScoringConfig,
+  initiateAwsRoleConnection, completeAwsRoleConnection,
+  initiateAzureOAuth,
   type CloudCredential, type AwsAccountInfo,
 } from '../services/api'
 import { useScore } from '../context/ScoreContext'
@@ -53,12 +55,20 @@ export default function Settings() {
   const [credLoading, setCredLoading] = useState(true)
   const [showProviderPicker, setShowProviderPicker] = useState(false)
   const [addingProvider, setAddingProvider] = useState<'aws' | 'azure' | null>(null)
+  // AWS role flow state
+  const [awsRoleStep, setAwsRoleStep] = useState<'init' | 'pending'>('init')
   const [awsForm, setAwsForm] = useState<Record<string, string>>({})
   const [awsSaving, setAwsSaving] = useState(false)
   const [awsError, setAwsError] = useState<string | null>(null)
+  const [awsPendingCredId, setAwsPendingCredId] = useState<string | null>(null)
+  const [awsCfUrl, setAwsCfUrl] = useState<string | null>(null)
+  // AWS legacy keys (fallback)
+  const [awsLegacyMode, setAwsLegacyMode] = useState(false)
+  // Azure form state
   const [azureForm, setAzureForm] = useState<Record<string, string>>({})
   const [azureSaving, setAzureSaving] = useState(false)
   const [azureError, setAzureError] = useState<string | null>(null)
+  const [azureLegacyMode, setAzureLegacyMode] = useState(false)
   const [validatingId, setValidatingId] = useState<string | null>(null)
   const [validationResult, setValidationResult] = useState<Record<string, boolean | null>>({})
 
@@ -169,7 +179,78 @@ export default function Settings() {
     } catch { /* ignore */ }
   }
 
-  const handleAddAws = async () => {
+  // Detect Azure OAuth callback on page load
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    if (params.get('azure_connected') === '1') {
+      // Reload credentials to pick up the new one
+      const { accountId } = getStoredAuth()
+      if (accountId) {
+        getCloudCredentials(accountId)
+          .then(data => setCredentials(data.credentials))
+          .catch(() => {})
+      }
+      window.history.replaceState({}, '', window.location.pathname)
+    }
+    if (params.get('azure_error')) {
+      setAzureError(decodeURIComponent(params.get('azure_error') || 'Connection failed'))
+      setAddingProvider('azure')
+      window.history.replaceState({}, '', window.location.pathname)
+    }
+  }, [])
+
+  // AWS Role flow — Step 1: Initiate
+  const handleAwsInitiate = async () => {
+    const { accountId } = getStoredAuth()
+    if (!accountId) return
+    setAwsSaving(true)
+    setAwsError(null)
+    try {
+      const result = await initiateAwsRoleConnection(
+        accountId,
+        awsForm.alias || 'AWS',
+        awsForm.region || 'eu-west-1',
+      )
+      setAwsPendingCredId(result.credential_id)
+      setAwsCfUrl(result.cf_url)
+      setAwsRoleStep('pending')
+      window.open(result.cf_url, '_blank')
+    } catch (err) {
+      setAwsError(err instanceof Error ? err.message : 'Failed to initiate AWS connection')
+    } finally {
+      setAwsSaving(false)
+    }
+  }
+
+  // AWS Role flow — Step 2: Complete with Role ARN
+  const handleAwsComplete = async () => {
+    const { accountId } = getStoredAuth()
+    if (!accountId || !awsPendingCredId) return
+    setAwsSaving(true)
+    setAwsError(null)
+    try {
+      const cred = await completeAwsRoleConnection(
+        accountId,
+        awsPendingCredId,
+        awsForm.roleArn || '',
+        awsForm.region || 'eu-west-1',
+      )
+      setCredentials(prev => [...prev, cred])
+      setAddingProvider(null)
+      setShowProviderPicker(false)
+      setAwsForm({})
+      setAwsRoleStep('init')
+      setAwsPendingCredId(null)
+      setAwsCfUrl(null)
+    } catch (err) {
+      setAwsError(err instanceof Error ? err.message : 'Failed to verify AWS role')
+    } finally {
+      setAwsSaving(false)
+    }
+  }
+
+  // AWS legacy keys (fallback)
+  const handleAddAwsLegacy = async () => {
     setAwsSaving(true)
     setAwsError(null)
     try {
@@ -184,6 +265,7 @@ export default function Settings() {
       setAddingProvider(null)
       setShowProviderPicker(false)
       setAwsForm({})
+      setAwsLegacyMode(false)
     } catch (err) {
       setAwsError(err instanceof Error ? err.message : 'Failed to add AWS account')
     } finally {
@@ -191,7 +273,28 @@ export default function Settings() {
     }
   }
 
-  const handleAddAzure = async () => {
+  // Azure OAuth flow
+  const handleAzureOAuth = async () => {
+    const { accountId } = getStoredAuth()
+    if (!accountId) return
+    setAzureSaving(true)
+    setAzureError(null)
+    try {
+      const result = await initiateAzureOAuth(
+        accountId,
+        azureForm.alias || 'Azure',
+        azureForm.subscriptionId || '',
+      )
+      window.location.href = result.auth_url
+    } catch (err) {
+      setAzureError(err instanceof Error ? err.message : 'Failed to initiate Azure connection')
+    } finally {
+      setAzureSaving(false)
+    }
+  }
+
+  // Azure legacy (fallback)
+  const handleAddAzureLegacy = async () => {
     const { accountId } = getStoredAuth()
     if (!accountId) return
     setAzureSaving(true)
@@ -209,6 +312,7 @@ export default function Settings() {
       setAddingProvider(null)
       setShowProviderPicker(false)
       setAzureForm({})
+      setAzureLegacyMode(false)
     } catch (err) {
       setAzureError(err instanceof Error ? err.message : t('settings.validationFailed'))
     } finally {
@@ -330,7 +434,7 @@ export default function Settings() {
           </div>
         ) : (
           <div className="space-y-2">
-            {/* AWS accounts */}
+            {/* Legacy AWS accounts (key-based) */}
             {awsAccounts.map(acct => (
               <div key={acct.id} className="flex items-center justify-between p-3 rounded-lg bg-navy-900/40 border border-navy-800">
                 <div className="flex items-center gap-3">
@@ -350,43 +454,51 @@ export default function Settings() {
                 </button>
               </div>
             ))}
-            {/* Azure credentials */}
-            {credentials.map(cred => (
-              <div key={cred.id} className="flex items-center justify-between p-3 rounded-lg bg-navy-900/40 border border-navy-800">
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-blue-500/10 border border-blue-500/20">
-                    <Cloud size={14} className="text-blue-400" />
+            {/* All cloud credentials (AWS role + Azure) */}
+            {credentials.map(cred => {
+              const isAws = cred.provider === 'aws'
+              const colorClass = isAws ? 'orange' : 'blue'
+              return (
+                <div key={cred.id} className="flex items-center justify-between p-3 rounded-lg bg-navy-900/40 border border-navy-800">
+                  <div className="flex items-center gap-3">
+                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center bg-${colorClass}-500/10 border border-${colorClass}-500/20`}>
+                      <Cloud size={14} className={`text-${colorClass}-400`} />
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-white">{cred.alias}</p>
+                      <p className="text-[10px] text-navy-400 uppercase">
+                        {cred.provider.toUpperCase()}
+                        {cred.connection_type === 'role' && ' · IAM Role'}
+                        {cred.connection_type === 'oauth' && ' · OAuth'}
+                        {isAws && cred.aws_region && ` · ${cred.aws_region}`}
+                        {!isAws && cred.azure_subscription_id && ` · ${cred.azure_subscription_id}`}
+                      </p>
+                    </div>
                   </div>
-                  <div>
-                    <p className="text-sm font-medium text-white">{cred.alias}</p>
-                    <p className="text-[10px] text-navy-400 uppercase">AZURE
-                      {cred.azure_subscription_id && ` · ${cred.azure_subscription_id}`}
-                    </p>
+                  <div className="flex items-center gap-2">
+                    {validationResult[cred.id] === true && (
+                      <CheckCircle2 size={14} className="text-emerald-400" />
+                    )}
+                    {validationResult[cred.id] === false && (
+                      <AlertCircle size={14} className="text-red-400" />
+                    )}
+                    <button
+                      onClick={() => handleValidate(cred.id)}
+                      disabled={validatingId === cred.id}
+                      className="text-xs text-navy-400 hover:text-white transition-colors disabled:opacity-50"
+                    >
+                      {validatingId === cred.id ? <Loader2 size={12} className="animate-spin" /> : t('settings.validateProvider')}
+                    </button>
+                    <button
+                      onClick={() => handleRemoveCredential(cred.id)}
+                      className="text-xs text-red-400/60 hover:text-red-400 transition-colors"
+                    >
+                      <Trash2 size={14} />
+                    </button>
                   </div>
                 </div>
-                <div className="flex items-center gap-2">
-                  {validationResult[cred.id] === true && (
-                    <CheckCircle2 size={14} className="text-emerald-400" />
-                  )}
-                  {validationResult[cred.id] === false && (
-                    <AlertCircle size={14} className="text-red-400" />
-                  )}
-                  <button
-                    onClick={() => handleValidate(cred.id)}
-                    disabled={validatingId === cred.id}
-                    className="text-xs text-navy-400 hover:text-white transition-colors disabled:opacity-50"
-                  >
-                    {validatingId === cred.id ? <Loader2 size={12} className="animate-spin" /> : t('settings.validateProvider')}
-                  </button>
-                  <button
-                    onClick={() => handleRemoveCredential(cred.id)}
-                    className="text-xs text-red-400/60 hover:text-red-400 transition-colors"
-                  >
-                    <Trash2 size={14} />
-                  </button>
-                </div>
-              </div>
-            ))}
+              )
+            })}
           </div>
         )}
 
@@ -424,40 +536,99 @@ export default function Settings() {
           </div>
         )}
 
-        {/* Add AWS form */}
-        {addingProvider === 'aws' && (
+        {/* Add AWS — CloudFormation role flow */}
+        {addingProvider === 'aws' && !awsLegacyMode && (
           <div className="mt-4 p-4 rounded-lg bg-navy-900/60 border border-navy-700">
-            <h3 className="text-sm font-semibold text-white mb-3">Add AWS Account</h3>
+            <h3 className="text-sm font-semibold text-white mb-1">{t('settings.awsConnectTitle')}</h3>
+            <p className="text-xs text-navy-400 mb-4">{t('settings.awsConnectDesc')}</p>
+
+            {awsRoleStep === 'init' && (
+              <>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <Input
+                    label={t('settings.awsAlias')}
+                    value={awsForm.alias || ''}
+                    onChange={e => setAwsForm(p => ({ ...p, alias: e.target.value }))}
+                    placeholder="e.g. Production"
+                  />
+                  <Input
+                    label={t('settings.awsRegion')}
+                    value={awsForm.region || 'eu-west-1'}
+                    onChange={e => setAwsForm(p => ({ ...p, region: e.target.value }))}
+                    placeholder="eu-west-1"
+                  />
+                </div>
+                <div className="flex items-center justify-between mt-4">
+                  <button
+                    onClick={() => setAwsLegacyMode(true)}
+                    className="text-[11px] text-navy-500 hover:text-navy-300 transition-colors"
+                  >
+                    {t('settings.useLegacyKeys')}
+                  </button>
+                  <div className="flex gap-2">
+                    <Button variant="secondary" size="sm" onClick={() => { setAddingProvider(null); setAwsError(null); setAwsRoleStep('init') }}>
+                      {t('common.cancel')}
+                    </Button>
+                    <Button size="sm" onClick={handleAwsInitiate} loading={awsSaving}>
+                      {t('settings.awsDeployStack')}
+                    </Button>
+                  </div>
+                </div>
+              </>
+            )}
+
+            {awsRoleStep === 'pending' && (
+              <>
+                <div className="p-3 rounded-lg bg-cyan-500/10 border border-cyan-500/20 mb-4">
+                  <p className="text-xs text-cyan-300 font-medium mb-1">{t('settings.awsStep2Title')}</p>
+                  <ol className="text-xs text-navy-300 space-y-1 list-decimal list-inside">
+                    <li>{t('settings.awsStep2Line1')}</li>
+                    <li>{t('settings.awsStep2Line2')}</li>
+                    <li>{t('settings.awsStep2Line3')}</li>
+                  </ol>
+                  {awsCfUrl && (
+                    <a href={awsCfUrl} target="_blank" rel="noopener noreferrer" className="inline-block mt-2 text-xs text-cyan-400 hover:text-cyan-300 underline">
+                      {t('settings.awsOpenCfConsole')}
+                    </a>
+                  )}
+                </div>
+                <Input
+                  label={t('settings.awsRoleArn')}
+                  value={awsForm.roleArn || ''}
+                  onChange={e => setAwsForm(p => ({ ...p, roleArn: e.target.value }))}
+                  placeholder="arn:aws:iam::123456789012:role/KonformeAuditRole"
+                />
+                <div className="flex gap-2 mt-4">
+                  <Button variant="secondary" size="sm" onClick={() => { setAddingProvider(null); setAwsError(null); setAwsRoleStep('init'); setAwsPendingCredId(null); setAwsCfUrl(null) }}>
+                    {t('common.cancel')}
+                  </Button>
+                  <Button size="sm" onClick={handleAwsComplete} loading={awsSaving}>
+                    {t('settings.awsVerifyConnect')}
+                  </Button>
+                </div>
+              </>
+            )}
+
+            {awsError && (
+              <div className="mt-3 p-2 rounded-lg bg-red-500/10 border border-red-500/20 flex items-center gap-2">
+                <AlertCircle size={14} className="text-red-400 shrink-0" />
+                <p className="text-xs text-red-400">{awsError}</p>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Add AWS — Legacy keys fallback */}
+        {addingProvider === 'aws' && awsLegacyMode && (
+          <div className="mt-4 p-4 rounded-lg bg-navy-900/60 border border-navy-700">
+            <h3 className="text-sm font-semibold text-white mb-3">{t('settings.awsLegacyTitle')}</h3>
             <AwsIamPolicy />
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <Input
-                label="Alias"
-                value={awsForm.alias || ''}
-                onChange={e => setAwsForm(p => ({ ...p, alias: e.target.value }))}
-                placeholder="e.g. Production"
-              />
-              <Input
-                label="Region"
-                value={awsForm.region || 'eu-west-1'}
-                onChange={e => setAwsForm(p => ({ ...p, region: e.target.value }))}
-                placeholder="eu-west-1"
-              />
-              <Input
-                label="Access Key ID"
-                value={awsForm.accessKeyId || ''}
-                onChange={e => setAwsForm(p => ({ ...p, accessKeyId: e.target.value }))}
-              />
-              <Input
-                label="Secret Access Key"
-                type="password"
-                value={awsForm.secretAccessKey || ''}
-                onChange={e => setAwsForm(p => ({ ...p, secretAccessKey: e.target.value }))}
-              />
-              <Input
-                label="Session Token (optional)"
-                value={awsForm.sessionToken || ''}
-                onChange={e => setAwsForm(p => ({ ...p, sessionToken: e.target.value }))}
-              />
+              <Input label={t('settings.awsAlias')} value={awsForm.alias || ''} onChange={e => setAwsForm(p => ({ ...p, alias: e.target.value }))} placeholder="e.g. Production" />
+              <Input label={t('settings.awsRegion')} value={awsForm.region || 'eu-west-1'} onChange={e => setAwsForm(p => ({ ...p, region: e.target.value }))} />
+              <Input label="Access Key ID" value={awsForm.accessKeyId || ''} onChange={e => setAwsForm(p => ({ ...p, accessKeyId: e.target.value }))} />
+              <Input label="Secret Access Key" type="password" value={awsForm.secretAccessKey || ''} onChange={e => setAwsForm(p => ({ ...p, secretAccessKey: e.target.value }))} />
+              <Input label="Session Token (optional)" value={awsForm.sessionToken || ''} onChange={e => setAwsForm(p => ({ ...p, sessionToken: e.target.value }))} />
             </div>
             {awsError && (
               <div className="mt-3 p-2 rounded-lg bg-red-500/10 border border-red-500/20 flex items-center gap-2">
@@ -465,47 +636,35 @@ export default function Settings() {
                 <p className="text-xs text-red-400">{awsError}</p>
               </div>
             )}
-            <div className="flex gap-2 mt-4">
-              <Button variant="secondary" size="sm" onClick={() => { setAddingProvider(null); setAwsError(null) }}>
-                {t('common.cancel')}
-              </Button>
-              <Button size="sm" onClick={handleAddAws} loading={awsSaving}>
-                {t('settings.addProvider')}
-              </Button>
+            <div className="flex items-center justify-between mt-4">
+              <button onClick={() => setAwsLegacyMode(false)} className="text-[11px] text-cyan-400 hover:text-cyan-300 transition-colors">
+                {t('settings.useSecureConnection')}
+              </button>
+              <div className="flex gap-2">
+                <Button variant="secondary" size="sm" onClick={() => { setAddingProvider(null); setAwsError(null); setAwsLegacyMode(false) }}>{t('common.cancel')}</Button>
+                <Button size="sm" onClick={handleAddAwsLegacy} loading={awsSaving}>{t('settings.addProvider')}</Button>
+              </div>
             </div>
           </div>
         )}
 
-        {/* Add Azure form */}
-        {addingProvider === 'azure' && (
+        {/* Add Azure — OAuth flow */}
+        {addingProvider === 'azure' && !azureLegacyMode && (
           <div className="mt-4 p-4 rounded-lg bg-navy-900/60 border border-navy-700">
-            <h3 className="text-sm font-semibold text-white mb-3">Add Azure Credential</h3>
+            <h3 className="text-sm font-semibold text-white mb-1">{t('settings.azureConnectTitle')}</h3>
+            <p className="text-xs text-navy-400 mb-4">{t('settings.azureConnectDesc')}</p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <Input
-                label="Alias"
+                label={t('settings.azureAlias')}
                 value={azureForm.alias || ''}
                 onChange={e => setAzureForm(p => ({ ...p, alias: e.target.value }))}
+                placeholder="e.g. Production"
               />
               <Input
-                label="Tenant ID"
-                value={azureForm.tenantId || ''}
-                onChange={e => setAzureForm(p => ({ ...p, tenantId: e.target.value }))}
-              />
-              <Input
-                label="Client ID (App ID)"
-                value={azureForm.clientId || ''}
-                onChange={e => setAzureForm(p => ({ ...p, clientId: e.target.value }))}
-              />
-              <Input
-                label="Client Secret"
-                type="password"
-                value={azureForm.clientSecret || ''}
-                onChange={e => setAzureForm(p => ({ ...p, clientSecret: e.target.value }))}
-              />
-              <Input
-                label="Subscription ID"
+                label={t('settings.azureSubscriptionId')}
                 value={azureForm.subscriptionId || ''}
                 onChange={e => setAzureForm(p => ({ ...p, subscriptionId: e.target.value }))}
+                placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
               />
             </div>
             {azureError && (
@@ -514,13 +673,50 @@ export default function Settings() {
                 <p className="text-xs text-red-400">{azureError}</p>
               </div>
             )}
-            <div className="flex gap-2 mt-4">
-              <Button variant="secondary" size="sm" onClick={() => { setAddingProvider(null); setAzureError(null) }}>
-                {t('common.cancel')}
-              </Button>
-              <Button size="sm" onClick={handleAddAzure} loading={azureSaving}>
-                {t('settings.addProvider')}
-              </Button>
+            <div className="flex items-center justify-between mt-4">
+              <button
+                onClick={() => setAzureLegacyMode(true)}
+                className="text-[11px] text-navy-500 hover:text-navy-300 transition-colors"
+              >
+                {t('settings.useLegacyCredentials')}
+              </button>
+              <div className="flex gap-2">
+                <Button variant="secondary" size="sm" onClick={() => { setAddingProvider(null); setAzureError(null) }}>
+                  {t('common.cancel')}
+                </Button>
+                <Button size="sm" onClick={handleAzureOAuth} loading={azureSaving}>
+                  {t('settings.azureConnectViaMicrosoft')}
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Add Azure — Legacy service principal fallback */}
+        {addingProvider === 'azure' && azureLegacyMode && (
+          <div className="mt-4 p-4 rounded-lg bg-navy-900/60 border border-navy-700">
+            <h3 className="text-sm font-semibold text-white mb-3">{t('settings.azureLegacyTitle')}</h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <Input label={t('settings.azureAlias')} value={azureForm.alias || ''} onChange={e => setAzureForm(p => ({ ...p, alias: e.target.value }))} />
+              <Input label="Tenant ID" value={azureForm.tenantId || ''} onChange={e => setAzureForm(p => ({ ...p, tenantId: e.target.value }))} />
+              <Input label="Client ID (App ID)" value={azureForm.clientId || ''} onChange={e => setAzureForm(p => ({ ...p, clientId: e.target.value }))} />
+              <Input label="Client Secret" type="password" value={azureForm.clientSecret || ''} onChange={e => setAzureForm(p => ({ ...p, clientSecret: e.target.value }))} />
+              <Input label={t('settings.azureSubscriptionId')} value={azureForm.subscriptionId || ''} onChange={e => setAzureForm(p => ({ ...p, subscriptionId: e.target.value }))} />
+            </div>
+            {azureError && (
+              <div className="mt-3 p-2 rounded-lg bg-red-500/10 border border-red-500/20 flex items-center gap-2">
+                <AlertCircle size={14} className="text-red-400 shrink-0" />
+                <p className="text-xs text-red-400">{azureError}</p>
+              </div>
+            )}
+            <div className="flex items-center justify-between mt-4">
+              <button onClick={() => setAzureLegacyMode(false)} className="text-[11px] text-cyan-400 hover:text-cyan-300 transition-colors">
+                {t('settings.useSecureConnection')}
+              </button>
+              <div className="flex gap-2">
+                <Button variant="secondary" size="sm" onClick={() => { setAddingProvider(null); setAzureError(null); setAzureLegacyMode(false) }}>{t('common.cancel')}</Button>
+                <Button size="sm" onClick={handleAddAzureLegacy} loading={azureSaving}>{t('settings.addProvider')}</Button>
+              </div>
             </div>
           </div>
         )}

@@ -62,6 +62,19 @@ vi.mock('react-i18next', () => ({
   initReactI18next: { type: '3rdParty', init: vi.fn() },
 }))
 
+// Mock the ScoreContext
+vi.mock('../context/ScoreContext', () => ({
+  useScore: () => ({
+    backendScore: null,
+    overallScore: 75,
+    technicalScore: 0,
+    assessmentScore: 0,
+    controlsScore: 75,
+    refreshScore: vi.fn(),
+    fetchFilteredScore: vi.fn(() => Promise.resolve(null)),
+  }),
+}))
+
 // Mock the ControlsContext (NIS2Overview uses useControlsContext, not useControls directly)
 vi.mock('../context/ControlsContext', () => ({
   useControlsContext: () => ({

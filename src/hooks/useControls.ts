@@ -11,8 +11,8 @@ import {
   TaskType,
   TaskStatus
 } from '../types/controls'
-import { controls as templateControls } from '../data/controlsData'
 import {
+  getBaseControls,
   getControlStates,
   bulkUpsertControls,
   updateControlState,
@@ -22,17 +22,37 @@ import {
   getCountryControls,
   getCountryAssessmentQuestions,
 } from '../services/api'
-import type { AccountControlState, CampaignApi, CountryControl, CountryAssessmentQuestion } from '../services/api'
+import type { AccountControlState, BaseControlDef, CampaignApi, CountryControl, CountryAssessmentQuestion } from '../services/api'
 
-// Fresh controls for new users: all statuses reset to "Not Started", no pre-filled data
-const freshControls: Control[] = templateControls.map(c => ({
-  ...c,
-  status: 'Not Started' as ControlStatus,
-  owner: '',
-  evidence: [],
-  notes: '',
-  lastUpdated: new Date().toISOString(),
-}))
+// Module-level cache for base control definitions (rarely change)
+let cachedFreshControls: Control[] | null = null
+
+function defsToControls(defs: BaseControlDef[]): Control[] {
+  return defs.map(d => ({
+    id: d.controlId,
+    title: d.title,
+    description: d.description,
+    article: d.article,
+    articleArea: d.articleArea,
+    category: d.category as ControlCategory,
+    severity: d.severity as ControlSeverity,
+    isPeopleControl: d.isPeopleControl,
+    status: 'Not Started' as ControlStatus,
+    owner: '',
+    dueDate: null,
+    evidence: [],
+    notes: '',
+    isAutoPopulated: false,
+    lastUpdated: new Date().toISOString(),
+  }))
+}
+
+async function getFreshControls(): Promise<Control[]> {
+  if (cachedFreshControls) return cachedFreshControls
+  const defs = await getBaseControls()
+  cachedFreshControls = defsToControls(defs)
+  return cachedFreshControls
+}
 
 const STORAGE_KEY = 'konforme_controls'
 const CAMPAIGNS_STORAGE_KEY = 'konforme_campaigns'
@@ -148,7 +168,7 @@ export function useControls() {
   // Load controls and campaigns from backend on mount
   useEffect(() => {
     if (!accountId) {
-      setControls(freshControls)
+      getFreshControls().then(fresh => setControls(fresh)).catch(() => setControls([]))
       setLoading(false)
       return
     }
@@ -157,8 +177,9 @@ export function useControls() {
 
     async function loadData() {
       try {
-        // Load backend state and campaigns in parallel
-        const [backendStates, backendCampaigns] = await Promise.all([
+        // Load base control definitions, backend state, and campaigns in parallel
+        const [freshControls, backendStates, backendCampaigns] = await Promise.all([
+          getFreshControls(),
           getControlStates(accountId!).catch(() => [] as AccountControlState[]),
           getCampaigns(accountId!).catch(() => [] as CampaignApi[]),
         ])
@@ -190,14 +211,14 @@ export function useControls() {
             } catch {
               // Migration failed, use fresh controls and seed backend
               if (!cancelled) {
-                const seeded = await seedBackend(accountId!)
+                const seeded = await seedBackend(accountId!, freshControls)
                 const merged = mergeStateIntoControls(freshControls, seeded)
                 setControls(merged)
               }
             }
           } else {
             // No localStorage, no backend — seed backend with defaults
-            const seeded = await seedBackend(accountId!)
+            const seeded = await seedBackend(accountId!, freshControls)
             if (!cancelled) {
               const merged = mergeStateIntoControls(freshControls, seeded)
               setControls(merged)
@@ -233,7 +254,7 @@ export function useControls() {
       } catch (err) {
         console.error('Failed to load controls from backend', err)
         if (!cancelled) {
-          setControls(freshControls)
+          getFreshControls().then(fresh => setControls(fresh)).catch(() => setControls([]))
         }
       } finally {
         if (!cancelled) {
@@ -335,7 +356,7 @@ export function useControls() {
   }, [accountId])
 
   // Seed backend with default "Not Started" controls
-  async function seedBackend(acctId: string): Promise<AccountControlState[]> {
+  async function seedBackend(acctId: string, freshControls: Control[]): Promise<AccountControlState[]> {
     const items = freshControls.map(c => ({
       control_id: c.id,
       status: c.status,

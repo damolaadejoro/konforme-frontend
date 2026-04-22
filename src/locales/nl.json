@@ -16,7 +16,10 @@
     "sectionAssess": "BEOORDELEN",
     "sectionRemediate": "HERSTELLEN",
     "sectionReport": "RAPPORT",
-    "team": "Team"
+    "team": "Team",
+    "scope": "Reikwijdte",
+    "evidence": "Bewijs",
+    "activity": "Activiteit"
   },
   "common": {
     "save": "Wijzigingen opslaan",
@@ -73,7 +76,8 @@
     "copied": "Gekopieerd!",
     "goToDashboard": "Dashboard",
     "goToSettings": "Naar instellingen",
-    "reportGenerateFailed": "Rapport genereren mislukt. Probeer het opnieuw."
+    "reportGenerateFailed": "Rapport genereren mislukt. Probeer het opnieuw.",
+    "neverSaved": "Nooit"
   },
   "auth": {
     "signIn": "Inloggen bij Konforme",
@@ -107,7 +111,26 @@
     "validationPasswordNumber": "Wachtwoord moet een cijfer bevatten",
     "validationConfirmRequired": "Bevestig uw wachtwoord",
     "validationPasswordsMismatch": "Wachtwoorden komen niet overeen",
-    "validationNameRequired": "Naam is verplicht"
+    "validationNameRequired": "Naam is verplicht",
+    "verifyEmailBanner": "Verifieer uw e-mailadres om door te gaan.",
+    "resendVerification": "Verificatie-e-mail opnieuw versturen",
+    "verificationSent": "Verificatie-e-mail verzonden!",
+    "verifyingEmail": "E-mail wordt geverifieerd...",
+    "emailVerified": "E-mail geverifieerd!",
+    "emailVerifiedDesc": "Uw account is succesvol geverifieerd.",
+    "verificationFailed": "Verificatie mislukt",
+    "verificationFailedDesc": "De verificatielink is ongeldig of verlopen.",
+    "verifyPendingTitle": "Verifieer uw e-mail",
+    "verifyPendingSent": "We hebben een verificatie-e-mail gestuurd naar",
+    "verifyPendingResend": "E-mail opnieuw versturen",
+    "verifyPendingResendIn": "Opnieuw versturen in {{seconds}}s",
+    "verifyPendingWrongEmail": "E-mail bewerken",
+    "verifyPendingUpdateEmail": "E-mail bijwerken",
+    "verifyPendingSpamHint": "Niet gevonden? Controleer uw spammap.",
+    "verifyPendingVerified": "Geverifieerd! Doorverwijzen...",
+    "verifySuccessClose": "Dit tabblad sluiten",
+    "continueSetup": "Doorgaan met instellen",
+    "backToSignIn": "Terug naar inloggen"
   },
   "settings": {
     "title": "Instellingen",
@@ -153,7 +176,46 @@
     "saveScoringWeights": "Gewichten opslaan",
     "before": "Voor",
     "after": "Na",
-    "version": "Konforme v1.0.0 · Gebouwd voor NIS2-compliance · © 2026 Konforme"
+    "version": "Konforme v1.0.0 · Gebouwd voor NIS2-compliance · © 2026 Konforme",
+    "cloudProviders": "Cloudproviders",
+    "cloudProvidersDesc": "Beheer uw cloudprovider-verbindingen",
+    "addProvider": "Provider toevoegen",
+    "selectProvider": "Provider selecteren",
+    "noProviders": "Geen cloudproviders",
+    "noProvidersDesc": "Verbind uw eerste cloudprovider om technische scans te starten.",
+    "providerAws": "Amazon Web Services",
+    "providerAzure": "Microsoft Azure",
+    "providerConnected": "Verbonden",
+    "providerRegion": "Regio",
+    "providerSubscription": "Abonnement",
+    "providerTenant": "Tenant",
+    "removeProvider": "Provider verwijderen",
+    "removeProviderConfirm": "Weet u zeker dat u deze cloudprovider wilt verwijderen?",
+    "validateProvider": "Inloggegevens valideren",
+    "validationSuccess": "Inloggegevens succesvol gevalideerd!",
+    "validationFailed": "Validatie mislukt. Controleer uw inloggegevens.",
+    "awsConnectTitle": "AWS-account verbinden",
+    "awsConnectDesc": "Maak een alleen-lezen IAM-rol aan via CloudFormation — geen toegangssleutels nodig.",
+    "awsAlias": "Alias",
+    "awsRegion": "Regio",
+    "awsDeployStack": "CloudFormation Stack uitrollen",
+    "awsStep2Title": "Installatie in AWS voltooien",
+    "awsStep2Line1": "De CloudFormation-console is geopend in een nieuw tabblad — klik op 'Create stack'",
+    "awsStep2Line2": "Wacht op de status CREATE_COMPLETE",
+    "awsStep2Line3": "Kopieer de Role ARN uit het Outputs-tabblad en plak het hieronder",
+    "awsOpenCfConsole": "CloudFormation-console opnieuw openen",
+    "awsRoleArn": "Role ARN",
+    "awsVerifyConnect": "Verifiëren & Verbinden",
+    "awsLegacyTitle": "AWS-account toevoegen (Toegangssleutels)",
+    "useLegacyKeys": "Toegangssleutels gebruiken",
+    "useLegacyCredentials": "Service principal gebruiken",
+    "useSecureConnection": "Veilige verbinding gebruiken (aanbevolen)",
+    "azureConnectTitle": "Azure-abonnement verbinden",
+    "azureConnectDesc": "Log in met Microsoft en verleen alleen-lezen toegang — geen geheimen nodig.",
+    "azureAlias": "Alias",
+    "azureSubscriptionId": "Abonnements-ID",
+    "azureConnectViaMicrosoft": "Verbinden via Microsoft",
+    "azureLegacyTitle": "Azure-referenties toevoegen (Service Principal)"
   },
   "overview": {
     "title": "NIS2-compliance-overzicht",
@@ -220,7 +282,19 @@
     "peopleTasksDesc": "Medewerkerstrainingen en beleidsbevestigingen over alle campagnes volgen",
     "viewCampaigns": "Campagnes bekijken",
     "questions": "vragen",
-    "ofControls": "{{implemented}} van {{count}} controles"
+    "ofControls": "{{implemented}} van {{count}} controles",
+    "cloudScores": "Cloudscores",
+    "cloudScoresDesc": "Compliancescores per provider van technische scans",
+    "deadlines": "Deadlines",
+    "deadlinesDesc": "Komende compliance-deadlines",
+    "noDeadlines": "Geen komende deadlines",
+    "daysRemaining": "{{days}} dagen resterend",
+    "deadlinePassed": "Deadline verstreken",
+    "countryBadge": "Land",
+    "entityBadge": "Entiteit",
+    "noCountrySet": "Geen land geselecteerd",
+    "noCountrySetDesc": "Selecteer uw land in Instellingen om de nationale NIS2-autoriteit te zien.",
+    "selectCountry": "Land selecteren"
   },
   "assessment": {
     "title": "NIS2-volwassenheidsbeoordeling",
@@ -407,7 +481,35 @@
     "newScan": "Nieuwe scan",
     "demoAccount": "Demo-account",
     "comingSoonTitle": "Binnenkort beschikbaar",
-    "comingSoonDesc": "Azure, Google Cloud (GCP) en on-premises infrastructuurscanning staan op onze roadmap."
+    "comingSoonDesc": "Azure, Google Cloud (GCP) en on-premises infrastructuurscanning staan op onze roadmap.",
+    "providerAws": "AWS",
+    "providerAzure": "Azure",
+    "azureCredentials": "Azure-inloggegevens",
+    "addAzureCredential": "Azure-inloggegevens toevoegen",
+    "addFirstAzureCredential": "Voeg uw eerste Azure-inloggegevens toe",
+    "azureTenantId": "Tenant-ID",
+    "azureTenantIdPlaceholder": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+    "azureClientId": "Client-ID",
+    "azureClientIdPlaceholder": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+    "azureClientSecret": "Clientgeheim",
+    "azureClientSecretPlaceholder": "Uw Azure-clientgeheim",
+    "azureSubscriptionId": "Abonnement-ID",
+    "azureSubscriptionIdPlaceholder": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+    "azurePermissionsTitle": "Vereiste Azure-machtigingen",
+    "azurePermissionsDesc": "Maak een app-registratie met leesmachtigingen voor uw Azure-abonnement.",
+    "azurePermissionsSteps": "Configuratiestappen",
+    "viewAzureSteps": "Azure-stappen bekijken",
+    "hideAzureSteps": "Azure-stappen verbergen",
+    "azureAccessControl": "Toegangsbeheer",
+    "azureBusinessContinuity": "Bedrijfscontinuïteit",
+    "azureDataProtection": "Gegevensbescherming",
+    "azureEncryption": "Versleuteling",
+    "azureNetwork": "Netwerk",
+    "azureLogging": "Logging",
+    "initAzureSession": "Azure-sessie initialiseren",
+    "loadingAzureRuleset": "Azure-regelset laden...",
+    "noAzureCredentialSelected": "Geen Azure-inloggegevens geselecteerd",
+    "subtitle_azure": "Scan uw Azure-abonnement op NIS2-compliance"
   },
   "controls": {
     "pageTitle": "Controlbibliotheek",
@@ -479,7 +581,216 @@
     "sendTasksButton": "Taken versturen",
     "lastUpdated": "Laatst bijgewerkt:",
     "severityLabel": "Ernst",
-    "allSeverities": "Alle ernsten"
+    "allSeverities": "Alle ernsten",
+    "ctrl-001": {
+      "title": "Document informatieveiligheidsbeleid",
+      "description": "Een formeel informatieveiligheidsbeleid goedgekeurd door het management en gecommuniceerd aan al het personeel. Moet bereik, verantwoordelijkheden, acceptabel gebruik, dataclassificatie en incidentrespons omvatten."
+    },
+    "ctrl-002": {
+      "title": "Jaarlijks risicobeoordelingsproces",
+      "description": "Regelmatige risicobeoordelingen om bedreigingen, kwetsbaarheden en impact op kritieke diensten te identificeren. Moet een erkend raamwerk gebruiken (ISO 27005, NIST)."
+    },
+    "ctrl-003": {
+      "title": "Risicoregister bijgehouden en beoordeeld",
+      "description": "Actief risicoregister dat alle geïdentificeerde cyberbeveiligingsrisico's volgt met waarschijnlijkheid, impact, mitigatieplannen en eigenaren."
+    },
+    "ctrl-004": {
+      "title": "Beveiligingsrollen en verantwoordelijkheden gedefinieerd",
+      "description": "Duidelijke verantwoordelijkheden met gedocumenteerde RACI-matrix voor beveiligingsfuncties. Rollen zoals CISO, beveiligingsteam, systeemeigenaren moeten formeel gedefinieerd zijn."
+    },
+    "ctrl-005": {
+      "title": "Incidentresponsplan gedocumenteerd",
+      "description": "Formeel incidentresponsproces dat detectie, inperking, uitroeiing, herstel en geleerde lessen omvat. Moet escalatiepaden en communicatiesjablonen bevatten."
+    },
+    "ctrl-006": {
+      "title": "Incidentclassificatie- en escalatieproces",
+      "description": "Gedefinieerde ernstniveaus (Kritiek, Hoog, Middel, Laag) met duidelijke escalatiecriteria, respons-SLA's en meldingsvereisten."
+    },
+    "ctrl-007": {
+      "title": "CSIRT-registratie voltooid",
+      "description": "Organisatie geregistreerd bij het nationale Computer Security Incident Response Team (CSIRT) voor verplichte incidentmelding."
+    },
+    "ctrl-008": {
+      "title": "Tabletop-oefening incidentrespons uitgevoerd (afgelopen 12 maanden)",
+      "description": "Regelmatig testen van het incidentresponsplan door middel van tabletop-oefeningen of simulaties."
+    },
+    "ctrl-009": {
+      "title": "24-uurs meldingsproces aan autoriteiten gedefinieerd",
+      "description": "Duidelijk proces voor vroegtijdige waarschuwing aan autoriteiten binnen 24 uur na detectie van een significant incident."
+    },
+    "ctrl-010": {
+      "title": "Bedrijfscontinuïteitsplan gedocumenteerd",
+      "description": "BCP dat de continuïteit van kritieke diensten waarborgt tijdens verstoringen. Moet kritieke functies, afhankelijkheden, alternatieve regelingen en communicatieplannen omvatten."
+    },
+    "ctrl-011": {
+      "title": "Disaster recovery-plan met RTO/RPO-doelen",
+      "description": "DR-plan met gedefinieerde Recovery Time Objective (RTO) en Recovery Point Objective (RPO) voor elk kritiek systeem."
+    },
+    "ctrl-012": {
+      "title": "DR-plan getest (afgelopen 12 maanden)",
+      "description": "Regelmatig testen van het disaster recovery-plan door middel van simulaties of volledige failover-tests."
+    },
+    "ctrl-013": {
+      "title": "Back-ups van kritieke systemen regelmatig getest",
+      "description": "Regelmatige hersteltests om de integriteit van back-ups en herstelprocedures te verifiëren. Driemaandelijkse tests vereist."
+    },
+    "ctrl-014": {
+      "title": "Beoordelingsproces cyberveiligheid leveranciers",
+      "description": "Proces voor het beoordelen van cyberbeveiligingspraktijken van kritieke leveranciers, inclusief beveiligingsvragenlijsten en certificeringsvereisten."
+    },
+    "ctrl-015": {
+      "title": "Beveiligingsvereisten in leverancierscontracten",
+      "description": "Contractuele beveiligingsverplichtingen inclusief meldplicht bij inbreuken, auditrecht, gegevensbescherming en beveiligingscertificeringen."
+    },
+    "ctrl-016": {
+      "title": "Beheerproces voor toegang van derden",
+      "description": "Formele goedkeuring, MFA-handhaving en monitoring van systeemtoegang door derden. Driemaandelijkse toegangsbeoordelingen vereist."
+    },
+    "ctrl-017": {
+      "title": "MFA ingeschakeld op alle kritieke systemen",
+      "description": "Multi-factor authenticatie afgedwongen op alle kritieke systemen, beheerdersaccounts en externe toegang."
+    },
+    "ctrl-018": {
+      "title": "Gegevensversleuteling in rust en tijdens overdracht",
+      "description": "Versleuteling van gevoelige gegevens met goedgekeurde algoritmen (AES-256, TLS 1.3) voor gegevens in rust en tijdens overdracht."
+    },
+    "ctrl-019": {
+      "title": "Netwerkbeveiligingsmonitoring geïmplementeerd",
+      "description": "Actieve monitoring van netwerkverkeer, inbraakdetectie en logging van beveiligingsgebeurtenissen."
+    },
+    "ctrl-020": {
+      "title": "Kwetsbaarheidsbeheerproces",
+      "description": "Regelmatige kwetsbaarheidsscans, patchbeheer en remediation-tracking voor alle systemen."
+    },
+    "ctrl-021": {
+      "title": "Beleid voor cryptografie en sleutelbeheer",
+      "description": "Beleid voor versleutelingsalgoritmen, levenscyclus van sleutels en veilige sleutelopslag via KMS of HSM."
+    },
+    "ctrl-022": {
+      "title": "Patchbeheerproces",
+      "description": "Systematisch proces voor het toepassen van beveiligingspatches op besturingssystemen, applicaties en firmware."
+    },
+    "ctrl-023": {
+      "title": "Beveiligingsbewustzijnstraining afgerond door al het personeel",
+      "description": "Jaarlijkse verplichte beveiligingsbewustzijnstraining over phishing, wachtwoordbeveiliging, gegevensverwerking en incidentmelding."
+    },
+    "ctrl-024": {
+      "title": "Informatieveiligheidsbeleid erkend door al het personeel",
+      "description": "Alle medewerkers moeten het informatieveiligheidsbeleid jaarlijks lezen en formeel erkennen."
+    },
+    "ctrl-025": {
+      "title": "Veilig inwerkproces voor nieuwe medewerkers",
+      "description": "Beveiligingschecklist voor het inwerkproces inclusief antecedentenonderzoek, NDA-ondertekening, beveiligingstraining en toegangsverlening."
+    },
+    "ctrl-026": {
+      "title": "Toegangsintrekking op dezelfde dag bij vertrek medewerker",
+      "description": "Proces dat ervoor zorgt dat alle systeemtoegang binnen 1 uur na vertrek van de medewerker wordt uitgeschakeld. Inlevering apparatuur en exitgesprek."
+    },
+    "ctrl-027": {
+      "title": "Antecedentenonderzoek voor geprivilegieerde toegang uitgevoerd",
+      "description": "Antecedentenverificatie voor rollen met beheerdersrechten of toegang tot gevoelige gegevens (systeembeheerders, databasebeheerders, financiën, HR)."
+    },
+    "ctrl-028": {
+      "title": "Jaarlijkse toegangsbeoordeling voltooid",
+      "description": "Driemaandelijkse toegangscertificering waarbij managers de toegangsrechten van hun teamleden beoordelen en certificeren."
+    },
+    "ctrl-029": {
+      "title": "Goedkeuring van cyberbeveiligingsmaatregelen door bestuursorgaan",
+      "description": "Het bestuursorgaan heeft de maatregelen voor het beheer van cyberbeveiligingsrisico's formeel goedgekeurd zoals vereist door NIS2 Artikel 20(1). De goedkeuring is gedocumenteerd in notulen met dekking van risicobereidheid, cyberbeveiligingsstrategie, budgettoewijzing en verantwoordelijkheidsstructuur. De goedkeuring moet worden vernieuwd bij significante wijzigingen of minimaal jaarlijks."
+    },
+    "ctrl-030": {
+      "title": "Cyberbeveiligingstoezicht en rapportage door bestuursorgaan",
+      "description": "Het bestuursorgaan ontvangt en beoordeelt cyberbeveiligingsstatusrapporten op regelmatige intervallen (minimaal driemaandelijks) met belangrijke risico-indicatoren, recente incidenten, nalevingsstatus, voltooiingspercentages van trainingen en opkomende bedreigingen. Dit waarborgt voortdurende zichtbaarheid op bestuursniveau en maakt geïnformeerde besluitvorming mogelijk zoals vereist door de toezichtsverplichtingen van NIS2 Artikel 20(1)."
+    },
+    "ctrl-031": {
+      "title": "Cyberbeveiligingstraining van het bestuursorgaan",
+      "description": "Alle leden van het bestuursorgaan hebben cyberbeveiligingstraining voltooid die voldoende is om risico's te identificeren, maatregelen voor cyberbeveiligingsrisicobeheer te beoordelen en hun impact op de diensten van de entiteit te begrijpen. Training moet jaarlijks worden hernieuwd en het huidige dreigingslandschap, wettelijke verplichtingen en verantwoordelijkheden op bestuursniveau dekken. Dit is een verplichte vereiste onder NIS2 Artikel 20(2)."
+    },
+    "ctrl-032": {
+      "title": "Aangewezen leiderschapsrol voor beveiliging",
+      "description": "Een aangewezen Chief Information Security Officer (CISO) of gelijkwaardige leiderschapsrol voor beveiliging is formeel benoemd met directe rapportage aan het senior management of het bestuursorgaan. De rol heeft duidelijk gedefinieerde verantwoordelijkheden, beslissingsbevoegdheid voor cyberbeveiligingszaken en een toegewijd budget."
+    },
+    "ctrl-033": {
+      "title": "Programma voor beveiligingsaudits en penetratietesten",
+      "description": "Regelmatige beveiligingsaudits en penetratietesten door gekwalificeerde onafhankelijke testers om te valideren dat cyberbeveiligingsmaatregelen effectief zijn. Tests moeten zowel externe als interne aanvalsoppervlakken van kritieke systemen dekken. Alle bevindingen worden gedocumenteerd met ernstbeoordelingen en gevolgd tot remediation met hertesting. Implementeert de NIS2 Artikel 21(2)(f)-vereiste om de effectiviteit van maatregelen te beoordelen."
+    },
+    "ctrl-034": {
+      "title": "Programma voor cyberbeveiligings-KPI's en metrieken",
+      "description": "Gedefinieerde cyberbeveiligings-KPI's worden regelmatig gevolgd en gerapporteerd aan het bestuursorgaan om de effectiviteit van risicobeheermaatregelen te meten. KPI's omvatten zowel voorlopende indicatoren (trainingsvoltooiing, patchnaleving, MFA-dekking) als achterlopende indicatoren (incidenten, gemiddelde detectietijd, gemiddelde responstijd). Trends worden geanalyseerd om continue verbetering te stimuleren."
+    },
+    "ctrl-035": {
+      "title": "Tracking van remediation van audit- en beoordelingsbevindingen",
+      "description": "Alle bevindingen uit beveiligingsaudits, penetratietesten, risicobeoordelingen en nalevingsbeoordelingen worden geregistreerd in een centraal register met toegewezen eigenaren, doeldata voor remediation en huidige status. Open bevindingen worden minimaal maandelijks beoordeeld. Achterstallige kritieke en hoge bevindingen worden geëscaleerd naar het management. Afsluiting vereist bewijs van remediation en verificatie."
+    },
+    "ctrl-036": {
+      "title": "Continu verbeteringsproces",
+      "description": "Een gedocumenteerd continu verbeteringsproces zorgt ervoor dat geleerde lessen uit incidenten, audits, penetratietesten, dreigingsinformatie en wettelijke wijzigingen systematisch worden teruggevoed in beleidsupdates, controleverbeteringen en risicoherbeoordelingen. Dit sluit de feedbackloop tussen effectiviteitsbeoordeling en risicobeheer, waardoor maatregelen meegroeien met het dreigingslandschap."
+    },
+    "ctrl-037": {
+      "title": "Programma voor phishing-simulatie en respons",
+      "description": "Regelmatige gesimuleerde phishing-campagnes worden minimaal driemaandelijks uitgevoerd om het bewustzijn van medewerkers te testen en de paraatheid in de praktijk te meten. Klikpercentages worden per campagne en per individu gevolgd. Medewerkers die herhaaldelijk falen ontvangen gerichte aanvullende training. Resultaten en trends worden gerapporteerd aan het management om trainingsprioriteiten te bepalen."
+    },
+    "ctrl-038": {
+      "title": "Basislijn cyberhygiëne afgedwongen",
+      "description": "Basispraktijken voor cyberhygiëne zijn gedocumenteerd in beleid en afgedwongen door technische controles waar mogelijk. Omvat automatische software-updates, schermvergrendelingstimeout (maximaal 5 minuten), gebruik van wachtwoordbeheerder, clean desk-beleid en beperkingen voor verwisselbare media. NIS2 Artikel 21(2)(g) vereist expliciet basale cyberhygiënepraktijken als minimale maatregel."
+    },
+    "ctrl-039": {
+      "title": "Dataclassificatie met versleutelingsvereisten",
+      "description": "Een dataclassificatieschema definieert gevoeligheidsniveaus (Openbaar, Intern, Vertrouwelijk, Beperkt) met bijbehorende versleutelingsvereisten per niveau. Classificatierichtlijnen worden verstrekt aan data-eigenaren voor consistente toepassing. Het schema wordt jaarlijks herzien en bijgewerkt wanneer zakelijke of wettelijke vereisten wijzigen. Ondersteunt de NIS2 Artikel 21(2)(h)-vereiste voor cryptografiebeleid."
+    },
+    "ctrl-040": {
+      "title": "Continue of adaptieve authenticatie voor toegang met hoog risico",
+      "description": "Continue of adaptieve authenticatiemechanismen passen beveiligingsvereisten aan op basis van risicosignalen zoals locatie, apparaathouding, gebruikersgedrag en toegangstijd voor scenario's met hoog risico. Verouderde authenticatieprotocollen (NTLM, basisauthenticatie) die multi-factor authenticatie omzeilen worden geblokkeerd. NIS2 Artikel 21(2)(j) verwijst expliciet naar continue authenticatieoplossingen."
+    },
+    "ctrl-041": {
+      "title": "Beveiligde spraak-, video- en tekstcommunicatie",
+      "description": "End-to-end versleutelde communicatiekanalen zijn goedgekeurd en worden gebruikt voor gevoelige zakelijke communicatie inclusief spraak, video en tekst. Een lijst van goedgekeurde tools wordt bijgehouden, gecommuniceerd aan al het personeel en periodiek beoordeeld. Tools worden geverifieerd op end-to-end versleuteling. NIS2 Artikel 21(2)(j) vereist expliciet beveiligde spraak-, video- en tekstcommunicatie."
+    },
+    "ctrl-042": {
+      "title": "Beveiligd noodcommunicatiesysteem",
+      "description": "Een vooraf opgezet noodcommunicatiesysteem is operationeel en kan onafhankelijk functioneren als primaire communicatiekanalen worden gecompromitteerd tijdens een cyberbeveiligingsincident. Contactlijsten worden bijgehouden en zijn offline toegankelijk. Het systeem wordt getest tijdens bedrijfscontinuïteits- en incidentresponsoefeningen. NIS2 Artikel 21(2)(j) vereist expliciet beveiligde noodcommunicatiesystemen binnen de entiteit."
+    },
+    "ctrl-043": {
+      "title": "Preventie en monitoring van MFA-omzeiling",
+      "description": "Controles zijn aanwezig om multi-factor authenticatie-omzeilingsaanvallen te voorkomen en te detecteren, inclusief MFA-vermoeidheid (push bombing), adversary-in-the-middle tokendiefstal en SIM-swapaanvallen. Pushmeldingssnelheidsbeperking is ingeschakeld. SMS-gebaseerde MFA wordt uitgefaseerd ten gunste van phishing-resistente methoden zoals FIDO2-hardwaretokens of passkeys. Monitoringwaarschuwingen bij MFA-omzeilingspogingen."
+    }
+  },
+  "scope": {
+    "pageTitle": "Reikwijdte & Bedrijfsprocessen",
+    "pageSubtitle": "Definieer uw kritieke bedrijfsprocessen en koppel toepasselijke NIS2-controles",
+    "viewProcesses": "Processen",
+    "viewSoA": "Verklaring van toepasselijkheid",
+    "addProcess": "Proces toevoegen",
+    "addFirstProcess": "Voeg uw eerste proces toe",
+    "statProcesses": "Bedrijfsprocessen",
+    "statCritical": "Kritieke processen",
+    "statControls": "Beschikbare controles",
+    "createProcess": "Nieuw bedrijfsproces",
+    "editProcess": "Bedrijfsproces bewerken",
+    "fieldName": "Procesnaam",
+    "fieldNamePlaceholder": "bijv. Verwerking van klantgegevens",
+    "fieldDescription": "Beschrijving",
+    "fieldDescriptionPlaceholder": "Wat doet dit proces en waarom is het belangrijk?",
+    "fieldOwner": "Eigenaar",
+    "fieldOwnerPlaceholder": "bijv. CTO, IT-manager",
+    "fieldCritical": "Kritiek bedrijfsproces",
+    "emptyTitle": "Nog geen bedrijfsprocessen",
+    "emptyDescription": "Begin met het definiëren van uw kritieke bedrijfsprocessen. Dit helpt u te bepalen welke NIS2-controles van toepassing zijn op uw organisatie.",
+    "badgeCritical": "KRITIEK",
+    "owner": "Eigenaar",
+    "controlsLinked": "controles gekoppeld",
+    "applicable": "toepasselijk",
+    "controlMapping": "Controlekoppeling",
+    "applicableYes": "Toepasselijk",
+    "applicableNo": "Niet toepasselijk",
+    "soaTitle": "Verklaring van toepasselijkheid",
+    "soaDescription": "Overzicht van alle controles en hun toepasselijkheid op uw bedrijfsprocessen.",
+    "soaEmpty": "Voeg bedrijfsprocessen toe en koppel controles om de verklaring van toepasselijkheid te genereren.",
+    "soaColControl": "Controle-ID",
+    "soaColTitle": "Titel",
+    "soaColApplicable": "Toepasselijk",
+    "soaColProcesses": "Gekoppelde processen",
+    "soaColJustification": "Rechtvaardiging"
   },
   "remediation": {
     "pageTitle": "Hersteltaken",
@@ -522,7 +833,47 @@
     "dismissButton": "Afwijzen",
     "createdLabel": "Aangemaakt:",
     "assignedLabel": "Toegewezen:",
-    "dueLabel": "Vervalt:"
+    "dueLabel": "Vervalt:",
+    "closeButton": "Sluiten",
+    "closeTitle": "Taak Sluiten",
+    "closeDescription": "Geef een afsluitnotitie of bewijs om deze taak te sluiten.",
+    "closureNotePlaceholder": "Beschrijf hoe dit is opgelost...",
+    "closeConfirm": "Taak Sluiten",
+    "closureNoteLabel": "Afsluiting",
+    "dismissTitle": "Taak Afwijzen",
+    "dismissDescription": "Geef een reden op voor het afwijzen van deze taak.",
+    "dismissReasonPlaceholder": "Reden voor afwijzing...",
+    "dismissConfirm": "Afwijzen",
+    "dismissedReasonLabel": "Afgewezen",
+    "rescheduleButton": "Herplannen",
+    "rescheduleTitle": "Taak Herplannen",
+    "rescheduleWarning": "Deze taak is al {{count}} keer herplannen.",
+    "newDueDate": "Nieuwe Vervaldatum",
+    "rescheduleCategory": "Categorie",
+    "categoryResource": "Resourcebeperking",
+    "categoryDependency": "Afhankelijkheid",
+    "categoryScopeChange": "Scopewijziging",
+    "categoryOther": "Overig",
+    "rescheduleReason": "Reden",
+    "rescheduleReasonPlaceholder": "Waarom wordt deze taak herpland?",
+    "rescheduleConfirm": "Herplannen",
+    "createPlanTitle": "Herstelplan Aanmaken",
+    "createPlanButton": "Nieuw Plan",
+    "createPlanConfirm": "Plan Aanmaken",
+    "planTitleLabel": "Plantitel",
+    "planTitlePlaceholder": "bijv. Plan voor Verbetering Netwerkbeveiliging",
+    "treatmentTypeLabel": "Behandelingstype",
+    "treatmentMitigate": "Mitigeren",
+    "treatmentTransfer": "Overdragen",
+    "treatmentAvoid": "Vermijden",
+    "treatmentAccept": "Accepteren",
+    "targetDateLabel": "Streefdatum",
+    "planDescriptionPlaceholder": "Beschrijf het plan...",
+    "plansHeading": "Behandelplannen",
+    "tasks": "taken",
+    "autoGenerated": "Auto",
+    "chronicSlip": "Chronische vertraging",
+    "rescheduled": "{{count}}x herpland"
   },
   "reports": {
     "pageTitle": "Compliance-rapport",
@@ -636,7 +987,74 @@
     "employeeEmailsPlaceholder": "Voer één e-mailadres per regel in",
     "deadlineLabel": "Deadline",
     "cancelButton": "Annuleren",
-    "createButtonLabel": "Campagne maken"
+    "createButtonLabel": "Campagne maken",
+    "policyTemplateLabel": "Beleidssjabloon",
+    "policyTemplatePlaceholder": "Sjabloon selecteren...",
+    "policyTemplateNone": "Geen sjabloon (aangepast)",
+    "policyTemplateRecommended": "Aanbevolen",
+    "policyTemplateOther": "Andere sjablonen",
+    "tabs": {
+      "campaigns": "Campagnes",
+      "continuous": "Continue Compliance",
+      "myTasks": "Mijn Taken",
+      "history": "Geschiedenis"
+    },
+    "continuous": {
+      "healthScore": "Gezondheidsscore",
+      "overdue": "Achterstallig",
+      "totalActive": "Actieve Taken",
+      "completedPeriod": "Voltooid deze Periode",
+      "article21Coverage": "Artikel 21(2) Dekking",
+      "article21Subtitle": "Compliance over alle 10 NIS2-subsecties",
+      "tasks": "taken",
+      "emptyTitle": "Nog geen continue compliance-taken",
+      "emptyDescription": "Stel de baseline in om ~50 terugkerende compliance-taken te maken die alle NIS2 Artikel 21(2) subsecties dekken.",
+      "setupBaseline": "Baseline Instellen",
+      "refreshBaseline": "Baseline Vernieuwen",
+      "taskList": "Taken",
+      "allPhases": "Alle Fases",
+      "allTypes": "Alle Types",
+      "baseline": "Baseline",
+      "noMatchingTasks": "Geen taken komen overeen met de huidige filters"
+    },
+    "myTasks": {
+      "overdue": "Achterstallig",
+      "pending": "Openstaand",
+      "completed": "Voltooid",
+      "complete": "Voltooien",
+      "emptyTitle": "Geen taken toegewezen",
+      "emptyDescription": "Taken verschijnen hier wanneer de baseline is ingesteld of wanneer ze aan u zijn toegewezen.",
+      "confirmCompletion": "Voltooiing Bevestigen",
+      "attestationResponse": "Attestatie Reactie (optioneel)",
+      "responsePlaceholder": "Notities of opmerkingen toevoegen...",
+      "confirmButton": "Ik Bevestig",
+      "alreadyCompleted": "Al voltooid voor deze periode"
+    },
+    "history": {
+      "title": "Voltooiingsgeschiedenis",
+      "subtitle": "Bekijk eerdere voltooiingen voor elke taak",
+      "emptyTitle": "Nog geen taken",
+      "emptyDescription": "De voltooiingsgeschiedenis verschijnt hier zodra taken zijn ingesteld en voltooid.",
+      "noCompletions": "Nog geen voltooiingen geregistreerd voor deze taak."
+    },
+    "taskTypes": {
+      "attestation": "Attestatie",
+      "process_check": "Procescontrole",
+      "evidence_submission": "Bewijsindiening",
+      "policy_ack": "Beleidsbevestiging",
+      "training": "Training"
+    },
+    "frequencies": {
+      "one_off": "Eenmalig",
+      "monthly": "Maandelijks",
+      "quarterly": "Driemaandelijks",
+      "annual": "Jaarlijks"
+    },
+    "status": {
+      "completed": "Voltooid",
+      "overdue": "Achterstallig",
+      "pending": "Openstaand"
+    }
   },
   "humanFactor": {
     "pageTitle": "Menselijke factor beoordeling",
@@ -811,7 +1229,81 @@
     "tipAssessment": "Probeer de beoordelingstabbladen voor Technisch, Organisatorisch en Menselijke factor",
     "tipReports": "Genereer uw eerste compliance-rapport",
     "goToDashboard": "Naar dashboard",
-    "back": "Terug"
+    "back": "Terug",
+    "stepCountry": "Land",
+    "stepEntity": "Entiteitstype",
+    "stepCloud": "Cloudprovider",
+    "stepScoring": "Score",
+    "stepReady": "Klaar",
+    "countryTitle": "Selecteer uw land",
+    "countrySubtitle": "Kies de EU-lidstaat waar uw organisatie is gevestigd. Dit bepaalt welke nationale NIS2-omzetting van toepassing is.",
+    "countrySearchPlaceholder": "Landen zoeken...",
+    "countryTransposed": "Omgezet",
+    "countryPartial": "Gedeeltelijk omgezet",
+    "countryPending": "Omzetting in afwachting",
+    "countryNotTransposed": "Niet omgezet",
+    "countryUnknown": "Status onbekend",
+    "countryLaw": "Nationale wet",
+    "countryAuthority": "Bevoegde autoriteit",
+    "countryEffective": "Van kracht",
+    "entityTitle": "Classificeer uw entiteit",
+    "entitySubtitle": "NIS2 maakt onderscheid tussen essentiële en belangrijke entiteiten. Uw classificatie bepaalt rapportageverplichtingen, toezichtniveau en boetegrenzen.",
+    "entityEssential": "Essentieel",
+    "entityImportant": "Belangrijk",
+    "entitySectors": "Sectoren",
+    "entityObligations": "Verplichtingen",
+    "entityPenalties": "Boetes",
+    "entitySkip": "Nog niet zeker — voorlopig overslaan",
+    "cloudTitle": "Cloudprovider verbinden",
+    "cloudSubtitle": "Koppel uw cloudinfrastructuur voor geautomatiseerde technische scans. U kunt meerdere providers verbinden.",
+    "cloudAws": "Amazon Web Services",
+    "cloudAzure": "Microsoft Azure",
+    "cloudAwsDesc": "Verbind met IAM-toegangssleutels om uw AWS-infrastructuur te scannen.",
+    "cloudAzureDesc": "Verbind met een service principal om uw Azure-abonnement te scannen.",
+    "cloudConnected": "Verbonden",
+    "cloudConnect": "Verbinden",
+    "cloudSkip": "Overslaan — ik verbind later",
+    "cloudIamPolicyTitle": "Vereist IAM-beleid bekijken (alleen-lezen)",
+    "cloudIamPolicyDesc": "Maak een IAM-gebruiker met programmatische toegang en koppel dit beleid. Konforme heeft alleen leesrechten nodig om uw infrastructuur te scannen.",
+    "cloudAwsAlias": "Alias (bijv. Productie)",
+    "cloudAwsAccessKey": "Access Key ID",
+    "cloudAwsSecretKey": "Secret Access Key",
+    "cloudAwsSessionToken": "Session Token (optioneel)",
+    "cloudAwsRegion": "Regio",
+    "cloudAzureTenantId": "Tenant ID",
+    "cloudAzureClientId": "Client ID (App ID)",
+    "cloudAzureClientSecret": "Client Secret",
+    "cloudAzureSubscriptionId": "Subscription ID",
+    "cloudAzureAlias": "Alias (bijv. Productie)",
+    "cloudValidating": "Inloggegevens worden gevalideerd...",
+    "cloudValidationFailed": "Validatie van inloggegevens mislukt. Controleer uw waarden.",
+    "cloudAdded": "Cloudprovider succesvol verbonden!",
+    "cloudAwsRoleDesc": "Maak een alleen-lezen IAM-rol aan via CloudFormation — geen toegangssleutels nodig.",
+    "cloudAwsStep2Title": "Installatie in AWS voltooien",
+    "cloudAwsStep2Line1": "Klik op 'Create stack' in de CloudFormation-console",
+    "cloudAwsStep2Line2": "Wacht op de status CREATE_COMPLETE",
+    "cloudAwsStep2Line3": "Kopieer de Role ARN uit Outputs en plak het hieronder",
+    "cloudAwsOpenConsole": "CloudFormation-console opnieuw openen",
+    "cloudAwsRoleArn": "Role ARN",
+    "cloudAwsDeployStack": "Stack uitrollen in AWS",
+    "cloudAwsVerify": "Verifiëren & Verbinden",
+    "cloudAzureOAuthDesc": "Log in met Microsoft en verleen alleen-lezen toegang — geen geheimen nodig.",
+    "cloudAzureConnectViaMicrosoft": "Verbinden via Microsoft",
+    "scoringTitle": "Scorevoorkeuren",
+    "scoringSubtitle": "Kies hoe de 3 compliance-pijlers worden gewogen in uw totaalscore. U kunt dit later wijzigen in Instellingen.",
+    "scoringSkip": "Overslaan — standaardgewichten gebruiken",
+    "readyTitle": "Alles klaar!",
+    "readySubtitle": "Uw Konforme-werkruimte is geconfigureerd en klaar voor gebruik.",
+    "readyCountry": "Land",
+    "readyEntity": "Entiteitstype",
+    "readyCloud": "Cloudproviders",
+    "readyScoring": "Score",
+    "readyNoCountry": "Niet geselecteerd",
+    "readyNoEntity": "Niet geclassificeerd",
+    "readyNoCloud": "Geen verbonden",
+    "readyCloudCount": "{{count}} verbonden",
+    "readyDefaultScoring": "Gebalanceerd (40/35/25)",
+    "readyCustomScoring": "{{technical}}% / {{assessment}}% / {{controls}}%"
   },
   "resetPassword": {
     "pageTitle": "Wachtwoord herstellen",
@@ -855,55 +1347,251 @@
     "dismissAriaLabel": "Banner sluiten"
   },
   "questions": {
-    "nis2-020-01": { "question": "Heeft het bestuursorgaan de cyberbeveiligingsrisicobeheersmaatregelen formeel goedgekeurd?", "description": "NIS2 Artikel 20 vereist dat het bestuursorgaan de cyberbeveiligingsrisicobeheersmaatregelen goedkeurt en toezicht houdt.", "guidance": "Presenteer de cyberbeveiligingsstrategie aan het bestuur. Documenteer goedkeuring in notulen. Neem risicobereidheid, budget en KPI's op." },
-    "nis2-020-02": { "question": "Beoordeelt het bestuursorgaan cyberbeveiligingsstatusrapporten ten minste driemaandelijks?", "description": "Regelmatige rapportage op bestuursniveau verzekert voortdurend inzicht in de cyberbeveiligingshouding en opkomende risico's.", "guidance": "Produceer driemaandelijkse dashboards: kernmetrics, recente incidenten, compliance-status, trainingsvoltooiing, auditbevindingen." },
-    "nis2-020-03": { "question": "Hebben bestuursleden cyberbeveiligingstraining gevolgd voor hun toezichthoudende rol?", "description": "NIS2 verplicht bestuursleden om training te volgen om voldoende kennis op te doen om risico's te identificeren.", "guidance": "Plan jaarlijkse executive cyberbeveiligingsbriefings. Behandel dreigingslandschap, wettelijke verplichtingen en bestuursverantwoordelijkheden." },
-    "nis2-020-04": { "question": "Is er een aangewezen CISO of equivalent met directe rapportagelijn naar het senior management?", "description": "Duidelijke verantwoordelijkheid vereist een toegewijde beveiligingsleider met autoriteit en zichtbaarheid op directieniveau.", "guidance": "Wijs een CISO aan die rapporteert aan CEO of bestuur. Definieer verantwoordelijkheden, bevoegdheden en budget schriftelijk." },
-    "nis2-21a-01": { "question": "Is er een formeel informatiebeveiligingsbeleid dat ten minste jaarlijks wordt beoordeeld?", "description": "Een gedocumenteerd IB-beleid is de basis. Het moet worden beoordeeld en bijgewerkt om veranderingen in dreigingen en bedrijf te weerspiegelen.", "guidance": "Maak of werk het IB-beleid bij met bereik, doelstellingen, rollen, acceptabel gebruik, classificatie en beoordelingsschema." },
-    "nis2-21a-02": { "question": "Wordt een jaarlijkse risicobeoordeling uitgevoerd met een erkende methodologie (ISO 27005, NIST RMF)?", "description": "Systematische risicobeoordeling identificeert en prioriteert dreigingen. Een erkend framework verzekert volledigheid.", "guidance": "Adopteer ISO 27005 of NIST RMF. Documenteer assets, dreigingen, kwetsbaarheden, waarschijnlijkheid, impact en behandelplannen." },
-    "nis2-21a-03": { "question": "Staan cyberbeveiligingsrisico's in het bedrijfsrisicoregister met eigenaren en behandelplannen?", "description": "Cyberrisico's moeten worden geïntegreerd in bedrijfsrisicobeheer, niet geïsoleerd in IT.", "guidance": "Voeg cyberrisico's toe aan het bedrijfsrisicoregister. Score op waarschijnlijkheid en impact. Wijs eigenaren toe. Beoordeel driemaandelijks." },
-    "nis2-21a-04": { "question": "Zijn beveiligingsrollen en -verantwoordelijkheden duidelijk gedefinieerd en gecommuniceerd (RACI-matrix)?", "description": "Duidelijke eigenaarschap voorkomt lacunes. Een RACI-matrix brengt in kaart wie Verantwoordelijk, Accountable, Geconsulteerd en Geïnformeerd is.", "guidance": "Maak een beveiligings-RACI-matrix. Communiceer rollen tijdens onboarding en jaarlijkse beleidsbeoordelingen." },
-    "nis2-21b-01": { "question": "Is er een gedocumenteerd incidentresponsplan dat detectie tot en met lessons learned bestrijkt?", "description": "Een volledig IRP bestrijkt voorbereiding, detectie, inperking, uitroeiing, herstel en post-incidentbeoordeling.", "guidance": "Documenteer het IRP met fasen, rollen, communicatiesjablonen en escalatiepaden. Test jaarlijks." },
-    "nis2-21b-02": { "question": "Zijn incidenternstgraden gedefinieerd met escalatiepaden en respons-SLA's?", "description": "Classificatie verzekert evenredige respons. SLA's stellen verwachtingen voor triage en oplossing.", "guidance": "Definieer ernstgraden (P1-P4). Breng escalatiepaden in kaart. Stel SLA's: P1 binnen 1 uur, P2 binnen 4 uur." },
-    "nis2-21b-03": { "question": "Bent u geregistreerd bij uw nationaal CSIRT en heeft u het 24-uurs meldingsproces getest?", "description": "NIS2 vereist een vroegtijdige waarschuwing aan het CSIRT binnen 24 uur na een significant incident.", "guidance": "Registreer bij het nationaal CSIRT. Documenteer het meldingsproces. Voer een tabletop-oefening uit voor 24u-melding." },
-    "nis2-21b-04": { "question": "Is er een incidentenregister dat alle gebeurtenissen, onderzoeken en post-incidentbeoordelingen documenteert?", "description": "Een register toont verantwoordelijkheid, maakt trendanalyse mogelijk en ondersteunt regulatoire rapportage.", "guidance": "Gebruik een ticketsysteem om alle incidenten te loggen. Registreer: datum, melder, ernst, onderzoek, oplossing, lessons learned." },
-    "nis2-21b-05": { "question": "Is het incidentresponsplan getest door tabletop-oefeningen of simulaties in de afgelopen 12 maanden?", "description": "Een ongetest IRP kan falen onder druk. Regelmatig testen valideert procedures, rollen en communicatiestromen.", "guidance": "Voer ten minste jaarlijkse tabletop-oefeningen uit met realistische scenario's. Betrek cross-functionele teams. Documenteer bevindingen en werk het IRP bij." },
-    "nis2-21c-01": { "question": "Is er een gedocumenteerd BCP dat kritieke functies, afhankelijkheden en herstelprioriteten identificeert?", "description": "Een BCP verzekert dat de organisatie essentiële operaties kan handhaven tijdens en na een verstoring.", "guidance": "Voer een BIA uit om kritieke functies te identificeren. Documenteer afhankelijkheden, herstelprioriteten en communicatieplannen." },
-    "nis2-21c-02": { "question": "Zijn er DR-plannen met gedefinieerde RTO/RPO voor alle kritieke systemen?", "description": "Recovery Time Objective en Recovery Point Objective definiëren acceptabele downtime en dataverlies.", "guidance": "Definieer RTO/RPO per kritiek systeem. Documenteer DR-procedures inclusief failover-stappen en verantwoordelijke teams." },
-    "nis2-21c-03": { "question": "Zijn BCP/DR-plannen getest in de afgelopen 12 maanden (tabletop, simulatie of failover)?", "description": "Ongeteste plannen kunnen falen wanneer nodig. Regelmatig testen valideert procedures en bouwt routine op.", "guidance": "Plan jaarlijkse BCP/DR-tests. Begin met tabletop-oefeningen, vorder naar volledige failover-tests voor kritieke systemen." },
-    "nis2-21c-04": { "question": "Worden back-uphersteloperaties regelmatig getest en wordt de back-upintegriteit geverifieerd?", "description": "Back-ups zijn alleen nuttig als ze kunnen worden hersteld. Regelmatig testen verifieert data-integriteit en herstelprocedures.", "guidance": "Test maandelijks back-upherstel voor kritieke systemen. Verifieer data-integriteit. Documenteer resultaten en verhelp fouten." },
-    "nis2-21c-05": { "question": "Is er een crisiscommunicatieplan voor interne melding, regulatoire rapportage en mediaomgang?", "description": "Tijdens een crisis is duidelijke communicatie essentieel. Vertragingen of desinformatie verergeren de impact en kunnen NIS2-meldingsvereisten schenden.", "guidance": "Documenteer communicatiesjablonen, woordvoerderaanwijzing, meldingsketens en mediaomgangsprocedures. Test tijdens BCP-oefeningen." },
-    "nis2-21d-01": { "question": "Is er een formeel proces voor het beoordelen van de cyberbeveiligingshouding van leveranciers?", "description": "Supply chain-aanvallen zijn een primaire vector. Beoordeling van leveranciers vóór betrokkenheid vermindert derdepartijenrisico.", "guidance": "Vereis dat leveranciers beveiligingsvragenlijsten invullen. Beoordeel SOC 2/ISO 27001-rapporten. Beoordeel jaarlijks." },
-    "nis2-21d-02": { "question": "Bevatten contracten NIS2-afgestemde beveiligingsverplichtingen (meldingsplicht, auditrechten)?", "description": "Contractuele verplichtingen verzekeren dat leveranciers beveiligingsstandaarden handhaven en u informeren over incidenten.", "guidance": "Voeg contractclausules toe: incidentmelding binnen 24u, auditrecht, verzekering, datalocatie, subverwerkergoedkeuring." },
-    "nis2-21d-03": { "question": "Is er een register van derdepartij-integraties, toegangsniveaus en verwerkte gegevens?", "description": "U kunt niet beschermen wat u niet kent. Een volledig register maakt risicobeoordeling en toegangscontrole mogelijk.", "guidance": "Inventariseer alle SaaS-tools, API's, leveranciersverbindingen. Documenteer: toegang tot gegevens, eigenaar, contractdetails, beoordelingsdatum." },
-    "nis2-21d-04": { "question": "Vereist toegang van derden goedkeuring, MFA, tijdslimieten en monitoring?", "description": "Ongecontroleerde leverancierstoegang is een veelvoorkomende inbreukvector. Strikte controles beperken de blootstelling.", "guidance": "Vereis formele goedkeuring voor leverancierstoegang. Dwing MFA af, stel tijdgelimiteerde sessies in, schakel auditlogging in." },
-    "nis2-21e-01": { "question": "Is er een formeel kwetsbaarhedenbeheerbeleid met hersteltijdlijnen?", "description": "Een beleid definieert hoe kwetsbaarheden worden geïdentificeerd, beoordeeld, geprioriteerd en hersteld binnen vastgestelde tijdlijnen.", "guidance": "Definieer herstel-SLA's: Kritiek 24u, Hoog 7d, Gemiddeld 30d, Laag 90d. Volg naleving. Gebruik CVSS voor scoring." },
-    "nis2-21e-02": { "question": "Worden beveiligingsvereisten geverifieerd tijdens systeemacquisitie, -ontwikkeling en -onderhoud?", "description": "Beveiliging moet worden ingebed in de SDLC, niet achteraf toegevoegd. Vereisten moeten in elke fase worden geverifieerd.", "guidance": "Integreer beveiligingsgates in SDLC: dreigingsmodellering, veilige code-review, SAST/DAST, penetratietesten vóór release." },
-    "nis2-21e-03": { "question": "Is er een verantwoord kwetsbaarhedenopenbaarmakingsproces en afhankelijkheidsmonitoring?", "description": "Een openbaarmakingsproces behandelt gemelde kwetsbaarheden. Afhankelijkheidsmonitoring vangt bekende CVE's op in bibliotheken.", "guidance": "Publiceer een security.txt / kwetsbaarhedenopenbaarmakingsbeleid. Monitor afhankelijkheden met Dependabot/Snyk. Beoordeel wekelijks." },
-    "nis2-21e-04": { "question": "Worden kritieke/hoge kwetsbaarheden hersteld binnen gedefinieerde SLA's?", "description": "Kwetsbaarheden identificeren is alleen nuttig als ze worden opgelost. SLA-naleving toont operationele volwassenheid.", "guidance": "Volg SLA-nalevingsmetrics. Escaleer achterstallige kritieke/hoge kwetsbaarheden naar het management. Rapporteer maandelijks." },
-    "nis2-21e-05": { "question": "Zijn geautomatiseerde beveiligingsscantools (SAST, DAST, afhankelijkheidsscan) geïntegreerd in de CI/CD-pipeline?", "description": "Handmatige beveiligingsreviews schalen niet. Geautomatiseerd scannen vangt veelvoorkomende kwetsbaarheden vroeg en consistent op.", "guidance": "Integreer SAST (bijv. SonarQube, Semgrep) en afhankelijkheidsscan (Dependabot, Snyk) in CI/CD. Laat builds falen bij kritieke bevindingen." },
-    "nis2-21f-01": { "question": "Worden controles getest via audits, penetratietesten of red team-oefeningen?", "description": "Testen valideert dat controles werken zoals bedoeld. Zonder testen is compliance theoretisch.", "guidance": "Voer jaarlijkse penetratietesten uit. Voer driemaandelijkse interne audits uit. Overweeg red team-oefeningen voor kritieke systemen." },
-    "nis2-21f-02": { "question": "Worden cyberbeveiligings-KPI's gevolgd (MTTD, MTTR, patchnaleving, enz.)?", "description": "KPI's bieden objectieve meting van beveiligingshouding en identificeren verbetergebieden.", "guidance": "Volg: MTTD, MTTR, patchnalevingspercentage, phishing-klikpercentage, trainingsvoltooiing, aantal open kwetsbaarheden." },
-    "nis2-21f-03": { "question": "Worden auditbevindingen gevolgd tot herstel met eigenaren en deadlines?", "description": "Auditbevindingen zonder opvolging bieden geen waarde. Tracking verzekert verantwoordelijkheid en afsluiting.", "guidance": "Log alle auditbevindingen in een tracker. Wijs eigenaren en deadlines toe. Beoordeel voortgang maandelijks. Escaleer achterstallige items." },
-    "nis2-21f-04": { "question": "Voedt een continue verbeteringsproces audit-/incident-/dreigingsintelligentie in beleidsupdate?", "description": "Lessons learned moeten leiden tot beleid- en controleverbeteringen. Dit sluit de feedbacklus.", "guidance": "Werk na audits en grote incidenten relevante beleidsregels en controles bij. Documenteer wijzigingen en motivering." },
-    "nis2-21g-01": { "question": "Wordt verplichte beveiligingstraining gegeven bij aanstelling en jaarlijks vernieuwd?", "description": "Al het personeel moet basisbeveiligingstraining ontvangen. Jaarlijkse vernieuwing houdt kennis actueel.", "guidance": "Implementeer onboardingtraining over: wachtwoordbeleid, MFA, phishing, dataverwerking, incidentmelding. Vernieuw jaarlijks." },
-    "nis2-21g-02": { "question": "Worden phishingsimulaties ten minste driemaandelijks uitgevoerd met resultaten die worden gevolgd?", "description": "Gesimuleerde campagnes meten praktijkgereedheid en identificeren personen die aanvullende training nodig hebben.", "guidance": "Voer driemaandelijkse phishingsimulaties uit. Geef direct feedback aan klikkers. Volg metrics en trends in de tijd." },
-    "nis2-21g-03": { "question": "Wordt rolspecifieke beveiligingstraining gegeven aan technisch personeel?", "description": "Ingenieurs en beheerders hebben gespecialiseerde training nodig naast algemene bewustwording (veilig coderen, cloudbeveiliging).", "guidance": "Bied training: Ontwikkelaars (OWASP, veilig coderen), Beheerders (least privilege, logging), Cloud-ingenieurs (IAM, versleuteling)." },
-    "nis2-21g-04": { "question": "Zijn cyberhygiënevereisten gedocumenteerd en afgedwongen (updates, schermvergrendeling, wachtwoorden)?", "description": "Basishygiënepraktijken verkleinen het aanvalsoppervlak. Ze moeten gedocumenteerd en afgedwongen worden, niet alleen aanbevolen.", "guidance": "Documenteer hygiënevereisten: auto-updates ingeschakeld, schermvergrendeling na 5 min, wachtwoordmanager vereist, clean desk-beleid." },
-    "nis2-21h-01": { "question": "Is er een formeel cryptografiebeleid dat goedgekeurde algoritmen en minimale sleutellengten specificeert?", "description": "Een cryptografiebeleid voorkomt het gebruik van zwakke of verouderde algoritmen en verzekert consistente standaarden.", "guidance": "Definieer goedgekeurde algoritmen (AES-256, RSA-2048+, SHA-256+). Verbied verouderde algoritmen. Beoordeel jaarlijks." },
-    "nis2-21h-02": { "question": "Is er een sleutelbeheerlevenscyclus voor generatie, rotatie, intrekking en vernietiging?", "description": "Slecht sleutelbeheer ondermijnt versleuteling. Sleutels moeten gedurende hun hele levenscyclus goed worden beheerd.", "guidance": "Documenteer sleutelbeheerprocedures. Gebruik HSM's voor kritieke sleutels. Roteer sleutels volgens beleid. Vernietig uitgefaseerde sleutels veilig." },
-    "nis2-21h-03": { "question": "Zijn gegevens geclassificeerd met versleutelingsvereisten gedefinieerd per classificatieniveau?", "description": "Niet alle gegevens hebben dezelfde bescherming nodig. Classificatie stuurt evenredige versleutelingscontroles.", "guidance": "Definieer dataclassificatieniveaus (Openbaar, Intern, Vertrouwelijk, Beperkt). Breng versleutelingsvereisten per niveau in kaart." },
-    "nis2-21h-04": { "question": "Wordt versleuteling afgedwongen in rust en in transit, met TLS 1.2+ voor externe communicatie?", "description": "Gegevens moeten worden beschermd in rust (schijf/database) en in transit (netwerk). TLS 1.2 is de minimumstandaard.", "guidance": "Schakel versleuteling in rust in voor alle databases en opslag. Dwing TLS 1.2+ af voor alle externe verbindingen. Schakel TLS 1.0/1.1 uit." },
-    "nis2-21i-01": { "question": "Is er een toegangscontrolebeleid met least privilege, RBAC en driemaandelijkse beoordelingen?", "description": "Toegangscontrole is fundamenteel. Least privilege beperkt het bereik; RBAC vereenvoudigt beheer; beoordelingen vangen afwijkingen op.", "guidance": "Documenteer RBAC-model, goedkeuringsworkflows, beoordelingsschema. Voer driemaandelijkse toegangsbeoordelingen uit. Verwijder ongebruikte toegang." },
-    "nis2-21i-02": { "question": "Omvat onboarding beveiligingstraining, NDA en rolgebaseerde provisioning vóór toegang?", "description": "Consistente onboarding voorkomt lacunes. Training en juridische overeenkomsten moeten voorafgaan aan systeemtoegang.", "guidance": "Onboarding-checklist: NDA ondertekend, beveiligingstraining voltooid, rolgebaseerde toegang ingericht, hardware uitgegeven." },
-    "nis2-21i-03": { "question": "Is er account-intrekking op dezelfde dag bij vertrek met een formele offboarding-checklist?", "description": "Vertraagde offboarding creëert risico. Vertrekkende medewerkers moeten onmiddellijk de toegang verliezen.", "guidance": "HR meldt aan IT dezelfde dag. Deactiveer accounts binnen 1 uur. Trek in: e-mail, VPN, SSO, clouddiensten, fysieke badges." },
-    "nis2-21i-04": { "question": "Is er een asset-inventaris (hardware, software, gegevens) met eigenaren en classificatie?", "description": "U kunt niet beschermen wat u niet kent. Een volledige asset-inventaris is de basis voor risicobeheer.", "guidance": "Onderhoud een inventaris van alle hardware-, software- en data-assets. Wijs eigenaren toe. Classificeer op gevoeligheid. Beoordeel driemaandelijks." },
-    "nis2-21i-05": { "question": "Wordt bevoorrechte toegang beheerd met aanvullende controles (PAM, tijdgelimiteerde sessies, verbeterde logging)?", "description": "Bevoorrechte accounts zijn primaire doelen voor aanvallers. Standaard toegangscontroles zijn onvoldoende voor beheerderstoegang.", "guidance": "Implementeer een PAM-oplossing. Vereis just-in-time toegang voor beheertaken. Log alle bevoorrechte sessies. Beoordeel bevoorrechte toegang maandelijks." },
-    "nis2-21i-06": { "question": "Worden achtergrond- of beveiligingscontroles uitgevoerd voor personeel in rollen met verhoogde toegang?", "description": "Personeel met bevoorrechte toegang of dat gevoelige gegevens verwerkt, vormt een hoger risico. Pre-employment screening vermindert interne dreiging.", "guidance": "Voer achtergrondcontroles uit voor bevoorrechte rollen vóór het verlenen van toegang. Definieer welke rollen controles vereisen. Beoordeel het beleid jaarlijks." },
-    "nis2-21j-01": { "question": "Wordt MFA afgedwongen voor kritieke systemen met hardwaretokens of authenticator-apps (geen SMS)?", "description": "SMS-gebaseerde MFA is kwetsbaar voor SIM-swap-aanvallen. Hardwaretokens of authenticator-apps zijn vereist.", "guidance": "Dwing MFA af voor alle kritieke systemen. Gebruik hardwaretokens (FIDO2/U2F) of authenticator-apps. Blokkeer SMS-gebaseerde MFA." },
-    "nis2-21j-02": { "question": "Worden end-to-end versleutelde kanalen gebruikt voor gevoelige spraak-, video- en tekstcommunicatie?", "description": "Gevoelige communicatie moet worden beschermd tegen afluisteren met end-to-end versleuteling.", "guidance": "Gebruik E2E versleutelde tools voor gevoelige communicatie (Signal, Teams met E2E, versleutelde e-mail). Documenteer goedgekeurde kanalen." },
-    "nis2-21j-03": { "question": "Zijn beveiligde noodcommunicatiemiddelen operationeel als primaire systemen zijn gecompromitteerd?", "description": "Als primaire communicatie uitvalt tijdens een incident, heeft u een vooraf ingesteld en getest back-upkanaal nodig.", "guidance": "Stel out-of-band communicatie in (apart berichtenapp, satelliettelefoon, persoonlijke apparaten). Test tijdens DR-oefeningen." },
-    "nis2-21j-04": { "question": "Wordt legacy-authenticatie geblokkeerd en continue/adaptieve authenticatie gebruikt voor hoog-risicotoegang?", "description": "Legacy-authenticatieprotocollen omzeilen MFA. Adaptieve authenticatie past vereisten aan op basis van risicosignalen.", "guidance": "Blokkeer legacy-authenticatie (NTLM, basic auth). Implementeer conditional access-beleid. Gebruik adaptieve MFA voor hoog-risico-aanmeldingen." }
+    "nis2-020-01": {
+      "question": "Heeft het bestuursorgaan de cyberbeveiligingsrisicobeheersmaatregelen formeel goedgekeurd?",
+      "description": "NIS2 Artikel 20 vereist dat het bestuursorgaan de cyberbeveiligingsrisicobeheersmaatregelen goedkeurt en toezicht houdt.",
+      "guidance": "Presenteer de cyberbeveiligingsstrategie aan het bestuur. Documenteer goedkeuring in notulen. Neem risicobereidheid, budget en KPI's op."
+    },
+    "nis2-020-02": {
+      "question": "Beoordeelt het bestuursorgaan cyberbeveiligingsstatusrapporten ten minste driemaandelijks?",
+      "description": "Regelmatige rapportage op bestuursniveau verzekert voortdurend inzicht in de cyberbeveiligingshouding en opkomende risico's.",
+      "guidance": "Produceer driemaandelijkse dashboards: kernmetrics, recente incidenten, compliance-status, trainingsvoltooiing, auditbevindingen."
+    },
+    "nis2-020-03": {
+      "question": "Hebben bestuursleden cyberbeveiligingstraining gevolgd voor hun toezichthoudende rol?",
+      "description": "NIS2 verplicht bestuursleden om training te volgen om voldoende kennis op te doen om risico's te identificeren.",
+      "guidance": "Plan jaarlijkse executive cyberbeveiligingsbriefings. Behandel dreigingslandschap, wettelijke verplichtingen en bestuursverantwoordelijkheden."
+    },
+    "nis2-020-04": {
+      "question": "Is er een aangewezen CISO of equivalent met directe rapportagelijn naar het senior management?",
+      "description": "Duidelijke verantwoordelijkheid vereist een toegewijde beveiligingsleider met autoriteit en zichtbaarheid op directieniveau.",
+      "guidance": "Wijs een CISO aan die rapporteert aan CEO of bestuur. Definieer verantwoordelijkheden, bevoegdheden en budget schriftelijk."
+    },
+    "nis2-21a-01": {
+      "question": "Is er een formeel informatiebeveiligingsbeleid dat ten minste jaarlijks wordt beoordeeld?",
+      "description": "Een gedocumenteerd IB-beleid is de basis. Het moet worden beoordeeld en bijgewerkt om veranderingen in dreigingen en bedrijf te weerspiegelen.",
+      "guidance": "Maak of werk het IB-beleid bij met bereik, doelstellingen, rollen, acceptabel gebruik, classificatie en beoordelingsschema."
+    },
+    "nis2-21a-02": {
+      "question": "Wordt een jaarlijkse risicobeoordeling uitgevoerd met een erkende methodologie (ISO 27005, NIST RMF)?",
+      "description": "Systematische risicobeoordeling identificeert en prioriteert dreigingen. Een erkend framework verzekert volledigheid.",
+      "guidance": "Adopteer ISO 27005 of NIST RMF. Documenteer assets, dreigingen, kwetsbaarheden, waarschijnlijkheid, impact en behandelplannen."
+    },
+    "nis2-21a-03": {
+      "question": "Staan cyberbeveiligingsrisico's in het bedrijfsrisicoregister met eigenaren en behandelplannen?",
+      "description": "Cyberrisico's moeten worden geïntegreerd in bedrijfsrisicobeheer, niet geïsoleerd in IT.",
+      "guidance": "Voeg cyberrisico's toe aan het bedrijfsrisicoregister. Score op waarschijnlijkheid en impact. Wijs eigenaren toe. Beoordeel driemaandelijks."
+    },
+    "nis2-21a-04": {
+      "question": "Zijn beveiligingsrollen en -verantwoordelijkheden duidelijk gedefinieerd en gecommuniceerd (RACI-matrix)?",
+      "description": "Duidelijke eigenaarschap voorkomt lacunes. Een RACI-matrix brengt in kaart wie Verantwoordelijk, Accountable, Geconsulteerd en Geïnformeerd is.",
+      "guidance": "Maak een beveiligings-RACI-matrix. Communiceer rollen tijdens onboarding en jaarlijkse beleidsbeoordelingen."
+    },
+    "nis2-21b-01": {
+      "question": "Is er een gedocumenteerd incidentresponsplan dat detectie tot en met lessons learned bestrijkt?",
+      "description": "Een volledig IRP bestrijkt voorbereiding, detectie, inperking, uitroeiing, herstel en post-incidentbeoordeling.",
+      "guidance": "Documenteer het IRP met fasen, rollen, communicatiesjablonen en escalatiepaden. Test jaarlijks."
+    },
+    "nis2-21b-02": {
+      "question": "Zijn incidenternstgraden gedefinieerd met escalatiepaden en respons-SLA's?",
+      "description": "Classificatie verzekert evenredige respons. SLA's stellen verwachtingen voor triage en oplossing.",
+      "guidance": "Definieer ernstgraden (P1-P4). Breng escalatiepaden in kaart. Stel SLA's: P1 binnen 1 uur, P2 binnen 4 uur."
+    },
+    "nis2-21b-03": {
+      "question": "Bent u geregistreerd bij uw nationaal CSIRT en heeft u het 24-uurs meldingsproces getest?",
+      "description": "NIS2 vereist een vroegtijdige waarschuwing aan het CSIRT binnen 24 uur na een significant incident.",
+      "guidance": "Registreer bij het nationaal CSIRT. Documenteer het meldingsproces. Voer een tabletop-oefening uit voor 24u-melding."
+    },
+    "nis2-21b-04": {
+      "question": "Is er een incidentenregister dat alle gebeurtenissen, onderzoeken en post-incidentbeoordelingen documenteert?",
+      "description": "Een register toont verantwoordelijkheid, maakt trendanalyse mogelijk en ondersteunt regulatoire rapportage.",
+      "guidance": "Gebruik een ticketsysteem om alle incidenten te loggen. Registreer: datum, melder, ernst, onderzoek, oplossing, lessons learned."
+    },
+    "nis2-21b-05": {
+      "question": "Is het incidentresponsplan getest door tabletop-oefeningen of simulaties in de afgelopen 12 maanden?",
+      "description": "Een ongetest IRP kan falen onder druk. Regelmatig testen valideert procedures, rollen en communicatiestromen.",
+      "guidance": "Voer ten minste jaarlijkse tabletop-oefeningen uit met realistische scenario's. Betrek cross-functionele teams. Documenteer bevindingen en werk het IRP bij."
+    },
+    "nis2-21c-01": {
+      "question": "Is er een gedocumenteerd BCP dat kritieke functies, afhankelijkheden en herstelprioriteten identificeert?",
+      "description": "Een BCP verzekert dat de organisatie essentiële operaties kan handhaven tijdens en na een verstoring.",
+      "guidance": "Voer een BIA uit om kritieke functies te identificeren. Documenteer afhankelijkheden, herstelprioriteten en communicatieplannen."
+    },
+    "nis2-21c-02": {
+      "question": "Zijn er DR-plannen met gedefinieerde RTO/RPO voor alle kritieke systemen?",
+      "description": "Recovery Time Objective en Recovery Point Objective definiëren acceptabele downtime en dataverlies.",
+      "guidance": "Definieer RTO/RPO per kritiek systeem. Documenteer DR-procedures inclusief failover-stappen en verantwoordelijke teams."
+    },
+    "nis2-21c-03": {
+      "question": "Zijn BCP/DR-plannen getest in de afgelopen 12 maanden (tabletop, simulatie of failover)?",
+      "description": "Ongeteste plannen kunnen falen wanneer nodig. Regelmatig testen valideert procedures en bouwt routine op.",
+      "guidance": "Plan jaarlijkse BCP/DR-tests. Begin met tabletop-oefeningen, vorder naar volledige failover-tests voor kritieke systemen."
+    },
+    "nis2-21c-04": {
+      "question": "Worden back-uphersteloperaties regelmatig getest en wordt de back-upintegriteit geverifieerd?",
+      "description": "Back-ups zijn alleen nuttig als ze kunnen worden hersteld. Regelmatig testen verifieert data-integriteit en herstelprocedures.",
+      "guidance": "Test maandelijks back-upherstel voor kritieke systemen. Verifieer data-integriteit. Documenteer resultaten en verhelp fouten."
+    },
+    "nis2-21c-05": {
+      "question": "Is er een crisiscommunicatieplan voor interne melding, regulatoire rapportage en mediaomgang?",
+      "description": "Tijdens een crisis is duidelijke communicatie essentieel. Vertragingen of desinformatie verergeren de impact en kunnen NIS2-meldingsvereisten schenden.",
+      "guidance": "Documenteer communicatiesjablonen, woordvoerderaanwijzing, meldingsketens en mediaomgangsprocedures. Test tijdens BCP-oefeningen."
+    },
+    "nis2-21d-01": {
+      "question": "Is er een formeel proces voor het beoordelen van de cyberbeveiligingshouding van leveranciers?",
+      "description": "Supply chain-aanvallen zijn een primaire vector. Beoordeling van leveranciers vóór betrokkenheid vermindert derdepartijenrisico.",
+      "guidance": "Vereis dat leveranciers beveiligingsvragenlijsten invullen. Beoordeel SOC 2/ISO 27001-rapporten. Beoordeel jaarlijks."
+    },
+    "nis2-21d-02": {
+      "question": "Bevatten contracten NIS2-afgestemde beveiligingsverplichtingen (meldingsplicht, auditrechten)?",
+      "description": "Contractuele verplichtingen verzekeren dat leveranciers beveiligingsstandaarden handhaven en u informeren over incidenten.",
+      "guidance": "Voeg contractclausules toe: incidentmelding binnen 24u, auditrecht, verzekering, datalocatie, subverwerkergoedkeuring."
+    },
+    "nis2-21d-03": {
+      "question": "Is er een register van derdepartij-integraties, toegangsniveaus en verwerkte gegevens?",
+      "description": "U kunt niet beschermen wat u niet kent. Een volledig register maakt risicobeoordeling en toegangscontrole mogelijk.",
+      "guidance": "Inventariseer alle SaaS-tools, API's, leveranciersverbindingen. Documenteer: toegang tot gegevens, eigenaar, contractdetails, beoordelingsdatum."
+    },
+    "nis2-21d-04": {
+      "question": "Vereist toegang van derden goedkeuring, MFA, tijdslimieten en monitoring?",
+      "description": "Ongecontroleerde leverancierstoegang is een veelvoorkomende inbreukvector. Strikte controles beperken de blootstelling.",
+      "guidance": "Vereis formele goedkeuring voor leverancierstoegang. Dwing MFA af, stel tijdgelimiteerde sessies in, schakel auditlogging in."
+    },
+    "nis2-21e-01": {
+      "question": "Is er een formeel kwetsbaarhedenbeheerbeleid met hersteltijdlijnen?",
+      "description": "Een beleid definieert hoe kwetsbaarheden worden geïdentificeerd, beoordeeld, geprioriteerd en hersteld binnen vastgestelde tijdlijnen.",
+      "guidance": "Definieer herstel-SLA's: Kritiek 24u, Hoog 7d, Gemiddeld 30d, Laag 90d. Volg naleving. Gebruik CVSS voor scoring."
+    },
+    "nis2-21e-02": {
+      "question": "Worden beveiligingsvereisten geverifieerd tijdens systeemacquisitie, -ontwikkeling en -onderhoud?",
+      "description": "Beveiliging moet worden ingebed in de SDLC, niet achteraf toegevoegd. Vereisten moeten in elke fase worden geverifieerd.",
+      "guidance": "Integreer beveiligingsgates in SDLC: dreigingsmodellering, veilige code-review, SAST/DAST, penetratietesten vóór release."
+    },
+    "nis2-21e-03": {
+      "question": "Is er een verantwoord kwetsbaarhedenopenbaarmakingsproces en afhankelijkheidsmonitoring?",
+      "description": "Een openbaarmakingsproces behandelt gemelde kwetsbaarheden. Afhankelijkheidsmonitoring vangt bekende CVE's op in bibliotheken.",
+      "guidance": "Publiceer een security.txt / kwetsbaarhedenopenbaarmakingsbeleid. Monitor afhankelijkheden met Dependabot/Snyk. Beoordeel wekelijks."
+    },
+    "nis2-21e-04": {
+      "question": "Worden kritieke/hoge kwetsbaarheden hersteld binnen gedefinieerde SLA's?",
+      "description": "Kwetsbaarheden identificeren is alleen nuttig als ze worden opgelost. SLA-naleving toont operationele volwassenheid.",
+      "guidance": "Volg SLA-nalevingsmetrics. Escaleer achterstallige kritieke/hoge kwetsbaarheden naar het management. Rapporteer maandelijks."
+    },
+    "nis2-21e-05": {
+      "question": "Zijn geautomatiseerde beveiligingsscantools (SAST, DAST, afhankelijkheidsscan) geïntegreerd in de CI/CD-pipeline?",
+      "description": "Handmatige beveiligingsreviews schalen niet. Geautomatiseerd scannen vangt veelvoorkomende kwetsbaarheden vroeg en consistent op.",
+      "guidance": "Integreer SAST (bijv. SonarQube, Semgrep) en afhankelijkheidsscan (Dependabot, Snyk) in CI/CD. Laat builds falen bij kritieke bevindingen."
+    },
+    "nis2-21f-01": {
+      "question": "Worden controles getest via audits, penetratietesten of red team-oefeningen?",
+      "description": "Testen valideert dat controles werken zoals bedoeld. Zonder testen is compliance theoretisch.",
+      "guidance": "Voer jaarlijkse penetratietesten uit. Voer driemaandelijkse interne audits uit. Overweeg red team-oefeningen voor kritieke systemen."
+    },
+    "nis2-21f-02": {
+      "question": "Worden cyberbeveiligings-KPI's gevolgd (MTTD, MTTR, patchnaleving, enz.)?",
+      "description": "KPI's bieden objectieve meting van beveiligingshouding en identificeren verbetergebieden.",
+      "guidance": "Volg: MTTD, MTTR, patchnalevingspercentage, phishing-klikpercentage, trainingsvoltooiing, aantal open kwetsbaarheden."
+    },
+    "nis2-21f-03": {
+      "question": "Worden auditbevindingen gevolgd tot herstel met eigenaren en deadlines?",
+      "description": "Auditbevindingen zonder opvolging bieden geen waarde. Tracking verzekert verantwoordelijkheid en afsluiting.",
+      "guidance": "Log alle auditbevindingen in een tracker. Wijs eigenaren en deadlines toe. Beoordeel voortgang maandelijks. Escaleer achterstallige items."
+    },
+    "nis2-21f-04": {
+      "question": "Voedt een continue verbeteringsproces audit-/incident-/dreigingsintelligentie in beleidsupdate?",
+      "description": "Lessons learned moeten leiden tot beleid- en controleverbeteringen. Dit sluit de feedbacklus.",
+      "guidance": "Werk na audits en grote incidenten relevante beleidsregels en controles bij. Documenteer wijzigingen en motivering."
+    },
+    "nis2-21g-01": {
+      "question": "Wordt verplichte beveiligingstraining gegeven bij aanstelling en jaarlijks vernieuwd?",
+      "description": "Al het personeel moet basisbeveiligingstraining ontvangen. Jaarlijkse vernieuwing houdt kennis actueel.",
+      "guidance": "Implementeer onboardingtraining over: wachtwoordbeleid, MFA, phishing, dataverwerking, incidentmelding. Vernieuw jaarlijks."
+    },
+    "nis2-21g-02": {
+      "question": "Worden phishingsimulaties ten minste driemaandelijks uitgevoerd met resultaten die worden gevolgd?",
+      "description": "Gesimuleerde campagnes meten praktijkgereedheid en identificeren personen die aanvullende training nodig hebben.",
+      "guidance": "Voer driemaandelijkse phishingsimulaties uit. Geef direct feedback aan klikkers. Volg metrics en trends in de tijd."
+    },
+    "nis2-21g-03": {
+      "question": "Wordt rolspecifieke beveiligingstraining gegeven aan technisch personeel?",
+      "description": "Ingenieurs en beheerders hebben gespecialiseerde training nodig naast algemene bewustwording (veilig coderen, cloudbeveiliging).",
+      "guidance": "Bied training: Ontwikkelaars (OWASP, veilig coderen), Beheerders (least privilege, logging), Cloud-ingenieurs (IAM, versleuteling)."
+    },
+    "nis2-21g-04": {
+      "question": "Zijn cyberhygiënevereisten gedocumenteerd en afgedwongen (updates, schermvergrendeling, wachtwoorden)?",
+      "description": "Basishygiënepraktijken verkleinen het aanvalsoppervlak. Ze moeten gedocumenteerd en afgedwongen worden, niet alleen aanbevolen.",
+      "guidance": "Documenteer hygiënevereisten: auto-updates ingeschakeld, schermvergrendeling na 5 min, wachtwoordmanager vereist, clean desk-beleid."
+    },
+    "nis2-21h-01": {
+      "question": "Is er een formeel cryptografiebeleid dat goedgekeurde algoritmen en minimale sleutellengten specificeert?",
+      "description": "Een cryptografiebeleid voorkomt het gebruik van zwakke of verouderde algoritmen en verzekert consistente standaarden.",
+      "guidance": "Definieer goedgekeurde algoritmen (AES-256, RSA-2048+, SHA-256+). Verbied verouderde algoritmen. Beoordeel jaarlijks."
+    },
+    "nis2-21h-02": {
+      "question": "Is er een sleutelbeheerlevenscyclus voor generatie, rotatie, intrekking en vernietiging?",
+      "description": "Slecht sleutelbeheer ondermijnt versleuteling. Sleutels moeten gedurende hun hele levenscyclus goed worden beheerd.",
+      "guidance": "Documenteer sleutelbeheerprocedures. Gebruik HSM's voor kritieke sleutels. Roteer sleutels volgens beleid. Vernietig uitgefaseerde sleutels veilig."
+    },
+    "nis2-21h-03": {
+      "question": "Zijn gegevens geclassificeerd met versleutelingsvereisten gedefinieerd per classificatieniveau?",
+      "description": "Niet alle gegevens hebben dezelfde bescherming nodig. Classificatie stuurt evenredige versleutelingscontroles.",
+      "guidance": "Definieer dataclassificatieniveaus (Openbaar, Intern, Vertrouwelijk, Beperkt). Breng versleutelingsvereisten per niveau in kaart."
+    },
+    "nis2-21h-04": {
+      "question": "Wordt versleuteling afgedwongen in rust en in transit, met TLS 1.2+ voor externe communicatie?",
+      "description": "Gegevens moeten worden beschermd in rust (schijf/database) en in transit (netwerk). TLS 1.2 is de minimumstandaard.",
+      "guidance": "Schakel versleuteling in rust in voor alle databases en opslag. Dwing TLS 1.2+ af voor alle externe verbindingen. Schakel TLS 1.0/1.1 uit."
+    },
+    "nis2-21i-01": {
+      "question": "Is er een toegangscontrolebeleid met least privilege, RBAC en driemaandelijkse beoordelingen?",
+      "description": "Toegangscontrole is fundamenteel. Least privilege beperkt het bereik; RBAC vereenvoudigt beheer; beoordelingen vangen afwijkingen op.",
+      "guidance": "Documenteer RBAC-model, goedkeuringsworkflows, beoordelingsschema. Voer driemaandelijkse toegangsbeoordelingen uit. Verwijder ongebruikte toegang."
+    },
+    "nis2-21i-02": {
+      "question": "Omvat onboarding beveiligingstraining, NDA en rolgebaseerde provisioning vóór toegang?",
+      "description": "Consistente onboarding voorkomt lacunes. Training en juridische overeenkomsten moeten voorafgaan aan systeemtoegang.",
+      "guidance": "Onboarding-checklist: NDA ondertekend, beveiligingstraining voltooid, rolgebaseerde toegang ingericht, hardware uitgegeven."
+    },
+    "nis2-21i-03": {
+      "question": "Is er account-intrekking op dezelfde dag bij vertrek met een formele offboarding-checklist?",
+      "description": "Vertraagde offboarding creëert risico. Vertrekkende medewerkers moeten onmiddellijk de toegang verliezen.",
+      "guidance": "HR meldt aan IT dezelfde dag. Deactiveer accounts binnen 1 uur. Trek in: e-mail, VPN, SSO, clouddiensten, fysieke badges."
+    },
+    "nis2-21i-04": {
+      "question": "Is er een asset-inventaris (hardware, software, gegevens) met eigenaren en classificatie?",
+      "description": "U kunt niet beschermen wat u niet kent. Een volledige asset-inventaris is de basis voor risicobeheer.",
+      "guidance": "Onderhoud een inventaris van alle hardware-, software- en data-assets. Wijs eigenaren toe. Classificeer op gevoeligheid. Beoordeel driemaandelijks."
+    },
+    "nis2-21i-05": {
+      "question": "Wordt bevoorrechte toegang beheerd met aanvullende controles (PAM, tijdgelimiteerde sessies, verbeterde logging)?",
+      "description": "Bevoorrechte accounts zijn primaire doelen voor aanvallers. Standaard toegangscontroles zijn onvoldoende voor beheerderstoegang.",
+      "guidance": "Implementeer een PAM-oplossing. Vereis just-in-time toegang voor beheertaken. Log alle bevoorrechte sessies. Beoordeel bevoorrechte toegang maandelijks."
+    },
+    "nis2-21i-06": {
+      "question": "Worden achtergrond- of beveiligingscontroles uitgevoerd voor personeel in rollen met verhoogde toegang?",
+      "description": "Personeel met bevoorrechte toegang of dat gevoelige gegevens verwerkt, vormt een hoger risico. Pre-employment screening vermindert interne dreiging.",
+      "guidance": "Voer achtergrondcontroles uit voor bevoorrechte rollen vóór het verlenen van toegang. Definieer welke rollen controles vereisen. Beoordeel het beleid jaarlijks."
+    },
+    "nis2-21j-01": {
+      "question": "Wordt MFA afgedwongen voor kritieke systemen met hardwaretokens of authenticator-apps (geen SMS)?",
+      "description": "SMS-gebaseerde MFA is kwetsbaar voor SIM-swap-aanvallen. Hardwaretokens of authenticator-apps zijn vereist.",
+      "guidance": "Dwing MFA af voor alle kritieke systemen. Gebruik hardwaretokens (FIDO2/U2F) of authenticator-apps. Blokkeer SMS-gebaseerde MFA."
+    },
+    "nis2-21j-02": {
+      "question": "Worden end-to-end versleutelde kanalen gebruikt voor gevoelige spraak-, video- en tekstcommunicatie?",
+      "description": "Gevoelige communicatie moet worden beschermd tegen afluisteren met end-to-end versleuteling.",
+      "guidance": "Gebruik E2E versleutelde tools voor gevoelige communicatie (Signal, Teams met E2E, versleutelde e-mail). Documenteer goedgekeurde kanalen."
+    },
+    "nis2-21j-03": {
+      "question": "Zijn beveiligde noodcommunicatiemiddelen operationeel als primaire systemen zijn gecompromitteerd?",
+      "description": "Als primaire communicatie uitvalt tijdens een incident, heeft u een vooraf ingesteld en getest back-upkanaal nodig.",
+      "guidance": "Stel out-of-band communicatie in (apart berichtenapp, satelliettelefoon, persoonlijke apparaten). Test tijdens DR-oefeningen."
+    },
+    "nis2-21j-04": {
+      "question": "Wordt legacy-authenticatie geblokkeerd en continue/adaptieve authenticatie gebruikt voor hoog-risicotoegang?",
+      "description": "Legacy-authenticatieprotocollen omzeilen MFA. Adaptieve authenticatie past vereisten aan op basis van risicosignalen.",
+      "guidance": "Blokkeer legacy-authenticatie (NTLM, basic auth). Implementeer conditional access-beleid. Gebruik adaptieve MFA voor hoog-risico-aanmeldingen."
+    }
   },
   "countryInfo": {
     "title": "Nationale NIS2-autoriteit",
@@ -916,7 +1604,8 @@
     "pending": "In afwachting",
     "nationalLaw": "Nationale wet",
     "noCountry": "Selecteer uw land in Instellingen om uw nationale NIS2-autoriteit en meldingscontacten te zien.",
-    "goToSettings": "Naar instellingen"
+    "goToSettings": "Naar instellingen",
+    "not_transposed": "Niet omgezet"
   },
   "team": {
     "pageTitle": "Team",
@@ -946,5 +1635,404 @@
     "acceptInvite": "Accepteren en toetreden",
     "welcomeToTeam": "Welkom in het team!",
     "canNowLogin": "U kunt nu inloggen met uw e-mail en wachtwoord."
+  },
+  "policyTemplates": {
+    "tpl-isp": {
+      "title": "Informatiebeveiligingsbeleid",
+      "summary1": "Definieert de algemene benadering van de organisatie ten aanzien van informatiebeveiliging en cyberdreigingen.",
+      "summary2": "Stelt rollen en verantwoordelijkheden vast voor beveiligingsgovernance op alle niveaus.",
+      "summary3": "Beschrijft classificatie- en verwerkingsvereisten voor gegevens en systemen.",
+      "summary4": "Stelt vereisten vast voor risicobeoordeling en risicobehandeling.",
+      "summary5": "Definieert verplichtingen voor naleving van NIS2 en gerelateerde regelgeving.",
+      "summary6": "Beschrijft handhavingsmechanismen en gevolgen bij niet-naleving.",
+      "summary7": "Vereist periodieke beoordeling en actualisering van alle beveiligingsbeleidslijnen."
+    },
+    "tpl-aup": {
+      "title": "Beleid voor aanvaardbaar gebruik",
+      "summary1": "Definieert toegestaan en verboden gebruik van organisatorische IT-middelen en -systemen.",
+      "summary2": "Stelt regels vast voor internetgebruik, e-mail en communicatieplatforms.",
+      "summary3": "Beschrijft verantwoordelijkheden voor het beschermen van toegangsgegevens en persoonlijke apparaten.",
+      "summary4": "Behandelt het gebruik van persoonlijke apparaten (BYOD) en werken op afstand.",
+      "summary5": "Specificeert regels voor software-installatie en gebruik van cloudservices.",
+      "summary6": "Beschrijft monitoringpraktijken en verwachtingen ten aanzien van privacy."
+    },
+    "tpl-irp": {
+      "title": "Beleid voor incidentrespons",
+      "summary1": "Definieert wat een beveiligingsincident is en de classificatieniveaus van ernst.",
+      "summary2": "Stelt het incidentresponsteam en de escalatieprocedures vast.",
+      "summary3": "Beschrijft de meldingsprocedure: detectie, triage, inperking, herstel.",
+      "summary4": "Specificeert de meldplicht aan autoriteiten binnen 24/72 uur (NIS2 Art. 23).",
+      "summary5": "Definieert vereisten voor bewijsbewaring en forensisch onderzoek.",
+      "summary6": "Vereist evaluatie na incidenten en actualisering van verdedigingsmaatregelen."
+    },
+    "tpl-bcp": {
+      "title": "Beleid voor bedrijfscontinuïteit",
+      "summary1": "Definieert de aanpak van de organisatie voor bedrijfscontinuïteit en herstel na calamiteiten.",
+      "summary2": "Stelt bedrijfsimpactanalyse (BIA) en doelstellingen voor hersteltijd vast.",
+      "summary3": "Beschrijft back-upstrategieën en vereisten voor gegevensherstel.",
+      "summary4": "Definieert rollen en verantwoordelijkheden tijdens een crisis.",
+      "summary5": "Specificeert communicatieprotocollen voor crisissituaties met belanghebbenden.",
+      "summary6": "Vereist regelmatig testen van continuïteits- en herstelplannen."
+    },
+    "tpl-acc": {
+      "title": "Beleid voor toegangscontrole en identiteitsbeheer",
+      "summary1": "Definieert het principe van minimale bevoegdheden en need-to-know toegangsbeleid.",
+      "summary2": "Stelt vereisten vast voor authenticatie inclusief meervoudige authenticatie (MFA).",
+      "summary3": "Beschrijft procedures voor het beheer van gebruikersaccounts (aanmaken, wijzigen, verwijderen).",
+      "summary4": "Specificeert rolgebaseerde toegangscontrole (RBAC) en rechtenbeoordelingen.",
+      "summary5": "Definieert vereisten voor privileged access management.",
+      "summary6": "Behandelt beveiliging van dienstenaccounts en API-authenticatie.",
+      "summary7": "Vereist periodieke toegangsbeoordelingen en hercertificering."
+    },
+    "tpl-sup": {
+      "title": "Beleid voor toeleveringsketen en beveiliging van derden",
+      "summary1": "Definieert beveiligingsvereisten voor alle externe leveranciers en dienstverleners.",
+      "summary2": "Stelt het beoordelingsproces vast voor beveiligingsevaluatie van leveranciers.",
+      "summary3": "Beschrijft contractuele beveiligingsvereisten en Service Level Agreements.",
+      "summary4": "Specificeert monitoring- en auditrechten voor diensten van derden.",
+      "summary5": "Definieert procedures voor incidentmelding bij beveiligingsgebeurtenissen in de toeleveringsketen.",
+      "summary6": "Behandelt risicobeheer voor de concentratie bij ICT-dienstverleners."
+    },
+    "tpl-enc": {
+      "title": "Beleid voor gegevensbescherming en encryptie",
+      "summary1": "Definieert classificatieniveaus voor gegevens en bijbehorende beschermingsvereisten.",
+      "summary2": "Stelt encryptiestandaarden vast voor gegevens in rust en in transit.",
+      "summary3": "Beschrijft beleid en procedures voor sleutelbeheer.",
+      "summary4": "Specificeert vereisten voor gegevensbewaring en veilige verwijdering.",
+      "summary5": "Definieert regels voor het gebruik van cryptografische middelen en goedgekeurde algoritmen.",
+      "summary6": "Behandelt privacyoverwegingen en afstemming met AVG-vereisten."
+    },
+    "tpl-hyg": {
+      "title": "Beleid voor cyberhygiëne en beveiligingsbewustzijn",
+      "summary1": "Definieert verplichte beveiligingstraining voor alle medewerkers.",
+      "summary2": "Stelt vereisten vast voor wachtwoordbeleid en veilige authenticatiepraktijken.",
+      "summary3": "Beschrijft procedures voor patchbeheer en kwetsbaarheidsupdates.",
+      "summary4": "Specificeert richtlijnen voor veilig browsen, e-mail en sociale media.",
+      "summary5": "Definieert rapportageprocedures voor verdachte activiteiten en phishingpogingen.",
+      "summary6": "Vereist regelmatige bewustwordingscampagnes en phishingsimulaties.",
+      "summary7": "Behandelt beveiligingspraktijken voor thuiswerken en mobiel werken."
+    }
+  },
+  "quizBank": {
+    "quiz-001": {
+      "question": "Wat moet u doen als u een verdachte e-mail ontvangt met een onverwachte bijlage?",
+      "option1": "De bijlage openen om te controleren of deze legitiem is",
+      "option2": "Het doorsturen naar collega's om hun mening te vragen",
+      "option3": "Het melden bij het IT-beveiligingsteam zonder het te openen",
+      "option4": "Het verwijderen en vergeten",
+      "explanation": "Het melden van verdachte e-mails aan het IT-beveiligingsteam stelt hen in staat te onderzoeken en de hele organisatie te beschermen. Open nooit onverwachte bijlagen."
+    },
+    "quiz-002": {
+      "question": "Wat is de veiligste manier om uw werkwachtwoorden te beheren?",
+      "option1": "Hetzelfde wachtwoord gebruiken voor alle werkaccounts",
+      "option2": "Een uniek sterk wachtwoord gebruiken voor elk account en deze opslaan in een goedgekeurde wachtwoordmanager",
+      "option3": "Ze op een plakbriefje bij uw scherm schrijven",
+      "option4": "Ze delen met uw leidinggevende zodat deze toegang heeft als dat nodig is",
+      "explanation": "Unieke sterke wachtwoorden opgeslagen in een goedgekeurde wachtwoordmanager voorkomen credential stuffing-aanvallen en beperken de impact als een account wordt gecompromitteerd."
+    },
+    "quiz-003": {
+      "question": "Wat is phishing?",
+      "option1": "Een netwerkprestatieprobleem veroorzaakt door hoog verkeer",
+      "option2": "Een aanval die mensen misleidt om inloggegevens prijs te geven of op kwaadaardige links te klikken",
+      "option3": "Een methode om firewallconfiguraties te testen",
+      "option4": "Een type antivirussoftware voor e-mailscanning",
+      "explanation": "Phishing is de meest voorkomende cyberaanvalsvector. Aanvallers doen zich voor als vertrouwde entiteiten om inloggegevens te stelen, malware te installeren of toegang tot systemen te verkrijgen."
+    },
+    "quiz-004": {
+      "question": "Wat moet u doen wanneer u uw werkplek verlaat, ook al is het maar kort?",
+      "option1": "Alles open laten — u bent zo terug",
+      "option2": "Een collega vragen om op uw scherm te letten",
+      "option3": "Uw scherm onmiddellijk vergrendelen",
+      "option4": "De monitor uitschakelen maar de sessie open laten",
+      "explanation": "Uw scherm vergrendelen (Win+L of Cmd+Ctrl+Q) duurt seconden en voorkomt ongeautoriseerde toegang tot uw sessie, e-mail en gevoelige gegevens."
+    },
+    "quiz-005": {
+      "question": "Met wie moet u als eerste contact opnemen als u een beveiligingsincident vermoedt?",
+      "option1": "Het IT-beveiligingsteam of uw directe leidinggevende",
+      "option2": "Uw persoonlijke IT-contact buiten het bedrijf",
+      "option3": "Niemand — probeer het eerst zelf op te lossen",
+      "option4": "Op sociale media posten om anderen te waarschuwen",
+      "explanation": "Snelle melding aan het IT-beveiligingsteam minimaliseert de schade. Onder NIS2 moeten organisaties significante incidenten binnen 24 uur aan de autoriteiten melden."
+    },
+    "quiz-006": {
+      "question": "Hoe snel moet een significant beveiligingsincident volgens NIS2 aan de nationale autoriteit worden gemeld?",
+      "option1": "Binnen 7 dagen",
+      "option2": "Binnen 24 uur (vroegtijdige waarschuwing) en 72 uur (volledige melding)",
+      "option3": "Binnen 30 dagen",
+      "option4": "Alleen als het incident financieel verlies veroorzaakt",
+      "explanation": "NIS2 Artikel 23 vereist een vroegtijdige waarschuwing binnen 24 uur en een gedetailleerde melding binnen 72 uur na kennis van een significant incident."
+    },
+    "quiz-007": {
+      "question": "Wat is de juiste volgorde van stappen in een incidentresponsproces?",
+      "option1": "Herstel, Detectie, Inperking, Geleerde lessen",
+      "option2": "Inperking, Detectie, Herstel, Melding",
+      "option3": "Melding, Herstel, Detectie, Inperking",
+      "option4": "Detectie, Inperking, Herstel, Geleerde lessen",
+      "explanation": "De standaard incidentresponscyclus is: Detectie en analyse, Inperking, Uitroeiing en Herstel, gevolgd door Post-incidentbeoordeling (geleerde lessen)."
+    },
+    "quiz-008": {
+      "question": "Wat moet een incidentrapport bevatten?",
+      "option1": "Alleen de naam van de persoon die het incident veroorzaakte",
+      "option2": "Een kort éénregelig overzicht zonder technische details",
+      "option3": "Datum, beschrijving, getroffen systemen, ondernomen acties en impactbeoordeling",
+      "option4": "Alleen de financiële kosten van het incident",
+      "explanation": "Een grondig incidentrapport maakt oorzaakanalyse mogelijk, ondersteunt NIS2-nalevingsvereisten en helpt soortgelijke incidenten in de toekomst te voorkomen."
+    },
+    "quiz-009": {
+      "question": "Wat betekent het principe van minimale bevoegdheden?",
+      "option1": "Gebruikers mogen alleen de minimale toegangsrechten hebben die nodig zijn voor hun functie",
+      "option2": "Alleen het hogere management mag toegang hebben tot IT-systemen",
+      "option3": "Iedereen moet volledige beheerderstoegang hebben om knelpunten te voorkomen",
+      "option4": "Toegangsrechten hoeven alleen te worden herzien wanneer iemand het bedrijf verlaat",
+      "explanation": "Minimale bevoegdheden beperken het schadebereik als een account wordt gecompromitteerd en verminderen het risico op onbedoelde blootstelling of wijziging van gegevens."
+    },
+    "quiz-010": {
+      "question": "Waarom is Multi-Factor Authenticatie (MFA) belangrijk?",
+      "option1": "Het maakt aanmeldingen sneller en gemakkelijker",
+      "option2": "Het vervangt de noodzaak van sterke wachtwoorden",
+      "option3": "Het is alleen vereist voor IT-beheerders",
+      "option4": "Het voegt een extra beveiligingslaag toe bovenop wachtwoorden, waardoor gecompromitteerde inloggegevens minder bruikbaar zijn voor aanvallers",
+      "explanation": "MFA zorgt ervoor dat gestolen wachtwoorden alleen geen toegang kunnen verlenen. NIS2 verwacht dat organisaties sterke authenticatie implementeren voor kritische systemen."
+    },
+    "quiz-011": {
+      "question": "Wat moet er gebeuren wanneer een medewerker van rol verandert binnen de organisatie?",
+      "option1": "Zijn toegangsrechten blijven hetzelfde aangezien hij nog steeds medewerker is",
+      "option2": "Zijn toegangsrechten moeten worden herzien en aangepast aan de nieuwe rol",
+      "option3": "Hij moet extra toegangsrechten ontvangen bovenop de bestaande machtigingen",
+      "option4": "Toegangsbeoordelingen vinden alleen jaarlijks plaats, dus geen directe actie nodig",
+      "explanation": "Rolwijzigingen vereisen een snelle toegangsbeoordeling om privilege-escalatie te voorkomen. Gebruikers mogen alleen machtigingen behouden die nodig zijn voor hun huidige verantwoordelijkheden."
+    },
+    "quiz-012": {
+      "question": "Wat is de aanbevolen actie wanneer een medewerker de organisatie verlaat?",
+      "option1": "Alle accounts deactiveren en toegang onmiddellijk intrekken op de laatste werkdag",
+      "option2": "Accounts 30 dagen actief houden voor het geval hij terugkeert",
+      "option3": "Alleen e-mail deactiveren — andere systemen kunnen wachten",
+      "option4": "Zijn inloggegevens overdragen aan zijn opvolger",
+      "explanation": "Onmiddellijke accountdeactivering voorkomt dat voormalige medewerkers toegang hebben tot systemen. Dit omvat VPN, clouddiensten, e-mail en fysieke toegang."
+    },
+    "quiz-013": {
+      "question": "Hoe gaat u correct om met vertrouwelijke documenten die u niet meer nodig heeft?",
+      "option1": "Ze in de gewone kantoorprullenbak gooien",
+      "option2": "Ze op uw bureau laten liggen voor het schoonmaakpersoneel",
+      "option3": "Een crosscut-papiervernietiger of beveiligde afvalbak gebruiken",
+      "option4": "Ze mee naar huis nemen voor persoonlijke administratie",
+      "explanation": "Vertrouwelijke documenten moeten veilig worden vernietigd om datalekken te voorkomen. Crosscut-vernietiging of beveiligde afvalservices zijn vereist volgens de gegevensbeschermingsregelgeving."
+    },
+    "quiz-014": {
+      "question": "Wanneer is versleuteling vereist bij gegevensoverdracht?",
+      "option1": "Alleen bij het verzenden van gegevens naar externe partners",
+      "option2": "Telkens wanneer gevoelige of vertrouwelijke gegevens worden verzonden, zowel intern als extern",
+      "option3": "Alleen wanneer de ontvanger dit specifiek verzoekt",
+      "option4": "Versleuteling is optioneel en alleen aanbevolen voor financiële gegevens",
+      "explanation": "NIS2 vereist passende versleuteling voor gegevens in transit. Alle verzendingen van gevoelige gegevens moeten TLS/HTTPS of gelijkwaardige versleuteling gebruiken."
+    },
+    "quiz-015": {
+      "question": "Welke van de volgende is een goede praktijk voor gegevensclassificatie?",
+      "option1": "Alle gegevens als vertrouwelijk classificeren om veilig te zijn",
+      "option2": "Alleen gegevens classificeren die in de cloud zijn opgeslagen",
+      "option3": "Elke medewerker zelf laten beslissen hoe zijn gegevens te classificeren",
+      "option4": "Classificatieniveaus toepassen (Openbaar, Intern, Vertrouwelijk, Beperkt) op basis van gevoeligheid en impact van openbaarmaking",
+      "explanation": "Correcte classificatie zorgt ervoor dat passende beveiligingsmaatregelen proportioneel worden toegepast. Overclassificatie verspilt middelen; onderclassificatie creëert risico's."
+    },
+    "quiz-016": {
+      "question": "Wat moet u doen als u per ongeluk gevoelige gegevens naar de verkeerde ontvanger stuurt?",
+      "option1": "Onmiddellijk uw leidinggevende en het IT-beveiligingsteam informeren",
+      "option2": "Een vervolg-e-mail sturen met het verzoek de gegevens te verwijderen",
+      "option3": "Het negeren — fouten gebeuren",
+      "option4": "Afwachten of de ontvanger het opmerkt",
+      "explanation": "Onbedoelde blootstelling van gegevens is een beveiligingsincident dat gemeld moet worden. Snel handelen stelt de organisatie in staat de impact te beoordelen en corrigerende maatregelen te nemen."
+    },
+    "quiz-017": {
+      "question": "Waarom is beveiliging van de toeleveringsketen belangrijk onder NIS2?",
+      "option1": "Het is alleen relevant voor productiebedrijven",
+      "option2": "NIS2 gaat niet over beveiliging van de toeleveringsketen",
+      "option3": "Een inbreuk bij een leverancier kan uw organisatie in gevaar brengen, en NIS2 vereist het beheer van risico's van derden",
+      "option4": "Het is alleen belangrijk als leveranciers fysieke toegang hebben tot uw kantoren",
+      "explanation": "NIS2 Artikel 21(2)(d) vereist uitdrukkelijk maatregelen voor de beveiliging van de toeleveringsketen. Spraakmakende inbreuken (SolarWinds, Kaseya) hebben aangetoond dat compromittering van leveranciers zich kan verspreiden."
+    },
+    "quiz-018": {
+      "question": "Wat moet u controleren voordat u een externe leverancier toegang verleent tot uw systemen?",
+      "option1": "Dat deze een beveiligingsbeoordeling heeft afgerond en over passende beveiligingsmaatregelen beschikt",
+      "option2": "Dat het een bekend merk is",
+      "option3": "Dat deze al meer dan een jaar leverancier is",
+      "option4": "Niets bijzonders — als het management het heeft goedgekeurd, is dat voldoende",
+      "explanation": "Risicobeooordelingen van leveranciers moeten beveiligingscertificeringen (ISO 27001, SOC 2), beveiligingsbeleid, incidentresponscapaciteiten en gegevensverwerkingspraktijken evalueren."
+    },
+    "quiz-019": {
+      "question": "Wat is een kernvereiste voor contracten met kritieke ICT-dienstverleners onder NIS2?",
+      "option1": "Ze moeten jaarlijks worden verlengd ongeacht de prestaties",
+      "option2": "Ze moeten beveiligingsverplichtingen, meldingsvereisten bij inbreuken en auditrechten bevatten",
+      "option3": "Ze moeten worden ondertekend door de nationale cyberbeveiligingsautoriteit",
+      "option4": "Ze hebben alleen standaard commerciële voorwaarden nodig",
+      "explanation": "NIS2 vereist dat contracten met kritieke leveranciers specifieke beveiligingsbepalingen, clausules voor incidentmelding en het recht op controle van hun beveiligingshouding bevatten."
+    },
+    "quiz-020": {
+      "question": "Hoe moet u omgaan met een situatie waarin een externe leverancier een datalek meldt dat uw gegevens treft?",
+      "option1": "Wachten tot de leverancier het probleem volledig heeft opgelost",
+      "option2": "Het contract onmiddellijk beëindigen",
+      "option3": "Het negeren als de leverancier zegt dat de impact minimaal is",
+      "option4": "Uw incidentresponsproces activeren, de impact op uw organisatie beoordelen en de autoriteiten informeren indien vereist",
+      "explanation": "Een leveranciersinbreuk die uw gegevens treft is ook uw incident. U moet de impact beoordelen, uw incidentresponsplan activeren en de NIS2-meldingstermijnen naleven."
+    },
+    "quiz-021": {
+      "question": "Wat is het primaire doel van een Bedrijfscontinuïteitsplan (BCP)?",
+      "option1": "De financiële prestaties van het bedrijf documenteren",
+      "option2": "Ervoor zorgen dat kritieke bedrijfsfuncties kunnen doorgaan tijdens en na een verstoring",
+      "option3": "Alle medewerkers en hun contactgegevens vermelden",
+      "option4": "Auditors tevreden stellen met alleen documentatie",
+      "explanation": "Een BCP zorgt ervoor dat essentiële diensten beschikbaar blijven tijdens crises. NIS2 Artikel 21(2)(c) vereist maatregelen voor bedrijfscontinuïteit en crisisbeheersing."
+    },
+    "quiz-022": {
+      "question": "Hoe vaak moet het herstel van back-ups worden getest?",
+      "option1": "Regelmatig, minimaal elk kwartaal, om te verifiëren dat back-ups succesvol kunnen worden hersteld",
+      "option2": "Alleen wanneer een echt rampenscenario zich voordoet",
+      "option3": "Eénmalig bij de eerste installatie van het back-upsysteem",
+      "option4": "Testen zijn niet nodig als back-ups geautomatiseerd zijn",
+      "explanation": "Ongeteste back-ups kunnen falen wanneer ze het hardst nodig zijn. Regelmatige hersteltests verifiëren de gegevensintegriteit en zorgen ervoor dat hersteltijddoelstellingen daadwerkelijk kunnen worden gehaald."
+    },
+    "quiz-023": {
+      "question": "Wat is een Recovery Time Objective (RTO)?",
+      "option1": "De hoeveelheid tijd die nodig is om een incident te detecteren",
+      "option2": "De totale kosten van herstel na een ramp",
+      "option3": "De maximaal acceptabele tijd om een systeem of dienst te herstellen na een verstoring",
+      "option4": "Het aantal personeelsleden dat nodig is voor noodherstel",
+      "explanation": "RTO definieert hoe snel een systeem moet worden hersteld. Het stuurt beslissingen over back-upstrategieën, redundantie en noodherstelinfrastructuur."
+    },
+    "quiz-024": {
+      "question": "Welke rol speelt crisiscommunicatie bij bedrijfscontinuïteit?",
+      "option1": "Het is alleen belangrijk voor de PR-afdeling",
+      "option2": "Het is optioneel en alleen nodig bij publiekgerichte incidenten",
+      "option3": "Het wordt automatisch afgehandeld door IT-systemen",
+      "option4": "Het zorgt ervoor dat belanghebbenden, medewerkers en autoriteiten tijdig en accuraat worden geïnformeerd tijdens een verstoring",
+      "explanation": "Duidelijke crisiscommunicatie vermindert verwarring, behoudt vertrouwen en voldoet aan NIS2-vereisten voor tijdige melding aan betrokken partijen en autoriteiten."
+    }
+  },
+  "countryNotes": {
+    "AT": [
+      "De vorige NISG 2024 werd verworpen door de Nationalrat op 3 juli 2024",
+      "De NISG 2026 vereiste een tweederde meerderheid voor goedkeuring",
+      "Inwerkingtreding uitgesteld naar 1 oktober 2026",
+      "Oostenrijk behoort tot de weinige EU-landen die aanvankelijk te maken kregen met afwijzing van de NIS2-omzetting"
+    ],
+    "BE": [
+      "België was een van de eerste EU-landen die NIS2 omzette",
+      "Het CyberFundamentals (CyFun) framework is het primaire compliance-mechanisme",
+      "Het CCB beheert het SafeOnWeb-portaal voor begeleiding van entiteiten",
+      "Zelfbeoordeling van CyFun-niveau of ISO 27001-compliance vóór 18 april 2026"
+    ],
+    "DE": [
+      "Duitsland miste de oorspronkelijke deadline van oktober 2024 door de val van de coalitie en vervroegde verkiezingen",
+      "Het wetsvoorstel moest opnieuw worden ingediend na de federale verkiezingen van februari 2025",
+      "Geen algemene overgangsperiode — verplichtingen gelden onmiddellijk vanaf inwerkingtreding",
+      "BSI-registratieportaal geopend op 6 januari 2026",
+      "ELSTER digitale certificaten vereist voor bedrijfsaccount (MUK) setup",
+      "Entiteiten kiezen hun eigen beveiligingsframework als er geen sectorspecifieke regelgeving van toepassing is"
+    ],
+    "ES": [
+      "Spanje heeft NIS2 per maart 2026 nog NIET omgezet",
+      "Het wetsontwerp (anteproyecto) werd goedgekeurd door de Ministerraad in januari 2025",
+      "De parlementaire behandeling loopt — nog geen BOE-publicatie",
+      "Inbreukprocedures van de Europese Commissie zijn actief",
+      "Het huidige NIS1-kader (RDL 12/2018) blijft van kracht als overgangsmaatregel",
+      "Multi-autoriteitsmodel voorgesteld: CCN-CERT voor publieke sector, INCIBE voor private sector"
+    ],
+    "FR": [
+      "Frankrijk heeft NIS2 per maart 2026 nog NIET volledig omgezet",
+      "De 'Loi Résilience' bundelt NIS2 met de omzetting van de CER-richtlijn",
+      "Aangenomen door de Senaat; plenair debat in de Assemblée Nationale nog niet gepland",
+      "Franse omzetting waarschijnlijk uitgesteld tot juli 2026",
+      "ANSSI beheert al het bèta-portaal MonEspaceNIS2 voor entiteitsregistratie",
+      "Digitaal Minister Anne Le Hénanff is aangedrongen op urgentie van planning"
+    ],
+    "IE": [
+      "Ierland heeft NIS2 per maart 2026 nog NIET omgezet",
+      "Vertraagd door verkiezingen in 2024",
+      "NIS1-kader blijft als overgangsmaatregel",
+      "Wetsvoorstel blijft een wetgevende prioriteit volgens regeringsverklaringen",
+      "NCSC publiceert actief voorbereidende richtlijnen"
+    ],
+    "IT": [
+      "Italië was een van de eerste EU-lidstaten die NIS2 omzette",
+      "ACN publiceerde het implementatiekader in april 2025",
+      "Registratie is een jaarlijks terugkerende verplichting (januari-februari elk jaar)",
+      "Italië voegde unieke nationale sectoren toe in Bijlage IV (lokaal vervoer, culturele organisaties, enz.)",
+      "Boetes voor de overheid zijn aanzienlijk lager dan voor de private sector",
+      "18 maanden implementatieperiode vanaf ACN-melding voor compliance-maatregelen"
+    ],
+    "NL": [
+      "Nederland heeft NIS2 per maart 2026 nog NIET omgezet",
+      "Plenair debat in de Tweede Kamer gepland op 23 maart 2026",
+      "Verwachte inwerkingtreding Q2 2026",
+      "NCSC-registratieportaal (mijn.ncsc.nl) vereist eHerkenning eID",
+      "Rechterlijke macht, Eerste en Tweede Kamer en De Nederlandsche Bank zijn vrijgesteld"
+    ],
+    "PL": [
+      "Wetgevingsproces van 7 jaar afgerond in februari 2026",
+      "Entiteiten hebben 6 maanden om zich te registreren als sleutel-/belangrijke entiteiten",
+      "12 maanden deadline voor implementatie van risicobeheermaatregelen",
+      "S46 incidentmeldingssysteem met 12 maanden adoptiedeadline"
+    ],
+    "PT": [
+      "CNCS is de bevoegde autoriteit voor alle NIS2-verplichtingen",
+      "Wet treedt in werking op 03-04-2026 — 8 dagen na laatste verificatie",
+      "24-uurs incidentmelding verplicht voor significante incidenten; unieke einde-impact-melding ook binnen 24u",
+      "Omvat overheidsinstanties buiten het basis NIS2-toepassingsgebied (Relevante Publieke Entiteitsgroepen A en B)",
+      "Cybersecurity officer moet bestuurslid zijn of direct ondergeschikt — benoemingsdeadline 4 mei 2026",
+      "Managementtraining is verplicht onder Art. 25 (regelmaat van cybersecurity trainingsacties)",
+      "Belangrijke technische/organisatorische maatregelen (Art. 27-30) hebben 24 maanden uitgestelde handhaving in afwachting van aanvullende CNCS-regelgeving",
+      "Wet vertegenwoordigt een ingrijpende herformulering van het Portugese cybersecurity juridisch kader, ter vervanging van Wet 46/2018",
+      "Crisisbureau samengesteld uit entiteiten verantwoordelijk voor interne veiligheid, defensie en strafrechtelijk onderzoek",
+      "Belangrijke entiteiten: lagere boetegrens (EUR 7M / 1,4%) vs essentiële entiteiten (EUR 10M / 2%)"
+    ]
+  },
+  "controlCategories": {
+    "riskManagement": "Risicobeheer",
+    "incidentHandling": "Incidentafhandeling",
+    "businessContinuity": "Bedrijfscontinuïteit",
+    "supplyChainSecurity": "Toeleveringsketenbeveiliging",
+    "secureDevelopment": "Veilige ontwikkeling",
+    "effectivenessAssessment": "Effectiviteitsbeoordeling",
+    "cyberHygieneTraining": "Cyberhygiëne en training",
+    "cryptographyEncryption": "Cryptografie en versleuteling",
+    "accessControlAssetMgmt": "Toegangscontrole en vermogensbeheer",
+    "mfaSecuredComms": "MFA en beveiligde communicatie",
+    "governance": "Governance",
+    "monitoring": "Monitoring",
+    "securityOperations": "Beveiligingsoperaties",
+    "trainingAwareness": "Training en bewustwording",
+    "hrSecurity": "HR-beveiliging",
+    "cryptography": "Cryptografie"
+  },
+  "evidence": {
+    "title": "Bewijs",
+    "libraryTitle": "Bewijsbibliotheek",
+    "libraryDesc": "Beheer alle bewijsbestanden van uw organisatie",
+    "upload": "Uploaden",
+    "uploading": "Bezig met uploaden...",
+    "dropOrClick": "Sleep bestanden hierheen of klik",
+    "noFiles": "Geen bewijsbestanden bijgevoegd",
+    "linkFromLibrary": "Koppelen vanuit bibliotheek",
+    "libraryEmpty": "Nog geen bestanden in de bibliotheek",
+    "download": "Downloaden",
+    "delete": "Verwijderen",
+    "confirmDelete": "Dit bewijsbestand verwijderen?",
+    "filename": "Bestandsnaam",
+    "size": "Grootte",
+    "uploadedBy": "Geüpload door",
+    "date": "Datum",
+    "tags": "Tags",
+    "links": "Koppelingen",
+    "searchPlaceholder": "Zoeken op bestandsnaam, beschrijving of tag...",
+    "showing": "Toont",
+    "of": "van"
+  },
+  "activity": {
+    "title": "Activiteitenlogboek",
+    "description": "Fraudebestendig auditlogboek van alle compliance-acties",
+    "verifyChain": "Keten verifiëren",
+    "chainValid": "Hash-keten geverifieerd: {{total}} gebeurtenissen, allemaal intact.",
+    "chainBroken": "Keten verbroken bij gebeurtenis #{{id}}. {{checked}} van {{total}} gecontroleerd.",
+    "searchPlaceholder": "Zoeken op gebruiker, entiteit...",
+    "noEvents": "Nog geen activiteit geregistreerd"
   }
 }

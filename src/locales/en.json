@@ -16,7 +16,10 @@
     "sectionAssess": "ASSESS",
     "sectionRemediate": "REMEDIATE",
     "sectionReport": "REPORT",
-    "team": "Team"
+    "team": "Team",
+    "scope": "Scope",
+    "evidence": "Evidence",
+    "activity": "Activity"
   },
   "common": {
     "save": "Save Changes",
@@ -73,7 +76,8 @@
     "copied": "Copied!",
     "goToDashboard": "Dashboard",
     "goToSettings": "Go to Settings",
-    "reportGenerateFailed": "Failed to generate report. Please try again."
+    "reportGenerateFailed": "Failed to generate report. Please try again.",
+    "neverSaved": "Never"
   },
   "auth": {
     "signIn": "Sign in to Konforme",
@@ -189,7 +193,29 @@
     "removeProviderConfirm": "Are you sure you want to remove this cloud provider?",
     "validateProvider": "Validate",
     "validationSuccess": "Credentials are valid",
-    "validationFailed": "Credentials are invalid or expired"
+    "validationFailed": "Credentials are invalid or expired",
+    "awsConnectTitle": "Connect AWS Account",
+    "awsConnectDesc": "Deploy a read-only IAM role via CloudFormation — no access keys needed.",
+    "awsAlias": "Alias",
+    "awsRegion": "Region",
+    "awsDeployStack": "Deploy CloudFormation Stack",
+    "awsStep2Title": "Complete the setup in AWS",
+    "awsStep2Line1": "The CloudFormation console opened in a new tab — click 'Create stack'",
+    "awsStep2Line2": "Wait for the stack status to show CREATE_COMPLETE",
+    "awsStep2Line3": "Copy the Role ARN from the Outputs tab and paste it below",
+    "awsOpenCfConsole": "Open CloudFormation console again",
+    "awsRoleArn": "Role ARN",
+    "awsVerifyConnect": "Verify & Connect",
+    "awsLegacyTitle": "Add AWS Account (Access Keys)",
+    "useLegacyKeys": "Use access keys instead",
+    "useLegacyCredentials": "Use service principal instead",
+    "useSecureConnection": "Use secure connection instead (recommended)",
+    "azureConnectTitle": "Connect Azure Subscription",
+    "azureConnectDesc": "Sign in with Microsoft and grant read-only access — no secrets needed.",
+    "azureAlias": "Alias",
+    "azureSubscriptionId": "Subscription ID",
+    "azureConnectViaMicrosoft": "Connect via Microsoft",
+    "azureLegacyTitle": "Add Azure Credential (Service Principal)"
   },
   "overview": {
     "title": "NIS2 Compliance Overview",
@@ -555,7 +581,216 @@
     "sendTasksButton": "Send Tasks",
     "lastUpdated": "Last updated:",
     "severityLabel": "Severity",
-    "allSeverities": "All Severities"
+    "allSeverities": "All Severities",
+    "ctrl-001": {
+      "title": "Information Security Policy document",
+      "description": "A formal information security policy approved by management and communicated to all staff. Must cover scope, responsibilities, acceptable use, data classification, and incident response."
+    },
+    "ctrl-002": {
+      "title": "Annual risk assessment process",
+      "description": "Regular risk assessments to identify threats, vulnerabilities, and impacts to critical services. Must use a recognized framework (ISO 27005, NIST)."
+    },
+    "ctrl-003": {
+      "title": "Risk register maintained and reviewed",
+      "description": "Active risk register tracking all identified cybersecurity risks with likelihood, impact, mitigation plans, and owners."
+    },
+    "ctrl-004": {
+      "title": "Security roles and responsibilities defined",
+      "description": "Clear accountability with documented RACI matrix for security functions. Roles like CISO, security team, system owners must be formally defined."
+    },
+    "ctrl-005": {
+      "title": "Incident response plan documented",
+      "description": "Formal incident response process covering detection, containment, eradication, recovery, and lessons learned. Must include escalation paths and communication templates."
+    },
+    "ctrl-006": {
+      "title": "Incident classification and escalation process",
+      "description": "Defined severity levels (Critical, High, Medium, Low) with clear escalation criteria, response SLAs, and notification requirements."
+    },
+    "ctrl-007": {
+      "title": "CSIRT registration completed",
+      "description": "Organization registered with national Computer Security Incident Response Team (CSIRT) for mandatory incident reporting."
+    },
+    "ctrl-008": {
+      "title": "Incident response tabletop exercise conducted (last 12 months)",
+      "description": "Regular testing of incident response plan through tabletop exercises or simulations."
+    },
+    "ctrl-009": {
+      "title": "24-hour notification process to authorities defined",
+      "description": "Clear process for early warning notification to authorities within 24 hours of detecting a significant incident."
+    },
+    "ctrl-010": {
+      "title": "Business continuity plan documented",
+      "description": "BCP ensuring critical services can continue during disruptions. Must cover critical functions, dependencies, alternate arrangements, and communication plans."
+    },
+    "ctrl-011": {
+      "title": "Disaster recovery plan with RTO/RPO targets",
+      "description": "DR plan with defined Recovery Time Objective (RTO) and Recovery Point Objective (RPO) for each critical system."
+    },
+    "ctrl-012": {
+      "title": "DR plan tested (last 12 months)",
+      "description": "Regular testing of disaster recovery plan through simulations or full failover tests."
+    },
+    "ctrl-013": {
+      "title": "Critical system backups tested regularly",
+      "description": "Regular restore tests to verify backup integrity and restoration procedures. Quarterly testing required."
+    },
+    "ctrl-014": {
+      "title": "Supplier cybersecurity assessment process",
+      "description": "Process to assess cybersecurity practices of critical suppliers, including security questionnaires and certification requirements."
+    },
+    "ctrl-015": {
+      "title": "Security requirements in supplier contracts",
+      "description": "Contractual security obligations including breach notification, right to audit, data protection, and security certifications."
+    },
+    "ctrl-016": {
+      "title": "Third-party access management process",
+      "description": "Formal approval, MFA enforcement, and monitoring for third-party system access. Quarterly access reviews required."
+    },
+    "ctrl-017": {
+      "title": "MFA enabled on all critical systems",
+      "description": "Multi-factor authentication enforced on all critical systems, admin accounts, and remote access."
+    },
+    "ctrl-018": {
+      "title": "Data encryption at rest and in transit",
+      "description": "Encryption of sensitive data using approved algorithms (AES-256, TLS 1.3) for data at rest and in transit."
+    },
+    "ctrl-019": {
+      "title": "Network security monitoring in place",
+      "description": "Active monitoring of network traffic, intrusion detection, and security event logging."
+    },
+    "ctrl-020": {
+      "title": "Vulnerability management process",
+      "description": "Regular vulnerability scanning, patch management, and remediation tracking for all systems."
+    },
+    "ctrl-021": {
+      "title": "Cryptography and key management policy",
+      "description": "Policy governing encryption algorithms, key lifecycle, and secure key storage using KMS or HSM."
+    },
+    "ctrl-022": {
+      "title": "Patch management process",
+      "description": "Systematic process for applying security patches to operating systems, applications, and firmware."
+    },
+    "ctrl-023": {
+      "title": "Security awareness training completed by all staff",
+      "description": "Annual mandatory security awareness training covering phishing, password security, data handling, and incident reporting."
+    },
+    "ctrl-024": {
+      "title": "Information security policy acknowledged by all staff",
+      "description": "All employees must read and formally acknowledge the information security policy annually."
+    },
+    "ctrl-025": {
+      "title": "Secure onboarding process for new employees",
+      "description": "Security onboarding checklist including background checks, NDA signing, security training, and access provisioning."
+    },
+    "ctrl-026": {
+      "title": "Same-day access revocation on employee departure",
+      "description": "Process ensuring all system access is disabled within 1 hour of employee departure. Equipment collection and exit interview."
+    },
+    "ctrl-027": {
+      "title": "Privileged access background checks conducted",
+      "description": "Background verification for roles with admin rights or access to sensitive data (system admins, database admins, finance, HR)."
+    },
+    "ctrl-028": {
+      "title": "Annual access review completed",
+      "description": "Quarterly access certification where managers review and certify their team members' access rights."
+    },
+    "ctrl-029": {
+      "title": "Management body approval of cybersecurity measures",
+      "description": "The management body has formally approved cybersecurity risk-management measures as required by NIS2 Article 20(1). Approval is documented in board minutes with coverage of risk appetite, cybersecurity strategy, budget allocation, and accountability structure. Approval must be renewed when significant changes occur or at minimum annually."
+    },
+    "ctrl-030": {
+      "title": "Management body cybersecurity oversight and reporting",
+      "description": "The management body receives and reviews cybersecurity status reports at regular intervals (minimum quarterly) covering key risk metrics, recent incidents, compliance status, training completion rates, and emerging threats. This ensures ongoing board-level visibility and enables informed decision-making as required by NIS2 Article 20(1) oversight obligations."
+    },
+    "ctrl-031": {
+      "title": "Management body cybersecurity training",
+      "description": "All management body members have completed cybersecurity training sufficient to identify risks, assess cybersecurity risk-management measures, and understand their impact on the entity's services. Training must be renewed annually and cover the current threat landscape, regulatory obligations, and board-level responsibilities. This is a mandatory requirement under NIS2 Article 20(2)."
+    },
+    "ctrl-032": {
+      "title": "Designated security leadership role",
+      "description": "A designated Chief Information Security Officer (CISO) or equivalent security leadership role is formally appointed with direct reporting to senior leadership or the management body. The role has clearly defined responsibilities, decision-making authority for cybersecurity matters, and a dedicated budget allocation."
+    },
+    "ctrl-033": {
+      "title": "Security audit and penetration testing programme",
+      "description": "Regular security audits and penetration testing by qualified independent testers to validate that cybersecurity risk-management measures are effective. Tests must cover both external and internal attack surfaces of critical systems. All findings are documented with severity ratings and tracked through remediation to closure with re-testing. Implements NIS2 Article 21(2)(f) requirement to assess effectiveness of measures."
+    },
+    "ctrl-034": {
+      "title": "Cybersecurity KPIs and metrics programme",
+      "description": "Defined cybersecurity key performance indicators (KPIs) are tracked regularly and reported to the management body to measure the effectiveness of risk-management measures. KPIs include both leading indicators (training completion, patch compliance, MFA coverage) and lagging indicators (incidents, mean time to detect, mean time to respond). Trends are analysed to drive continuous improvement."
+    },
+    "ctrl-035": {
+      "title": "Audit and assessment finding remediation tracking",
+      "description": "All findings from security audits, penetration tests, risk assessments, and compliance reviews are logged in a central register with assigned owners, target remediation deadlines, and current status. Open findings are reviewed at least monthly. Overdue critical and high findings are escalated to management. Closure requires evidence of remediation and verification."
+    },
+    "ctrl-036": {
+      "title": "Continuous improvement process",
+      "description": "A documented continuous improvement process ensures lessons learned from incidents, audits, penetration tests, threat intelligence, and regulatory changes are systematically fed back into policy updates, control improvements, and risk reassessments. This closes the feedback loop between effectiveness assessment and risk management, ensuring measures evolve with the threat landscape."
+    },
+    "ctrl-037": {
+      "title": "Phishing simulation and response programme",
+      "description": "Regular simulated phishing campaigns are conducted at least quarterly to test employee awareness and measure real-world readiness. Click rates are tracked per campaign and per individual. Employees who repeatedly fail receive targeted additional training. Results and trends are reported to management to inform training priorities."
+    },
+    "ctrl-038": {
+      "title": "Cyber hygiene baseline enforced",
+      "description": "Baseline cyber hygiene practices are documented in policy and enforced through technical controls where possible. Covers automatic software updates, screen lock timeouts (maximum 5 minutes), password manager usage, clean desk policy, and removable media restrictions. NIS2 Article 21(2)(g) explicitly requires basic cyber hygiene practices as a minimum measure."
+    },
+    "ctrl-039": {
+      "title": "Data classification with encryption requirements",
+      "description": "A data classification scheme defines sensitivity levels (Public, Internal, Confidential, Restricted) with corresponding encryption requirements per level. Classification guidance is provided to data owners for consistent application. The scheme is reviewed annually and updated when business or regulatory requirements change. Supports NIS2 Article 21(2)(h) requirement for cryptography policies."
+    },
+    "ctrl-040": {
+      "title": "Continuous or adaptive authentication for high-risk access",
+      "description": "Continuous or adaptive authentication mechanisms adjust security requirements based on risk signals such as location, device posture, user behaviour, and time of access for high-risk scenarios. Legacy authentication protocols (NTLM, basic authentication) that bypass multi-factor authentication are blocked. NIS2 Article 21(2)(j) explicitly references continuous authentication solutions."
+    },
+    "ctrl-041": {
+      "title": "Secured voice, video, and text communications",
+      "description": "End-to-end encrypted communication channels are approved and used for sensitive business communications including voice, video, and text. An approved tools list is maintained, communicated to all staff, and reviewed periodically. Tools are verified to provide end-to-end encryption. NIS2 Article 21(2)(j) explicitly requires secured voice, video and text communications."
+    },
+    "ctrl-042": {
+      "title": "Secured emergency communication system",
+      "description": "A pre-established emergency communication system is operational and can function independently if primary communication channels are compromised during a cybersecurity incident. Contact lists are maintained and accessible offline. The system is tested during business continuity and incident response exercises. NIS2 Article 21(2)(j) explicitly requires secured emergency communication systems within the entity."
+    },
+    "ctrl-043": {
+      "title": "MFA bypass prevention and monitoring",
+      "description": "Controls are in place to prevent and detect multi-factor authentication bypass attacks including MFA fatigue (push bombing), adversary-in-the-middle token theft, and SIM swap attacks. Push notification rate limiting is enabled. SMS-based MFA is deprecated in favour of phishing-resistant methods such as FIDO2 hardware tokens or passkeys. Monitoring alerts on MFA bypass attempts."
+    }
+  },
+  "scope": {
+    "pageTitle": "Scope & Business Processes",
+    "pageSubtitle": "Define your critical business processes and map applicable NIS2 controls",
+    "viewProcesses": "Processes",
+    "viewSoA": "Statement of Applicability",
+    "addProcess": "Add Process",
+    "addFirstProcess": "Add Your First Process",
+    "statProcesses": "Business Processes",
+    "statCritical": "Critical Processes",
+    "statControls": "Available Controls",
+    "createProcess": "New Business Process",
+    "editProcess": "Edit Business Process",
+    "fieldName": "Process Name",
+    "fieldNamePlaceholder": "e.g. Customer Data Processing",
+    "fieldDescription": "Description",
+    "fieldDescriptionPlaceholder": "What does this process do and why is it important?",
+    "fieldOwner": "Owner",
+    "fieldOwnerPlaceholder": "e.g. CTO, IT Manager",
+    "fieldCritical": "Critical business process",
+    "emptyTitle": "No Business Processes Yet",
+    "emptyDescription": "Start by defining your critical business processes. This helps you scope which NIS2 controls apply to your organisation.",
+    "badgeCritical": "CRITICAL",
+    "owner": "Owner",
+    "controlsLinked": "controls linked",
+    "applicable": "applicable",
+    "controlMapping": "Control Mapping",
+    "applicableYes": "Applicable",
+    "applicableNo": "Not Applicable",
+    "soaTitle": "Statement of Applicability",
+    "soaDescription": "Overview of all controls and their applicability across your business processes.",
+    "soaEmpty": "Add business processes and link controls to generate the Statement of Applicability.",
+    "soaColControl": "Control ID",
+    "soaColTitle": "Title",
+    "soaColApplicable": "Applicable",
+    "soaColProcesses": "Linked Processes",
+    "soaColJustification": "Justification"
   },
   "remediation": {
     "pageTitle": "Remediation Tasks",
@@ -598,7 +833,47 @@
     "dismissButton": "Dismiss",
     "createdLabel": "Created:",
     "assignedLabel": "Assigned:",
-    "dueLabel": "Due:"
+    "dueLabel": "Due:",
+    "closeButton": "Close",
+    "closeTitle": "Close Task",
+    "closeDescription": "Provide a closure note or evidence to close this task.",
+    "closureNotePlaceholder": "Describe how this was resolved...",
+    "closeConfirm": "Close Task",
+    "closureNoteLabel": "Closure",
+    "dismissTitle": "Dismiss Task",
+    "dismissDescription": "Please provide a reason for dismissing this task.",
+    "dismissReasonPlaceholder": "Reason for dismissal...",
+    "dismissConfirm": "Dismiss",
+    "dismissedReasonLabel": "Dismissed",
+    "rescheduleButton": "Reschedule",
+    "rescheduleTitle": "Reschedule Task",
+    "rescheduleWarning": "This task has been rescheduled {{count}} times already.",
+    "newDueDate": "New Due Date",
+    "rescheduleCategory": "Category",
+    "categoryResource": "Resource Constraint",
+    "categoryDependency": "Dependency",
+    "categoryScopeChange": "Scope Change",
+    "categoryOther": "Other",
+    "rescheduleReason": "Reason",
+    "rescheduleReasonPlaceholder": "Why is this being rescheduled?",
+    "rescheduleConfirm": "Reschedule",
+    "createPlanTitle": "Create Remediation Plan",
+    "createPlanButton": "New Plan",
+    "createPlanConfirm": "Create Plan",
+    "planTitleLabel": "Plan Title",
+    "planTitlePlaceholder": "e.g. Network Security Improvement Plan",
+    "treatmentTypeLabel": "Treatment Type",
+    "treatmentMitigate": "Mitigate",
+    "treatmentTransfer": "Transfer",
+    "treatmentAvoid": "Avoid",
+    "treatmentAccept": "Accept",
+    "targetDateLabel": "Target Date",
+    "planDescriptionPlaceholder": "Describe the plan...",
+    "plansHeading": "Treatment Plans",
+    "tasks": "tasks",
+    "autoGenerated": "Auto",
+    "chronicSlip": "Chronic slip",
+    "rescheduled": "{{count}}x rescheduled"
   },
   "reports": {
     "pageTitle": "Compliance Report",
@@ -712,7 +987,74 @@
     "employeeEmailsPlaceholder": "Enter one email per line",
     "deadlineLabel": "Deadline",
     "cancelButton": "Cancel",
-    "createButtonLabel": "Create Campaign"
+    "createButtonLabel": "Create Campaign",
+    "policyTemplateLabel": "Policy Template",
+    "policyTemplatePlaceholder": "Select a policy template...",
+    "policyTemplateNone": "No template (custom)",
+    "policyTemplateRecommended": "Recommended",
+    "policyTemplateOther": "Other templates",
+    "tabs": {
+      "campaigns": "Campaigns",
+      "continuous": "Continuous Compliance",
+      "myTasks": "My Tasks",
+      "history": "History"
+    },
+    "continuous": {
+      "healthScore": "Health Score",
+      "overdue": "Overdue",
+      "totalActive": "Active Tasks",
+      "completedPeriod": "Completed This Period",
+      "article21Coverage": "Article 21(2) Coverage",
+      "article21Subtitle": "Compliance across all 10 NIS2 subsections",
+      "tasks": "tasks",
+      "emptyTitle": "No continuous compliance tasks yet",
+      "emptyDescription": "Set up your baseline to create ~50 recurring compliance tasks covering all NIS2 Article 21(2) subsections.",
+      "setupBaseline": "Set Up Baseline",
+      "refreshBaseline": "Refresh Baseline",
+      "taskList": "Tasks",
+      "allPhases": "All Phases",
+      "allTypes": "All Types",
+      "baseline": "Baseline",
+      "noMatchingTasks": "No tasks match the current filters"
+    },
+    "myTasks": {
+      "overdue": "Overdue",
+      "pending": "Pending",
+      "completed": "Completed",
+      "complete": "Complete",
+      "emptyTitle": "No tasks assigned",
+      "emptyDescription": "Tasks will appear here when baseline is set up or when assigned to you.",
+      "confirmCompletion": "Confirm Completion",
+      "attestationResponse": "Attestation Response (optional)",
+      "responsePlaceholder": "Add notes or comments...",
+      "confirmButton": "I Confirm",
+      "alreadyCompleted": "Already completed for this period"
+    },
+    "history": {
+      "title": "Completion History",
+      "subtitle": "View past completions for each task",
+      "emptyTitle": "No tasks yet",
+      "emptyDescription": "Completion history will appear here once tasks are set up and completed.",
+      "noCompletions": "No completions recorded for this task yet."
+    },
+    "taskTypes": {
+      "attestation": "Attestation",
+      "process_check": "Process Check",
+      "evidence_submission": "Evidence Submission",
+      "policy_ack": "Policy Acknowledgment",
+      "training": "Training"
+    },
+    "frequencies": {
+      "one_off": "One-off",
+      "monthly": "Monthly",
+      "quarterly": "Quarterly",
+      "annual": "Annual"
+    },
+    "status": {
+      "completed": "Completed",
+      "overdue": "Overdue",
+      "pending": "Pending"
+    }
   },
   "humanFactor": {
     "pageTitle": "Human Factor Assessment",
@@ -936,6 +1278,17 @@
     "cloudValidating": "Validating credentials...",
     "cloudValidationFailed": "Credential validation failed. Please check your values.",
     "cloudAdded": "Cloud provider connected successfully!",
+    "cloudAwsRoleDesc": "Deploy a read-only IAM role via CloudFormation — no access keys needed.",
+    "cloudAwsStep2Title": "Complete the setup in AWS",
+    "cloudAwsStep2Line1": "Click 'Create stack' in the CloudFormation console",
+    "cloudAwsStep2Line2": "Wait for CREATE_COMPLETE status",
+    "cloudAwsStep2Line3": "Copy the Role ARN from Outputs and paste below",
+    "cloudAwsOpenConsole": "Open CloudFormation console again",
+    "cloudAwsRoleArn": "Role ARN",
+    "cloudAwsDeployStack": "Deploy Stack in AWS",
+    "cloudAwsVerify": "Verify & Connect",
+    "cloudAzureOAuthDesc": "Sign in with Microsoft and grant read-only access — no secrets to enter.",
+    "cloudAzureConnectViaMicrosoft": "Connect via Microsoft",
     "scoringTitle": "Scoring Preferences",
     "scoringSubtitle": "Choose how the 3 compliance pillars are weighted in your overall score. You can change this later in Settings.",
     "scoringSkip": "Skip — use default weights",
@@ -1282,5 +1635,326 @@
     "acceptInvite": "Accept & Join",
     "welcomeToTeam": "Welcome to the team!",
     "canNowLogin": "You can now sign in with your email and password."
+  },
+  "policyTemplates": {
+    "tpl-isp": {
+      "title": "Information Security Policy",
+      "summary1": "You are responsible for protecting company data, systems, and information assets at all times.",
+      "summary2": "All sensitive data must be classified and handled according to its classification level (Public, Internal, Confidential, Restricted).",
+      "summary3": "Passwords must meet minimum complexity requirements and must never be shared with anyone, including IT staff.",
+      "summary4": "All security incidents, suspected breaches, or policy violations must be reported to the IT security team immediately.",
+      "summary5": "Access to systems and data is granted on a need-to-know, least-privilege basis and is subject to periodic review.",
+      "summary6": "Personal devices used for work must comply with company security standards including encryption and screen lock.",
+      "summary7": "Violations of this policy may result in disciplinary action, up to and including termination, and may also carry legal consequences under NIS2."
+    },
+    "tpl-aup": {
+      "title": "Acceptable Use Policy",
+      "summary1": "Company IT resources (email, internet, devices, cloud services) are provided for business purposes and limited personal use.",
+      "summary2": "You must not install unauthorised software, disable security tools, or attempt to bypass access controls on any company system.",
+      "summary3": "Company email must not be used for personal financial transactions, chain letters, or any communication that could harm the organisation's reputation.",
+      "summary4": "Internet usage is monitored for security purposes. Accessing illegal, offensive, or malicious content is strictly prohibited.",
+      "summary5": "Removable media (USB drives, external hard drives) must not be connected to company systems without prior approval from IT security.",
+      "summary6": "You must lock your workstation whenever you leave it unattended, even for short periods. Screen lock must activate within 5 minutes of inactivity."
+    },
+    "tpl-irp": {
+      "title": "Incident Response Policy",
+      "summary1": "A security incident is any event that compromises or threatens the confidentiality, integrity, or availability of company data or systems.",
+      "summary2": "If you suspect a security incident (phishing, unauthorised access, data leak, malware), report it immediately to the IT security team — do not attempt to investigate yourself.",
+      "summary3": "Incidents are classified by severity: Critical (immediate business impact), High (significant risk), Medium (limited impact), Low (minor issue).",
+      "summary4": "Under NIS2, significant incidents must be reported to national authorities within 24 hours. Delays in internal reporting can prevent timely notification.",
+      "summary5": "Do not delete, modify, or destroy any evidence related to a security incident. Preserve logs, emails, screenshots, and affected systems.",
+      "summary6": "After an incident is resolved, a post-incident review will identify root causes and improvements. Your cooperation in these reviews is mandatory."
+    },
+    "tpl-bcp": {
+      "title": "Business Continuity Policy",
+      "summary1": "Critical business functions have been identified and prioritised. Your role may be classified as critical — check with your manager if you are unsure.",
+      "summary2": "If primary systems become unavailable, follow the documented alternate procedures for your department. These are available on the company intranet.",
+      "summary3": "In a major disruption, communication will be coordinated through the designated emergency communication channels. Ensure your contact details are up to date.",
+      "summary4": "Recovery Time Objectives (RTO) and Recovery Point Objectives (RPO) have been defined for all critical systems. Compliance with these targets is mandatory.",
+      "summary5": "Business continuity and disaster recovery plans are tested at least annually. You may be required to participate in exercises and simulations.",
+      "summary6": "If you identify a situation that could disrupt critical services, report it immediately to your manager and the IT security team."
+    },
+    "tpl-acc": {
+      "title": "Access Control and Identity Management Policy",
+      "summary1": "Access to systems and data is granted based on the principle of least privilege — you receive only the minimum access required for your role.",
+      "summary2": "Multi-factor authentication (MFA) is mandatory for all critical systems. Never share your MFA tokens, codes, or hardware keys with anyone.",
+      "summary3": "When you change roles or responsibilities, your access rights will be reviewed and adjusted. Report any access you no longer need.",
+      "summary4": "All access rights are reviewed quarterly by managers. You may be asked to confirm that your current access levels are still appropriate.",
+      "summary5": "Upon leaving the organisation, all system access will be revoked within 1 hour. Return all company devices and access tokens on your last day.",
+      "summary6": "Sharing credentials, using another person's account, or allowing others to use your account is strictly prohibited.",
+      "summary7": "Privileged access (admin rights) requires additional controls including enhanced logging, time-limited sessions, and background verification."
+    },
+    "tpl-sup": {
+      "title": "Supply Chain and Third-Party Security Policy",
+      "summary1": "All third-party vendors with access to company systems or data must pass a cybersecurity assessment before engagement.",
+      "summary2": "Vendor contracts must include security obligations: breach notification within 24 hours, right to audit, data protection requirements, and security certifications.",
+      "summary3": "Third-party system access requires formal approval, MFA enforcement, and is subject to monitoring and quarterly reviews.",
+      "summary4": "You must not share company credentials, system access, or sensitive data with any third party without prior written approval from IT security.",
+      "summary5": "Maintain an inventory of all third-party tools, integrations, and services used in your department. Report new tools to IT security before deployment.",
+      "summary6": "If a vendor reports a security incident or you suspect a third party has been compromised, report it immediately to the IT security team."
+    },
+    "tpl-enc": {
+      "title": "Data Protection and Encryption Policy",
+      "summary1": "All sensitive data must be encrypted at rest (stored on disk) and in transit (sent over networks) using approved algorithms (AES-256, TLS 1.3).",
+      "summary2": "Data must be classified before storage or transmission: Public, Internal, Confidential, or Restricted. Encryption requirements increase with classification level.",
+      "summary3": "Encryption keys must be stored securely in approved key management systems (KMS/HSM). Never store encryption keys alongside the data they protect.",
+      "summary4": "Sending Confidential or Restricted data via unencrypted email, messaging apps, or file-sharing services is prohibited unless approved encrypted channels are used.",
+      "summary5": "All portable devices (laptops, phones, USB drives) containing company data must have full-disk encryption enabled.",
+      "summary6": "If you discover unencrypted sensitive data, or suspect an encryption failure, report it immediately to the IT security team."
+    },
+    "tpl-hyg": {
+      "title": "Cyber Hygiene and Security Awareness Policy",
+      "summary1": "All employees must complete annual security awareness training. New employees must complete training within their first week.",
+      "summary2": "Keep all software and operating systems up to date. Enable automatic updates where available. Do not delay or defer security patches.",
+      "summary3": "Use the company-approved password manager for all work accounts. Passwords must be unique per service — never reuse passwords across systems.",
+      "summary4": "Be vigilant about phishing: verify sender addresses, do not click suspicious links, and report all suspected phishing emails to IT security.",
+      "summary5": "Follow the clean desk policy: lock away sensitive documents when leaving your desk. Do not leave printed materials containing sensitive information unattended.",
+      "summary6": "Removable media (USB drives, external disks) are restricted. Use only company-approved devices and scan for malware before use.",
+      "summary7": "The organisation conducts regular phishing simulations. Employees who repeatedly fail simulations will receive targeted additional training."
+    }
+  },
+  "quizBank": {
+    "quiz-001": {
+      "question": "What should you do if you receive a suspicious email with an unexpected attachment?",
+      "option1": "Open the attachment to check if it is legitimate",
+      "option2": "Forward it to colleagues to ask their opinion",
+      "option3": "Report it to the IT security team without opening it",
+      "option4": "Delete it and forget about it",
+      "explanation": "Reporting suspicious emails to the IT security team allows them to investigate and protect the entire organisation. Never open unexpected attachments."
+    },
+    "quiz-002": {
+      "question": "What is the safest way to manage your work passwords?",
+      "option1": "Use the same password for all work accounts for convenience",
+      "option2": "Use a unique strong password for each account and store them in an approved password manager",
+      "option3": "Write them on a sticky note and keep it near your screen",
+      "option4": "Share them with your manager so they can access your accounts if needed",
+      "explanation": "Unique strong passwords stored in an approved password manager prevent credential stuffing attacks and limit the impact if one account is compromised."
+    },
+    "quiz-003": {
+      "question": "What is phishing?",
+      "option1": "A type of network performance issue caused by high traffic",
+      "option2": "An attack that tricks people into revealing credentials or clicking malicious links",
+      "option3": "A method for testing firewall configurations",
+      "option4": "A type of antivirus software used for email scanning",
+      "explanation": "Phishing is the most common cyber attack vector. Attackers impersonate trusted entities to steal credentials, install malware, or gain access to systems."
+    },
+    "quiz-004": {
+      "question": "What should you do when leaving your workstation, even briefly?",
+      "option1": "Leave everything open — you will be right back",
+      "option2": "Ask a colleague to watch your screen",
+      "option3": "Lock your screen immediately",
+      "option4": "Turn off the monitor but leave the session open",
+      "explanation": "Locking your screen (Win+L or Cmd+Ctrl+Q) takes seconds and prevents unauthorised access to your session, email, and sensitive data."
+    },
+    "quiz-005": {
+      "question": "Who should you contact first if you suspect a security incident?",
+      "option1": "The IT security team or your direct manager",
+      "option2": "Your personal IT contact outside the company",
+      "option3": "No one — try to fix it yourself first",
+      "option4": "Post about it on social media to warn others",
+      "explanation": "Fast reporting to the IT security team minimises damage. Under NIS2, organisations must report significant incidents to authorities within 24 hours."
+    },
+    "quiz-006": {
+      "question": "Under NIS2, how quickly must a significant security incident be reported to the national authority?",
+      "option1": "Within 7 days",
+      "option2": "Within 24 hours (early warning) and 72 hours (full notification)",
+      "option3": "Within 30 days",
+      "option4": "Only if the incident results in financial loss",
+      "explanation": "NIS2 Article 23 requires an early warning within 24 hours and a detailed notification within 72 hours of becoming aware of a significant incident."
+    },
+    "quiz-007": {
+      "question": "What is the correct order of steps in an incident response process?",
+      "option1": "Recovery, Detection, Containment, Lessons learned",
+      "option2": "Containment, Detection, Recovery, Notification",
+      "option3": "Notification, Recovery, Detection, Containment",
+      "option4": "Detection, Containment, Recovery, Lessons learned",
+      "explanation": "The standard incident response lifecycle is: Detection and analysis, Containment, Eradication and Recovery, then Post-incident review (lessons learned)."
+    },
+    "quiz-008": {
+      "question": "What should be included in an incident report?",
+      "option1": "Only the name of the person who caused the incident",
+      "option2": "A brief one-line summary with no technical detail",
+      "option3": "Date, description, affected systems, actions taken, and impact assessment",
+      "option4": "Only the financial cost of the incident",
+      "explanation": "A thorough incident report enables root cause analysis, supports NIS2 compliance requirements, and helps prevent similar incidents in the future."
+    },
+    "quiz-009": {
+      "question": "What does the principle of least privilege mean?",
+      "option1": "Users should only have the minimum access rights needed for their job function",
+      "option2": "Only senior managers should have access to IT systems",
+      "option3": "Everyone should have full admin access to avoid bottlenecks",
+      "option4": "Access rights should only be reviewed when someone leaves the company",
+      "explanation": "Least privilege limits the blast radius if an account is compromised and reduces the risk of accidental data exposure or modification."
+    },
+    "quiz-010": {
+      "question": "Why is Multi-Factor Authentication (MFA) important?",
+      "option1": "It makes logins faster and more convenient",
+      "option2": "It replaces the need for strong passwords",
+      "option3": "It is only required for IT administrators",
+      "option4": "It adds an extra layer of security beyond passwords, making compromised credentials less useful to attackers",
+      "explanation": "MFA ensures that stolen passwords alone cannot grant access. NIS2 expects organisations to implement strong authentication for critical systems."
+    },
+    "quiz-011": {
+      "question": "What should happen when an employee changes roles within the organisation?",
+      "option1": "Their access rights remain the same since they are still an employee",
+      "option2": "Their access rights should be reviewed and adjusted to match their new role",
+      "option3": "They should receive additional access on top of their existing permissions",
+      "option4": "Access reviews only happen annually, so no action is needed immediately",
+      "explanation": "Role changes require prompt access review to prevent privilege creep. Users should only retain permissions needed for their current responsibilities."
+    },
+    "quiz-012": {
+      "question": "What is the recommended action when an employee leaves the organisation?",
+      "option1": "Disable all accounts and revoke access immediately on the last working day",
+      "option2": "Leave accounts active for 30 days in case they return",
+      "option3": "Only disable email — other systems can wait",
+      "option4": "Transfer their credentials to their replacement",
+      "explanation": "Immediate account deactivation prevents former employees from accessing systems. This includes VPN, cloud services, email, and physical access."
+    },
+    "quiz-013": {
+      "question": "What is the correct way to handle confidential documents you no longer need?",
+      "option1": "Throw them in the regular office bin",
+      "option2": "Leave them on your desk for the cleaning crew",
+      "option3": "Use a cross-cut shredder or secure disposal bin",
+      "option4": "Take them home for personal records",
+      "explanation": "Confidential documents must be securely destroyed to prevent data leakage. Cross-cut shredding or secure disposal services are required under data protection rules."
+    },
+    "quiz-014": {
+      "question": "When is encryption required for data transmission?",
+      "option1": "Only when sending data to external partners",
+      "option2": "Whenever sensitive or confidential data is transmitted, whether internally or externally",
+      "option3": "Only when specifically requested by the recipient",
+      "option4": "Encryption is optional and only recommended for financial data",
+      "explanation": "NIS2 requires appropriate encryption for data in transit. All sensitive data transmissions should use TLS/HTTPS or equivalent encryption."
+    },
+    "quiz-015": {
+      "question": "Which of the following is a good practice for data classification?",
+      "option1": "Classify all data as confidential to be safe",
+      "option2": "Only classify data that is stored in the cloud",
+      "option3": "Let each employee decide how to classify their own data",
+      "option4": "Apply classification levels (Public, Internal, Confidential, Restricted) based on the sensitivity and impact of disclosure",
+      "explanation": "Proper classification ensures that appropriate security controls are applied proportionally. Over-classification wastes resources; under-classification creates risk."
+    },
+    "quiz-016": {
+      "question": "What should you do if you accidentally send sensitive data to the wrong recipient?",
+      "option1": "Notify your manager and the IT security team immediately",
+      "option2": "Send a follow-up email asking them to delete it",
+      "option3": "Ignore it — mistakes happen",
+      "option4": "Wait to see if the recipient notices",
+      "explanation": "Accidental data exposure is a security incident that must be reported. Quick action allows the organisation to assess impact and take corrective measures."
+    },
+    "quiz-017": {
+      "question": "Why is supply chain security important under NIS2?",
+      "option1": "It only matters for manufacturing companies",
+      "option2": "NIS2 does not address supply chain security",
+      "option3": "A breach at a supplier can compromise your organisation, and NIS2 requires managing third-party risks",
+      "option4": "It is important only if suppliers have physical access to your offices",
+      "explanation": "NIS2 Article 21(2)(d) explicitly requires supply chain security measures. High-profile breaches (SolarWinds, Kaseya) have shown that supplier compromises can cascade."
+    },
+    "quiz-018": {
+      "question": "What should you verify before granting a third-party vendor access to your systems?",
+      "option1": "That they have completed a security assessment and have appropriate security controls in place",
+      "option2": "That they are a well-known brand",
+      "option3": "That they have been a vendor for more than a year",
+      "option4": "Nothing special — if management approved them, that is sufficient",
+      "explanation": "Vendor risk assessments should evaluate security certifications (ISO 27001, SOC 2), security policies, incident response capabilities, and data handling practices."
+    },
+    "quiz-019": {
+      "question": "What is a key requirement for contracts with critical ICT service providers under NIS2?",
+      "option1": "They must be renewed annually regardless of performance",
+      "option2": "They must include security obligations, breach notification requirements, and audit rights",
+      "option3": "They must be signed by the national cybersecurity authority",
+      "option4": "They only need standard commercial terms",
+      "explanation": "NIS2 requires that contracts with critical suppliers include specific security provisions, incident notification clauses, and the right to audit their security posture."
+    },
+    "quiz-020": {
+      "question": "How should you handle a situation where a third-party vendor reports a data breach affecting your data?",
+      "option1": "Wait for the vendor to resolve it completely before taking action",
+      "option2": "Terminate the contract immediately",
+      "option3": "Ignore it if the vendor says the impact is minimal",
+      "option4": "Activate your incident response process, assess the impact on your organisation, and notify authorities if required",
+      "explanation": "A vendor breach affecting your data is your incident too. You must assess the impact, invoke your incident response plan, and meet NIS2 notification deadlines."
+    },
+    "quiz-021": {
+      "question": "What is the primary purpose of a Business Continuity Plan (BCP)?",
+      "option1": "To document the company's financial performance",
+      "option2": "To ensure critical business functions can continue during and after a disruption",
+      "option3": "To list all employees and their contact information",
+      "option4": "To satisfy auditors with documentation only",
+      "explanation": "A BCP ensures that essential services remain available during crises. NIS2 Article 21(2)(c) requires business continuity and crisis management measures."
+    },
+    "quiz-022": {
+      "question": "How often should backup restoration be tested?",
+      "option1": "Regularly, at least quarterly, to verify that backups can be successfully restored",
+      "option2": "Only when a real disaster occurs",
+      "option3": "Once when the backup system is first set up",
+      "option4": "Testing is not necessary if backups are automated",
+      "explanation": "Untested backups may fail when needed most. Regular restoration tests verify data integrity and ensure that recovery time objectives can actually be met."
+    },
+    "quiz-023": {
+      "question": "What is a Recovery Time Objective (RTO)?",
+      "option1": "The amount of time it takes to detect an incident",
+      "option2": "The total cost of recovering from a disaster",
+      "option3": "The maximum acceptable time to restore a system or service after a disruption",
+      "option4": "The number of staff needed for disaster recovery",
+      "explanation": "RTO defines how quickly a system must be restored. It drives decisions about backup strategies, redundancy, and disaster recovery infrastructure."
+    },
+    "quiz-024": {
+      "question": "What role does crisis communication play in business continuity?",
+      "option1": "It is only important for the PR department",
+      "option2": "It is optional and only needed for public-facing incidents",
+      "option3": "It is handled automatically by IT systems",
+      "option4": "It ensures stakeholders, employees, and authorities are informed promptly and accurately during a disruption",
+      "explanation": "Clear crisis communication reduces confusion, maintains trust, and meets NIS2 requirements for timely notification of affected parties and authorities."
+    }
+  },
+  "controlCategories": {
+    "riskManagement": "Risk Management",
+    "incidentHandling": "Incident Handling",
+    "businessContinuity": "Business Continuity",
+    "supplyChainSecurity": "Supply Chain Security",
+    "secureDevelopment": "Secure Development",
+    "effectivenessAssessment": "Effectiveness Assessment",
+    "cyberHygieneTraining": "Cyber Hygiene & Training",
+    "cryptographyEncryption": "Cryptography & Encryption",
+    "accessControlAssetMgmt": "Access Control & Asset Management",
+    "mfaSecuredComms": "MFA & Secured Communications",
+    "governance": "Governance",
+    "monitoring": "Monitoring",
+    "securityOperations": "Security Operations",
+    "trainingAwareness": "Training & Awareness",
+    "hrSecurity": "HR Security",
+    "cryptography": "Cryptography"
+  },
+  "evidence": {
+    "title": "Evidence",
+    "libraryTitle": "Evidence Library",
+    "libraryDesc": "Manage all evidence files for your organisation",
+    "upload": "Upload",
+    "uploading": "Uploading...",
+    "dropOrClick": "Drop files here or click to upload",
+    "noFiles": "No evidence files attached",
+    "linkFromLibrary": "Link from library",
+    "libraryEmpty": "No files in your evidence library yet",
+    "download": "Download",
+    "delete": "Delete",
+    "confirmDelete": "Delete this evidence file?",
+    "filename": "Filename",
+    "size": "Size",
+    "uploadedBy": "Uploaded By",
+    "date": "Date",
+    "tags": "Tags",
+    "links": "Links",
+    "searchPlaceholder": "Search by filename, description, or tag...",
+    "showing": "Showing",
+    "of": "of"
+  },
+  "activity": {
+    "title": "Activity Log",
+    "description": "Tamper-evident audit trail of all compliance actions",
+    "verifyChain": "Verify Chain",
+    "chainValid": "Hash chain verified: {{total}} events, all intact.",
+    "chainBroken": "Chain broken at event #{{id}}. {{checked}} of {{total}} checked.",
+    "searchPlaceholder": "Search by user, entity...",
+    "noEvents": "No activity recorded yet"
   }
 }

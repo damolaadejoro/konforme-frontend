@@ -20,6 +20,7 @@ import {
   Loader2
 } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
+import { translateStatus, translateCategory } from '../utils/controlTranslations'
 import { useControlsContext } from '../context/ControlsContext'
 import { Card, Button, InfoTooltip, Tooltip } from '../components/ui'
 import { Control, ControlCategory, ControlSeverity, ControlStatus } from '../types/controls'
@@ -258,10 +259,10 @@ function ControlDrawer({
                     </>
                   )}
                 </div>
-                <h3 className="text-xl font-bold font-syne text-white leading-snug">{control.title}</h3>
+                <h3 className="text-xl font-bold font-syne text-white leading-snug">{t(`controls.${control.id}.title`, { defaultValue: control.title })}</h3>
               </div>
             </div>
-            <p className="text-[14px] text-[#CBD8E8] leading-relaxed">{control.description}</p>
+            <p className="text-[14px] text-[#CBD8E8] leading-relaxed">{t(`controls.${control.id}.description`, { defaultValue: control.description })}</p>
           </div>
 
           {/* Country-Specific Info */}
@@ -349,7 +350,7 @@ function ControlDrawer({
               </div>
             ) : (
               <span className={`inline-flex items-center px-3 py-1.5 rounded-lg border text-sm font-semibold ${statusColors[control.status]}`}>
-                {control.status}
+                {translateStatus(t, control.status)}
               </span>
             )}
 
@@ -1025,7 +1026,7 @@ export default function ControlsLibrary() {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-1">
                     <h3 className="text-[15px] font-semibold text-white group-hover:text-cyan-400 transition-colors truncate">
-                      {control.title}
+                      {t(`controls.${control.id}.title`, { defaultValue: control.title })}
                     </h3>
                     {control.isCountrySpecific && (
                       <span className="text-xs px-2 py-0.5 rounded bg-violet-500/10 text-violet-400 border border-violet-500/20 flex-shrink-0">
@@ -1063,7 +1064,7 @@ export default function ControlsLibrary() {
                   <div className="flex items-center gap-3 text-[13px]">
                     <span className="text-[#94b4d1] font-mono">{control.article}</span>
                     <span className="text-[#4a6580]">•</span>
-                    <span className="text-[#94b4d1]">{control.category}</span>
+                    <span className="text-[#94b4d1]">{translateCategory(t, control.category)}</span>
                     {control.evidence.length > 0 && (
                       <>
                         <span className="text-navy-600">•</span>
@@ -1083,7 +1084,7 @@ export default function ControlsLibrary() {
                   </div>
 
                   <span className={`px-3 py-1.5 rounded-lg border text-xs font-semibold ${statusColors[control.status]}`}>
-                    {control.status}
+                    {translateStatus(t, control.status)}
                   </span>
 
                   <ChevronRight size={16} className="text-[#4a6580] group-hover:text-cyan-400 transition-colors" />

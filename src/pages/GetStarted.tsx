@@ -7,13 +7,23 @@ import {
 } from 'lucide-react'
 import { Card, Button, Input } from '../components/ui'
 import Logo from '../components/layout/Logo'
-import AwsIamPolicy from '../components/AwsIamPolicy'
 import { useAuth } from '../context/AuthContext'
 import {
   getCountries, getCountry, getCountryTiers,
-  setAccountCountry, addAzureCredential, updateScoringConfig,
+  setAccountCountry, updateScoringConfig, updateAccount,
+  initiateAwsRoleConnection, completeAwsRoleConnection, initiateAzureOAuth,
   type CountryListItem, type CountryDetail, type EntityTier,
 } from '../services/api'
+
+const LANGUAGES = [
+  { code: 'en', label: 'English', flag: '\u{1F1EC}\u{1F1E7}' },
+  { code: 'pt', label: 'Português', flag: '\u{1F1F5}\u{1F1F9}' },
+  { code: 'de', label: 'Deutsch', flag: '\u{1F1E9}\u{1F1EA}' },
+  { code: 'fr', label: 'Français', flag: '\u{1F1EB}\u{1F1F7}' },
+  { code: 'es', label: 'Español', flag: '\u{1F1EA}\u{1F1F8}' },
+  { code: 'it', label: 'Italiano', flag: '\u{1F1EE}\u{1F1F9}' },
+  { code: 'nl', label: 'Nederlands', flag: '\u{1F1F3}\u{1F1F1}' },
+]
 
 const SCORING_PRESETS = {
   balanced:        { technical: 0.40, assessment: 0.35, controls: 0.25 },
@@ -53,8 +63,8 @@ function transpositionBadge(status: string, t: (key: string) => string) {
 export default function GetStarted() {
   const [step, setStep] = useState(0)
   const navigate = useNavigate()
-  const { t } = useTranslation()
-  const { accountName, addAwsAccount: authAddAws } = useAuth()
+  const { t, i18n } = useTranslation()
+  const { accountName, setCountry: authSetCountry, setLanguage: authSetLanguage } = useAuth()
 
   // Step 1: Country
   const [countries, setCountries] = useState<CountryListItem[]>([])
@@ -81,6 +91,10 @@ export default function GetStarted() {
   const [cloudSaving, setCloudSaving] = useState(false)
   const [cloudError, setCloudError] = useState<string | null>(null)
   const [cloudConnected, setCloudConnected] = useState<Array<{ provider: string; alias: string }>>([])
+  // AWS role flow
+  const [awsRoleStep, setAwsRoleStep] = useState<'init' | 'pending'>('init')
+  const [awsPendingCredId, setAwsPendingCredId] = useState<string | null>(null)
+  const [awsCfUrl, setAwsCfUrl] = useState<string | null>(null)
 
   // Load countries on mount
   useEffect(() => {
@@ -124,6 +138,7 @@ export default function GetStarted() {
     setSavingCountry(true)
     try {
       await setAccountCountry(selectedCountryCode, selectedTier)
+      authSetCountry(selectedCountryCode)
     } catch { /* continue anyway */ }
     setSavingCountry(false)
     setStep(2)
@@ -161,34 +176,68 @@ export default function GetStarted() {
     }
   }
 
-  const handleCloudConnect = async () => {
-    if (!cloudProvider) return
+  // AWS Role — Step 1: Initiate
+  const handleAwsInitiate = async () => {
+    const accountId = localStorage.getItem('konforme_account_id') || ''
+    if (!accountId) return
     setCloudSaving(true)
     setCloudError(null)
-
     try {
-      if (cloudProvider === 'aws') {
-        const acc = await authAddAws(
-          cloudForm.alias || 'Default',
-          cloudForm.accessKeyId || '',
-          cloudForm.secretAccessKey || '',
-          cloudForm.sessionToken || null,
-          cloudForm.region || 'eu-west-1'
-        )
-        setCloudConnected(prev => [...prev, { provider: 'aws', alias: acc.alias }])
-      } else {
-        await addAzureCredential(
-          localStorage.getItem('konforme_account_id') || '',
-          cloudForm.azureAlias || 'Default',
-          cloudForm.tenantId || '',
-          cloudForm.clientId || '',
-          cloudForm.clientSecret || '',
-          cloudForm.subscriptionId || ''
-        )
-        setCloudConnected(prev => [...prev, { provider: 'azure', alias: cloudForm.azureAlias || 'Default' }])
-      }
+      const result = await initiateAwsRoleConnection(
+        accountId,
+        cloudForm.alias || 'Default',
+        cloudForm.region || 'eu-west-1',
+      )
+      setAwsPendingCredId(result.credential_id)
+      setAwsCfUrl(result.cf_url)
+      setAwsRoleStep('pending')
+      window.open(result.cf_url, '_blank')
+    } catch (err) {
+      setCloudError(err instanceof Error ? err.message : t('getStarted.cloudValidationFailed'))
+    } finally {
+      setCloudSaving(false)
+    }
+  }
+
+  // AWS Role — Step 2: Complete
+  const handleAwsComplete = async () => {
+    const accountId = localStorage.getItem('konforme_account_id') || ''
+    if (!accountId || !awsPendingCredId) return
+    setCloudSaving(true)
+    setCloudError(null)
+    try {
+      await completeAwsRoleConnection(
+        accountId,
+        awsPendingCredId,
+        cloudForm.roleArn || '',
+        cloudForm.region || 'eu-west-1',
+      )
+      setCloudConnected(prev => [...prev, { provider: 'aws', alias: cloudForm.alias || 'Default' }])
       setCloudForm({})
       setCloudProvider(null)
+      setAwsRoleStep('init')
+      setAwsPendingCredId(null)
+      setAwsCfUrl(null)
+    } catch (err) {
+      setCloudError(err instanceof Error ? err.message : t('getStarted.cloudValidationFailed'))
+    } finally {
+      setCloudSaving(false)
+    }
+  }
+
+  // Azure OAuth
+  const handleAzureOAuth = async () => {
+    const accountId = localStorage.getItem('konforme_account_id') || ''
+    if (!accountId) return
+    setCloudSaving(true)
+    setCloudError(null)
+    try {
+      const result = await initiateAzureOAuth(
+        accountId,
+        cloudForm.azureAlias || 'Default',
+        cloudForm.subscriptionId || '',
+      )
+      window.location.href = result.auth_url
     } catch (err) {
       setCloudError(err instanceof Error ? err.message : t('getStarted.cloudValidationFailed'))
     } finally {
@@ -220,9 +269,24 @@ export default function GetStarted() {
   return (
     <div className="min-h-screen bg-navy-950 flex flex-col items-center px-4 py-8">
       <div className="w-full max-w-3xl">
-        {/* Logo */}
-        <div className="flex justify-center mb-6">
+        {/* Logo + Language Selector */}
+        <div className="flex items-center justify-between mb-6">
+          <div className="w-28" />
           <Logo size="lg" showText={false} />
+          <select
+            value={i18n.language}
+            onChange={e => {
+              const code = e.target.value
+              i18n.changeLanguage(code)
+              authSetLanguage(code)
+              updateAccount({ language: code }).catch(() => {})
+            }}
+            className="w-28 px-2 py-1.5 rounded-lg bg-navy-900/60 border border-navy-700 text-xs text-white focus:border-cyan-500/50 focus:outline-none appearance-none cursor-pointer"
+          >
+            {LANGUAGES.map(l => (
+              <option key={l.code} value={l.code}>{l.flag} {l.label}</option>
+            ))}
+          </select>
         </div>
 
         {/* Step progress */}
@@ -636,39 +700,51 @@ export default function GetStarted() {
               </div>
             )}
 
-            {/* AWS form */}
+            {/* AWS — CloudFormation role flow */}
             {cloudProvider === 'aws' && (
               <Card>
-                <h3 className="text-sm font-semibold text-white mb-4">{t('getStarted.cloudAws')}</h3>
-                <AwsIamPolicy />
-                <div className="space-y-3">
-                  <Input
-                    label={t('getStarted.cloudAwsAlias')}
-                    value={cloudForm.alias || ''}
-                    onChange={e => setCloudForm(p => ({ ...p, alias: e.target.value }))}
-                  />
-                  <Input
-                    label={t('getStarted.cloudAwsAccessKey')}
-                    value={cloudForm.accessKeyId || ''}
-                    onChange={e => setCloudForm(p => ({ ...p, accessKeyId: e.target.value }))}
-                  />
-                  <Input
-                    label={t('getStarted.cloudAwsSecretKey')}
-                    type="password"
-                    value={cloudForm.secretAccessKey || ''}
-                    onChange={e => setCloudForm(p => ({ ...p, secretAccessKey: e.target.value }))}
-                  />
-                  <Input
-                    label={t('getStarted.cloudAwsSessionToken')}
-                    value={cloudForm.sessionToken || ''}
-                    onChange={e => setCloudForm(p => ({ ...p, sessionToken: e.target.value }))}
-                  />
-                  <Input
-                    label={t('getStarted.cloudAwsRegion')}
-                    value={cloudForm.region || 'eu-west-1'}
-                    onChange={e => setCloudForm(p => ({ ...p, region: e.target.value }))}
-                  />
-                </div>
+                <h3 className="text-sm font-semibold text-white mb-1">{t('getStarted.cloudAws')}</h3>
+                <p className="text-xs text-navy-400 mb-4">{t('getStarted.cloudAwsRoleDesc')}</p>
+
+                {awsRoleStep === 'init' && (
+                  <div className="space-y-3">
+                    <Input
+                      label={t('getStarted.cloudAwsAlias')}
+                      value={cloudForm.alias || ''}
+                      onChange={e => setCloudForm(p => ({ ...p, alias: e.target.value }))}
+                    />
+                    <Input
+                      label={t('getStarted.cloudAwsRegion')}
+                      value={cloudForm.region || 'eu-west-1'}
+                      onChange={e => setCloudForm(p => ({ ...p, region: e.target.value }))}
+                    />
+                  </div>
+                )}
+
+                {awsRoleStep === 'pending' && (
+                  <>
+                    <div className="p-3 rounded-lg bg-cyan-500/10 border border-cyan-500/20 mb-4">
+                      <p className="text-xs text-cyan-300 font-medium mb-1">{t('getStarted.cloudAwsStep2Title')}</p>
+                      <ol className="text-xs text-navy-300 space-y-1 list-decimal list-inside">
+                        <li>{t('getStarted.cloudAwsStep2Line1')}</li>
+                        <li>{t('getStarted.cloudAwsStep2Line2')}</li>
+                        <li>{t('getStarted.cloudAwsStep2Line3')}</li>
+                      </ol>
+                      {awsCfUrl && (
+                        <a href={awsCfUrl} target="_blank" rel="noopener noreferrer" className="inline-block mt-2 text-xs text-cyan-400 hover:text-cyan-300 underline">
+                          {t('getStarted.cloudAwsOpenConsole')}
+                        </a>
+                      )}
+                    </div>
+                    <Input
+                      label={t('getStarted.cloudAwsRoleArn')}
+                      value={cloudForm.roleArn || ''}
+                      onChange={e => setCloudForm(p => ({ ...p, roleArn: e.target.value }))}
+                      placeholder="arn:aws:iam::123456789012:role/KonformeAuditRole"
+                    />
+                  </>
+                )}
+
                 {cloudError && (
                   <div className="mt-3 p-3 rounded-lg bg-red-500/10 border border-red-500/20 flex items-center gap-2">
                     <AlertCircle size={14} className="text-red-400 shrink-0" />
@@ -676,20 +752,28 @@ export default function GetStarted() {
                   </div>
                 )}
                 <div className="flex gap-2 mt-4">
-                  <Button variant="secondary" size="sm" onClick={() => { setCloudProvider(null); setCloudError(null) }}>
+                  <Button variant="secondary" size="sm" onClick={() => { setCloudProvider(null); setCloudError(null); setAwsRoleStep('init'); setAwsPendingCredId(null); setAwsCfUrl(null) }}>
                     {t('common.cancel')}
                   </Button>
-                  <Button size="sm" onClick={handleCloudConnect} loading={cloudSaving}>
-                    {cloudSaving ? t('getStarted.cloudValidating') : t('getStarted.cloudConnect')}
-                  </Button>
+                  {awsRoleStep === 'init' && (
+                    <Button size="sm" onClick={handleAwsInitiate} loading={cloudSaving}>
+                      {t('getStarted.cloudAwsDeployStack')}
+                    </Button>
+                  )}
+                  {awsRoleStep === 'pending' && (
+                    <Button size="sm" onClick={handleAwsComplete} loading={cloudSaving}>
+                      {t('getStarted.cloudAwsVerify')}
+                    </Button>
+                  )}
                 </div>
               </Card>
             )}
 
-            {/* Azure form */}
+            {/* Azure — OAuth flow */}
             {cloudProvider === 'azure' && (
               <Card>
-                <h3 className="text-sm font-semibold text-white mb-4">{t('getStarted.cloudAzure')}</h3>
+                <h3 className="text-sm font-semibold text-white mb-1">{t('getStarted.cloudAzure')}</h3>
+                <p className="text-xs text-navy-400 mb-4">{t('getStarted.cloudAzureOAuthDesc')}</p>
                 <div className="space-y-3">
                   <Input
                     label={t('getStarted.cloudAzureAlias')}
@@ -697,25 +781,10 @@ export default function GetStarted() {
                     onChange={e => setCloudForm(p => ({ ...p, azureAlias: e.target.value }))}
                   />
                   <Input
-                    label={t('getStarted.cloudAzureTenantId')}
-                    value={cloudForm.tenantId || ''}
-                    onChange={e => setCloudForm(p => ({ ...p, tenantId: e.target.value }))}
-                  />
-                  <Input
-                    label={t('getStarted.cloudAzureClientId')}
-                    value={cloudForm.clientId || ''}
-                    onChange={e => setCloudForm(p => ({ ...p, clientId: e.target.value }))}
-                  />
-                  <Input
-                    label={t('getStarted.cloudAzureClientSecret')}
-                    type="password"
-                    value={cloudForm.clientSecret || ''}
-                    onChange={e => setCloudForm(p => ({ ...p, clientSecret: e.target.value }))}
-                  />
-                  <Input
                     label={t('getStarted.cloudAzureSubscriptionId')}
                     value={cloudForm.subscriptionId || ''}
                     onChange={e => setCloudForm(p => ({ ...p, subscriptionId: e.target.value }))}
+                    placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
                   />
                 </div>
                 {cloudError && (
@@ -728,8 +797,8 @@ export default function GetStarted() {
                   <Button variant="secondary" size="sm" onClick={() => { setCloudProvider(null); setCloudError(null) }}>
                     {t('common.cancel')}
                   </Button>
-                  <Button size="sm" onClick={handleCloudConnect} loading={cloudSaving}>
-                    {cloudSaving ? t('getStarted.cloudValidating') : t('getStarted.cloudConnect')}
+                  <Button size="sm" onClick={handleAzureOAuth} loading={cloudSaving}>
+                    {t('getStarted.cloudAzureConnectViaMicrosoft')}
                   </Button>
                 </div>
               </Card>

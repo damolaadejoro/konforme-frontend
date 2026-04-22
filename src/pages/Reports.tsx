@@ -27,6 +27,7 @@ import {
   Cell,
 } from 'recharts'
 import { Card, Button, SeverityBadge, ProgressBar, InfoTooltip } from '../components/ui'
+import { translateStatus, translateCategory } from '../utils/controlTranslations'
 import { format } from 'date-fns'
 import { useControlsContext } from '../context/ControlsContext'
 import { useAuth } from '../context/AuthContext'
@@ -223,7 +224,7 @@ function ReportPreview({ scanData }: { scanData: ScanResponse }) {
 }
 
 export default function Reports() {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const navigate = useNavigate()
   const [generating, setGenerating] = useState(false)
   const [showPreview, setShowPreview] = useState(true)
@@ -240,7 +241,7 @@ export default function Reports() {
         controls,
         articleAreas,
         criticalGaps,
-      })
+      }, i18n.language)
     } finally {
       setGenerating(false)
     }
@@ -358,7 +359,7 @@ export default function Reports() {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <span className="text-xs font-mono text-[#94b4d1]">{area.article}</span>
-                    <span className="text-sm font-medium text-white">{area.name}</span>
+                    <span className="text-sm font-medium text-white">{translateCategory(t, area.name)}</span>
                   </div>
                   <div className="flex items-center gap-3">
                     <span className="text-xs text-[#94b4d1]">{area.implementedCount}/{area.controlCount}</span>
@@ -413,7 +414,7 @@ export default function Reports() {
                 <span className="text-xs font-mono text-[#94b4d1]">{c.article}</span>
                 <span className={`text-xs px-2 py-0.5 rounded-full ${
                   c.status === 'Not Started' ? 'bg-red-500/10 text-red-400' : 'bg-yellow-500/10 text-yellow-400'
-                }`}>{c.status}</span>
+                }`}>{translateStatus(t, c.status)}</span>
               </div>
             ))}
           </div>

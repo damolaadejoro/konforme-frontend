@@ -15,13 +15,15 @@ import {
   CheckSquare,
 } from 'lucide-react'
 import { useControlsContext } from '../context/ControlsContext'
+import { useScore } from '../context/ScoreContext'
 import { Card, Button, StatCard, ProgressBar, SeverityBadge, InfoTooltip } from '../components/ui'
 import { ControlStatus } from '../types/controls'
 import CompanyNameModal from '../components/ui/CompanyNameModal'
 import { generateComplianceReport } from '../utils/generatePDF'
-import { getCombinedScore, isConnected, getStoredAuth, getCloudCredentials, type CombinedScoreResponse, type CloudCredential } from '../services/api'
+import { isConnected, getCloudCredentials, getStoredAuth, type CombinedScoreResponse, type CloudCredential } from '../services/api'
 import { useAssessment } from '../hooks/useAssessment'
 import { useAuth } from '../context/AuthContext'
+import { translateStatus, translateCategory } from '../utils/controlTranslations'
 import NextStepBanner from '../components/NextStepBanner'
 import CountryInfoCard from '../components/CountryInfoCard'
 import DeadlinesWidget from '../components/DeadlinesWidget'
@@ -41,14 +43,14 @@ const statusBgColors: Record<ControlStatus, string> = {
 }
 
 export default function NIS2Overview() {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const navigate = useNavigate()
   const { complianceScore, articleAreas, criticalGaps, allCriticalGaps, employeeComplianceStats, controls, getCountryOverlay } = useControlsContext()
-  const { projectedScore: assessmentScore, articleScores, answeredCount, totalQuestions, progressPercent: assessmentProgress } = useAssessment()
-  const { awsAccounts, selectedAwsAccountId, selectAwsAccount, country } = useAuth()
+  const { overallScore, technicalScore, assessmentScore: assessmentScoreVal, controlsScore, backendScore, fetchFilteredScore } = useScore()
+  const { answeredCount, totalQuestions } = useAssessment()
+  const { awsAccounts, country } = useAuth()
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isGenerating, setIsGenerating] = useState(false)
-  const [backendScore, setBackendScore] = useState<CombinedScoreResponse | null>(null)
   const [perAccountScores, setPerAccountScores] = useState<Record<string, CombinedScoreResponse>>({})
   const [azureCredentials, setAzureCredentials] = useState<CloudCredential[]>([])
   const [dashboardFilter, setDashboardFilter] = useState<string | null>(null) // null = all accounts
@@ -56,27 +58,16 @@ export default function NIS2Overview() {
   // Stabilize awsAccounts reference to prevent infinite re-render loop
   const awsAccountIds = useMemo(() => awsAccounts.map(a => a.id).join(','), [awsAccounts])
 
-  // Fetch real scores and Azure credentials from backend if connected
+  // Fetch per-account scores and Azure credentials
   useEffect(() => {
     if (isConnected()) {
       const { accountId } = getStoredAuth()
       if (accountId) {
-        // Fetch aggregate score (or filtered by a specific provider)
-        const filterOpts = dashboardFilter
-          ? (awsAccounts.some(a => a.id === dashboardFilter)
-              ? { awsAccountId: dashboardFilter }
-              : { credentialId: dashboardFilter })
-          : undefined
-        getCombinedScore(accountId, filterOpts)
-          .then(setBackendScore)
-          .catch(() => {})
-
         // Fetch per-AWS-account scores
         if (awsAccounts.length > 0) {
           awsAccounts.forEach(acc => {
-            getCombinedScore(accountId, { awsAccountId: acc.id })
-              .then(score => setPerAccountScores(prev => ({ ...prev, [acc.id]: score })))
-              .catch(() => {})
+            fetchFilteredScore({ awsAccountId: acc.id })
+              .then(score => { if (score) setPerAccountScores(prev => ({ ...prev, [acc.id]: score })) })
           })
         }
 
@@ -86,37 +77,14 @@ export default function NIS2Overview() {
             const azureCreds = data.credentials.filter(c => c.provider === 'azure')
             setAzureCredentials(azureCreds)
             azureCreds.forEach(cred => {
-              getCombinedScore(accountId, { credentialId: cred.id })
-                .then(score => setPerAccountScores(prev => ({ ...prev, [cred.id]: score })))
-                .catch(() => {})
+              fetchFilteredScore({ credentialId: cred.id })
+                .then(score => { if (score) setPerAccountScores(prev => ({ ...prev, [cred.id]: score })) })
             })
           })
           .catch(() => {})
       }
     }
-  }, [dashboardFilter, awsAccountIds])
-
-  // Use backend scores when available; fall back to frontend-computed values
-  const technicalScore = backendScore?.technicalScore ?? 0
-  const controlsScore = backendScore?.controlsScore ?? complianceScore.overall
-  const assessmentScoreVal = assessmentScore
-
-  // Prefer backend overall when available (authoritative 3-pillar calculation)
-  let overallScore: number
-  if (backendScore?.overallScore != null) {
-    overallScore = backendScore.overallScore
-  } else {
-    // Frontend fallback: 3-pillar proportional weighting
-    const pillars: { score: number; weight: number }[] = []
-    if (technicalScore > 0) pillars.push({ score: technicalScore, weight: 0.40 })
-    if (assessmentScoreVal > 0) pillars.push({ score: assessmentScoreVal, weight: 0.35 })
-    if (controlsScore > 0) pillars.push({ score: controlsScore, weight: 0.25 })
-
-    const totalWeight = pillars.reduce((s, p) => s + p.weight, 0)
-    overallScore = totalWeight > 0
-      ? Math.round(pillars.reduce((s, p) => s + p.score * p.weight, 0) / totalWeight)
-      : 0
-  }
+  }, [dashboardFilter, awsAccountIds, fetchFilteredScore])
 
   const implementedCount = controls.filter(c => c.status === 'Implemented').length
   const totalControls = controls.length
@@ -135,7 +103,7 @@ export default function NIS2Overview() {
         controls,
         articleAreas,
         criticalGaps
-      })
+      }, i18n.language)
       // Close modal after successful generation
       setTimeout(() => {
         setIsModalOpen(false)
@@ -226,8 +194,8 @@ export default function NIS2Overview() {
                     <span className="text-xs text-[#94b4d1] uppercase tracking-wider font-semibold">{t('overview.assessment')}</span>
                     <InfoTooltip content={t('overview.assessmentTooltip')} size={12} />
                   </div>
-                  <div className="text-3xl font-bold font-syne text-white mb-1">{assessmentScore}%</div>
-                  <ProgressBar value={assessmentScore} color="bg-blue-500" height="h-1.5" />
+                  <div className="text-3xl font-bold font-syne text-white mb-1">{assessmentScoreVal}%</div>
+                  <ProgressBar value={assessmentScoreVal} color="bg-blue-500" height="h-1.5" />
                   <p className="text-[11px] text-[#94b4d1] mt-1">{answeredCount}/{totalQuestions} {t('overview.questions')}</p>
                 </div>
 
@@ -498,10 +466,10 @@ export default function NIS2Overview() {
                           color: color
                         }}
                       >
-                        {area.status}
+                        {translateStatus(t, area.status)}
                       </span>
                     </div>
-                    <h3 className="text-[15px] font-semibold text-white leading-snug">{area.name}</h3>
+                    <h3 className="text-[15px] font-semibold text-white leading-snug">{translateCategory(t, area.name)}</h3>
                   </div>
                 </div>
 
@@ -563,7 +531,7 @@ export default function NIS2Overview() {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-1">
                     <h4 className="text-[15px] font-semibold text-white group-hover:text-cyan-400 transition-colors truncate">
-                      {control.title}
+                      {t(`controls.${control.id}.title`, { defaultValue: control.title })}
                     </h4>
                     {control.isCountrySpecific && (
                       <span className="text-[10px] px-1.5 py-0.5 rounded bg-violet-500/10 text-violet-400 border border-violet-500/20 flex-shrink-0">
@@ -584,13 +552,13 @@ export default function NIS2Overview() {
                   <div className="flex items-center gap-3 text-[13px]">
                     <span className="text-[#94b4d1] font-mono">{control.article}</span>
                     <span className="text-[#4a6580]">•</span>
-                    <span className="text-[#94b4d1]">{control.category}</span>
+                    <span className="text-[#94b4d1]">{translateCategory(t, control.category)}</span>
                     <span className="text-[#4a6580]">•</span>
                     <span
                       className="font-semibold"
                       style={{ color: statusColors[control.status] }}
                     >
-                      {control.status}
+                      {translateStatus(t, control.status)}
                     </span>
                   </div>
                 </div>
@@ -604,6 +572,25 @@ export default function NIS2Overview() {
           </div>
         )}
       </Card>
+
+      {/* Continuous Compliance Widget */}
+      {backendScore?.continuousComplianceRate != null && (
+        <Card className="hover:border-cyan-500/30 cursor-pointer transition-all" onClick={() => navigate('/people-tasks/continuous')}>
+          <div className="flex items-center gap-6 p-2">
+            <div className="p-3 rounded-lg bg-cyan-500/10 border border-cyan-500/20">
+              <Activity size={24} className="text-cyan-400" />
+            </div>
+            <div className="flex-1">
+              <h3 className="text-sm font-semibold text-white mb-1">{t('overview.continuousCompliance', 'Continuous Compliance')}</h3>
+              <div className="flex items-center gap-4">
+                <span className="text-2xl font-bold text-cyan-400">{Math.round(backendScore.continuousComplianceRate * 100)}%</span>
+                <ProgressBar value={backendScore.continuousComplianceRate * 100} color="bg-cyan-500" height="h-2" />
+              </div>
+            </div>
+            <ChevronRight size={18} className="text-navy-400" />
+          </div>
+        </Card>
+      )}
 
       {/* Quick Actions */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">

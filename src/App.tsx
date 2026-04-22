@@ -9,6 +9,10 @@ import ScanLayout from './components/layout/ScanLayout'
 import NIS2Overview from './pages/NIS2Overview'
 import ControlsLibrary from './pages/ControlsLibrary'
 import PeopleTasks from './pages/PeopleTasks'
+import PeopleTasksLayout from './components/layout/PeopleTasksLayout'
+import ContinuousCompliance from './pages/ContinuousCompliance'
+import MyTasks from './pages/MyTasks'
+import TaskHistory from './pages/TaskHistory'
 import Scan from './pages/Scan'
 import Reports from './pages/Reports'
 import Settings from './pages/Settings'
@@ -30,6 +34,9 @@ import VerifyPending from './pages/VerifyPending'
 import AcceptInvite from './pages/AcceptInvite'
 import Team from './pages/Team'
 import TaskComplete from './pages/TaskComplete'
+import Scope from './pages/Scope'
+import EvidenceLibrary from './pages/EvidenceLibrary'
+import ActivityLog from './pages/ActivityLog'
 
 export default function App() {
   return (
@@ -65,6 +72,7 @@ export default function App() {
             </ProtectedRoute>
           }>
             <Route index element={<NIS2Overview />} />
+            <Route path="scope" element={<Scope />} />
             <Route path="controls" element={<ControlsLibrary />} />
 
             {/* Assessment with tabs */}
@@ -86,10 +94,17 @@ export default function App() {
             </Route>
 
             <Route path="remediation" element={<Remediation />} />
-            <Route path="people-tasks" element={<PeopleTasks />} />
+            <Route path="people-tasks" element={<PeopleTasksLayout />}>
+              <Route index element={<PeopleTasks />} />
+              <Route path="continuous" element={<ContinuousCompliance />} />
+              <Route path="my-tasks" element={<MyTasks />} />
+              <Route path="history" element={<TaskHistory />} />
+            </Route>
             <Route path="reports" element={<Reports />} />
             <Route path="settings" element={<Settings />} />
             <Route path="team" element={<Team />} />
+            <Route path="evidence" element={<EvidenceLibrary />} />
+            <Route path="activity" element={<ActivityLog />} />
 
             {/* Backwards-compat redirects */}
             <Route path="human-factor" element={<Navigate to="/assessment/human-factor" replace />} />

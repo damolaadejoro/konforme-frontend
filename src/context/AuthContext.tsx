@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useCallback, useEffect, useMemo, useRef } from 'react'
+import i18n from '../i18n'
 import {
   register as apiRegister,
   login as apiLogin,
@@ -88,6 +89,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           isAuthenticated: true,
           loading: false,
         }))
+        // Sync i18n to user's saved language
+        const userLang = info.language || 'en'
+        if (i18n.language !== userLang) {
+          i18n.changeLanguage(userLang)
+        }
         // Hydrate AWS accounts
         getAccountInfo()
           .then(acctInfo => {
@@ -130,6 +136,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       return
     }
 
+    const loginLang = data.language || 'en'
     setAuth({
       accountId: data.account_id,
       accountName: data.account_name,
@@ -138,12 +145,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       userId: (data as any).user_id || null,
       role: (data as any).role || null,
       country: data.country,
-      language: data.language || 'en',
+      language: loginLang,
       isAuthenticated: true,
       loading: false,
       awsAccounts: [],
       selectedAwsAccountId: null,
     })
+    // Sync i18n to user's saved language
+    if (i18n.language !== loginLang) {
+      i18n.changeLanguage(loginLang)
+    }
     // Hydrate AWS accounts
     try {
       const info = await getAccountInfo()
@@ -187,6 +198,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const logoutFn = useCallback(async () => {
     await apiLogout()
+    i18n.changeLanguage('en')
     window.location.href = '/login'
   }, [])
 

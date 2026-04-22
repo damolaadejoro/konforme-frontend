@@ -1,13 +1,23 @@
 import React, { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { UserPlus, Eye, EyeOff } from 'lucide-react'
+import { UserPlus, Eye, EyeOff, Globe } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { Card, Button, Input } from '../components/ui'
 import Logo from '../components/layout/Logo'
 import CountrySelector from '../components/CountrySelector'
 import { getEUCountries } from '../services/api'
 import type { EUCountryInfo } from '../types/country'
+
+const LANGUAGES = [
+  { code: 'en', label: 'English', flag: '\u{1F1EC}\u{1F1E7}' },
+  { code: 'pt', label: 'Português', flag: '\u{1F1F5}\u{1F1F9}' },
+  { code: 'de', label: 'Deutsch', flag: '\u{1F1E9}\u{1F1EA}' },
+  { code: 'fr', label: 'Français', flag: '\u{1F1EB}\u{1F1F7}' },
+  { code: 'es', label: 'Español', flag: '\u{1F1EA}\u{1F1F8}' },
+  { code: 'it', label: 'Italiano', flag: '\u{1F1EE}\u{1F1F9}' },
+  { code: 'nl', label: 'Nederlands', flag: '\u{1F1F3}\u{1F1F1}' },
+]
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
@@ -19,13 +29,14 @@ interface FieldErrors {
 }
 
 export default function Register() {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const { register } = useAuth()
   const navigate = useNavigate()
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
+  const [language, setLanguage] = useState(i18n.language || 'en')
   const [country, setCountry] = useState<string | null>(null)
   const [countries, setCountries] = useState<EUCountryInfo[]>([])
   const [showPassword, setShowPassword] = useState(false)
@@ -104,7 +115,7 @@ export default function Register() {
 
     setLoading(true)
     try {
-      await register(name, email, password, country)
+      await register(name, email, password, country, language)
       navigate('/verify-pending')
     } catch (err) {
       setServerError(err instanceof Error ? err.message : 'Registration failed. Please try again.')
@@ -158,6 +169,28 @@ export default function Register() {
                 placeholder={t('auth.countryPlaceholder')}
               />
             )}
+
+            <div>
+              <label className="block text-sm font-medium text-[#94b4d1] mb-1.5">
+                <Globe size={14} className="inline mr-1.5 -mt-0.5" />
+                {t('auth.language', 'Language')}
+              </label>
+              <select
+                value={language}
+                onChange={e => {
+                  const code = e.target.value
+                  setLanguage(code)
+                  i18n.changeLanguage(code)
+                }}
+                className="w-full px-3 py-2 rounded-lg bg-navy-900/60 border border-navy-700 text-sm text-white focus:border-cyan-500/50 focus:outline-none transition-colors appearance-none cursor-pointer"
+              >
+                {LANGUAGES.map(l => (
+                  <option key={l.code} value={l.code}>
+                    {l.flag} {l.label}
+                  </option>
+                ))}
+              </select>
+            </div>
 
             <Input
               label={t('auth.email')}

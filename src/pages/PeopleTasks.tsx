@@ -16,6 +16,8 @@ import {
   Plus,
 } from 'lucide-react'
 import { useControlsContext } from '../context/ControlsContext'
+import { policyTemplates } from '../data/policyTemplates'
+import { renderPolicyTemplate } from '../utils/renderPolicyTemplate'
 import { Card, Button, StatCard, ProgressBar, InfoTooltip } from '../components/ui'
 import { EmployeeCampaign, TaskStatus, TaskType } from '../types/controls'
 import { format } from 'date-fns'
@@ -209,6 +211,7 @@ export default function PeopleTasks() {
   const [taskType, setTaskType] = useState<TaskType>('acknowledge')
   const [employeeEmails, setEmployeeEmails] = useState('')
   const [deadline, setDeadline] = useState('')
+  const [selectedTemplateId, setSelectedTemplateId] = useState('')
 
   const peopleControls = controls.filter(c => c.isPeopleControl)
 
@@ -227,12 +230,16 @@ export default function PeopleTasks() {
 
     if (employees.length === 0) return
 
-    createCampaign(selectedControlId, taskType, employees, deadline)
+    const policyContent = selectedTemplateId
+      ? renderPolicyTemplate(selectedTemplateId, t)
+      : undefined
+    createCampaign(selectedControlId, taskType, employees, deadline, policyContent)
     setShowCreateForm(false)
     setSelectedControlId('')
     setTaskType('acknowledge')
     setEmployeeEmails('')
     setDeadline('')
+    setSelectedTemplateId('')
   }
 
   const getCampaignCompletionRate = (c: EmployeeCampaign) =>
@@ -289,13 +296,56 @@ export default function PeopleTasks() {
               <label className="text-xs text-[#94b4d1] mb-1 block">{t('peopleTasks.taskTypeLabel')}</label>
               <select
                 value={taskType}
-                onChange={(e) => setTaskType(e.target.value as TaskType)}
+                onChange={(e) => {
+                  const val = e.target.value as TaskType
+                  setTaskType(val)
+                  if (val !== 'acknowledge') setSelectedTemplateId('')
+                }}
                 className="w-full px-3 py-2 bg-navy-800 border border-navy-700 rounded-lg text-white text-sm focus:outline-none focus:border-cyan-500"
               >
                 <option value="acknowledge">{t('peopleTasks.policyAcknowledgmentType')}</option>
                 <option value="quiz">{t('peopleTasks.trainingQuizType')}</option>
               </select>
             </div>
+
+            {taskType === 'acknowledge' && (
+              <div>
+                <label className="text-xs text-[#94b4d1] mb-1 block">{t('peopleTasks.policyTemplateLabel')}</label>
+                <select
+                  value={selectedTemplateId}
+                  onChange={(e) => setSelectedTemplateId(e.target.value)}
+                  className="w-full px-3 py-2 bg-navy-800 border border-navy-700 rounded-lg text-white text-sm focus:outline-none focus:border-cyan-500"
+                >
+                  <option value="">{t('peopleTasks.policyTemplateNone')}</option>
+                  {(() => {
+                    const recommended = selectedControlId
+                      ? policyTemplates.filter(tpl => tpl.relatedControlIds.includes(selectedControlId))
+                      : []
+                    const other = selectedControlId
+                      ? policyTemplates.filter(tpl => !tpl.relatedControlIds.includes(selectedControlId))
+                      : policyTemplates
+                    return (
+                      <>
+                        {recommended.length > 0 && (
+                          <optgroup label={t('peopleTasks.policyTemplateRecommended')}>
+                            {recommended.map(tpl => (
+                              <option key={tpl.id} value={tpl.id}>{t(tpl.titleKey)}</option>
+                            ))}
+                          </optgroup>
+                        )}
+                        {other.length > 0 && (
+                          <optgroup label={recommended.length > 0 ? t('peopleTasks.policyTemplateOther') : undefined as any}>
+                            {other.map(tpl => (
+                              <option key={tpl.id} value={tpl.id}>{t(tpl.titleKey)}</option>
+                            ))}
+                          </optgroup>
+                        )}
+                      </>
+                    )
+                  })()}
+                </select>
+              </div>
+            )}
 
             <div>
               <label className="text-xs text-[#94b4d1] mb-1 block">{t('peopleTasks.employeeEmailsLabel')}</label>
@@ -335,6 +385,7 @@ export default function PeopleTasks() {
                 setTaskType('acknowledge')
                 setEmployeeEmails('')
                 setDeadline('')
+                setSelectedTemplateId('')
               }}
             >
               {t('peopleTasks.cancelButton')}

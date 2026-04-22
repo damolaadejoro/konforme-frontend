@@ -12,6 +12,9 @@ import {
   UsersRound,
   ClipboardCheck,
   ListTodo,
+  Target,
+  Archive,
+  History,
 } from 'lucide-react'
 import Logo from './Logo'
 import { Tooltip } from '../ui'
@@ -26,6 +29,7 @@ const navGroups = [
   {
     sectionKey: 'nav.sectionAssess',
     items: [
+      { path: '/scope', labelKey: 'nav.scope', icon: Target, tooltip: 'Define critical business processes and map controls for your Statement of Applicability' },
       { path: '/controls', labelKey: 'nav.controls', icon: Shield, tooltip: 'Manage all NIS2 controls — assign owners, track status, upload evidence' },
       { path: '/assessment', labelKey: 'nav.assessment', icon: ClipboardCheck, tooltip: 'Self-assessment questionnaire to evaluate your NIS2 maturity' },
       { path: '/scan', labelKey: 'nav.scan', icon: Radar, tooltip: 'Run automated cloud infrastructure scans (AWS & Azure) against NIS2 requirements' },
@@ -42,6 +46,8 @@ const navGroups = [
     sectionKey: 'nav.sectionReport',
     items: [
       { path: '/reports', labelKey: 'nav.reports', icon: FileText, tooltip: 'Generate compliance audit reports' },
+      { path: '/evidence', labelKey: 'nav.evidence', icon: Archive, tooltip: 'Organisation-wide evidence library for all compliance artifacts' },
+      { path: '/activity', labelKey: 'nav.activity', icon: History, tooltip: 'Tamper-evident audit trail of all compliance actions' },
     ],
   },
 ]

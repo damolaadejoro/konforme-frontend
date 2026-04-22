@@ -3,10 +3,11 @@ import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { Bell, ChevronDown, RefreshCw, Save, Check, LogOut } from 'lucide-react'
 import { formatDistanceToNow } from 'date-fns'
+import { pt, de, fr, es, it, nl, type Locale } from 'date-fns/locale'
 import { useControlsContext } from '../../context/ControlsContext'
 import { useAuth } from '../../context/AuthContext'
-import { useAssessment } from '../../hooks/useAssessment'
-import { getCombinedScore, getStoredAuth, getCloudCredentials, isConnected, type CombinedScoreResponse, type CloudCredential } from '../../services/api'
+import { useScore } from '../../context/ScoreContext'
+import { getStoredAuth, getCloudCredentials, isConnected, type CloudCredential } from '../../services/api'
 import LanguageSwitcher from '../LanguageSwitcher'
 
 function countryFlag(code: string): string {
@@ -14,32 +15,30 @@ function countryFlag(code: string): string {
 }
 
 export default function TopNav() {
-  const { t } = useTranslation()
-  const { lastSaved, complianceScore } = useControlsContext()
+  const { t, i18n } = useTranslation()
+  const { lastSaved } = useControlsContext()
   const { isAuthenticated, accountName, email, country, awsAccounts, selectedAwsAccountId, selectAwsAccount, logout } = useAuth()
-  const { projectedScore: assessmentScore } = useAssessment()
+  const { overallScore: score } = useScore()
   const navigate = useNavigate()
   const [showAccountDropdown, setShowAccountDropdown] = useState(false)
   const [showUserMenu, setShowUserMenu] = useState(false)
   const [showNotifications, setShowNotifications] = useState(false)
-  const [backendScore, setBackendScore] = useState<CombinedScoreResponse | null>(null)
   const [azureCredentials, setAzureCredentials] = useState<CloudCredential[]>([])
   const dropdownRef = useRef<HTMLDivElement>(null)
   const userMenuRef = useRef<HTMLDivElement>(null)
   const notificationsRef = useRef<HTMLDivElement>(null)
 
+  const dateFnsLocales: Record<string, Locale> = { pt, de, fr, es, it, nl }
+  const currentLocale = dateFnsLocales[i18n.language] || undefined
   const lastSavedText = lastSaved
-    ? formatDistanceToNow(new Date(lastSaved), { addSuffix: true })
-    : 'Never'
+    ? formatDistanceToNow(new Date(lastSaved), { addSuffix: true, locale: currentLocale })
+    : t('common.neverSaved')
 
-  // Fetch real score and Azure credentials from backend
+  // Fetch Azure credentials for account switcher
   useEffect(() => {
     if (isConnected()) {
       const { accountId } = getStoredAuth()
       if (accountId) {
-        getCombinedScore(accountId, selectedAwsAccountId ? { awsAccountId: selectedAwsAccountId } : undefined)
-          .then(setBackendScore)
-          .catch(() => {})
         getCloudCredentials(accountId)
           .then(data => setAzureCredentials(data.credentials.filter(c => c.provider === 'azure')))
           .catch(() => {})
@@ -48,23 +47,6 @@ export default function TopNav() {
   }, [selectedAwsAccountId])
 
   const selectedAccount = awsAccounts.find(a => a.id === selectedAwsAccountId)
-
-  // Prefer backend overall score (authoritative 3-pillar); fallback to frontend calculation
-  let score: number
-  if (backendScore?.overallScore != null) {
-    score = backendScore.overallScore
-  } else {
-    const technicalScore = backendScore?.technicalScore ?? 0
-    const controlsScore = complianceScore.overall
-    const pillars: { score: number; weight: number }[] = []
-    if (technicalScore > 0) pillars.push({ score: technicalScore, weight: 0.40 })
-    if (assessmentScore > 0) pillars.push({ score: assessmentScore, weight: 0.35 })
-    if (controlsScore > 0) pillars.push({ score: controlsScore, weight: 0.25 })
-    const totalWeight = pillars.reduce((s, p) => s + p.weight, 0)
-    score = totalWeight > 0
-      ? Math.round(pillars.reduce((s, p) => s + p.score * p.weight, 0) / totalWeight)
-      : 0
-  }
   const displayName = isAuthenticated ? accountName : 'No Account'
   const displayId = selectedAccount?.awsAccountId ?? '—'
   const initials = displayName

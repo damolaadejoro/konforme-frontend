@@ -66,6 +66,7 @@ const AUTH_ONLY_KEYS = new Set([
 export function clearAuth() {
   // Only clear auth keys — preserve user work (controls, assessments, campaigns, etc.)
   AUTH_ONLY_KEYS.forEach(k => localStorage.removeItem(k))
+  localStorage.removeItem('konforme_language')
 }
 
 // --- Refresh token logic ---
@@ -474,6 +475,7 @@ export interface CloudCredential {
   aws_region: string | null
   azure_subscription_id: string | null
   azure_tenant_id: string | null
+  connection_type: string | null
 }
 
 export async function getCloudCredentials(accountId: string): Promise<{ credentials: CloudCredential[] }> {
@@ -506,6 +508,53 @@ export async function removeCloudCredential(accountId: string, credentialId: str
 
 export async function validateCloudCredential(accountId: string, credentialId: string): Promise<{ valid: boolean; provider: string }> {
   return apiFetch(`/cloud-credentials/${accountId}/${credentialId}/validate`, { method: 'POST' })
+}
+
+// --- AWS Role Connection (credential-free) ---
+
+export interface AwsRoleInitiateResponse {
+  credential_id: string
+  external_id: string
+  cf_url: string
+}
+
+export async function initiateAwsRoleConnection(
+  accountId: string,
+  alias: string,
+  region: string = 'eu-west-1',
+): Promise<AwsRoleInitiateResponse> {
+  return apiFetch<AwsRoleInitiateResponse>(
+    `/cloud-credentials/${accountId}/aws/initiate?alias=${encodeURIComponent(alias)}&region=${encodeURIComponent(region)}`,
+  )
+}
+
+export async function completeAwsRoleConnection(
+  accountId: string,
+  credentialId: string,
+  roleArn: string,
+  region: string = 'eu-west-1',
+): Promise<CloudCredential> {
+  return apiFetch<CloudCredential>(`/cloud-credentials/${accountId}/aws/role`, {
+    method: 'POST',
+    body: JSON.stringify({ credential_id: credentialId, role_arn: roleArn, region }),
+  })
+}
+
+// --- Azure OAuth (credential-free) ---
+
+export interface AzureOAuthInitiateResponse {
+  auth_url: string
+  state: string
+}
+
+export async function initiateAzureOAuth(
+  accountId: string,
+  alias: string,
+  subscriptionId: string,
+): Promise<AzureOAuthInitiateResponse> {
+  return apiFetch<AzureOAuthInitiateResponse>(
+    `/cloud-credentials/${accountId}/azure/oauth/initiate?alias=${encodeURIComponent(alias)}&subscription_id=${encodeURIComponent(subscriptionId)}`,
+  )
 }
 
 // --- Provider Scan ---
@@ -845,6 +894,7 @@ export interface CombinedScoreResponse {
   technicalScore: number | null
   humanFactorScore: number | null
   controlsScore: number | null
+  continuousComplianceRate: number | null
   lastTechnicalScan: string | null
   lastHumanAssessment: string | null
   technicalWeight: number
@@ -911,6 +961,23 @@ export interface ReportResponse {
 
 export async function getReport(accountId: string): Promise<ReportResponse> {
   return apiFetch<ReportResponse>(`/report/${accountId}`)
+}
+
+// --- Base Controls (definitions) ---
+
+export interface BaseControlDef {
+  controlId: string
+  title: string
+  description: string
+  article: string
+  articleArea: string
+  category: string
+  severity: string
+  isPeopleControl: boolean
+}
+
+export async function getBaseControls(): Promise<BaseControlDef[]> {
+  return apiFetch<BaseControlDef[]>('/base-controls')
 }
 
 // --- Controls ---
@@ -1053,6 +1120,83 @@ export async function removeMember(userId: string): Promise<void> {
   await apiFetch(`/team/members/${userId}`, { method: 'DELETE' })
 }
 
+// --- Business Processes ---
+
+export interface ProcessControl {
+  id: string
+  controlId: string
+  applicable: boolean
+  justification: string
+  createdAt: string
+}
+
+export interface BusinessProcess {
+  id: string
+  name: string
+  description: string
+  isCritical: boolean
+  owner: string
+  createdAt: string
+  updatedAt: string
+  controls: ProcessControl[]
+}
+
+export interface SoAEntry {
+  controlId: string
+  controlTitle: string
+  applicable: boolean
+  justification: string
+  linkedProcesses: string[]
+}
+
+export async function getBusinessProcesses(accountId: string): Promise<BusinessProcess[]> {
+  return apiFetch<BusinessProcess[]>(`/business-processes/${accountId}`)
+}
+
+export async function createBusinessProcess(
+  accountId: string,
+  data: { name: string; description?: string; is_critical?: boolean; owner?: string }
+): Promise<BusinessProcess> {
+  return apiFetch<BusinessProcess>(`/business-processes/${accountId}`, {
+    method: 'POST',
+    body: JSON.stringify(data),
+  })
+}
+
+export async function getBusinessProcess(accountId: string, processId: string): Promise<BusinessProcess> {
+  return apiFetch<BusinessProcess>(`/business-processes/${accountId}/${processId}`)
+}
+
+export async function updateBusinessProcess(
+  accountId: string,
+  processId: string,
+  data: { name?: string; description?: string; is_critical?: boolean; owner?: string }
+): Promise<BusinessProcess> {
+  return apiFetch<BusinessProcess>(`/business-processes/${accountId}/${processId}`, {
+    method: 'PATCH',
+    body: JSON.stringify(data),
+  })
+}
+
+export async function deleteBusinessProcess(accountId: string, processId: string): Promise<void> {
+  await apiFetch(`/business-processes/${accountId}/${processId}`, { method: 'DELETE' })
+}
+
+export async function linkProcessControls(
+  accountId: string,
+  processId: string,
+  controls: { control_id: string; applicable?: boolean; justification?: string }[]
+): Promise<ProcessControl[]> {
+  return apiFetch<ProcessControl[]>(`/business-processes/${accountId}/${processId}/controls`, {
+    method: 'PUT',
+    body: JSON.stringify({ controls }),
+  })
+}
+
+export async function getStatementOfApplicability(accountId: string): Promise<SoAEntry[]> {
+  return apiFetch<SoAEntry[]>(`/business-processes/${accountId}/soa`)
+}
+
 // --- Campaigns ---
 
 export async function updateCampaignTask(
@@ -1063,5 +1207,528 @@ export async function updateCampaignTask(
   return apiFetch<CampaignTaskApi>(`/campaigns/${accountId}/tasks/${taskId}`, {
     method: 'PATCH',
     body: JSON.stringify(updates),
+  })
+}
+
+// --- Evidence V2 (org-scoped) ---
+
+export interface EvidenceUploadResult {
+  id: string
+  filename: string
+  fileSize: number
+  contentType: string
+  sha256: string
+  description: string
+  tags: string[]
+  uploadedAt: string
+  uploadedBy: string
+  isDuplicate: boolean
+}
+
+export interface EvidenceLinkResult {
+  id: string
+  evidenceId: string
+  entityType: string
+  entityId: string
+  linkType: string
+  linkedAt: string
+}
+
+export interface EvidenceLibraryItem {
+  id: string
+  filename: string
+  fileSize: number
+  contentType: string
+  sha256: string
+  description: string
+  tags: string[]
+  uploadedAt: string
+  uploadedBy: string
+  linkCount: number
+}
+
+export interface EvidenceLibraryResponse {
+  items: EvidenceLibraryItem[]
+  total: number
+  page: number
+  perPage: number
+}
+
+export async function uploadEvidenceV2(
+  accountId: string,
+  file: File,
+  description: string = '',
+  tags: string[] = [],
+): Promise<EvidenceUploadResult> {
+  const formData = new FormData()
+  formData.append('file', file)
+  formData.append('description', description)
+  formData.append('tags', JSON.stringify(tags))
+
+  const headers: Record<string, string> = {}
+  const csrf = getCsrfToken()
+  if (csrf) headers['X-CSRF-Token'] = csrf
+  else throw new Error('Missing CSRF token. Please refresh and try again.')
+
+  let res: Response
+  try {
+    res = await fetch(`${API_BASE}/evidence/${accountId}/upload`, {
+      method: 'POST',
+      headers,
+      body: formData,
+      credentials: 'include',
+    })
+  } catch {
+    throw new Error('Unable to connect to the server.')
+  }
+
+  if (res.status === 401) {
+    const refreshed = await tryRefresh()
+    if (refreshed) {
+      const retryHeaders: Record<string, string> = {}
+      const newCsrf = getCsrfToken()
+      if (newCsrf) retryHeaders['X-CSRF-Token'] = newCsrf
+      try {
+        res = await fetch(`${API_BASE}/evidence/${accountId}/upload`, {
+          method: 'POST',
+          headers: retryHeaders,
+          body: formData,
+          credentials: 'include',
+        })
+      } catch {
+        throw new Error('Unable to connect to the server.')
+      }
+    }
+    if (res.status === 401) {
+      clearAuth()
+      window.location.href = '/login'
+      throw new Error('Session expired. Please log in again.')
+    }
+  }
+
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({ detail: res.statusText }))
+    throw new Error(body.detail || `Upload failed (${res.status})`)
+  }
+  return res.json()
+}
+
+export async function linkEvidence(
+  accountId: string,
+  evidenceId: string,
+  entityType: string,
+  entityId: string,
+  linkType: string = 'primary',
+): Promise<EvidenceLinkResult> {
+  return apiFetch<EvidenceLinkResult>(`/evidence/${accountId}/link`, {
+    method: 'POST',
+    body: JSON.stringify({
+      evidence_id: evidenceId,
+      entity_type: entityType,
+      entity_id: entityId,
+      link_type: linkType,
+    }),
+  })
+}
+
+export async function unlinkEvidence(accountId: string, linkId: string): Promise<void> {
+  await apiFetch(`/evidence/${accountId}/links/${linkId}`, { method: 'DELETE' })
+}
+
+export async function updateEvidenceMetadata(
+  accountId: string,
+  evidenceId: string,
+  data: { description?: string; tags?: string[] },
+): Promise<EvidenceUploadResult> {
+  return apiFetch<EvidenceUploadResult>(`/evidence/${accountId}/${evidenceId}`, {
+    method: 'PATCH',
+    body: JSON.stringify(data),
+  })
+}
+
+export async function searchEvidenceLibrary(
+  accountId: string,
+  opts?: { q?: string; tags?: string[]; page?: number; perPage?: number },
+): Promise<EvidenceLibraryResponse> {
+  const params = new URLSearchParams()
+  if (opts?.q) params.set('q', opts.q)
+  if (opts?.tags) opts.tags.forEach(t => params.append('tag', t))
+  if (opts?.page) params.set('page', String(opts.page))
+  if (opts?.perPage) params.set('per_page', String(opts.perPage))
+  const qs = params.toString()
+  return apiFetch<EvidenceLibraryResponse>(`/evidence/${accountId}/library${qs ? `?${qs}` : ''}`)
+}
+
+export async function getEvidenceForEntity(
+  accountId: string,
+  entityType: string,
+  entityId: string,
+): Promise<EvidenceUploadResult[]> {
+  return apiFetch<EvidenceUploadResult[]>(
+    `/evidence/${accountId}/entity/${encodeURIComponent(entityType)}/${encodeURIComponent(entityId)}`,
+  )
+}
+
+export async function getEvidenceDownloadUrlV2(
+  accountId: string,
+  evidenceId: string,
+): Promise<{ url: string; filename: string }> {
+  return apiFetch(`/evidence/${accountId}/${evidenceId}/download-url`)
+}
+
+export async function deleteEvidenceV2(accountId: string, evidenceId: string): Promise<void> {
+  await apiFetch(`/evidence/${accountId}/file/${evidenceId}`, { method: 'DELETE' })
+}
+
+export async function getEvidenceTags(accountId: string): Promise<string[]> {
+  return apiFetch<string[]>(`/evidence/${accountId}/tags`)
+}
+
+// --- Audit Log ---
+
+export interface AuditLogEntry {
+  id: number
+  eventType: string
+  eventCategory: string
+  actorEmail: string | null
+  actorUserId: string | null
+  entityType: string | null
+  entityId: string | null
+  entityLabel: string | null
+  correlationId: string | null
+  occurredAt: string
+}
+
+export interface AuditLogResponse {
+  items: AuditLogEntry[]
+  total: number
+  page: number
+  perPage: number
+}
+
+export interface ChainVerificationResult {
+  valid: boolean
+  total: number
+  checked: number
+  firstBrokenAt: number | null
+}
+
+export async function getAuditLog(
+  accountId: string,
+  opts?: {
+    eventType?: string
+    entityType?: string
+    entityId?: string
+    actorUserId?: string
+    q?: string
+    dateFrom?: string
+    dateTo?: string
+    page?: number
+    perPage?: number
+  },
+): Promise<AuditLogResponse> {
+  const params = new URLSearchParams()
+  if (opts?.eventType) params.set('event_type', opts.eventType)
+  if (opts?.entityType) params.set('entity_type', opts.entityType)
+  if (opts?.entityId) params.set('entity_id', opts.entityId)
+  if (opts?.actorUserId) params.set('actor_user_id', opts.actorUserId)
+  if (opts?.q) params.set('q', opts.q)
+  if (opts?.dateFrom) params.set('date_from', opts.dateFrom)
+  if (opts?.dateTo) params.set('date_to', opts.dateTo)
+  if (opts?.page) params.set('page', String(opts.page))
+  if (opts?.perPage) params.set('per_page', String(opts.perPage))
+  const qs = params.toString()
+  return apiFetch<AuditLogResponse>(`/audit/${accountId}${qs ? `?${qs}` : ''}`)
+}
+
+export async function verifyAuditChain(accountId: string): Promise<ChainVerificationResult> {
+  return apiFetch<ChainVerificationResult>(`/audit/${accountId}/verify`)
+}
+
+// --- Question-Control Mappings ---
+
+export interface QuestionControlMapping {
+  questionId: string
+  controlId: string
+  weight: number
+}
+
+export async function getQuestionControlMappings(): Promise<QuestionControlMapping[]> {
+  return apiFetch<QuestionControlMapping[]>('/mappings/question-controls')
+}
+
+export async function getControlsForQuestion(questionId: string): Promise<QuestionControlMapping[]> {
+  return apiFetch<QuestionControlMapping[]>(`/mappings/question/${encodeURIComponent(questionId)}/controls`)
+}
+
+export async function getQuestionsForControl(controlId: string): Promise<QuestionControlMapping[]> {
+  return apiFetch<QuestionControlMapping[]>(`/mappings/control/${encodeURIComponent(controlId)}/questions`)
+}
+
+
+// --- Remediation Plans ---
+
+export interface RemediationPlanSummary {
+  id: string
+  title: string
+  treatmentType: string
+  status: string
+  targetDate: string | null
+  createdAt: string
+  taskCount: number
+  completedTaskCount: number
+  milestoneCount: number
+  completedMilestoneCount: number
+}
+
+export interface Milestone {
+  id: string
+  title: string
+  description: string
+  targetDate: string | null
+  completedAt: string | null
+  displayOrder: number
+}
+
+export interface PlanLink {
+  id: string
+  entityType: string
+  entityId: string
+}
+
+export interface RemediationPlan extends RemediationPlanSummary {
+  description: string
+  createdByUserId: string | null
+  approvedByUserId: string | null
+  approvedAt: string | null
+  rejectedByUserId: string | null
+  rejectedAt: string | null
+  rejectionReason: string | null
+  updatedAt: string
+  milestones: Milestone[]
+  links: PlanLink[]
+}
+
+export interface PlanLinkedEntity {
+  entity_type: string
+  entity_id: string
+}
+
+export async function getRemediationPlans(accountId: string, status?: string): Promise<RemediationPlanSummary[]> {
+  const params = status ? `?status=${encodeURIComponent(status)}` : ''
+  return apiFetch<RemediationPlanSummary[]>(`/remediation/${accountId}/plans${params}`)
+}
+
+export async function getRemediationPlan(accountId: string, planId: string): Promise<RemediationPlan> {
+  return apiFetch<RemediationPlan>(`/remediation/${accountId}/plans/${planId}`)
+}
+
+export async function createRemediationPlan(accountId: string, data: {
+  title: string
+  description?: string
+  treatment_type?: string
+  target_date?: string | null
+  linked_entities?: PlanLinkedEntity[]
+  initial_task_ids?: string[]
+}): Promise<RemediationPlan> {
+  return apiFetch<RemediationPlan>(`/remediation/${accountId}/plans`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': getCsrfToken() },
+    body: JSON.stringify(data),
+  })
+}
+
+export async function updateRemediationPlan(accountId: string, planId: string, data: {
+  title?: string
+  description?: string
+  treatment_type?: string
+  target_date?: string | null
+  change_reason?: string
+}): Promise<RemediationPlan> {
+  return apiFetch<RemediationPlan>(`/remediation/${accountId}/plans/${planId}`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': getCsrfToken() },
+    body: JSON.stringify(data),
+  })
+}
+
+export async function approvePlan(accountId: string, planId: string): Promise<RemediationPlan> {
+  return apiFetch<RemediationPlan>(`/remediation/${accountId}/plans/${planId}/approve`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': getCsrfToken() },
+    body: JSON.stringify({ action: 'approve' }),
+  })
+}
+
+export async function rejectPlan(accountId: string, planId: string, reason: string): Promise<RemediationPlan> {
+  return apiFetch<RemediationPlan>(`/remediation/${accountId}/plans/${planId}/approve`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': getCsrfToken() },
+    body: JSON.stringify({ action: 'reject', rejection_reason: reason }),
+  })
+}
+
+export async function addMilestone(accountId: string, planId: string, data: {
+  title: string
+  description?: string
+  target_date?: string | null
+  display_order?: number
+}): Promise<Milestone> {
+  return apiFetch<Milestone>(`/remediation/${accountId}/plans/${planId}/milestones`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': getCsrfToken() },
+    body: JSON.stringify(data),
+  })
+}
+
+export async function updateMilestone(accountId: string, planId: string, milestoneId: string, data: {
+  title?: string
+  description?: string
+  target_date?: string | null
+  display_order?: number
+}): Promise<Milestone> {
+  return apiFetch<Milestone>(`/remediation/${accountId}/plans/${planId}/milestones/${milestoneId}`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': getCsrfToken() },
+    body: JSON.stringify(data),
+  })
+}
+
+export async function completeMilestone(accountId: string, planId: string, milestoneId: string): Promise<Milestone> {
+  return apiFetch<Milestone>(`/remediation/${accountId}/plans/${planId}/milestones/${milestoneId}/complete`, {
+    method: 'POST',
+    headers: { 'X-CSRF-Token': getCsrfToken() },
+  })
+}
+
+// --- Task close / dismiss / reschedule ---
+
+export async function closeTask(accountId: string, taskId: string, data: {
+  closure_evidence_id?: string | null
+  closure_note?: string | null
+  confirm_assessment_update?: boolean
+}): Promise<any> {
+  return apiFetch(`/remediation/${accountId}/${taskId}/close`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': getCsrfToken() },
+    body: JSON.stringify(data),
+  })
+}
+
+export async function dismissTask(accountId: string, taskId: string, reason: string): Promise<any> {
+  return apiFetch(`/remediation/${accountId}/${taskId}/dismiss`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': getCsrfToken() },
+    body: JSON.stringify({ reason }),
+  })
+}
+
+export async function bulkDismissTasks(accountId: string, taskIds: string[], reason: string): Promise<{ dismissed: number }> {
+  return apiFetch<{ dismissed: number }>(`/remediation/${accountId}/bulk-dismiss`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': getCsrfToken() },
+    body: JSON.stringify({ task_ids: taskIds, reason }),
+  })
+}
+
+export async function rescheduleTask(accountId: string, taskId: string, data: {
+  new_due_date: string
+  reason: string
+  category?: string
+}): Promise<any> {
+  return apiFetch(`/remediation/${accountId}/${taskId}/reschedule`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': getCsrfToken() },
+    body: JSON.stringify(data),
+  })
+}
+
+// --- People Tasks (Phase 4: Continuous Compliance) ---
+
+import type { PeopleTaskItem, MyPeopleTask, PeopleTaskCompletion, ISMSCoverage } from '../types/peopleTasks'
+
+export async function fetchPeopleTasks(accountId: string, params?: {
+  active_only?: boolean
+  pdca_phase?: string
+  subsection?: string
+  task_type?: string
+}): Promise<PeopleTaskItem[]> {
+  const qs = new URLSearchParams()
+  if (params?.active_only !== undefined) qs.set('active_only', String(params.active_only))
+  if (params?.pdca_phase) qs.set('pdca_phase', params.pdca_phase)
+  if (params?.subsection) qs.set('subsection', params.subsection)
+  if (params?.task_type) qs.set('task_type', params.task_type)
+  const query = qs.toString() ? `?${qs}` : ''
+  return apiFetch<PeopleTaskItem[]>(`/people-tasks/${accountId}${query}`)
+}
+
+export async function createPeopleTask(accountId: string, data: {
+  title: string
+  description?: string
+  task_type: string
+  pdca_phase: string
+  article_21_subsection: string
+  frequency: string
+  next_due_date?: string
+  assignee_user_id?: string
+  assignee_role?: string
+  related_control_id?: string
+  requires_evidence?: boolean
+  attestation_statement?: string
+}): Promise<PeopleTaskItem> {
+  return apiFetch<PeopleTaskItem>(`/people-tasks/${accountId}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': getCsrfToken() },
+    body: JSON.stringify(data),
+  })
+}
+
+export async function updatePeopleTask(accountId: string, taskId: string, data: Record<string, any>): Promise<PeopleTaskItem> {
+  return apiFetch<PeopleTaskItem>(`/people-tasks/${accountId}/${taskId}`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': getCsrfToken() },
+    body: JSON.stringify(data),
+  })
+}
+
+export async function reschedulePeopleTask(accountId: string, taskId: string, data: {
+  new_due_date: string
+  reason: string
+  category?: string
+}): Promise<PeopleTaskItem> {
+  return apiFetch<PeopleTaskItem>(`/people-tasks/${accountId}/${taskId}/reschedule`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': getCsrfToken() },
+    body: JSON.stringify(data),
+  })
+}
+
+export async function fetchMyPeopleTasks(): Promise<MyPeopleTask[]> {
+  return apiFetch<MyPeopleTask[]>('/people-tasks/my')
+}
+
+export async function completePeopleTask(accountId: string, taskId: string, data: {
+  attestation_response?: string
+  evidence_id?: string
+}): Promise<PeopleTaskCompletion> {
+  return apiFetch<PeopleTaskCompletion>(`/people-tasks/${accountId}/${taskId}/complete`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': getCsrfToken() },
+    body: JSON.stringify(data),
+  })
+}
+
+export async function fetchTaskCompletions(accountId: string, taskId: string): Promise<PeopleTaskCompletion[]> {
+  return apiFetch<PeopleTaskCompletion[]>(`/people-tasks/${accountId}/${taskId}/completions`)
+}
+
+export async function fetchISMSCoverage(accountId: string): Promise<ISMSCoverage> {
+  return apiFetch<ISMSCoverage>(`/isms/coverage/${accountId}`)
+}
+
+export async function instantiateBaseline(accountId: string): Promise<{ created: number; skipped: number; consumed_pending: number }> {
+  return apiFetch<{ created: number; skipped: number; consumed_pending: number }>(`/people-tasks/${accountId}/instantiate-baseline`, {
+    method: 'POST',
+    headers: { 'X-CSRF-Token': getCsrfToken() },
   })
 }
