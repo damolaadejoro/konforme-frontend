@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useRef, useEffect, useCallback } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import {
   Shield,
   Search,
@@ -65,18 +65,20 @@ function ControlDrawer({
 }: {
   control: Control
   onClose: () => void
-  onUpdate: (updates: Partial<Control>) => void
+  onUpdate: (updates: Partial<Control>) => Promise<string | null>
   onAddEvidence: (evidence: any) => void
   onRemoveEvidence: (evidenceId: string) => void
   campaigns: any[]
   countryOverlay: { nationalLegalReference: string | null; nationalSpecification: string | null; goesBeyondEu: boolean; additionalRequirements: string[] } | null
 }) {
   const { t } = useTranslation()
+  const navigate = useNavigate()
   const [isEditingStatus, setIsEditingStatus] = useState(false)
   const [isEditingOwner, setIsEditingOwner] = useState(false)
   const [isEditingDueDate, setIsEditingDueDate] = useState(false)
   const [isEditingNotes, setIsEditingNotes] = useState(false)
   const [isAddingEmployee, setIsAddingEmployee] = useState(false)
+  const [statusError, setStatusError] = useState<string | null>(null)
 
   const [tempStatus, setTempStatus] = useState(control.status)
   const [tempOwner, setTempOwner] = useState(control.owner)
@@ -119,9 +121,15 @@ function ControlDrawer({
     loadEvidence()
   }, [loadEvidence])
 
-  const handleSaveStatus = () => {
-    onUpdate({ status: tempStatus })
-    setIsEditingStatus(false)
+  const handleSaveStatus = async () => {
+    setStatusError(null)
+    const err = await onUpdate({ status: tempStatus })
+    if (err) {
+      setStatusError(err)
+      setTempStatus(control.status)
+    } else {
+      setIsEditingStatus(false)
+    }
   }
 
   const handleSaveOwner = () => {
@@ -325,29 +333,35 @@ function ControlDrawer({
             </div>
 
             {isEditingStatus ? (
-              <div className="flex items-center gap-2">
-                <select
-                  value={tempStatus}
-                  onChange={(e) => setTempStatus(e.target.value as ControlStatus)}
-                  className="flex-1 px-3 py-2 bg-navy-900 border border-navy-700 rounded-lg text-white text-sm focus:outline-none focus:border-cyan-500"
-                >
-                  <option value="Not Started">{t('controls.statusNotStarted')}</option>
-                  <option value="Planned">{t('controls.statusPlanned')}</option>
-                  <option value="Partial">{t('controls.statusPartial')}</option>
-                  <option value="Implemented">{t('controls.statusImplemented')}</option>
-                </select>
-                <Button size="sm" onClick={handleSaveStatus}>{t('controls.saveButton')}</Button>
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  onClick={() => {
-                    setTempStatus(control.status)
-                    setIsEditingStatus(false)
-                  }}
-                >
-                  {t('controls.cancelButton')}
-                </Button>
-              </div>
+              <>
+                <div className="flex items-center gap-2">
+                  <select
+                    value={tempStatus}
+                    onChange={(e) => setTempStatus(e.target.value as ControlStatus)}
+                    className="flex-1 px-3 py-2 bg-navy-900 border border-navy-700 rounded-lg text-white text-sm focus:outline-none focus:border-cyan-500"
+                  >
+                    <option value="Not Started">{t('controls.statusNotStarted')}</option>
+                    <option value="Planned">{t('controls.statusPlanned')}</option>
+                    <option value="Partial">{t('controls.statusPartial')}</option>
+                    <option value="Implemented">{t('controls.statusImplemented')}</option>
+                  </select>
+                  <Button size="sm" onClick={handleSaveStatus}>{t('controls.saveButton')}</Button>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    onClick={() => {
+                      setTempStatus(control.status)
+                      setIsEditingStatus(false)
+                      setStatusError(null)
+                    }}
+                  >
+                    {t('controls.cancelButton')}
+                  </Button>
+                </div>
+                {statusError && (
+                  <p className="text-xs text-amber-400 mt-1">{statusError}</p>
+                )}
+              </>
             ) : (
               <span className={`inline-flex items-center px-3 py-1.5 rounded-lg border text-sm font-semibold ${statusColors[control.status]}`}>
                 {translateStatus(t, control.status)}
@@ -464,12 +478,20 @@ function ControlDrawer({
                 <FileText size={14} />
                 {t('controls.evidenceLabel')} ({displayEvidence ? displayEvidence.length : control.evidence.length})
               </label>
-              {!control.isAutoPopulated && (
-                <Button size="sm" variant="secondary" onClick={handleUploadEvidence} disabled={uploading}>
-                  {uploading ? <Loader2 size={14} className="animate-spin" /> : <Upload size={14} />}
-                  {uploading ? t('controls.uploadingButton') : t('controls.uploadButton')}
-                </Button>
-              )}
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => navigate('/evidence')}
+                  className="text-xs text-cyan-400 hover:text-cyan-300 transition-colors"
+                >
+                  {t('controls.viewInLibrary', 'View Library')}
+                </button>
+                {!control.isAutoPopulated && (
+                  <Button size="sm" variant="secondary" onClick={handleUploadEvidence} disabled={uploading}>
+                    {uploading ? <Loader2 size={14} className="animate-spin" /> : <Upload size={14} />}
+                    {uploading ? t('controls.uploadingButton') : t('controls.uploadButton')}
+                  </Button>
+                )}
+              </div>
             </div>
 
             {evidenceError && (
@@ -1101,9 +1123,12 @@ export default function ControlsLibrary() {
         <ControlDrawer
           control={selectedControl}
           onClose={() => setSelectedControl(null)}
-          onUpdate={(updates) => {
-            updateControl(selectedControl.id, updates)
-            setSelectedControl({ ...selectedControl, ...updates })
+          onUpdate={async (updates) => {
+            const err = await updateControl(selectedControl.id, updates)
+            if (!err) {
+              setSelectedControl({ ...selectedControl, ...updates })
+            }
+            return err
           }}
           onAddEvidence={(evidence) => {
             addEvidence(selectedControl.id, evidence)

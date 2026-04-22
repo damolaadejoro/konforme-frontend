@@ -1234,6 +1234,12 @@ export interface EvidenceLinkResult {
   linkedAt: string
 }
 
+export interface EvidenceLinkedEntity {
+  entityType: string
+  entityId: string
+  entityName: string
+}
+
 export interface EvidenceLibraryItem {
   id: string
   filename: string
@@ -1245,6 +1251,7 @@ export interface EvidenceLibraryItem {
   uploadedAt: string
   uploadedBy: string
   linkCount: number
+  linkedEntities: EvidenceLinkedEntity[]
 }
 
 export interface EvidenceLibraryResponse {
@@ -1652,12 +1659,14 @@ export async function fetchPeopleTasks(accountId: string, params?: {
   pdca_phase?: string
   subsection?: string
   task_type?: string
+  isms_domain?: string
 }): Promise<PeopleTaskItem[]> {
   const qs = new URLSearchParams()
   if (params?.active_only !== undefined) qs.set('active_only', String(params.active_only))
   if (params?.pdca_phase) qs.set('pdca_phase', params.pdca_phase)
   if (params?.subsection) qs.set('subsection', params.subsection)
   if (params?.task_type) qs.set('task_type', params.task_type)
+  if (params?.isms_domain) qs.set('isms_domain', params.isms_domain)
   const query = qs.toString() ? `?${qs}` : ''
   return apiFetch<PeopleTaskItem[]>(`/people-tasks/${accountId}${query}`)
 }
@@ -1726,9 +1735,33 @@ export async function fetchISMSCoverage(accountId: string): Promise<ISMSCoverage
   return apiFetch<ISMSCoverage>(`/isms/coverage/${accountId}`)
 }
 
-export async function instantiateBaseline(accountId: string): Promise<{ created: number; skipped: number; consumed_pending: number }> {
+export interface BaselineTemplate {
+  templateId: string
+  title: string
+  description: string
+  taskType: string
+  pdcaPhase: string
+  article21Subsection: string
+  frequency: string
+  relatedControlId: string | null
+  requiresEvidence: boolean
+  perProcess: boolean
+  ismsDomain: string | null
+}
+
+export async function fetchBaselineTemplates(): Promise<BaselineTemplate[]> {
+  return apiFetch<BaselineTemplate[]>('/people-tasks/baseline-templates')
+}
+
+export async function instantiateBaseline(
+  accountId: string,
+  body?: {
+    excluded_template_ids?: string[]
+    assignments?: { template_id: string; user_id?: string | null; role?: string | null }[]
+  }
+): Promise<{ created: number; skipped: number; consumed_pending: number }> {
   return apiFetch<{ created: number; skipped: number; consumed_pending: number }>(`/people-tasks/${accountId}/instantiate-baseline`, {
     method: 'POST',
-    headers: { 'X-CSRF-Token': getCsrfToken() },
+    body: body ? JSON.stringify(body) : undefined,
   })
 }

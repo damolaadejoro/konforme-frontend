@@ -372,10 +372,13 @@ export function useControls() {
     }
   }
 
-  // Update control — saves to backend immediately
-  const updateControl = useCallback((controlId: string, updates: Partial<Control>) => {
-    setControls(prev =>
-      prev.map(control =>
+  // Update control — saves to backend immediately, returns error message or null
+  const updateControl = useCallback(async (controlId: string, updates: Partial<Control>): Promise<string | null> => {
+    const prev = controls.find(c => c.id === controlId)
+    const prevStatus = prev?.status
+
+    setControls(curr =>
+      curr.map(control =>
         control.id === controlId
           ? { ...control, ...updates, lastUpdated: new Date().toISOString() }
           : control
@@ -391,14 +394,29 @@ export function useControls() {
       if (updates.notes !== undefined) backendUpdates.notes = updates.notes
 
       if (Object.keys(backendUpdates).length > 0) {
-        updateControlState(accountId, controlId, backendUpdates as any).then(() => {
+        try {
+          await updateControlState(accountId, controlId, backendUpdates as any)
           setLastSaved(new Date().toISOString())
-        }).catch(err => {
+          return null
+        } catch (err: any) {
           console.error('Failed to save control to backend', err)
-        })
+          const detail = err?.message || 'Failed to save'
+          // Revert optimistic update on evidence-related errors
+          if (detail.toLowerCase().includes('evidence')) {
+            setControls(curr =>
+              curr.map(control =>
+                control.id === controlId
+                  ? { ...control, status: prevStatus || control.status }
+                  : control
+              )
+            )
+          }
+          return detail
+        }
       }
     }
-  }, [accountId])
+    return null
+  }, [accountId, controls])
 
   // Add evidence to control (evidence is managed by a separate Evidence API, just update local state)
   const addEvidence = useCallback((controlId: string, evidence: Omit<Control['evidence'][0], 'id'>) => {

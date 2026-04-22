@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useNavigate } from 'react-router-dom'
 import { Archive, Search, Upload, Download, Trash2, Loader2, Tag } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import {
@@ -9,6 +10,7 @@ import {
   getEvidenceDownloadUrlV2,
   getEvidenceTags,
   type EvidenceLibraryItem,
+  type EvidenceLinkedEntity,
 } from '../services/api'
 
 function formatFileSize(bytes: number): string {
@@ -17,9 +19,43 @@ function formatFileSize(bytes: number): string {
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
 }
 
+const ENTITY_STYLES: Record<string, { bg: string; text: string; label: string }> = {
+  control:           { bg: 'bg-cyan-500/15',   text: 'text-cyan-400',   label: 'Control' },
+  assessment_answer: { bg: 'bg-amber-500/15',  text: 'text-amber-400',  label: 'Assessment' },
+  remediation_task:  { bg: 'bg-purple-500/15', text: 'text-purple-400', label: 'Remediation' },
+  people_task:       { bg: 'bg-emerald-500/15', text: 'text-emerald-400', label: 'People Task' },
+  process:           { bg: 'bg-blue-500/15',   text: 'text-blue-400',   label: 'Process' },
+}
+
+function getEntityRoute(entity: EvidenceLinkedEntity): string {
+  switch (entity.entityType) {
+    case 'control': return `/controls?open=${entity.entityId}`
+    case 'assessment_answer': return '/assessment'
+    case 'remediation_task': return '/remediation'
+    case 'people_task': return '/people-tasks/continuous'
+    case 'process': return '/scope'
+    default: return ''
+  }
+}
+
+function LinkedEntityBadge({ entity, onClick }: { entity: EvidenceLinkedEntity; onClick: () => void }) {
+  const style = ENTITY_STYLES[entity.entityType] || { bg: 'bg-slate-500/15', text: 'text-slate-400', label: entity.entityType, route: '' }
+  return (
+    <button
+      onClick={onClick}
+      className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs ${style.bg} ${style.text} hover:opacity-80 transition-opacity max-w-[220px] truncate`}
+      title={`${style.label}: ${entity.entityName}`}
+    >
+      <span className="font-medium shrink-0">{style.label}</span>
+      <span className="truncate opacity-80">{entity.entityName}</span>
+    </button>
+  )
+}
+
 export default function EvidenceLibrary() {
   const { t } = useTranslation()
   const { accountId } = useAuth()
+  const navigate = useNavigate()
   const [items, setItems] = useState<EvidenceLibraryItem[]>([])
   const [total, setTotal] = useState(0)
   const [page, setPage] = useState(1)
@@ -192,7 +228,7 @@ export default function EvidenceLibrary() {
                   <th className="px-4 py-3 text-slate-400 font-medium">{t('evidence.uploadedBy', 'Uploaded By')}</th>
                   <th className="px-4 py-3 text-slate-400 font-medium">{t('evidence.date', 'Date')}</th>
                   <th className="px-4 py-3 text-slate-400 font-medium">{t('evidence.tags', 'Tags')}</th>
-                  <th className="px-4 py-3 text-slate-400 font-medium">{t('evidence.links', 'Links')}</th>
+                  <th className="px-4 py-3 text-slate-400 font-medium">{t('evidence.linkedTo', 'Linked To')}</th>
                   <th className="px-4 py-3 text-slate-400 font-medium sr-only">Actions</th>
                 </tr>
               </thead>
@@ -210,7 +246,27 @@ export default function EvidenceLibrary() {
                         ))}
                       </div>
                     </td>
-                    <td className="px-4 py-3 text-slate-400">{item.linkCount}</td>
+                    <td className="px-4 py-3">
+                      {item.linkedEntities && item.linkedEntities.length > 0 ? (
+                        <div className="flex flex-col gap-1">
+                          {item.linkedEntities.slice(0, 2).map((le, i) => (
+                            <LinkedEntityBadge
+                              key={`${le.entityType}-${le.entityId}-${i}`}
+                              entity={le}
+                              onClick={() => {
+                                const route = getEntityRoute(le)
+                                if (route) navigate(route)
+                              }}
+                            />
+                          ))}
+                          {item.linkedEntities.length > 2 && (
+                            <span className="text-xs text-slate-500">+{item.linkedEntities.length - 2} more</span>
+                          )}
+                        </div>
+                      ) : (
+                        <span className="text-xs text-slate-600">—</span>
+                      )}
+                    </td>
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-1">
                         <button

@@ -2,6 +2,15 @@ export type PeopleTaskType = 'attestation' | 'process_check' | 'evidence_submiss
 export type PDCAPhase = 'plan' | 'do' | 'check' | 'act'
 export type TaskFrequency = 'one_off' | 'monthly' | 'quarterly' | 'annual'
 export type PeriodStatus = 'completed' | 'pending' | 'overdue'
+export type IsmsDomain =
+  | 'policy_governance'
+  | 'risk_management'
+  | 'incident_management'
+  | 'business_continuity'
+  | 'supply_chain'
+  | 'access_control'
+  | 'asset_management'
+  | 'audit_training'
 
 export interface PeopleTaskItem {
   id: string
@@ -20,6 +29,7 @@ export interface PeopleTaskItem {
   requiresEvidence: boolean
   attestationStatement: string | null
   baselineTemplateId: string | null
+  ismsDomain: IsmsDomain | null
   active: boolean
   createdAt: string
   updatedAt: string
@@ -39,6 +49,7 @@ export interface MyPeopleTask {
   requiresEvidence: boolean
   attestationStatement: string | null
   relatedControlId: string | null
+  ismsDomain: IsmsDomain | null
   currentPeriodKey: string
   currentPeriodStatus: PeriodStatus
 }
@@ -70,9 +81,18 @@ export interface Article21CoverageItem {
   status: 'healthy' | 'partial' | 'at_risk' | 'not_started'
 }
 
+export interface IsmsDomainCoverageItem {
+  domain: IsmsDomain
+  label: string
+  taskCount: number
+  completionRate: number
+  status: 'healthy' | 'partial' | 'at_risk' | 'not_started'
+}
+
 export interface ISMSCoverage {
   pdcaSummary: Record<PDCAPhase, PDCASummary>
   article21Coverage: Article21CoverageItem[]
+  ismsDomainCoverage: IsmsDomainCoverageItem[]
   overallHealthScore: number
   overdueCount: number
   totalActive: number
