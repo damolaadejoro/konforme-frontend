@@ -176,13 +176,13 @@ export default function Scope() {
   const totalControls = baseControls.length
 
   const viewToggle = (
-    <div className="flex bg-slate-100 rounded-lg p-1 border border-slate-200">
+    <div className="flex bg-muted rounded-lg p-1 border border-border">
       <button
         onClick={() => setViewMode('processes')}
         className={`px-3 py-1.5 text-sm rounded-md transition-all ${
           viewMode === 'processes'
             ? 'bg-cyan-50 text-cyan-600 font-medium'
-            : 'text-slate-500 hover:text-slate-900'
+            : 'text-muted-foreground hover:text-foreground'
         }`}
       >
         {t('scope.viewProcesses')}
@@ -192,7 +192,7 @@ export default function Scope() {
         className={`px-3 py-1.5 text-sm rounded-md transition-all ${
           viewMode === 'soa'
             ? 'bg-cyan-50 text-cyan-600 font-medium'
-            : 'text-slate-500 hover:text-slate-900'
+            : 'text-muted-foreground hover:text-foreground'
         }`}
       >
         {t('scope.viewSoA')}
@@ -233,7 +233,7 @@ export default function Scope() {
       />
       <PageContent>
         {/* Stats */}
-        <div className="grid grid-cols-3 gap-4 mb-6">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
           <MetricCard
             label={t('scope.statProcesses')}
             value={processes.length}
@@ -254,38 +254,38 @@ export default function Scope() {
         {/* Create/Edit Form Modal */}
         {showForm && (
           <Card className="mb-6">
-            <h3 className="text-lg font-semibold text-slate-900 mb-4">
+            <h3 className="text-lg font-semibold text-foreground mb-4">
               {editingId ? t('scope.editProcess') : t('scope.createProcess')}
             </h3>
             <div className="space-y-4">
               <div>
-                <label className="block text-sm text-slate-500 mb-1">{t('scope.fieldName')}</label>
+                <label className="block text-sm text-muted-foreground mb-1">{t('scope.fieldName')}</label>
                 <input
                   type="text"
                   value={formData.name}
                   onChange={e => setFormData(prev => ({ ...prev, name: e.target.value }))}
-                  className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-slate-900 text-sm focus:ring-2 focus:ring-ring focus:outline-none"
+                  className="w-full bg-white border border-border rounded-lg px-3 py-2 text-foreground text-sm focus:ring-2 focus:ring-ring focus:outline-none"
                   placeholder={t('scope.fieldNamePlaceholder')}
                 />
               </div>
               <div>
-                <label className="block text-sm text-slate-500 mb-1">{t('scope.fieldDescription')}</label>
+                <label className="block text-sm text-muted-foreground mb-1">{t('scope.fieldDescription')}</label>
                 <textarea
                   value={formData.description}
                   onChange={e => setFormData(prev => ({ ...prev, description: e.target.value }))}
                   rows={3}
-                  className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-slate-900 text-sm focus:ring-2 focus:ring-ring focus:outline-none"
+                  className="w-full bg-white border border-border rounded-lg px-3 py-2 text-foreground text-sm focus:ring-2 focus:ring-ring focus:outline-none"
                   placeholder={t('scope.fieldDescriptionPlaceholder')}
                 />
               </div>
               <div className="flex items-center gap-6">
                 <div>
-                  <label className="block text-sm text-slate-500 mb-1">{t('scope.fieldOwner')}</label>
+                  <label className="block text-sm text-muted-foreground mb-1">{t('scope.fieldOwner')}</label>
                   <input
                     type="text"
                     value={formData.owner}
                     onChange={e => setFormData(prev => ({ ...prev, owner: e.target.value }))}
-                    className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-slate-900 text-sm focus:ring-2 focus:ring-ring focus:outline-none"
+                    className="bg-white border border-border rounded-lg px-3 py-2 text-foreground text-sm focus:ring-2 focus:ring-ring focus:outline-none"
                     placeholder={t('scope.fieldOwnerPlaceholder')}
                   />
                 </div>
@@ -294,14 +294,14 @@ export default function Scope() {
                     type="checkbox"
                     checked={formData.is_critical}
                     onChange={e => setFormData(prev => ({ ...prev, is_critical: e.target.checked }))}
-                    className="w-4 h-4 rounded border-slate-300 bg-white text-cyan-500 focus:ring-cyan-500"
+                    className="w-4 h-4 rounded border-border bg-white text-cyan-500 focus:ring-cyan-500"
                   />
-                  <span className="text-sm text-slate-500">{t('scope.fieldCritical')}</span>
+                  <span className="text-sm text-muted-foreground">{t('scope.fieldCritical')}</span>
                 </label>
               </div>
               <div className="flex items-center gap-3 pt-2">
                 <Button onClick={handleSubmit}>{editingId ? t('common.save') : t('scope.addProcess')}</Button>
-                <button onClick={() => setShowForm(false)} className="text-sm text-slate-500 hover:text-slate-900">
+                <button onClick={() => setShowForm(false)} className="text-sm text-muted-foreground hover:text-foreground">
                   {t('common.cancel')}
                 </button>
               </div>
@@ -341,11 +341,11 @@ export default function Scope() {
                           {isExpanded ? (
                             <ChevronDown size={18} className="text-cyan-600" />
                           ) : (
-                            <ChevronRight size={18} className="text-slate-400" />
+                            <ChevronRight size={18} className="text-muted-foreground" />
                           )}
                           <div>
                             <div className="flex items-center gap-2">
-                              <h3 className="text-base font-semibold text-slate-900">{bp.name}</h3>
+                              <h3 className="text-base font-semibold text-foreground">{bp.name}</h3>
                               {bp.isCritical && (
                                 <Badge variant="danger" size="sm">
                                   {t('scope.badgeCritical')}
@@ -353,9 +353,9 @@ export default function Scope() {
                               )}
                             </div>
                             {bp.description && (
-                              <p className="text-xs text-slate-400 mt-0.5">{bp.description}</p>
+                              <p className="text-xs text-muted-foreground mt-0.5">{bp.description}</p>
                             )}
-                            <div className="flex items-center gap-4 mt-1 text-xs text-slate-400">
+                            <div className="flex items-center gap-4 mt-1 text-xs text-muted-foreground">
                               {bp.owner && <span>{t('scope.owner')}: {bp.owner}</span>}
                               <span>{linkedCount} {t('scope.controlsLinked')}</span>
                               <span>{applicableCount} {t('scope.applicable')}</span>
@@ -365,13 +365,13 @@ export default function Scope() {
                         <div className="flex items-center gap-2">
                           <button
                             onClick={() => openEditForm(bp)}
-                            className="p-2 text-slate-400 hover:text-cyan-600 transition-colors"
+                            className="p-2 text-muted-foreground hover:text-cyan-600 transition-colors"
                           >
                             <Pencil size={15} />
                           </button>
                           <button
                             onClick={() => handleDelete(bp.id)}
-                            className="p-2 text-slate-400 hover:text-red-600 transition-colors"
+                            className="p-2 text-muted-foreground hover:text-red-600 transition-colors"
                           >
                             <Trash2 size={15} />
                           </button>
@@ -380,8 +380,8 @@ export default function Scope() {
 
                       {/* Expanded: control linking */}
                       {isExpanded && (
-                        <div className="mt-4 pt-4 border-t border-slate-200">
-                          <h4 className="text-sm font-semibold text-slate-500 mb-3">{t('scope.controlMapping')}</h4>
+                        <div className="mt-4 pt-4 border-t border-border">
+                          <h4 className="text-sm font-semibold text-muted-foreground mb-3">{t('scope.controlMapping')}</h4>
                           <div className="space-y-1 max-h-[400px] overflow-y-auto">
                             {baseControls.map(ctrl => {
                               const linked = bp.controls.find(c => c.controlId === ctrl.controlId)
@@ -390,7 +390,7 @@ export default function Scope() {
                                 <div
                                   key={ctrl.controlId}
                                   className={`flex items-center justify-between px-3 py-2 rounded-lg transition-colors ${
-                                    isLinked ? 'bg-cyan-50 border border-cyan-100' : 'hover:bg-slate-50'
+                                    isLinked ? 'bg-cyan-50 border border-cyan-100' : 'hover:bg-muted/70'
                                   }`}
                                 >
                                   <div className="flex items-center gap-3 flex-1 min-w-0">
@@ -398,11 +398,11 @@ export default function Scope() {
                                       type="checkbox"
                                       checked={isLinked}
                                       onChange={() => handleToggleControl(bp.id, ctrl.controlId, isLinked)}
-                                      className="w-4 h-4 rounded border-slate-300 bg-white text-cyan-500 focus:ring-cyan-500 shrink-0"
+                                      className="w-4 h-4 rounded border-border bg-white text-cyan-500 focus:ring-cyan-500 shrink-0"
                                     />
                                     <div className="min-w-0">
-                                      <span className="text-sm text-slate-900">{ctrl.controlId}</span>
-                                      <span className="text-sm text-slate-400 ml-2 truncate">{ctrl.title}</span>
+                                      <span className="text-sm text-foreground">{ctrl.controlId}</span>
+                                      <span className="text-sm text-muted-foreground ml-2 truncate">{ctrl.title}</span>
                                     </div>
                                     <span className={`text-[10px] px-1.5 py-0.5 rounded font-medium shrink-0 ${
                                       ctrl.severity === 'critical' ? 'bg-red-50 text-red-600' :
@@ -418,7 +418,7 @@ export default function Scope() {
                                       className={`text-xs px-2 py-1 rounded transition-colors shrink-0 ml-2 ${
                                         linked!.applicable
                                           ? 'bg-emerald-50 text-emerald-600 border border-emerald-200'
-                                          : 'bg-slate-100 text-slate-400 border border-slate-300'
+                                          : 'bg-muted text-muted-foreground border border-border'
                                       }`}
                                     >
                                       {linked!.applicable ? t('scope.applicableYes') : t('scope.applicableNo')}
@@ -443,12 +443,12 @@ export default function Scope() {
           <Card>
             <div className="flex items-center gap-2 mb-4">
               <FileText size={18} className="text-cyan-600" />
-              <h3 className="text-lg font-semibold text-slate-900">{t('scope.soaTitle')}</h3>
+              <h3 className="text-lg font-semibold text-foreground">{t('scope.soaTitle')}</h3>
             </div>
-            <p className="text-sm text-slate-500 mb-4">{t('scope.soaDescription')}</p>
+            <p className="text-sm text-muted-foreground mb-4">{t('scope.soaDescription')}</p>
 
             {soaEntries.length === 0 ? (
-              <div className="text-center py-8 text-slate-400">{t('scope.soaEmpty')}</div>
+              <div className="text-center py-8 text-muted-foreground">{t('scope.soaEmpty')}</div>
             ) : (
               <div className="overflow-x-auto">
                 <Table>
@@ -483,7 +483,7 @@ export default function Scope() {
                               ))}
                             </div>
                           ) : (
-                            <span className="text-xs text-slate-400">-</span>
+                            <span className="text-xs text-muted-foreground">-</span>
                           )}
                         </TableCell>
                         <TableCell className="text-muted-foreground text-xs">{entry.justification || '-'}</TableCell>

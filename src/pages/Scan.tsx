@@ -321,7 +321,7 @@ function ScanComplete({ onReset, scanResult, provider }: { onReset: () => void; 
 
   return (
     <div className="space-y-4 animate-fade-in">
-      <div className={`p-5 rounded-xl ${scoreClasses.bg}`}>
+      <div className={`p-5 rounded-lg ${scoreClasses.bg}`}>
         <div className="flex items-start justify-between">
           <div>
             <div className="flex items-center gap-2 mb-1">

@@ -12,6 +12,6 @@ export function PageContent({
   className?: string
 }) {
   return (
-    <div className={`flex-1 px-8 py-6 max-w-[1400px] w-full ${className}`}>{children}</div>
+    <div className={`flex-1 px-4 sm:px-8 py-6 max-w-[1400px] w-full ${className}`}>{children}</div>
   )
 }

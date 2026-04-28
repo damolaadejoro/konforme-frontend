@@ -37,7 +37,6 @@ import TaskComplete from './pages/TaskComplete'
 import Scope from './pages/Scope'
 import EvidenceLibrary from './pages/EvidenceLibrary'
 import ActivityLog from './pages/ActivityLog'
-import TypographyGuide from './pages/TypographyGuide'
 import DevComponents from './pages/dev/Components'
 
 export default function App() {
@@ -107,7 +106,6 @@ export default function App() {
             <Route path="team" element={<Team />} />
             <Route path="evidence" element={<EvidenceLibrary />} />
             <Route path="activity" element={<ActivityLog />} />
-            <Route path="dev/typography" element={<TypographyGuide />} />
             <Route path="dev/components" element={<DevComponents />} />
 
             {/* Backwards-compat redirects */}

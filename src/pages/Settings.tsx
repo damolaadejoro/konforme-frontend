@@ -393,7 +393,7 @@ export default function Settings() {
         <Card>
           <div className="flex items-center gap-3 mb-5">
             <User size={16} className="text-cyan-600" />
-            <h2 className="text-base font-semibold text-slate-900">{t('settings.account')}</h2>
+            <h2 className="text-base font-semibold text-foreground">{t('settings.account')}</h2>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <Input label={t('settings.orgName')} value={name} onChange={e => setName(e.target.value)} />
@@ -405,7 +405,7 @@ export default function Settings() {
               label={t('settings.country')}
             />
             <div>
-              <label className="block text-xs font-medium text-slate-500 mb-1.5">{t('settings.language')}</label>
+              <label className="block text-xs font-medium text-muted-foreground mb-1.5">{t('settings.language')}</label>
               <LanguageSwitcher />
             </div>
           </div>
@@ -425,8 +425,8 @@ export default function Settings() {
             <div className="flex items-center gap-3">
               <Cloud size={16} className="text-cyan-600" />
               <div>
-                <h2 className="text-base font-semibold text-slate-900">{t('settings.cloudProviders')}</h2>
-                <p className="text-xs text-slate-500 mt-0.5">{t('settings.cloudProvidersDesc')}</p>
+                <h2 className="text-base font-semibold text-foreground">{t('settings.cloudProviders')}</h2>
+                <p className="text-xs text-muted-foreground mt-0.5">{t('settings.cloudProvidersDesc')}</p>
               </div>
             </div>
             {!addingProvider && !showProviderPicker && (
@@ -443,22 +443,22 @@ export default function Settings() {
             </div>
           ) : awsAccounts.length === 0 && credentials.length === 0 && !showProviderPicker && !addingProvider ? (
             <div className="text-center py-6">
-              <Cloud size={32} className="text-slate-300 mx-auto mb-2" />
-              <p className="text-sm text-slate-500">{t('settings.noProviders')}</p>
-              <p className="text-xs text-slate-400 mt-1">{t('settings.noProvidersDesc')}</p>
+              <Cloud size={32} className="text-muted-foreground/50 mx-auto mb-2" />
+              <p className="text-sm text-muted-foreground">{t('settings.noProviders')}</p>
+              <p className="text-xs text-muted-foreground mt-1">{t('settings.noProvidersDesc')}</p>
             </div>
           ) : (
             <div className="space-y-2">
               {/* Legacy AWS accounts (key-based) */}
               {awsAccounts.map(acct => (
-                <div key={acct.id} className="flex items-center justify-between p-3 rounded-lg bg-slate-50 border border-slate-200">
+                <div key={acct.id} className="flex items-center justify-between p-3 rounded-lg bg-muted border border-border">
                   <div className="flex items-center gap-3">
                     <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-orange-50 border border-orange-200">
                       <Cloud size={14} className="text-orange-400" />
                     </div>
                     <div>
-                      <p className="text-sm font-medium text-slate-900">{acct.alias}</p>
-                      <p className="text-[10px] text-slate-500 uppercase">AWS · {acct.awsRegion}</p>
+                      <p className="text-sm font-medium text-foreground">{acct.alias}</p>
+                      <p className="text-[10px] text-muted-foreground uppercase">AWS · {acct.awsRegion}</p>
                     </div>
                   </div>
                   <button
@@ -474,14 +474,14 @@ export default function Settings() {
                 const isAws = cred.provider === 'aws'
                 const styles = isAws ? providerStyles.aws : providerStyles.azure
                 return (
-                  <div key={cred.id} className="flex items-center justify-between p-3 rounded-lg bg-slate-50 border border-slate-200">
+                  <div key={cred.id} className="flex items-center justify-between p-3 rounded-lg bg-muted border border-border">
                     <div className="flex items-center gap-3">
                       <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${styles.bg} ${styles.border}`}>
                         <Cloud size={14} className={styles.text} />
                       </div>
                       <div>
-                        <p className="text-sm font-medium text-slate-900">{cred.alias}</p>
-                        <p className="text-[10px] text-slate-500 uppercase">
+                        <p className="text-sm font-medium text-foreground">{cred.alias}</p>
+                        <p className="text-[10px] text-muted-foreground uppercase">
                           {cred.provider.toUpperCase()}
                           {cred.connection_type === 'role' && ' · IAM Role'}
                           {cred.connection_type === 'oauth' && ' · OAuth'}
@@ -500,7 +500,7 @@ export default function Settings() {
                       <button
                         onClick={() => handleValidate(cred.id)}
                         disabled={validatingId === cred.id}
-                        className="text-xs text-slate-500 hover:text-slate-900 transition-colors disabled:opacity-50"
+                        className="text-xs text-muted-foreground hover:text-foreground transition-colors disabled:opacity-50"
                       >
                         {validatingId === cred.id ? <Loader2 size={12} className="animate-spin" /> : t('settings.validateProvider')}
                       </button>
@@ -519,28 +519,28 @@ export default function Settings() {
 
           {/* Provider picker */}
           {showProviderPicker && !addingProvider && (
-            <div className="mt-4 p-4 rounded-lg bg-slate-50 border border-slate-200">
-              <h3 className="text-sm font-semibold text-slate-900 mb-3">{t('settings.selectProvider')}</h3>
+            <div className="mt-4 p-4 rounded-lg bg-muted border border-border">
+              <h3 className="text-sm font-semibold text-foreground mb-3">{t('settings.selectProvider')}</h3>
               <div className="grid grid-cols-2 gap-3">
                 <button
                   onClick={() => { setAddingProvider('aws'); setShowProviderPicker(false) }}
-                  className="p-4 rounded-lg border border-slate-200 hover:border-orange-500/40 bg-slate-50 hover:bg-orange-500/5 transition-all text-left"
+                  className="p-4 rounded-lg border border-border hover:border-orange-500/40 bg-muted hover:bg-orange-500/5 transition-all text-left"
                 >
                   <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-orange-50 border border-orange-200 mb-2">
                     <Cloud size={14} className="text-orange-400" />
                   </div>
-                  <p className="text-sm font-medium text-slate-900">AWS</p>
-                  <p className="text-[10px] text-slate-500 mt-0.5">Amazon Web Services</p>
+                  <p className="text-sm font-medium text-foreground">AWS</p>
+                  <p className="text-[10px] text-muted-foreground mt-0.5">Amazon Web Services</p>
                 </button>
                 <button
                   onClick={() => { setAddingProvider('azure'); setShowProviderPicker(false) }}
-                  className="p-4 rounded-lg border border-slate-200 hover:border-blue-500/40 bg-slate-50 hover:bg-blue-500/5 transition-all text-left"
+                  className="p-4 rounded-lg border border-border hover:border-blue-500/40 bg-muted hover:bg-blue-500/5 transition-all text-left"
                 >
                   <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-blue-50 border border-blue-200 mb-2">
                     <Cloud size={14} className="text-blue-400" />
                   </div>
-                  <p className="text-sm font-medium text-slate-900">Azure</p>
-                  <p className="text-[10px] text-slate-500 mt-0.5">Microsoft Azure</p>
+                  <p className="text-sm font-medium text-foreground">Azure</p>
+                  <p className="text-[10px] text-muted-foreground mt-0.5">Microsoft Azure</p>
                 </button>
               </div>
               <div className="mt-3">
@@ -553,9 +553,9 @@ export default function Settings() {
 
           {/* Add AWS — CloudFormation role flow */}
           {addingProvider === 'aws' && !awsLegacyMode && (
-            <div className="mt-4 p-4 rounded-lg bg-slate-50 border border-slate-200">
-              <h3 className="text-sm font-semibold text-slate-900 mb-1">{t('settings.awsConnectTitle')}</h3>
-              <p className="text-xs text-slate-500 mb-4">{t('settings.awsConnectDesc')}</p>
+            <div className="mt-4 p-4 rounded-lg bg-muted border border-border">
+              <h3 className="text-sm font-semibold text-foreground mb-1">{t('settings.awsConnectTitle')}</h3>
+              <p className="text-xs text-muted-foreground mb-4">{t('settings.awsConnectDesc')}</p>
 
               {awsRoleStep === 'init' && (
                 <>
@@ -576,7 +576,7 @@ export default function Settings() {
                   <div className="flex items-center justify-between mt-4">
                     <button
                       onClick={() => setAwsLegacyMode(true)}
-                      className="text-[11px] text-slate-400 hover:text-slate-500 transition-colors"
+                      className="text-[11px] text-muted-foreground hover:text-foreground transition-colors"
                     >
                       {t('settings.useLegacyKeys')}
                     </button>
@@ -596,7 +596,7 @@ export default function Settings() {
                 <>
                   <div className="p-3 rounded-lg bg-cyan-50 border border-cyan-200 mb-4">
                     <p className="text-xs text-cyan-700 font-medium mb-1">{t('settings.awsStep2Title')}</p>
-                    <ol className="text-xs text-slate-500 space-y-1 list-decimal list-inside">
+                    <ol className="text-xs text-muted-foreground space-y-1 list-decimal list-inside">
                       <li>{t('settings.awsStep2Line1')}</li>
                       <li>{t('settings.awsStep2Line2')}</li>
                       <li>{t('settings.awsStep2Line3')}</li>
@@ -635,8 +635,8 @@ export default function Settings() {
 
           {/* Add AWS — Legacy keys fallback */}
           {addingProvider === 'aws' && awsLegacyMode && (
-            <div className="mt-4 p-4 rounded-lg bg-slate-50 border border-slate-200">
-              <h3 className="text-sm font-semibold text-slate-900 mb-3">{t('settings.awsLegacyTitle')}</h3>
+            <div className="mt-4 p-4 rounded-lg bg-muted border border-border">
+              <h3 className="text-sm font-semibold text-foreground mb-3">{t('settings.awsLegacyTitle')}</h3>
               <AwsIamPolicy />
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <Input label={t('settings.awsAlias')} value={awsForm.alias || ''} onChange={e => setAwsForm(p => ({ ...p, alias: e.target.value }))} placeholder="e.g. Production" />
@@ -665,9 +665,9 @@ export default function Settings() {
 
           {/* Add Azure — OAuth flow */}
           {addingProvider === 'azure' && !azureLegacyMode && (
-            <div className="mt-4 p-4 rounded-lg bg-slate-50 border border-slate-200">
-              <h3 className="text-sm font-semibold text-slate-900 mb-1">{t('settings.azureConnectTitle')}</h3>
-              <p className="text-xs text-slate-500 mb-4">{t('settings.azureConnectDesc')}</p>
+            <div className="mt-4 p-4 rounded-lg bg-muted border border-border">
+              <h3 className="text-sm font-semibold text-foreground mb-1">{t('settings.azureConnectTitle')}</h3>
+              <p className="text-xs text-muted-foreground mb-4">{t('settings.azureConnectDesc')}</p>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <Input
                   label={t('settings.azureAlias')}
@@ -691,7 +691,7 @@ export default function Settings() {
               <div className="flex items-center justify-between mt-4">
                 <button
                   onClick={() => setAzureLegacyMode(true)}
-                  className="text-[11px] text-slate-400 hover:text-slate-500 transition-colors"
+                  className="text-[11px] text-muted-foreground hover:text-foreground transition-colors"
                 >
                   {t('settings.useLegacyCredentials')}
                 </button>
@@ -709,8 +709,8 @@ export default function Settings() {
 
           {/* Add Azure — Legacy service principal fallback */}
           {addingProvider === 'azure' && azureLegacyMode && (
-            <div className="mt-4 p-4 rounded-lg bg-slate-50 border border-slate-200">
-              <h3 className="text-sm font-semibold text-slate-900 mb-3">{t('settings.azureLegacyTitle')}</h3>
+            <div className="mt-4 p-4 rounded-lg bg-muted border border-border">
+              <h3 className="text-sm font-semibold text-foreground mb-3">{t('settings.azureLegacyTitle')}</h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <Input label={t('settings.azureAlias')} value={azureForm.alias || ''} onChange={e => setAzureForm(p => ({ ...p, alias: e.target.value }))} />
                 <Input label="Tenant ID" value={azureForm.tenantId || ''} onChange={e => setAzureForm(p => ({ ...p, tenantId: e.target.value }))} />
@@ -741,14 +741,14 @@ export default function Settings() {
         <Card>
           <div className="flex items-center gap-3 mb-5">
             <Bell size={16} className="text-cyan-600" />
-            <h2 className="text-base font-semibold text-slate-900">{t('settings.notifications')}</h2>
+            <h2 className="text-base font-semibold text-foreground">{t('settings.notifications')}</h2>
           </div>
           <div className="space-y-3">
             {notificationItems.map(item => (
-              <div key={item.key} className="flex items-center justify-between p-3 rounded-lg bg-slate-50 border border-slate-200">
+              <div key={item.key} className="flex items-center justify-between p-3 rounded-lg bg-muted border border-border">
                 <div>
-                  <p className="text-sm font-medium text-slate-900">{item.label}</p>
-                  <p className="text-xs text-slate-500 mt-0.5">{item.desc}</p>
+                  <p className="text-sm font-medium text-foreground">{item.label}</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">{item.desc}</p>
                 </div>
                 <Toggle
                   enabled={notifications[item.key]}
@@ -763,7 +763,7 @@ export default function Settings() {
         <Card>
           <div className="flex items-center gap-3 mb-5">
             <Shield size={16} className="text-cyan-600" />
-            <h2 className="text-base font-semibold text-slate-900">{t('settings.compliance')}</h2>
+            <h2 className="text-base font-semibold text-foreground">{t('settings.compliance')}</h2>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <Select
@@ -790,9 +790,9 @@ export default function Settings() {
         <Card>
           <div className="flex items-center gap-3 mb-2">
             <Scale size={16} className="text-cyan-600" />
-            <h2 className="text-base font-semibold text-slate-900">{t('settings.scoringConfig')}</h2>
+            <h2 className="text-base font-semibold text-foreground">{t('settings.scoringConfig')}</h2>
           </div>
-          <p className="text-xs text-slate-500 mb-4">{t('settings.scoringConfigDesc')}</p>
+          <p className="text-xs text-muted-foreground mb-4">{t('settings.scoringConfigDesc')}</p>
 
           {/* Preset buttons */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-4">
@@ -811,13 +811,13 @@ export default function Settings() {
                   className={`p-2.5 rounded-lg border text-left transition-all ${
                     isActive
                       ? styles.active
-                      : 'border-slate-200 bg-slate-50 hover:border-slate-300'
+                      : 'border-border bg-muted hover:border-border'
                   }`}
                 >
-                  <p className="text-xs font-semibold text-slate-900 mb-0.5">
+                  <p className="text-xs font-semibold text-foreground mb-0.5">
                     {t(`settings.preset${key.split('-').map(w => w[0].toUpperCase() + w.slice(1)).join('')}` as any)}
                   </p>
-                  <p className="text-[10px] text-slate-500 leading-tight">
+                  <p className="text-[10px] text-muted-foreground leading-tight">
                     {t(`settings.preset${key.split('-').map(w => w[0].toUpperCase() + w.slice(1)).join('')}Desc` as any)}
                   </p>
                 </button>
@@ -831,11 +831,11 @@ export default function Settings() {
             className={`w-full p-2.5 rounded-lg border text-left transition-all mb-4 ${
               scoringPreset === 'custom'
                 ? presetStyles.orange.active
-                : 'border-slate-200 bg-slate-50 hover:border-slate-300'
+                : 'border-border bg-muted hover:border-border'
             }`}
           >
-            <p className="text-xs font-semibold text-slate-900">{t('settings.presetCustom')}</p>
-            <p className="text-[10px] text-slate-500">{t('settings.presetCustomDesc')}</p>
+            <p className="text-xs font-semibold text-foreground">{t('settings.presetCustom')}</p>
+            <p className="text-[10px] text-muted-foreground">{t('settings.presetCustomDesc')}</p>
           </button>
 
           {/* Weight sliders */}
@@ -847,7 +847,7 @@ export default function Settings() {
               return (
                 <div key={key}>
                   <div className="flex items-center justify-between mb-1">
-                    <label className="text-xs text-slate-500">{t(`settings.${key}Weight`)}</label>
+                    <label className="text-xs text-muted-foreground">{t(`settings.${key}Weight`)}</label>
                     <span className={`text-sm font-semibold ${styles.text}`}>{scoringWeights[key]}%</span>
                   </div>
                   <input
@@ -857,7 +857,7 @@ export default function Settings() {
                     step={5}
                     value={scoringWeights[key]}
                     onChange={e => adjustScoringWeight(key, parseInt(e.target.value))}
-                    className="w-full h-1.5 rounded-full appearance-none bg-slate-200 accent-cyan-500"
+                    className="w-full h-1.5 rounded-full appearance-none bg-muted accent-cyan-500"
                   />
                 </div>
               )
@@ -866,9 +866,9 @@ export default function Settings() {
 
           {/* Preview + Save */}
           <div className="flex items-center justify-between">
-            <div className="text-xs text-slate-500">
+            <div className="text-xs text-muted-foreground">
               {previewScore && previewScore.score != null && (
-                <span>{t('settings.previewScore')}: <strong className="text-slate-900">{previewScore.score}%</strong> ({previewScore.grade})</span>
+                <span>{t('settings.previewScore')}: <strong className="text-foreground">{previewScore.score}%</strong> ({previewScore.grade})</span>
               )}
             </div>
             <Button size="sm" onClick={handleSaveScoring} loading={scoringSaving}>
@@ -887,11 +887,11 @@ export default function Settings() {
             </div>
           )}
 
-          <p className="text-[11px] text-slate-400 mt-3">{t('settings.scoringFixedNote')}</p>
+          <p className="text-[11px] text-muted-foreground mt-3">{t('settings.scoringFixedNote')}</p>
         </Card>
 
         {/* Version */}
-        <div className="text-center text-xs text-slate-400 py-4">
+        <div className="text-center text-xs text-muted-foreground py-4">
           {t('settings.version')}
         </div>
       </PageContent>
