@@ -1,7 +1,10 @@
 import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Bell, Shield, User, Cloud, Plus, Trash2, CheckCircle2, AlertCircle, Loader2, Scale } from 'lucide-react'
-import { Card, Button, Input, Select } from '../components/ui'
+import { Card, Input, Select } from '../components/ui'
+import { Button } from '../components/ui/Button'
+import { PageContainer, PageContent } from '../components/ui/PageContainer'
+import { PageHeader } from '../components/ui/PageHeader'
 import { useAuth } from '../context/AuthContext'
 import {
   updateAccount, getCloudCredentials, addAzureCredential,
@@ -26,7 +29,7 @@ function Toggle({ enabled, onToggle }: { enabled: boolean; onToggle: () => void 
       aria-checked={enabled}
       onClick={onToggle}
       className={`w-10 h-5 rounded-full relative cursor-pointer transition-colors ${
-        enabled ? 'bg-cyan-500' : 'bg-navy-700'
+        enabled ? 'bg-cyan-500' : 'bg-slate-300'
       }`}
     >
       <div
@@ -36,6 +39,21 @@ function Toggle({ enabled, onToggle }: { enabled: boolean; onToggle: () => void 
       />
     </button>
   )
+}
+
+// Static class lookups for cloud provider styling (avoids dynamic Tailwind classes)
+const providerStyles: Record<string, { bg: string; border: string; text: string }> = {
+  aws: { bg: 'bg-orange-50', border: 'border-orange-200', text: 'text-orange-400' },
+  azure: { bg: 'bg-blue-50', border: 'border-blue-200', text: 'text-blue-400' },
+}
+
+// Static class lookups for scoring presets (avoids dynamic Tailwind classes)
+const presetStyles: Record<string, { active: string; text: string }> = {
+  cyan: { active: 'border-cyan-500 bg-cyan-50', text: 'text-cyan-600' },
+  purple: { active: 'border-purple-500 bg-purple-50', text: 'text-purple-600' },
+  blue: { active: 'border-blue-500 bg-blue-50', text: 'text-blue-600' },
+  emerald: { active: 'border-emerald-500 bg-emerald-50', text: 'text-emerald-600' },
+  orange: { active: 'border-orange-500 bg-orange-50', text: 'text-orange-600' },
 }
 
 export default function Settings() {
@@ -368,515 +386,515 @@ export default function Settings() {
   ]
 
   return (
-    <div className="max-w-3xl mx-auto space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold font-syne text-white">{t('settings.title')}</h1>
-        <p className="text-sm text-navy-300 mt-1">{t('settings.subtitle')}</p>
-      </div>
-
-      {/* Profile */}
-      <Card>
-        <div className="flex items-center gap-3 mb-5">
-          <User size={16} className="text-cyan-400" />
-          <h2 className="text-base font-bold font-syne text-white">{t('settings.account')}</h2>
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <Input label={t('settings.orgName')} value={name} onChange={e => setName(e.target.value)} />
-          <Input label={t('settings.contactEmail')} value={contactEmail} onChange={e => setContactEmail(e.target.value)} />
-          <CountrySelector
-            countries={countries}
-            value={country}
-            onChange={handleCountryChange}
-            label={t('settings.country')}
-          />
-          <div>
-            <label className="block text-xs font-medium text-[#CBD8E8] mb-1.5">{t('settings.language')}</label>
-            <LanguageSwitcher />
+    <PageContainer>
+      <PageHeader title={t('settings.title')} description={t('settings.subtitle')} />
+      <PageContent className="max-w-3xl mx-auto space-y-6">
+        {/* Profile */}
+        <Card>
+          <div className="flex items-center gap-3 mb-5">
+            <User size={16} className="text-cyan-600" />
+            <h2 className="text-base font-semibold text-slate-900">{t('settings.account')}</h2>
           </div>
-        </div>
-        {saveMessage && (
-          <div className={`mt-3 p-3 rounded-lg text-xs ${saveMessage.type === 'success' ? 'bg-green-500/10 border border-green-500/20 text-green-400' : 'bg-red-500/10 border border-red-500/20 text-red-400'}`}>
-            {saveMessage.text}
-          </div>
-        )}
-        <div className="mt-4">
-          <Button size="sm" onClick={handleSave} loading={saving}>{t('common.save')}</Button>
-        </div>
-      </Card>
-
-      {/* Cloud Providers */}
-      <Card>
-        <div className="flex items-center justify-between mb-5">
-          <div className="flex items-center gap-3">
-            <Cloud size={16} className="text-cyan-400" />
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <Input label={t('settings.orgName')} value={name} onChange={e => setName(e.target.value)} />
+            <Input label={t('settings.contactEmail')} value={contactEmail} onChange={e => setContactEmail(e.target.value)} />
+            <CountrySelector
+              countries={countries}
+              value={country}
+              onChange={handleCountryChange}
+              label={t('settings.country')}
+            />
             <div>
-              <h2 className="text-base font-bold font-syne text-white">{t('settings.cloudProviders')}</h2>
-              <p className="text-xs text-navy-400 mt-0.5">{t('settings.cloudProvidersDesc')}</p>
+              <label className="block text-xs font-medium text-slate-500 mb-1.5">{t('settings.language')}</label>
+              <LanguageSwitcher />
             </div>
           </div>
-          {!addingProvider && !showProviderPicker && (
-            <Button size="sm" variant="secondary" onClick={() => setShowProviderPicker(true)}>
-              <Plus size={14} /> {t('settings.addProvider')}
-            </Button>
+          {saveMessage && (
+            <div className={`mt-3 p-3 rounded-lg text-xs ${saveMessage.type === 'success' ? 'bg-green-50 border border-green-200 text-green-600' : 'bg-red-50 border border-red-200 text-red-600'}`}>
+              {saveMessage.text}
+            </div>
           )}
-        </div>
+          <div className="mt-4">
+            <Button size="sm" onClick={handleSave} loading={saving}>{t('common.save')}</Button>
+          </div>
+        </Card>
 
-        {/* Existing credentials */}
-        {credLoading ? (
-          <div className="flex justify-center py-4">
-            <Loader2 size={20} className="text-cyan-400 animate-spin" />
-          </div>
-        ) : awsAccounts.length === 0 && credentials.length === 0 && !showProviderPicker && !addingProvider ? (
-          <div className="text-center py-6">
-            <Cloud size={32} className="text-navy-600 mx-auto mb-2" />
-            <p className="text-sm text-navy-400">{t('settings.noProviders')}</p>
-            <p className="text-xs text-navy-500 mt-1">{t('settings.noProvidersDesc')}</p>
-          </div>
-        ) : (
-          <div className="space-y-2">
-            {/* Legacy AWS accounts (key-based) */}
-            {awsAccounts.map(acct => (
-              <div key={acct.id} className="flex items-center justify-between p-3 rounded-lg bg-navy-900/40 border border-navy-800">
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-orange-500/10 border border-orange-500/20">
-                    <Cloud size={14} className="text-orange-400" />
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-white">{acct.alias}</p>
-                    <p className="text-[10px] text-navy-400 uppercase">AWS · {acct.awsRegion}</p>
-                  </div>
-                </div>
-                <button
-                  onClick={() => handleRemoveAws(acct.id)}
-                  className="text-xs text-red-400/60 hover:text-red-400 transition-colors"
-                >
-                  <Trash2 size={14} />
-                </button>
+        {/* Cloud Providers */}
+        <Card>
+          <div className="flex items-center justify-between mb-5">
+            <div className="flex items-center gap-3">
+              <Cloud size={16} className="text-cyan-600" />
+              <div>
+                <h2 className="text-base font-semibold text-slate-900">{t('settings.cloudProviders')}</h2>
+                <p className="text-xs text-slate-500 mt-0.5">{t('settings.cloudProvidersDesc')}</p>
               </div>
-            ))}
-            {/* All cloud credentials (AWS role + Azure) */}
-            {credentials.map(cred => {
-              const isAws = cred.provider === 'aws'
-              const colorClass = isAws ? 'orange' : 'blue'
-              return (
-                <div key={cred.id} className="flex items-center justify-between p-3 rounded-lg bg-navy-900/40 border border-navy-800">
+            </div>
+            {!addingProvider && !showProviderPicker && (
+              <Button size="sm" variant="secondary" onClick={() => setShowProviderPicker(true)} icon={<Plus size={14} />}>
+                {t('settings.addProvider')}
+              </Button>
+            )}
+          </div>
+
+          {/* Existing credentials */}
+          {credLoading ? (
+            <div className="flex justify-center py-4">
+              <Loader2 size={20} className="text-cyan-600 animate-spin" />
+            </div>
+          ) : awsAccounts.length === 0 && credentials.length === 0 && !showProviderPicker && !addingProvider ? (
+            <div className="text-center py-6">
+              <Cloud size={32} className="text-slate-300 mx-auto mb-2" />
+              <p className="text-sm text-slate-500">{t('settings.noProviders')}</p>
+              <p className="text-xs text-slate-400 mt-1">{t('settings.noProvidersDesc')}</p>
+            </div>
+          ) : (
+            <div className="space-y-2">
+              {/* Legacy AWS accounts (key-based) */}
+              {awsAccounts.map(acct => (
+                <div key={acct.id} className="flex items-center justify-between p-3 rounded-lg bg-slate-50 border border-slate-200">
                   <div className="flex items-center gap-3">
-                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center bg-${colorClass}-500/10 border border-${colorClass}-500/20`}>
-                      <Cloud size={14} className={`text-${colorClass}-400`} />
+                    <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-orange-50 border border-orange-200">
+                      <Cloud size={14} className="text-orange-400" />
                     </div>
                     <div>
-                      <p className="text-sm font-medium text-white">{cred.alias}</p>
-                      <p className="text-[10px] text-navy-400 uppercase">
-                        {cred.provider.toUpperCase()}
-                        {cred.connection_type === 'role' && ' · IAM Role'}
-                        {cred.connection_type === 'oauth' && ' · OAuth'}
-                        {isAws && cred.aws_region && ` · ${cred.aws_region}`}
-                        {!isAws && cred.azure_subscription_id && ` · ${cred.azure_subscription_id}`}
-                      </p>
+                      <p className="text-sm font-medium text-slate-900">{acct.alias}</p>
+                      <p className="text-[10px] text-slate-500 uppercase">AWS · {acct.awsRegion}</p>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2">
-                    {validationResult[cred.id] === true && (
-                      <CheckCircle2 size={14} className="text-emerald-400" />
-                    )}
-                    {validationResult[cred.id] === false && (
-                      <AlertCircle size={14} className="text-red-400" />
-                    )}
-                    <button
-                      onClick={() => handleValidate(cred.id)}
-                      disabled={validatingId === cred.id}
-                      className="text-xs text-navy-400 hover:text-white transition-colors disabled:opacity-50"
-                    >
-                      {validatingId === cred.id ? <Loader2 size={12} className="animate-spin" /> : t('settings.validateProvider')}
-                    </button>
-                    <button
-                      onClick={() => handleRemoveCredential(cred.id)}
-                      className="text-xs text-red-400/60 hover:text-red-400 transition-colors"
-                    >
-                      <Trash2 size={14} />
-                    </button>
+                  <button
+                    onClick={() => handleRemoveAws(acct.id)}
+                    className="text-xs text-red-400/60 hover:text-red-600 transition-colors"
+                  >
+                    <Trash2 size={14} />
+                  </button>
+                </div>
+              ))}
+              {/* All cloud credentials (AWS role + Azure) */}
+              {credentials.map(cred => {
+                const isAws = cred.provider === 'aws'
+                const styles = isAws ? providerStyles.aws : providerStyles.azure
+                return (
+                  <div key={cred.id} className="flex items-center justify-between p-3 rounded-lg bg-slate-50 border border-slate-200">
+                    <div className="flex items-center gap-3">
+                      <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${styles.bg} ${styles.border}`}>
+                        <Cloud size={14} className={styles.text} />
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium text-slate-900">{cred.alias}</p>
+                        <p className="text-[10px] text-slate-500 uppercase">
+                          {cred.provider.toUpperCase()}
+                          {cred.connection_type === 'role' && ' · IAM Role'}
+                          {cred.connection_type === 'oauth' && ' · OAuth'}
+                          {isAws && cred.aws_region && ` · ${cred.aws_region}`}
+                          {!isAws && cred.azure_subscription_id && ` · ${cred.azure_subscription_id}`}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      {validationResult[cred.id] === true && (
+                        <CheckCircle2 size={14} className="text-emerald-600" />
+                      )}
+                      {validationResult[cred.id] === false && (
+                        <AlertCircle size={14} className="text-red-600" />
+                      )}
+                      <button
+                        onClick={() => handleValidate(cred.id)}
+                        disabled={validatingId === cred.id}
+                        className="text-xs text-slate-500 hover:text-slate-900 transition-colors disabled:opacity-50"
+                      >
+                        {validatingId === cred.id ? <Loader2 size={12} className="animate-spin" /> : t('settings.validateProvider')}
+                      </button>
+                      <button
+                        onClick={() => handleRemoveCredential(cred.id)}
+                        className="text-xs text-red-400/60 hover:text-red-600 transition-colors"
+                      >
+                        <Trash2 size={14} />
+                      </button>
+                    </div>
                   </div>
+                )
+              })}
+            </div>
+          )}
+
+          {/* Provider picker */}
+          {showProviderPicker && !addingProvider && (
+            <div className="mt-4 p-4 rounded-lg bg-slate-50 border border-slate-200">
+              <h3 className="text-sm font-semibold text-slate-900 mb-3">{t('settings.selectProvider')}</h3>
+              <div className="grid grid-cols-2 gap-3">
+                <button
+                  onClick={() => { setAddingProvider('aws'); setShowProviderPicker(false) }}
+                  className="p-4 rounded-lg border border-slate-200 hover:border-orange-500/40 bg-slate-50 hover:bg-orange-500/5 transition-all text-left"
+                >
+                  <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-orange-50 border border-orange-200 mb-2">
+                    <Cloud size={14} className="text-orange-400" />
+                  </div>
+                  <p className="text-sm font-medium text-slate-900">AWS</p>
+                  <p className="text-[10px] text-slate-500 mt-0.5">Amazon Web Services</p>
+                </button>
+                <button
+                  onClick={() => { setAddingProvider('azure'); setShowProviderPicker(false) }}
+                  className="p-4 rounded-lg border border-slate-200 hover:border-blue-500/40 bg-slate-50 hover:bg-blue-500/5 transition-all text-left"
+                >
+                  <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-blue-50 border border-blue-200 mb-2">
+                    <Cloud size={14} className="text-blue-400" />
+                  </div>
+                  <p className="text-sm font-medium text-slate-900">Azure</p>
+                  <p className="text-[10px] text-slate-500 mt-0.5">Microsoft Azure</p>
+                </button>
+              </div>
+              <div className="mt-3">
+                <Button variant="secondary" size="sm" onClick={() => setShowProviderPicker(false)}>
+                  {t('common.cancel')}
+                </Button>
+              </div>
+            </div>
+          )}
+
+          {/* Add AWS — CloudFormation role flow */}
+          {addingProvider === 'aws' && !awsLegacyMode && (
+            <div className="mt-4 p-4 rounded-lg bg-slate-50 border border-slate-200">
+              <h3 className="text-sm font-semibold text-slate-900 mb-1">{t('settings.awsConnectTitle')}</h3>
+              <p className="text-xs text-slate-500 mb-4">{t('settings.awsConnectDesc')}</p>
+
+              {awsRoleStep === 'init' && (
+                <>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <Input
+                      label={t('settings.awsAlias')}
+                      value={awsForm.alias || ''}
+                      onChange={e => setAwsForm(p => ({ ...p, alias: e.target.value }))}
+                      placeholder="e.g. Production"
+                    />
+                    <Input
+                      label={t('settings.awsRegion')}
+                      value={awsForm.region || 'eu-west-1'}
+                      onChange={e => setAwsForm(p => ({ ...p, region: e.target.value }))}
+                      placeholder="eu-west-1"
+                    />
+                  </div>
+                  <div className="flex items-center justify-between mt-4">
+                    <button
+                      onClick={() => setAwsLegacyMode(true)}
+                      className="text-[11px] text-slate-400 hover:text-slate-500 transition-colors"
+                    >
+                      {t('settings.useLegacyKeys')}
+                    </button>
+                    <div className="flex gap-2">
+                      <Button variant="secondary" size="sm" onClick={() => { setAddingProvider(null); setAwsError(null); setAwsRoleStep('init') }}>
+                        {t('common.cancel')}
+                      </Button>
+                      <Button size="sm" onClick={handleAwsInitiate} loading={awsSaving}>
+                        {t('settings.awsDeployStack')}
+                      </Button>
+                    </div>
+                  </div>
+                </>
+              )}
+
+              {awsRoleStep === 'pending' && (
+                <>
+                  <div className="p-3 rounded-lg bg-cyan-50 border border-cyan-200 mb-4">
+                    <p className="text-xs text-cyan-700 font-medium mb-1">{t('settings.awsStep2Title')}</p>
+                    <ol className="text-xs text-slate-500 space-y-1 list-decimal list-inside">
+                      <li>{t('settings.awsStep2Line1')}</li>
+                      <li>{t('settings.awsStep2Line2')}</li>
+                      <li>{t('settings.awsStep2Line3')}</li>
+                    </ol>
+                    {awsCfUrl && (
+                      <a href={awsCfUrl} target="_blank" rel="noopener noreferrer" className="inline-block mt-2 text-xs text-cyan-600 hover:text-cyan-700 underline">
+                        {t('settings.awsOpenCfConsole')}
+                      </a>
+                    )}
+                  </div>
+                  <Input
+                    label={t('settings.awsRoleArn')}
+                    value={awsForm.roleArn || ''}
+                    onChange={e => setAwsForm(p => ({ ...p, roleArn: e.target.value }))}
+                    placeholder="arn:aws:iam::123456789012:role/KonformeAuditRole"
+                  />
+                  <div className="flex gap-2 mt-4">
+                    <Button variant="secondary" size="sm" onClick={() => { setAddingProvider(null); setAwsError(null); setAwsRoleStep('init'); setAwsPendingCredId(null); setAwsCfUrl(null) }}>
+                      {t('common.cancel')}
+                    </Button>
+                    <Button size="sm" onClick={handleAwsComplete} loading={awsSaving}>
+                      {t('settings.awsVerifyConnect')}
+                    </Button>
+                  </div>
+                </>
+              )}
+
+              {awsError && (
+                <div className="mt-3 p-2 rounded-lg bg-red-50 border border-red-200 flex items-center gap-2">
+                  <AlertCircle size={14} className="text-red-600 shrink-0" />
+                  <p className="text-xs text-red-600">{awsError}</p>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Add AWS — Legacy keys fallback */}
+          {addingProvider === 'aws' && awsLegacyMode && (
+            <div className="mt-4 p-4 rounded-lg bg-slate-50 border border-slate-200">
+              <h3 className="text-sm font-semibold text-slate-900 mb-3">{t('settings.awsLegacyTitle')}</h3>
+              <AwsIamPolicy />
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <Input label={t('settings.awsAlias')} value={awsForm.alias || ''} onChange={e => setAwsForm(p => ({ ...p, alias: e.target.value }))} placeholder="e.g. Production" />
+                <Input label={t('settings.awsRegion')} value={awsForm.region || 'eu-west-1'} onChange={e => setAwsForm(p => ({ ...p, region: e.target.value }))} />
+                <Input label="Access Key ID" value={awsForm.accessKeyId || ''} onChange={e => setAwsForm(p => ({ ...p, accessKeyId: e.target.value }))} />
+                <Input label="Secret Access Key" type="password" value={awsForm.secretAccessKey || ''} onChange={e => setAwsForm(p => ({ ...p, secretAccessKey: e.target.value }))} />
+                <Input label="Session Token (optional)" value={awsForm.sessionToken || ''} onChange={e => setAwsForm(p => ({ ...p, sessionToken: e.target.value }))} />
+              </div>
+              {awsError && (
+                <div className="mt-3 p-2 rounded-lg bg-red-50 border border-red-200 flex items-center gap-2">
+                  <AlertCircle size={14} className="text-red-600 shrink-0" />
+                  <p className="text-xs text-red-600">{awsError}</p>
+                </div>
+              )}
+              <div className="flex items-center justify-between mt-4">
+                <button onClick={() => setAwsLegacyMode(false)} className="text-[11px] text-cyan-600 hover:text-cyan-700 transition-colors">
+                  {t('settings.useSecureConnection')}
+                </button>
+                <div className="flex gap-2">
+                  <Button variant="secondary" size="sm" onClick={() => { setAddingProvider(null); setAwsError(null); setAwsLegacyMode(false) }}>{t('common.cancel')}</Button>
+                  <Button size="sm" onClick={handleAddAwsLegacy} loading={awsSaving}>{t('settings.addProvider')}</Button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Add Azure — OAuth flow */}
+          {addingProvider === 'azure' && !azureLegacyMode && (
+            <div className="mt-4 p-4 rounded-lg bg-slate-50 border border-slate-200">
+              <h3 className="text-sm font-semibold text-slate-900 mb-1">{t('settings.azureConnectTitle')}</h3>
+              <p className="text-xs text-slate-500 mb-4">{t('settings.azureConnectDesc')}</p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <Input
+                  label={t('settings.azureAlias')}
+                  value={azureForm.alias || ''}
+                  onChange={e => setAzureForm(p => ({ ...p, alias: e.target.value }))}
+                  placeholder="e.g. Production"
+                />
+                <Input
+                  label={t('settings.azureSubscriptionId')}
+                  value={azureForm.subscriptionId || ''}
+                  onChange={e => setAzureForm(p => ({ ...p, subscriptionId: e.target.value }))}
+                  placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+                />
+              </div>
+              {azureError && (
+                <div className="mt-3 p-2 rounded-lg bg-red-50 border border-red-200 flex items-center gap-2">
+                  <AlertCircle size={14} className="text-red-600 shrink-0" />
+                  <p className="text-xs text-red-600">{azureError}</p>
+                </div>
+              )}
+              <div className="flex items-center justify-between mt-4">
+                <button
+                  onClick={() => setAzureLegacyMode(true)}
+                  className="text-[11px] text-slate-400 hover:text-slate-500 transition-colors"
+                >
+                  {t('settings.useLegacyCredentials')}
+                </button>
+                <div className="flex gap-2">
+                  <Button variant="secondary" size="sm" onClick={() => { setAddingProvider(null); setAzureError(null) }}>
+                    {t('common.cancel')}
+                  </Button>
+                  <Button size="sm" onClick={handleAzureOAuth} loading={azureSaving}>
+                    {t('settings.azureConnectViaMicrosoft')}
+                  </Button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Add Azure — Legacy service principal fallback */}
+          {addingProvider === 'azure' && azureLegacyMode && (
+            <div className="mt-4 p-4 rounded-lg bg-slate-50 border border-slate-200">
+              <h3 className="text-sm font-semibold text-slate-900 mb-3">{t('settings.azureLegacyTitle')}</h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <Input label={t('settings.azureAlias')} value={azureForm.alias || ''} onChange={e => setAzureForm(p => ({ ...p, alias: e.target.value }))} />
+                <Input label="Tenant ID" value={azureForm.tenantId || ''} onChange={e => setAzureForm(p => ({ ...p, tenantId: e.target.value }))} />
+                <Input label="Client ID (App ID)" value={azureForm.clientId || ''} onChange={e => setAzureForm(p => ({ ...p, clientId: e.target.value }))} />
+                <Input label="Client Secret" type="password" value={azureForm.clientSecret || ''} onChange={e => setAzureForm(p => ({ ...p, clientSecret: e.target.value }))} />
+                <Input label={t('settings.azureSubscriptionId')} value={azureForm.subscriptionId || ''} onChange={e => setAzureForm(p => ({ ...p, subscriptionId: e.target.value }))} />
+              </div>
+              {azureError && (
+                <div className="mt-3 p-2 rounded-lg bg-red-50 border border-red-200 flex items-center gap-2">
+                  <AlertCircle size={14} className="text-red-600 shrink-0" />
+                  <p className="text-xs text-red-600">{azureError}</p>
+                </div>
+              )}
+              <div className="flex items-center justify-between mt-4">
+                <button onClick={() => setAzureLegacyMode(false)} className="text-[11px] text-cyan-600 hover:text-cyan-700 transition-colors">
+                  {t('settings.useSecureConnection')}
+                </button>
+                <div className="flex gap-2">
+                  <Button variant="secondary" size="sm" onClick={() => { setAddingProvider(null); setAzureError(null); setAzureLegacyMode(false) }}>{t('common.cancel')}</Button>
+                  <Button size="sm" onClick={handleAddAzureLegacy} loading={azureSaving}>{t('settings.addProvider')}</Button>
+                </div>
+              </div>
+            </div>
+          )}
+        </Card>
+
+        {/* Notifications */}
+        <Card>
+          <div className="flex items-center gap-3 mb-5">
+            <Bell size={16} className="text-cyan-600" />
+            <h2 className="text-base font-semibold text-slate-900">{t('settings.notifications')}</h2>
+          </div>
+          <div className="space-y-3">
+            {notificationItems.map(item => (
+              <div key={item.key} className="flex items-center justify-between p-3 rounded-lg bg-slate-50 border border-slate-200">
+                <div>
+                  <p className="text-sm font-medium text-slate-900">{item.label}</p>
+                  <p className="text-xs text-slate-500 mt-0.5">{item.desc}</p>
+                </div>
+                <Toggle
+                  enabled={notifications[item.key]}
+                  onToggle={() => toggleNotification(item.key)}
+                />
+              </div>
+            ))}
+          </div>
+        </Card>
+
+        {/* Compliance */}
+        <Card>
+          <div className="flex items-center gap-3 mb-5">
+            <Shield size={16} className="text-cyan-600" />
+            <h2 className="text-base font-semibold text-slate-900">{t('settings.compliance')}</h2>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <Select
+              label={t('settings.primaryFramework')}
+              options={[
+                { value: 'nis2', label: 'NIS2 (EU 2022/2555)' },
+                { value: 'iso27001', label: 'ISO 27001 — Coming Soon', disabled: true },
+                { value: 'soc2', label: 'SOC 2 Type II — Coming Soon', disabled: true },
+              ]}
+            />
+            <Select
+              label={t('settings.scanSchedule')}
+              options={[
+                { value: 'daily', label: 'Daily' },
+                { value: 'weekly', label: 'Weekly' },
+                { value: 'monthly', label: 'Monthly' },
+                { value: 'manual', label: 'Manual only' },
+              ]}
+            />
+          </div>
+        </Card>
+
+        {/* Scoring Weights — editable 3-pillar model */}
+        <Card>
+          <div className="flex items-center gap-3 mb-2">
+            <Scale size={16} className="text-cyan-600" />
+            <h2 className="text-base font-semibold text-slate-900">{t('settings.scoringConfig')}</h2>
+          </div>
+          <p className="text-xs text-slate-500 mb-4">{t('settings.scoringConfigDesc')}</p>
+
+          {/* Preset buttons */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-4">
+            {([
+              { key: 'balanced', color: 'cyan' },
+              { key: 'technical-first', color: 'purple' },
+              { key: 'governance-led', color: 'blue' },
+              { key: 'controls-focused', color: 'emerald' },
+            ] as const).map(({ key, color }) => {
+              const isActive = scoringPreset === key
+              const styles = presetStyles[color]
+              return (
+                <button
+                  key={key}
+                  onClick={() => handleScoringPreset(key)}
+                  className={`p-2.5 rounded-lg border text-left transition-all ${
+                    isActive
+                      ? styles.active
+                      : 'border-slate-200 bg-slate-50 hover:border-slate-300'
+                  }`}
+                >
+                  <p className="text-xs font-semibold text-slate-900 mb-0.5">
+                    {t(`settings.preset${key.split('-').map(w => w[0].toUpperCase() + w.slice(1)).join('')}` as any)}
+                  </p>
+                  <p className="text-[10px] text-slate-500 leading-tight">
+                    {t(`settings.preset${key.split('-').map(w => w[0].toUpperCase() + w.slice(1)).join('')}Desc` as any)}
+                  </p>
+                </button>
+              )
+            })}
+          </div>
+
+          {/* Custom option */}
+          <button
+            onClick={() => handleScoringPreset('custom')}
+            className={`w-full p-2.5 rounded-lg border text-left transition-all mb-4 ${
+              scoringPreset === 'custom'
+                ? presetStyles.orange.active
+                : 'border-slate-200 bg-slate-50 hover:border-slate-300'
+            }`}
+          >
+            <p className="text-xs font-semibold text-slate-900">{t('settings.presetCustom')}</p>
+            <p className="text-[10px] text-slate-500">{t('settings.presetCustomDesc')}</p>
+          </button>
+
+          {/* Weight sliders */}
+          <div className="space-y-3 mb-4">
+            {(['technical', 'assessment', 'controls'] as const).map(key => {
+              const colorMap: Record<string, string> = { technical: 'purple', assessment: 'blue', controls: 'emerald' }
+              const color = colorMap[key]
+              const styles = presetStyles[color]
+              return (
+                <div key={key}>
+                  <div className="flex items-center justify-between mb-1">
+                    <label className="text-xs text-slate-500">{t(`settings.${key}Weight`)}</label>
+                    <span className={`text-sm font-semibold ${styles.text}`}>{scoringWeights[key]}%</span>
+                  </div>
+                  <input
+                    type="range"
+                    min={0}
+                    max={100}
+                    step={5}
+                    value={scoringWeights[key]}
+                    onChange={e => adjustScoringWeight(key, parseInt(e.target.value))}
+                    className="w-full h-1.5 rounded-full appearance-none bg-slate-200 accent-cyan-500"
+                  />
                 </div>
               )
             })}
           </div>
-        )}
 
-        {/* Provider picker */}
-        {showProviderPicker && !addingProvider && (
-          <div className="mt-4 p-4 rounded-lg bg-navy-900/60 border border-navy-700">
-            <h3 className="text-sm font-semibold text-white mb-3">{t('settings.selectProvider')}</h3>
-            <div className="grid grid-cols-2 gap-3">
-              <button
-                onClick={() => { setAddingProvider('aws'); setShowProviderPicker(false) }}
-                className="p-4 rounded-lg border border-navy-700 hover:border-orange-500/40 bg-navy-900/40 hover:bg-orange-500/5 transition-all text-left"
-              >
-                <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-orange-500/10 border border-orange-500/20 mb-2">
-                  <Cloud size={14} className="text-orange-400" />
-                </div>
-                <p className="text-sm font-medium text-white">AWS</p>
-                <p className="text-[10px] text-navy-400 mt-0.5">Amazon Web Services</p>
-              </button>
-              <button
-                onClick={() => { setAddingProvider('azure'); setShowProviderPicker(false) }}
-                className="p-4 rounded-lg border border-navy-700 hover:border-blue-500/40 bg-navy-900/40 hover:bg-blue-500/5 transition-all text-left"
-              >
-                <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-blue-500/10 border border-blue-500/20 mb-2">
-                  <Cloud size={14} className="text-blue-400" />
-                </div>
-                <p className="text-sm font-medium text-white">Azure</p>
-                <p className="text-[10px] text-navy-400 mt-0.5">Microsoft Azure</p>
-              </button>
+          {/* Preview + Save */}
+          <div className="flex items-center justify-between">
+            <div className="text-xs text-slate-500">
+              {previewScore && previewScore.score != null && (
+                <span>{t('settings.previewScore')}: <strong className="text-slate-900">{previewScore.score}%</strong> ({previewScore.grade})</span>
+              )}
             </div>
-            <div className="mt-3">
-              <Button variant="secondary" size="sm" onClick={() => setShowProviderPicker(false)}>
-                {t('common.cancel')}
-              </Button>
-            </div>
+            <Button size="sm" onClick={handleSaveScoring} loading={scoringSaving}>
+              {t('settings.saveScoringWeights')}
+            </Button>
           </div>
-        )}
 
-        {/* Add AWS — CloudFormation role flow */}
-        {addingProvider === 'aws' && !awsLegacyMode && (
-          <div className="mt-4 p-4 rounded-lg bg-navy-900/60 border border-navy-700">
-            <h3 className="text-sm font-semibold text-white mb-1">{t('settings.awsConnectTitle')}</h3>
-            <p className="text-xs text-navy-400 mb-4">{t('settings.awsConnectDesc')}</p>
-
-            {awsRoleStep === 'init' && (
-              <>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <Input
-                    label={t('settings.awsAlias')}
-                    value={awsForm.alias || ''}
-                    onChange={e => setAwsForm(p => ({ ...p, alias: e.target.value }))}
-                    placeholder="e.g. Production"
-                  />
-                  <Input
-                    label={t('settings.awsRegion')}
-                    value={awsForm.region || 'eu-west-1'}
-                    onChange={e => setAwsForm(p => ({ ...p, region: e.target.value }))}
-                    placeholder="eu-west-1"
-                  />
-                </div>
-                <div className="flex items-center justify-between mt-4">
-                  <button
-                    onClick={() => setAwsLegacyMode(true)}
-                    className="text-[11px] text-navy-500 hover:text-navy-300 transition-colors"
-                  >
-                    {t('settings.useLegacyKeys')}
-                  </button>
-                  <div className="flex gap-2">
-                    <Button variant="secondary" size="sm" onClick={() => { setAddingProvider(null); setAwsError(null); setAwsRoleStep('init') }}>
-                      {t('common.cancel')}
-                    </Button>
-                    <Button size="sm" onClick={handleAwsInitiate} loading={awsSaving}>
-                      {t('settings.awsDeployStack')}
-                    </Button>
-                  </div>
-                </div>
-              </>
-            )}
-
-            {awsRoleStep === 'pending' && (
-              <>
-                <div className="p-3 rounded-lg bg-cyan-500/10 border border-cyan-500/20 mb-4">
-                  <p className="text-xs text-cyan-300 font-medium mb-1">{t('settings.awsStep2Title')}</p>
-                  <ol className="text-xs text-navy-300 space-y-1 list-decimal list-inside">
-                    <li>{t('settings.awsStep2Line1')}</li>
-                    <li>{t('settings.awsStep2Line2')}</li>
-                    <li>{t('settings.awsStep2Line3')}</li>
-                  </ol>
-                  {awsCfUrl && (
-                    <a href={awsCfUrl} target="_blank" rel="noopener noreferrer" className="inline-block mt-2 text-xs text-cyan-400 hover:text-cyan-300 underline">
-                      {t('settings.awsOpenCfConsole')}
-                    </a>
-                  )}
-                </div>
-                <Input
-                  label={t('settings.awsRoleArn')}
-                  value={awsForm.roleArn || ''}
-                  onChange={e => setAwsForm(p => ({ ...p, roleArn: e.target.value }))}
-                  placeholder="arn:aws:iam::123456789012:role/KonformeAuditRole"
-                />
-                <div className="flex gap-2 mt-4">
-                  <Button variant="secondary" size="sm" onClick={() => { setAddingProvider(null); setAwsError(null); setAwsRoleStep('init'); setAwsPendingCredId(null); setAwsCfUrl(null) }}>
-                    {t('common.cancel')}
-                  </Button>
-                  <Button size="sm" onClick={handleAwsComplete} loading={awsSaving}>
-                    {t('settings.awsVerifyConnect')}
-                  </Button>
-                </div>
-              </>
-            )}
-
-            {awsError && (
-              <div className="mt-3 p-2 rounded-lg bg-red-500/10 border border-red-500/20 flex items-center gap-2">
-                <AlertCircle size={14} className="text-red-400 shrink-0" />
-                <p className="text-xs text-red-400">{awsError}</p>
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* Add AWS — Legacy keys fallback */}
-        {addingProvider === 'aws' && awsLegacyMode && (
-          <div className="mt-4 p-4 rounded-lg bg-navy-900/60 border border-navy-700">
-            <h3 className="text-sm font-semibold text-white mb-3">{t('settings.awsLegacyTitle')}</h3>
-            <AwsIamPolicy />
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <Input label={t('settings.awsAlias')} value={awsForm.alias || ''} onChange={e => setAwsForm(p => ({ ...p, alias: e.target.value }))} placeholder="e.g. Production" />
-              <Input label={t('settings.awsRegion')} value={awsForm.region || 'eu-west-1'} onChange={e => setAwsForm(p => ({ ...p, region: e.target.value }))} />
-              <Input label="Access Key ID" value={awsForm.accessKeyId || ''} onChange={e => setAwsForm(p => ({ ...p, accessKeyId: e.target.value }))} />
-              <Input label="Secret Access Key" type="password" value={awsForm.secretAccessKey || ''} onChange={e => setAwsForm(p => ({ ...p, secretAccessKey: e.target.value }))} />
-              <Input label="Session Token (optional)" value={awsForm.sessionToken || ''} onChange={e => setAwsForm(p => ({ ...p, sessionToken: e.target.value }))} />
+          {scoringMessage && (
+            <div className={`mt-3 p-2 rounded-lg text-xs flex items-center gap-2 ${
+              scoringMessage.type === 'success'
+                ? 'bg-emerald-50 border border-emerald-200 text-emerald-600'
+                : 'bg-red-50 border border-red-200 text-red-600'
+            }`}>
+              {scoringMessage.type === 'success' ? <CheckCircle2 size={12} /> : <AlertCircle size={12} />}
+              {scoringMessage.text}
             </div>
-            {awsError && (
-              <div className="mt-3 p-2 rounded-lg bg-red-500/10 border border-red-500/20 flex items-center gap-2">
-                <AlertCircle size={14} className="text-red-400 shrink-0" />
-                <p className="text-xs text-red-400">{awsError}</p>
-              </div>
-            )}
-            <div className="flex items-center justify-between mt-4">
-              <button onClick={() => setAwsLegacyMode(false)} className="text-[11px] text-cyan-400 hover:text-cyan-300 transition-colors">
-                {t('settings.useSecureConnection')}
-              </button>
-              <div className="flex gap-2">
-                <Button variant="secondary" size="sm" onClick={() => { setAddingProvider(null); setAwsError(null); setAwsLegacyMode(false) }}>{t('common.cancel')}</Button>
-                <Button size="sm" onClick={handleAddAwsLegacy} loading={awsSaving}>{t('settings.addProvider')}</Button>
-              </div>
-            </div>
-          </div>
-        )}
+          )}
 
-        {/* Add Azure — OAuth flow */}
-        {addingProvider === 'azure' && !azureLegacyMode && (
-          <div className="mt-4 p-4 rounded-lg bg-navy-900/60 border border-navy-700">
-            <h3 className="text-sm font-semibold text-white mb-1">{t('settings.azureConnectTitle')}</h3>
-            <p className="text-xs text-navy-400 mb-4">{t('settings.azureConnectDesc')}</p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <Input
-                label={t('settings.azureAlias')}
-                value={azureForm.alias || ''}
-                onChange={e => setAzureForm(p => ({ ...p, alias: e.target.value }))}
-                placeholder="e.g. Production"
-              />
-              <Input
-                label={t('settings.azureSubscriptionId')}
-                value={azureForm.subscriptionId || ''}
-                onChange={e => setAzureForm(p => ({ ...p, subscriptionId: e.target.value }))}
-                placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
-              />
-            </div>
-            {azureError && (
-              <div className="mt-3 p-2 rounded-lg bg-red-500/10 border border-red-500/20 flex items-center gap-2">
-                <AlertCircle size={14} className="text-red-400 shrink-0" />
-                <p className="text-xs text-red-400">{azureError}</p>
-              </div>
-            )}
-            <div className="flex items-center justify-between mt-4">
-              <button
-                onClick={() => setAzureLegacyMode(true)}
-                className="text-[11px] text-navy-500 hover:text-navy-300 transition-colors"
-              >
-                {t('settings.useLegacyCredentials')}
-              </button>
-              <div className="flex gap-2">
-                <Button variant="secondary" size="sm" onClick={() => { setAddingProvider(null); setAzureError(null) }}>
-                  {t('common.cancel')}
-                </Button>
-                <Button size="sm" onClick={handleAzureOAuth} loading={azureSaving}>
-                  {t('settings.azureConnectViaMicrosoft')}
-                </Button>
-              </div>
-            </div>
-          </div>
-        )}
+          <p className="text-[11px] text-slate-400 mt-3">{t('settings.scoringFixedNote')}</p>
+        </Card>
 
-        {/* Add Azure — Legacy service principal fallback */}
-        {addingProvider === 'azure' && azureLegacyMode && (
-          <div className="mt-4 p-4 rounded-lg bg-navy-900/60 border border-navy-700">
-            <h3 className="text-sm font-semibold text-white mb-3">{t('settings.azureLegacyTitle')}</h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <Input label={t('settings.azureAlias')} value={azureForm.alias || ''} onChange={e => setAzureForm(p => ({ ...p, alias: e.target.value }))} />
-              <Input label="Tenant ID" value={azureForm.tenantId || ''} onChange={e => setAzureForm(p => ({ ...p, tenantId: e.target.value }))} />
-              <Input label="Client ID (App ID)" value={azureForm.clientId || ''} onChange={e => setAzureForm(p => ({ ...p, clientId: e.target.value }))} />
-              <Input label="Client Secret" type="password" value={azureForm.clientSecret || ''} onChange={e => setAzureForm(p => ({ ...p, clientSecret: e.target.value }))} />
-              <Input label={t('settings.azureSubscriptionId')} value={azureForm.subscriptionId || ''} onChange={e => setAzureForm(p => ({ ...p, subscriptionId: e.target.value }))} />
-            </div>
-            {azureError && (
-              <div className="mt-3 p-2 rounded-lg bg-red-500/10 border border-red-500/20 flex items-center gap-2">
-                <AlertCircle size={14} className="text-red-400 shrink-0" />
-                <p className="text-xs text-red-400">{azureError}</p>
-              </div>
-            )}
-            <div className="flex items-center justify-between mt-4">
-              <button onClick={() => setAzureLegacyMode(false)} className="text-[11px] text-cyan-400 hover:text-cyan-300 transition-colors">
-                {t('settings.useSecureConnection')}
-              </button>
-              <div className="flex gap-2">
-                <Button variant="secondary" size="sm" onClick={() => { setAddingProvider(null); setAzureError(null); setAzureLegacyMode(false) }}>{t('common.cancel')}</Button>
-                <Button size="sm" onClick={handleAddAzureLegacy} loading={azureSaving}>{t('settings.addProvider')}</Button>
-              </div>
-            </div>
-          </div>
-        )}
-      </Card>
-
-      {/* Notifications */}
-      <Card>
-        <div className="flex items-center gap-3 mb-5">
-          <Bell size={16} className="text-cyan-400" />
-          <h2 className="text-base font-bold font-syne text-white">{t('settings.notifications')}</h2>
+        {/* Version */}
+        <div className="text-center text-xs text-slate-400 py-4">
+          {t('settings.version')}
         </div>
-        <div className="space-y-3">
-          {notificationItems.map(item => (
-            <div key={item.key} className="flex items-center justify-between p-3 rounded-lg bg-navy-900/40 border border-navy-800">
-              <div>
-                <p className="text-sm font-medium text-white">{item.label}</p>
-                <p className="text-xs text-navy-400 mt-0.5">{item.desc}</p>
-              </div>
-              <Toggle
-                enabled={notifications[item.key]}
-                onToggle={() => toggleNotification(item.key)}
-              />
-            </div>
-          ))}
-        </div>
-      </Card>
-
-      {/* Compliance */}
-      <Card>
-        <div className="flex items-center gap-3 mb-5">
-          <Shield size={16} className="text-cyan-400" />
-          <h2 className="text-base font-bold font-syne text-white">{t('settings.compliance')}</h2>
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <Select
-            label={t('settings.primaryFramework')}
-            options={[
-              { value: 'nis2', label: 'NIS2 (EU 2022/2555)' },
-              { value: 'iso27001', label: 'ISO 27001 — Coming Soon', disabled: true },
-              { value: 'soc2', label: 'SOC 2 Type II — Coming Soon', disabled: true },
-            ]}
-          />
-          <Select
-            label={t('settings.scanSchedule')}
-            options={[
-              { value: 'daily', label: 'Daily' },
-              { value: 'weekly', label: 'Weekly' },
-              { value: 'monthly', label: 'Monthly' },
-              { value: 'manual', label: 'Manual only' },
-            ]}
-          />
-        </div>
-      </Card>
-
-      {/* Scoring Weights — editable 3-pillar model */}
-      <Card>
-        <div className="flex items-center gap-3 mb-2">
-          <Scale size={16} className="text-cyan-400" />
-          <h2 className="text-base font-bold font-syne text-white">{t('settings.scoringConfig')}</h2>
-        </div>
-        <p className="text-xs text-navy-400 mb-4">{t('settings.scoringConfigDesc')}</p>
-
-        {/* Preset buttons */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-4">
-          {([
-            { key: 'balanced', color: 'cyan' },
-            { key: 'technical-first', color: 'purple' },
-            { key: 'governance-led', color: 'blue' },
-            { key: 'controls-focused', color: 'emerald' },
-          ] as const).map(({ key, color }) => {
-            const isActive = scoringPreset === key
-            return (
-              <button
-                key={key}
-                onClick={() => handleScoringPreset(key)}
-                className={`p-2.5 rounded-lg border text-left transition-all ${
-                  isActive
-                    ? `border-${color}-500 bg-${color}-500/10`
-                    : 'border-navy-800 bg-navy-900/40 hover:border-navy-600'
-                }`}
-              >
-                <p className="text-xs font-semibold text-white mb-0.5">
-                  {t(`settings.preset${key.split('-').map(w => w[0].toUpperCase() + w.slice(1)).join('')}` as any)}
-                </p>
-                <p className="text-[10px] text-navy-400 leading-tight">
-                  {t(`settings.preset${key.split('-').map(w => w[0].toUpperCase() + w.slice(1)).join('')}Desc` as any)}
-                </p>
-              </button>
-            )
-          })}
-        </div>
-
-        {/* Custom option */}
-        <button
-          onClick={() => handleScoringPreset('custom')}
-          className={`w-full p-2.5 rounded-lg border text-left transition-all mb-4 ${
-            scoringPreset === 'custom'
-              ? 'border-orange-500 bg-orange-500/10'
-              : 'border-navy-800 bg-navy-900/40 hover:border-navy-600'
-          }`}
-        >
-          <p className="text-xs font-semibold text-white">{t('settings.presetCustom')}</p>
-          <p className="text-[10px] text-navy-400">{t('settings.presetCustomDesc')}</p>
-        </button>
-
-        {/* Weight sliders */}
-        <div className="space-y-3 mb-4">
-          {(['technical', 'assessment', 'controls'] as const).map(key => {
-            const colors = { technical: 'purple', assessment: 'blue', controls: 'emerald' }
-            const color = colors[key]
-            return (
-              <div key={key}>
-                <div className="flex items-center justify-between mb-1">
-                  <label className="text-xs text-navy-300">{t(`settings.${key}Weight`)}</label>
-                  <span className={`text-sm font-bold text-${color}-400`}>{scoringWeights[key]}%</span>
-                </div>
-                <input
-                  type="range"
-                  min={0}
-                  max={100}
-                  step={5}
-                  value={scoringWeights[key]}
-                  onChange={e => adjustScoringWeight(key, parseInt(e.target.value))}
-                  className="w-full h-1.5 rounded-full appearance-none bg-navy-700 accent-cyan-500"
-                />
-              </div>
-            )
-          })}
-        </div>
-
-        {/* Preview + Save */}
-        <div className="flex items-center justify-between">
-          <div className="text-xs text-navy-400">
-            {previewScore && previewScore.score != null && (
-              <span>{t('settings.previewScore')}: <strong className="text-white">{previewScore.score}%</strong> ({previewScore.grade})</span>
-            )}
-          </div>
-          <Button size="sm" onClick={handleSaveScoring} loading={scoringSaving}>
-            {t('settings.saveScoringWeights')}
-          </Button>
-        </div>
-
-        {scoringMessage && (
-          <div className={`mt-3 p-2 rounded-lg text-xs flex items-center gap-2 ${
-            scoringMessage.type === 'success'
-              ? 'bg-emerald-500/10 border border-emerald-500/20 text-emerald-400'
-              : 'bg-red-500/10 border border-red-500/20 text-red-400'
-          }`}>
-            {scoringMessage.type === 'success' ? <CheckCircle2 size={12} /> : <AlertCircle size={12} />}
-            {scoringMessage.text}
-          </div>
-        )}
-
-        <p className="text-[11px] text-navy-500 mt-3">{t('settings.scoringFixedNote')}</p>
-      </Card>
-
-      {/* Version */}
-      <div className="text-center text-xs text-navy-600 py-4">
-        {t('settings.version')}
-      </div>
-    </div>
+      </PageContent>
+    </PageContainer>
   )
 }

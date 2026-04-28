@@ -13,7 +13,14 @@ import {
   AlertTriangle,
   FileText,
 } from 'lucide-react'
-import { Card, Button } from '../components/ui'
+import { Card } from '../components/ui'
+import { Button } from '../components/ui/Button'
+import { PageContainer, PageContent } from '../components/ui/PageContainer'
+import { PageHeader } from '../components/ui/PageHeader'
+import { MetricCard } from '../components/ui/MetricCard'
+import { EmptyState } from '../components/ui/EmptyState'
+import { Badge } from '../components/ui/Badge'
+import { Table, TableHead, TableHeaderCell, TableBody, TableRow, TableCell } from '../components/ui/DataTable'
 import { useAuth } from '../context/AuthContext'
 import {
   getBusinessProcesses,
@@ -168,343 +175,327 @@ export default function Scope() {
   const criticalCount = processes.filter(p => p.isCritical).length
   const totalControls = baseControls.length
 
+  const viewToggle = (
+    <div className="flex bg-slate-100 rounded-lg p-1 border border-slate-200">
+      <button
+        onClick={() => setViewMode('processes')}
+        className={`px-3 py-1.5 text-sm rounded-md transition-all ${
+          viewMode === 'processes'
+            ? 'bg-cyan-50 text-cyan-600 font-medium'
+            : 'text-slate-500 hover:text-slate-900'
+        }`}
+      >
+        {t('scope.viewProcesses')}
+      </button>
+      <button
+        onClick={() => setViewMode('soa')}
+        className={`px-3 py-1.5 text-sm rounded-md transition-all ${
+          viewMode === 'soa'
+            ? 'bg-cyan-50 text-cyan-600 font-medium'
+            : 'text-slate-500 hover:text-slate-900'
+        }`}
+      >
+        {t('scope.viewSoA')}
+      </button>
+    </div>
+  )
+
   if (loading) {
     return (
-      <div className="space-y-6">
-        <div>
-          <h1 className="text-[26px] font-bold font-syne text-white">{t('scope.pageTitle')}</h1>
-          <p className="text-[14px] text-[#CBD8E8] mt-1">{t('scope.pageSubtitle')}</p>
-        </div>
-        <Card>
-          <div className="text-center py-16">
-            <div className="animate-spin h-8 w-8 border-2 border-cyan-400 border-t-transparent rounded-full mx-auto" />
-          </div>
-        </Card>
-      </div>
+      <PageContainer>
+        <PageHeader title={t('scope.pageTitle')} description={t('scope.pageSubtitle')} />
+        <PageContent>
+          <Card>
+            <div className="text-center py-16">
+              <div className="animate-spin h-8 w-8 border-2 border-cyan-600 border-t-transparent rounded-full mx-auto" />
+            </div>
+          </Card>
+        </PageContent>
+      </PageContainer>
     )
   }
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-[26px] font-bold font-syne text-white">{t('scope.pageTitle')}</h1>
-          <p className="text-[14px] text-[#CBD8E8] mt-1">{t('scope.pageSubtitle')}</p>
+    <PageContainer>
+      <PageHeader
+        title={t('scope.pageTitle')}
+        description={t('scope.pageSubtitle')}
+        actions={
+          <>
+            {viewToggle}
+            {viewMode === 'processes' && (
+              <Button onClick={openCreateForm} icon={<Plus size={16} />}>
+                {t('scope.addProcess')}
+              </Button>
+            )}
+          </>
+        }
+      />
+      <PageContent>
+        {/* Stats */}
+        <div className="grid grid-cols-3 gap-4 mb-6">
+          <MetricCard
+            label={t('scope.statProcesses')}
+            value={processes.length}
+            icon={<Target size={20} />}
+          />
+          <MetricCard
+            label={t('scope.statCritical')}
+            value={criticalCount}
+            semantic="danger"
+          />
+          <MetricCard
+            label={t('scope.statControls')}
+            value={totalControls}
+            icon={<Shield size={20} />}
+          />
         </div>
-        <div className="flex items-center gap-3">
-          {/* View toggle */}
-          <div className="flex bg-navy-800 rounded-lg p-1 border border-navy-700/50">
-            <button
-              onClick={() => setViewMode('processes')}
-              className={`px-3 py-1.5 text-sm rounded-md transition-all ${
-                viewMode === 'processes'
-                  ? 'bg-cyan-500/20 text-cyan-400 font-medium'
-                  : 'text-[#CBD8E8] hover:text-white'
-              }`}
-            >
-              {t('scope.viewProcesses')}
-            </button>
-            <button
-              onClick={() => setViewMode('soa')}
-              className={`px-3 py-1.5 text-sm rounded-md transition-all ${
-                viewMode === 'soa'
-                  ? 'bg-cyan-500/20 text-cyan-400 font-medium'
-                  : 'text-[#CBD8E8] hover:text-white'
-              }`}
-            >
-              {t('scope.viewSoA')}
-            </button>
-          </div>
-          {viewMode === 'processes' && (
-            <Button onClick={openCreateForm}>
-              <Plus size={16} className="mr-1" />
-              {t('scope.addProcess')}
-            </Button>
-          )}
-        </div>
-      </div>
 
-      {/* Stats */}
-      <div className="grid grid-cols-3 gap-4">
-        <Card>
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-cyan-500/10 flex items-center justify-center">
-              <Target size={20} className="text-cyan-400" />
-            </div>
-            <div>
-              <p className="text-2xl font-bold text-white">{processes.length}</p>
-              <p className="text-xs text-[#CBD8E8]">{t('scope.statProcesses')}</p>
-            </div>
-          </div>
-        </Card>
-        <Card>
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-red-500/10 flex items-center justify-center">
-              <AlertTriangle size={20} className="text-red-400" />
-            </div>
-            <div>
-              <p className="text-2xl font-bold text-white">{criticalCount}</p>
-              <p className="text-xs text-[#CBD8E8]">{t('scope.statCritical')}</p>
-            </div>
-          </div>
-        </Card>
-        <Card>
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-emerald-500/10 flex items-center justify-center">
-              <Shield size={20} className="text-emerald-400" />
-            </div>
-            <div>
-              <p className="text-2xl font-bold text-white">{totalControls}</p>
-              <p className="text-xs text-[#CBD8E8]">{t('scope.statControls')}</p>
-            </div>
-          </div>
-        </Card>
-      </div>
-
-      {/* Create/Edit Form Modal */}
-      {showForm && (
-        <Card>
-          <h3 className="text-lg font-bold font-syne text-white mb-4">
-            {editingId ? t('scope.editProcess') : t('scope.createProcess')}
-          </h3>
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm text-[#CBD8E8] mb-1">{t('scope.fieldName')}</label>
-              <input
-                type="text"
-                value={formData.name}
-                onChange={e => setFormData(prev => ({ ...prev, name: e.target.value }))}
-                className="w-full bg-navy-800 border border-navy-600 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-cyan-500"
-                placeholder={t('scope.fieldNamePlaceholder')}
-              />
-            </div>
-            <div>
-              <label className="block text-sm text-[#CBD8E8] mb-1">{t('scope.fieldDescription')}</label>
-              <textarea
-                value={formData.description}
-                onChange={e => setFormData(prev => ({ ...prev, description: e.target.value }))}
-                rows={3}
-                className="w-full bg-navy-800 border border-navy-600 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-cyan-500"
-                placeholder={t('scope.fieldDescriptionPlaceholder')}
-              />
-            </div>
-            <div className="flex items-center gap-6">
+        {/* Create/Edit Form Modal */}
+        {showForm && (
+          <Card className="mb-6">
+            <h3 className="text-lg font-semibold text-slate-900 mb-4">
+              {editingId ? t('scope.editProcess') : t('scope.createProcess')}
+            </h3>
+            <div className="space-y-4">
               <div>
-                <label className="block text-sm text-[#CBD8E8] mb-1">{t('scope.fieldOwner')}</label>
+                <label className="block text-sm text-slate-500 mb-1">{t('scope.fieldName')}</label>
                 <input
                   type="text"
-                  value={formData.owner}
-                  onChange={e => setFormData(prev => ({ ...prev, owner: e.target.value }))}
-                  className="bg-navy-800 border border-navy-600 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-cyan-500"
-                  placeholder={t('scope.fieldOwnerPlaceholder')}
+                  value={formData.name}
+                  onChange={e => setFormData(prev => ({ ...prev, name: e.target.value }))}
+                  className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-slate-900 text-sm focus:ring-2 focus:ring-ring focus:outline-none"
+                  placeholder={t('scope.fieldNamePlaceholder')}
                 />
               </div>
-              <label className="flex items-center gap-2 cursor-pointer mt-5">
-                <input
-                  type="checkbox"
-                  checked={formData.is_critical}
-                  onChange={e => setFormData(prev => ({ ...prev, is_critical: e.target.checked }))}
-                  className="w-4 h-4 rounded border-navy-600 bg-navy-800 text-cyan-500 focus:ring-cyan-500"
+              <div>
+                <label className="block text-sm text-slate-500 mb-1">{t('scope.fieldDescription')}</label>
+                <textarea
+                  value={formData.description}
+                  onChange={e => setFormData(prev => ({ ...prev, description: e.target.value }))}
+                  rows={3}
+                  className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-slate-900 text-sm focus:ring-2 focus:ring-ring focus:outline-none"
+                  placeholder={t('scope.fieldDescriptionPlaceholder')}
                 />
-                <span className="text-sm text-[#CBD8E8]">{t('scope.fieldCritical')}</span>
-              </label>
+              </div>
+              <div className="flex items-center gap-6">
+                <div>
+                  <label className="block text-sm text-slate-500 mb-1">{t('scope.fieldOwner')}</label>
+                  <input
+                    type="text"
+                    value={formData.owner}
+                    onChange={e => setFormData(prev => ({ ...prev, owner: e.target.value }))}
+                    className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-slate-900 text-sm focus:ring-2 focus:ring-ring focus:outline-none"
+                    placeholder={t('scope.fieldOwnerPlaceholder')}
+                  />
+                </div>
+                <label className="flex items-center gap-2 cursor-pointer mt-5">
+                  <input
+                    type="checkbox"
+                    checked={formData.is_critical}
+                    onChange={e => setFormData(prev => ({ ...prev, is_critical: e.target.checked }))}
+                    className="w-4 h-4 rounded border-slate-300 bg-white text-cyan-500 focus:ring-cyan-500"
+                  />
+                  <span className="text-sm text-slate-500">{t('scope.fieldCritical')}</span>
+                </label>
+              </div>
+              <div className="flex items-center gap-3 pt-2">
+                <Button onClick={handleSubmit}>{editingId ? t('common.save') : t('scope.addProcess')}</Button>
+                <button onClick={() => setShowForm(false)} className="text-sm text-slate-500 hover:text-slate-900">
+                  {t('common.cancel')}
+                </button>
+              </div>
             </div>
-            <div className="flex items-center gap-3 pt-2">
-              <Button onClick={handleSubmit}>{editingId ? t('common.save') : t('scope.addProcess')}</Button>
-              <button onClick={() => setShowForm(false)} className="text-sm text-[#CBD8E8] hover:text-white">
-                {t('common.cancel')}
-              </button>
-            </div>
-          </div>
-        </Card>
-      )}
+          </Card>
+        )}
 
-      {/* Processes View */}
-      {viewMode === 'processes' && (
-        <>
-          {processes.length === 0 ? (
-            <Card>
-              <div className="text-center py-16">
-                <Target size={48} className="text-navy-500 mx-auto mb-4" />
-                <h3 className="text-lg font-bold font-syne text-white mb-2">{t('scope.emptyTitle')}</h3>
-                <p className="text-[14px] text-[#CBD8E8] max-w-md mx-auto mb-6">{t('scope.emptyDescription')}</p>
-                <Button onClick={openCreateForm}>
-                  <Plus size={16} className="mr-1" />
-                  {t('scope.addFirstProcess')}
-                </Button>
+        {/* Processes View */}
+        {viewMode === 'processes' && (
+          <>
+            {processes.length === 0 ? (
+              <div className="bg-card border border-border rounded-lg">
+                <EmptyState
+                  icon={<Target />}
+                  title={t('scope.emptyTitle')}
+                  description={t('scope.emptyDescription')}
+                  action={
+                    <Button onClick={openCreateForm} icon={<Plus size={16} />}>
+                      {t('scope.addFirstProcess')}
+                    </Button>
+                  }
+                />
               </div>
-            </Card>
-          ) : (
-            <div className="space-y-3">
-              {processes.map(bp => {
-                const isExpanded = expandedId === bp.id
-                const linkedCount = bp.controls.length
-                const applicableCount = bp.controls.filter(c => c.applicable).length
-                return (
-                  <Card key={bp.id}>
-                    <div className="flex items-center justify-between">
-                      <div
-                        className="flex items-center gap-3 flex-1 cursor-pointer"
-                        onClick={() => setExpandedId(isExpanded ? null : bp.id)}
-                      >
-                        {isExpanded ? (
-                          <ChevronDown size={18} className="text-cyan-400" />
-                        ) : (
-                          <ChevronRight size={18} className="text-[#94b4d1]" />
-                        )}
-                        <div>
-                          <div className="flex items-center gap-2">
-                            <h3 className="text-[15px] font-semibold text-white">{bp.name}</h3>
-                            {bp.isCritical && (
-                              <span className="text-[10px] px-2 py-0.5 rounded-full bg-red-500/10 text-red-400 border border-red-500/20 font-medium">
-                                {t('scope.badgeCritical')}
-                              </span>
-                            )}
-                          </div>
-                          {bp.description && (
-                            <p className="text-xs text-[#94b4d1] mt-0.5">{bp.description}</p>
+            ) : (
+              <div className="space-y-3">
+                {processes.map(bp => {
+                  const isExpanded = expandedId === bp.id
+                  const linkedCount = bp.controls.length
+                  const applicableCount = bp.controls.filter(c => c.applicable).length
+                  return (
+                    <Card key={bp.id}>
+                      <div className="flex items-center justify-between">
+                        <div
+                          className="flex items-center gap-3 flex-1 cursor-pointer"
+                          onClick={() => setExpandedId(isExpanded ? null : bp.id)}
+                        >
+                          {isExpanded ? (
+                            <ChevronDown size={18} className="text-cyan-600" />
+                          ) : (
+                            <ChevronRight size={18} className="text-slate-400" />
                           )}
-                          <div className="flex items-center gap-4 mt-1 text-xs text-[#94b4d1]">
-                            {bp.owner && <span>{t('scope.owner')}: {bp.owner}</span>}
-                            <span>{linkedCount} {t('scope.controlsLinked')}</span>
-                            <span>{applicableCount} {t('scope.applicable')}</span>
+                          <div>
+                            <div className="flex items-center gap-2">
+                              <h3 className="text-base font-semibold text-slate-900">{bp.name}</h3>
+                              {bp.isCritical && (
+                                <Badge variant="danger" size="sm">
+                                  {t('scope.badgeCritical')}
+                                </Badge>
+                              )}
+                            </div>
+                            {bp.description && (
+                              <p className="text-xs text-slate-400 mt-0.5">{bp.description}</p>
+                            )}
+                            <div className="flex items-center gap-4 mt-1 text-xs text-slate-400">
+                              {bp.owner && <span>{t('scope.owner')}: {bp.owner}</span>}
+                              <span>{linkedCount} {t('scope.controlsLinked')}</span>
+                              <span>{applicableCount} {t('scope.applicable')}</span>
+                            </div>
                           </div>
                         </div>
+                        <div className="flex items-center gap-2">
+                          <button
+                            onClick={() => openEditForm(bp)}
+                            className="p-2 text-slate-400 hover:text-cyan-600 transition-colors"
+                          >
+                            <Pencil size={15} />
+                          </button>
+                          <button
+                            onClick={() => handleDelete(bp.id)}
+                            className="p-2 text-slate-400 hover:text-red-600 transition-colors"
+                          >
+                            <Trash2 size={15} />
+                          </button>
+                        </div>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <button
-                          onClick={() => openEditForm(bp)}
-                          className="p-2 text-[#94b4d1] hover:text-cyan-400 transition-colors"
-                        >
-                          <Pencil size={15} />
-                        </button>
-                        <button
-                          onClick={() => handleDelete(bp.id)}
-                          className="p-2 text-[#94b4d1] hover:text-red-400 transition-colors"
-                        >
-                          <Trash2 size={15} />
-                        </button>
-                      </div>
-                    </div>
 
-                    {/* Expanded: control linking */}
-                    {isExpanded && (
-                      <div className="mt-4 pt-4 border-t border-navy-700/50">
-                        <h4 className="text-sm font-semibold text-[#CBD8E8] mb-3">{t('scope.controlMapping')}</h4>
-                        <div className="space-y-1 max-h-[400px] overflow-y-auto">
-                          {baseControls.map(ctrl => {
-                            const linked = bp.controls.find(c => c.controlId === ctrl.controlId)
-                            const isLinked = !!linked
-                            return (
-                              <div
-                                key={ctrl.controlId}
-                                className={`flex items-center justify-between px-3 py-2 rounded-lg transition-colors ${
-                                  isLinked ? 'bg-cyan-500/5 border border-cyan-500/10' : 'hover:bg-navy-800/50'
-                                }`}
-                              >
-                                <div className="flex items-center gap-3 flex-1 min-w-0">
-                                  <input
-                                    type="checkbox"
-                                    checked={isLinked}
-                                    onChange={() => handleToggleControl(bp.id, ctrl.controlId, isLinked)}
-                                    className="w-4 h-4 rounded border-navy-600 bg-navy-800 text-cyan-500 focus:ring-cyan-500 shrink-0"
-                                  />
-                                  <div className="min-w-0">
-                                    <span className="text-sm text-white">{ctrl.controlId}</span>
-                                    <span className="text-sm text-[#94b4d1] ml-2 truncate">{ctrl.title}</span>
+                      {/* Expanded: control linking */}
+                      {isExpanded && (
+                        <div className="mt-4 pt-4 border-t border-slate-200">
+                          <h4 className="text-sm font-semibold text-slate-500 mb-3">{t('scope.controlMapping')}</h4>
+                          <div className="space-y-1 max-h-[400px] overflow-y-auto">
+                            {baseControls.map(ctrl => {
+                              const linked = bp.controls.find(c => c.controlId === ctrl.controlId)
+                              const isLinked = !!linked
+                              return (
+                                <div
+                                  key={ctrl.controlId}
+                                  className={`flex items-center justify-between px-3 py-2 rounded-lg transition-colors ${
+                                    isLinked ? 'bg-cyan-50 border border-cyan-100' : 'hover:bg-slate-50'
+                                  }`}
+                                >
+                                  <div className="flex items-center gap-3 flex-1 min-w-0">
+                                    <input
+                                      type="checkbox"
+                                      checked={isLinked}
+                                      onChange={() => handleToggleControl(bp.id, ctrl.controlId, isLinked)}
+                                      className="w-4 h-4 rounded border-slate-300 bg-white text-cyan-500 focus:ring-cyan-500 shrink-0"
+                                    />
+                                    <div className="min-w-0">
+                                      <span className="text-sm text-slate-900">{ctrl.controlId}</span>
+                                      <span className="text-sm text-slate-400 ml-2 truncate">{ctrl.title}</span>
+                                    </div>
+                                    <span className={`text-[10px] px-1.5 py-0.5 rounded font-medium shrink-0 ${
+                                      ctrl.severity === 'critical' ? 'bg-red-50 text-red-600' :
+                                      ctrl.severity === 'high' ? 'bg-orange-50 text-orange-600' :
+                                      'bg-amber-50 text-amber-600'
+                                    }`}>
+                                      {ctrl.severity}
+                                    </span>
                                   </div>
-                                  <span className={`text-[10px] px-1.5 py-0.5 rounded font-medium shrink-0 ${
-                                    ctrl.severity === 'critical' ? 'bg-red-500/10 text-red-400' :
-                                    ctrl.severity === 'high' ? 'bg-orange-500/10 text-orange-400' :
-                                    'bg-yellow-500/10 text-yellow-400'
-                                  }`}>
-                                    {ctrl.severity}
-                                  </span>
+                                  {isLinked && (
+                                    <button
+                                      onClick={() => handleToggleApplicability(bp.id, ctrl.controlId, !linked!.applicable)}
+                                      className={`text-xs px-2 py-1 rounded transition-colors shrink-0 ml-2 ${
+                                        linked!.applicable
+                                          ? 'bg-emerald-50 text-emerald-600 border border-emerald-200'
+                                          : 'bg-slate-100 text-slate-400 border border-slate-300'
+                                      }`}
+                                    >
+                                      {linked!.applicable ? t('scope.applicableYes') : t('scope.applicableNo')}
+                                    </button>
+                                  )}
                                 </div>
-                                {isLinked && (
-                                  <button
-                                    onClick={() => handleToggleApplicability(bp.id, ctrl.controlId, !linked!.applicable)}
-                                    className={`text-xs px-2 py-1 rounded transition-colors shrink-0 ml-2 ${
-                                      linked!.applicable
-                                        ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
-                                        : 'bg-navy-700 text-[#94b4d1] border border-navy-600'
-                                    }`}
-                                  >
-                                    {linked!.applicable ? t('scope.applicableYes') : t('scope.applicableNo')}
-                                  </button>
-                                )}
-                              </div>
-                            )
-                          })}
-                        </div>
-                      </div>
-                    )}
-                  </Card>
-                )
-              })}
-            </div>
-          )}
-        </>
-      )}
-
-      {/* Statement of Applicability View */}
-      {viewMode === 'soa' && (
-        <Card>
-          <div className="flex items-center gap-2 mb-4">
-            <FileText size={18} className="text-cyan-400" />
-            <h3 className="text-lg font-bold font-syne text-white">{t('scope.soaTitle')}</h3>
-          </div>
-          <p className="text-sm text-[#CBD8E8] mb-4">{t('scope.soaDescription')}</p>
-
-          {soaEntries.length === 0 ? (
-            <div className="text-center py-8 text-[#94b4d1]">{t('scope.soaEmpty')}</div>
-          ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b border-navy-700/50">
-                    <th className="text-left py-2 px-3 text-[#94b4d1] font-medium">{t('scope.soaColControl')}</th>
-                    <th className="text-left py-2 px-3 text-[#94b4d1] font-medium">{t('scope.soaColTitle')}</th>
-                    <th className="text-center py-2 px-3 text-[#94b4d1] font-medium">{t('scope.soaColApplicable')}</th>
-                    <th className="text-left py-2 px-3 text-[#94b4d1] font-medium">{t('scope.soaColProcesses')}</th>
-                    <th className="text-left py-2 px-3 text-[#94b4d1] font-medium">{t('scope.soaColJustification')}</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {soaEntries.map(entry => (
-                    <tr key={entry.controlId} className="border-b border-navy-800/50 hover:bg-navy-800/30">
-                      <td className="py-2 px-3 text-white font-mono text-xs">{entry.controlId}</td>
-                      <td className="py-2 px-3 text-[#CBD8E8]">{entry.controlTitle}</td>
-                      <td className="py-2 px-3 text-center">
-                        {entry.applicable ? (
-                          <CheckCircle size={16} className="text-emerald-400 mx-auto" />
-                        ) : (
-                          <XCircle size={16} className="text-red-400 mx-auto" />
-                        )}
-                      </td>
-                      <td className="py-2 px-3">
-                        {entry.linkedProcesses.length > 0 ? (
-                          <div className="flex flex-wrap gap-1">
-                            {entry.linkedProcesses.map((name, i) => (
-                              <span key={i} className="text-xs px-2 py-0.5 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">
-                                {name}
-                              </span>
-                            ))}
+                              )
+                            })}
                           </div>
-                        ) : (
-                          <span className="text-xs text-[#94b4d1]">-</span>
-                        )}
-                      </td>
-                      <td className="py-2 px-3 text-[#94b4d1] text-xs">{entry.justification || '-'}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+                        </div>
+                      )}
+                    </Card>
+                  )
+                })}
+              </div>
+            )}
+          </>
+        )}
+
+        {/* Statement of Applicability View */}
+        {viewMode === 'soa' && (
+          <Card>
+            <div className="flex items-center gap-2 mb-4">
+              <FileText size={18} className="text-cyan-600" />
+              <h3 className="text-lg font-semibold text-slate-900">{t('scope.soaTitle')}</h3>
             </div>
-          )}
-        </Card>
-      )}
-    </div>
+            <p className="text-sm text-slate-500 mb-4">{t('scope.soaDescription')}</p>
+
+            {soaEntries.length === 0 ? (
+              <div className="text-center py-8 text-slate-400">{t('scope.soaEmpty')}</div>
+            ) : (
+              <div className="overflow-x-auto">
+                <Table>
+                  <TableHead>
+                    <tr>
+                      <TableHeaderCell>{t('scope.soaColControl')}</TableHeaderCell>
+                      <TableHeaderCell>{t('scope.soaColTitle')}</TableHeaderCell>
+                      <TableHeaderCell align="center">{t('scope.soaColApplicable')}</TableHeaderCell>
+                      <TableHeaderCell>{t('scope.soaColProcesses')}</TableHeaderCell>
+                      <TableHeaderCell>{t('scope.soaColJustification')}</TableHeaderCell>
+                    </tr>
+                  </TableHead>
+                  <TableBody>
+                    {soaEntries.map(entry => (
+                      <TableRow key={entry.controlId}>
+                        <TableCell className="font-mono text-xs">{entry.controlId}</TableCell>
+                        <TableCell className="text-muted-foreground">{entry.controlTitle}</TableCell>
+                        <TableCell align="center">
+                          {entry.applicable ? (
+                            <CheckCircle size={16} className="text-emerald-600 mx-auto" />
+                          ) : (
+                            <XCircle size={16} className="text-red-600 mx-auto" />
+                          )}
+                        </TableCell>
+                        <TableCell>
+                          {entry.linkedProcesses.length > 0 ? (
+                            <div className="flex flex-wrap gap-1">
+                              {entry.linkedProcesses.map((name, i) => (
+                                <span key={i} className="text-xs px-2 py-0.5 rounded-full bg-cyan-50 text-cyan-600 border border-cyan-200">
+                                  {name}
+                                </span>
+                              ))}
+                            </div>
+                          ) : (
+                            <span className="text-xs text-slate-400">-</span>
+                          )}
+                        </TableCell>
+                        <TableCell className="text-muted-foreground text-xs">{entry.justification || '-'}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            )}
+          </Card>
+        )}
+      </PageContent>
+    </PageContainer>
   )
 }
