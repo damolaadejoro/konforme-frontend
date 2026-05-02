@@ -1,47 +1,58 @@
 import React from 'react'
 
+/* Logo — Sans-serif wordmark with green dot */
+
+interface LogoMarkProps {
+  size?: 'sm' | 'md' | 'lg'
+  inverted?: boolean
+}
+
+const SIZES = {
+  sm: { mark: 20, kSize: 11, dot: 4 },
+  md: { mark: 24, kSize: 13, dot: 5 },
+  lg: { mark: 32, kSize: 18, dot: 6 },
+} as const
+
+export function LogoMark({ size = 'md', inverted }: LogoMarkProps) {
+  const { mark, kSize, dot } = SIZES[size]
+  return (
+    <div className="relative inline-flex flex-shrink-0" style={{ width: mark, height: mark }}>
+      <div
+        className={`w-full h-full flex items-center justify-center rounded-md ${inverted ? 'bg-white' : 'bg-navy'}`}
+        style={{ width: mark, height: mark }}
+      >
+        <span
+          className={`font-semibold leading-none ${inverted ? 'text-navy' : 'text-white'}`}
+          style={{ fontSize: kSize }}
+        >
+          K
+        </span>
+      </div>
+      <div
+        className="absolute bg-green rounded-full"
+        style={{ width: dot, height: dot, bottom: -dot / 3, right: -dot / 3 }}
+      />
+    </div>
+  )
+}
+
 interface LogoProps {
   size?: 'sm' | 'md' | 'lg'
   showText?: boolean
+  inverted?: boolean
 }
 
-export default function Logo({ size = 'md', showText = true }: LogoProps) {
-  const dims = { sm: 28, md: 36, lg: 48 }[size]
-  const textSize = { sm: 'text-base', md: 'text-lg', lg: 'text-2xl' }[size]
+export default function Logo({ size = 'md', showText = true, inverted }: LogoProps) {
+  if (!showText) return <LogoMark size={size} inverted={inverted} />
+
+  const textSize = size === 'lg' ? 'text-xl' : size === 'sm' ? 'text-sm' : 'text-base'
 
   return (
-    <div className="flex items-center gap-2.5">
-      <svg
-        width={dims}
-        height={dims}
-        viewBox="0 0 200 200"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-        className="flex-shrink-0"
-      >
-        {/* Background circle */}
-        <circle cx="100" cy="100" r="100" fill="#0B1F3A" />
-        {/* Shield shape */}
-        <path
-          d="M100 30L40 58V100C40 137 64 170 100 182C136 170 160 137 160 100V58L100 30Z"
-          fill="#0B1F3A"
-          stroke="#00C2D4"
-          strokeWidth="6"
-        />
-        {/* K lettermark */}
-        <path
-          d="M72 72V128M72 100L104 72M72 100L108 128"
-          stroke="#00C2D4"
-          strokeWidth="10"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-      </svg>
-      {showText && (
-        <span className={`font-syne font-bold ${textSize} text-white tracking-tight`}>
-          Konf<span className="text-cyan-500">orme</span>
-        </span>
-      )}
+    <div className="flex items-center gap-2">
+      <LogoMark size={size} inverted={inverted} />
+      <span className={`font-semibold ${textSize} ${inverted ? 'text-white' : 'text-foreground'} tracking-tight`}>
+        Konforme
+      </span>
     </div>
   )
 }
