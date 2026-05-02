@@ -18,7 +18,7 @@
     "sectionReport": "REPORT",
     "team": "Team",
     "scope": "Scope",
-    "evidence": "Evidence",
+    "evidence": "Evidence Library",
     "activity": "Activity"
   },
   "common": {
@@ -1073,7 +1073,7 @@
     "instructionNoDescription": "Control is not implemented or not documented",
     "instructionNa": "N/A",
     "instructionNaDescription": "Not applicable to your organization",
-    "autoSaveNote": "Your answers are saved automatically to browser storage.",
+    "autoSaveNote": "Your answers are saved automatically.",
     "responseYes": "Yes",
     "responsePartial": "Partial",
     "responseNo": "No",
@@ -1138,7 +1138,7 @@
     "instructionNoDescription": "Control is not implemented or not documented",
     "instructionNa": "N/A",
     "instructionNaDescription": "Not applicable to your organization",
-    "autoSaveNote": "Your answers are saved automatically to browser storage.",
+    "autoSaveNote": "Your answers are saved automatically.",
     "responseYes": "Yes",
     "responsePartial": "Partial",
     "responseNo": "No",

@@ -1235,6 +1235,7 @@ export interface EvidenceLinkResult {
 }
 
 export interface EvidenceLinkedEntity {
+  linkId: string
   entityType: string
   entityId: string
   entityName: string
@@ -1764,4 +1765,58 @@ export async function instantiateBaseline(
     method: 'POST',
     body: body ? JSON.stringify(body) : undefined,
   })
+}
+
+// --- Reports Archive ---
+
+export interface ReportArchiveItem {
+  id: string
+  documentId: string
+  period: string
+  periodStart: string
+  periodEnd: string
+  aggregateScore: number
+  technicalScore: number
+  humanFactorScore: number
+  grade: string
+  maturityLevel: number
+  fileSizeBytes: number
+  contentHash: string | null
+  generatedAt: string
+  generatedByUserId: string | null
+  downloadUrl: string
+}
+
+export async function fetchReports(accountId: string): Promise<ReportArchiveItem[]> {
+  return apiFetch<ReportArchiveItem[]>(`/reports/${accountId}`)
+}
+
+export async function generateReportRecord(
+  accountId: string,
+  body: { period: string; period_start: string; period_end: string },
+): Promise<ReportArchiveItem> {
+  return apiFetch<ReportArchiveItem>(`/reports/${accountId}/generate`, {
+    method: 'POST',
+    body: JSON.stringify(body),
+  })
+}
+
+export async function deleteReportRecord(accountId: string, reportId: string): Promise<void> {
+  await apiFetch<void>(`/reports/${accountId}/${reportId}`, {
+    method: 'DELETE',
+  })
+}
+
+export async function downloadReportPdf(accountId: string, reportId: string, documentId: string): Promise<void> {
+  const res = await fetch(`${API_BASE}/reports/${accountId}/${reportId}/download`, {
+    credentials: 'include',
+  })
+  if (!res.ok) throw new Error(`Download failed: ${res.status}`)
+  const blob = await res.blob()
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = `${documentId}.pdf`
+  a.click()
+  URL.revokeObjectURL(url)
 }

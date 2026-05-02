@@ -1,4 +1,5 @@
-import React, { useMemo } from 'react'
+import React, { useMemo, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { useControlsContext } from '../context/ControlsContext'
 import { useScore } from '../context/ScoreContext'
@@ -12,7 +13,8 @@ import ScoreReadout from '../components/data/ScoreReadout'
 import ControlMatrix from '../components/data/ControlMatrix'
 import FindingsList from '../components/data/FindingsList'
 import RemediationLedger from '../components/data/RemediationLedger'
-import { RefreshCw, Download } from 'lucide-react'
+import { RefreshCw, Download, Loader2 } from 'lucide-react'
+import { generateReportRecord, downloadReportPdf } from '../services/api'
 
 const ARTICLE_LABELS: Record<string, string> = {
   a: 'Risk analysis & ISMS policies',
@@ -44,14 +46,16 @@ function formatDue(d: string | null | undefined): string {
 }
 
 export default function NIS2Overview() {
-  const { accountName } = useAuth()
+  const navigate = useNavigate()
+  const { accountId, accountName } = useAuth()
   const { articleAreas } = useControlsContext()
   const { overallScore, technicalScore, assessmentScore, backendScore } = useScore()
   const { answeredCount, totalQuestions } = useAssessment()
   const { scanData } = useDashboardScan()
   const { tasks: remediationTasks } = useRemediation()
 
-  const grade = (backendScore?.grade as any) || 'B'
+  const grade = (backendScore?.grade as any) || 'F'
+  // TODO: Wire to real delta when backend tracks score history (no endpoint yet)
   const delta = 0
   const maturityLevel = Math.min(5, Math.max(1, Math.round(overallScore / 20))) as 1 | 2 | 3 | 4 | 5
 
@@ -98,6 +102,34 @@ export default function NIS2Overview() {
   const technicalChecks = scanData?.totalChecks || 0
   const technicalFailures = scanData?.failed || 0
 
+  const [exporting, setExporting] = useState(false)
+
+  const handleExportPdf = async () => {
+    if (!accountId) return
+    setExporting(true)
+    try {
+      const now = new Date()
+      const year = now.getFullYear()
+      const quarter = Math.floor(now.getMonth() / 3) + 1
+      const qStart = new Date(year, (quarter - 1) * 3, 1)
+      const qEnd = new Date(year, quarter * 3, 0)
+      const period = `Q${quarter} ${year}`
+      const periodStart = qStart.toISOString().split('T')[0]
+      const periodEnd = qEnd.toISOString().split('T')[0]
+      const report = await generateReportRecord(accountId, {
+        period,
+        period_start: periodStart,
+        period_end: periodEnd,
+      })
+      await downloadReportPdf(accountId, report.id, report.documentId)
+    } catch (e: any) {
+      console.error('Export PDF failed:', e)
+      alert(e.message || 'Failed to generate report')
+    } finally {
+      setExporting(false)
+    }
+  }
+
   return (
     <PageContainer>
       <PageHeader
@@ -105,8 +137,10 @@ export default function NIS2Overview() {
         description="Overview of your NIS2 compliance posture."
         actions={
           <>
-            <Button variant="secondary" icon={<RefreshCw size={16} />} onClick={() => {}}>Re-scan</Button>
-            <Button icon={<Download size={16} />} onClick={() => {}}>Export PDF</Button>
+            <Button variant="secondary" icon={<RefreshCw size={16} />} onClick={() => navigate('/scan')}>Re-scan</Button>
+            <Button icon={<Download size={16} />} onClick={handleExportPdf} disabled={exporting}>
+              {exporting ? 'Generating...' : 'Export PDF'}
+            </Button>
           </>
         }
       />
@@ -150,6 +184,7 @@ export default function NIS2Overview() {
         {remediationItems.length > 0 && (
           <div>
             <h2 className="text-lg font-semibold text-foreground mb-4">Remediation Queue</h2>
+            {/* TODO: Compute MTTR from real task close timestamps when backend supports it */}
             <RemediationLedger
               items={remediationItems}
               meanTimeToResolutionDays={3.2}

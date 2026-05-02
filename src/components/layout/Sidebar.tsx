@@ -3,137 +3,138 @@ import { NavLink } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import {
   LayoutDashboard,
-  Radar,
-  FileText,
-  Settings,
-  ChevronRight,
-  Shield,
-  Users,
-  UsersRound,
+  Cloud,
   ClipboardCheck,
   ListTodo,
-  Target,
+  Users,
+  FileText,
+  Library,
   Archive,
-  History,
+  Globe,
+  Settings,
+  UserCog,
 } from 'lucide-react'
 import Logo from './Logo'
-import { Tooltip } from '../ui'
+import { useAuth } from '../../context/AuthContext'
 
-const navGroups = [
-  {
-    sectionKey: 'nav.sectionOverview',
-    items: [
-      { path: '/', labelKey: 'nav.dashboard', icon: LayoutDashboard, tooltip: 'Your compliance dashboard — overall scores, gaps, and coverage' },
-    ],
-  },
-  {
-    sectionKey: 'nav.sectionAssess',
-    items: [
-      { path: '/scope', labelKey: 'nav.scope', icon: Target, tooltip: 'Define critical business processes and map controls for your Statement of Applicability' },
-      { path: '/controls', labelKey: 'nav.controls', icon: Shield, tooltip: 'Manage all NIS2 controls — assign owners, track status, upload evidence' },
-      { path: '/assessment', labelKey: 'nav.assessment', icon: ClipboardCheck, tooltip: 'Self-assessment questionnaire to evaluate your NIS2 maturity' },
-      { path: '/scan', labelKey: 'nav.scan', icon: Radar, tooltip: 'Run automated cloud infrastructure scans (AWS & Azure) against NIS2 requirements' },
-    ],
-  },
-  {
-    sectionKey: 'nav.sectionRemediate',
-    items: [
-      { path: '/remediation', labelKey: 'nav.remediation', icon: ListTodo, tooltip: 'Action items to close compliance gaps from your assessment' },
-      { path: '/people-tasks', labelKey: 'nav.peopleTasks', icon: Users, tooltip: 'Employee training campaigns and policy acknowledgments' },
-    ],
-  },
-  {
-    sectionKey: 'nav.sectionReport',
-    items: [
-      { path: '/reports', labelKey: 'nav.reports', icon: FileText, tooltip: 'Generate compliance audit reports' },
-      { path: '/evidence', labelKey: 'nav.evidence', icon: Archive, tooltip: 'Organisation-wide evidence library for all compliance artifacts' },
-      { path: '/activity', labelKey: 'nav.activity', icon: History, tooltip: 'Tamper-evident audit trail of all compliance actions' },
-    ],
-  },
+const complianceItems = [
+  { icon: LayoutDashboard, path: '/',             labelKey: 'nav.dashboard' },
+  { icon: Cloud,           path: '/scan',         labelKey: 'nav.scan' },
+  { icon: ClipboardCheck,  path: '/assessment',   labelKey: 'nav.assessment' },
+  { icon: Library,         path: '/controls',     labelKey: 'nav.controls' },
+  { icon: ListTodo,        path: '/remediation',  labelKey: 'nav.remediation', hasBadge: true },
+  { icon: Users,           path: '/people-tasks', labelKey: 'nav.peopleTasks' },
+  { icon: Archive,         path: '/evidence',     labelKey: 'nav.evidence' },
+  { icon: FileText,        path: '/reports',      labelKey: 'nav.reports' },
+  { icon: Globe,           path: '/scope',        labelKey: 'nav.scope' },
 ]
 
-const settingsItem = { path: '/settings', labelKey: 'nav.settings', icon: Settings, tooltip: 'Account and cloud provider settings' }
-const teamItem = { path: '/team', labelKey: 'nav.team', icon: UsersRound, tooltip: 'Manage team members and roles' }
+const systemItems = [
+  { icon: Settings, path: '/settings', labelKey: 'nav.settings' },
+  { icon: UserCog,  path: '/team',     labelKey: 'nav.team' },
+]
 
-function NavItem({ path, labelKey, icon: Icon, tooltip }: { path: string; labelKey: string; icon: typeof LayoutDashboard; tooltip: string }) {
+interface NavItemProps {
+  icon: React.ElementType
+  path: string
+  labelKey: string
+  badge?: number
+}
+
+function NavItem({ icon: Icon, path, labelKey, badge }: NavItemProps) {
   const { t } = useTranslation()
 
   return (
-    <Tooltip content={tooltip} side="right">
-      <NavLink
-        to={path}
-        end={path === '/'}
-        className={({ isActive }) =>
-          `group flex items-center gap-3 px-3 py-2.5 rounded-lg text-[15px] font-medium transition-all duration-200 ${
-            isActive
-              ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20'
-              : 'text-[#CBD8E8] hover:bg-navy-800 hover:text-white border border-transparent'
-          }`
-        }
-      >
-        {({ isActive }) => (
-          <>
-            <Icon
-              size={18}
-              className={isActive ? 'text-cyan-400' : 'text-[#94b4d1] group-hover:text-white'}
-            />
-            <span className="flex-1">{t(labelKey)}</span>
-            {isActive && (
-              <ChevronRight size={14} className="text-cyan-400" />
-            )}
-          </>
-        )}
-      </NavLink>
-    </Tooltip>
+    <NavLink
+      to={path}
+      end={path === '/'}
+      className={({ isActive }) =>
+        `flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors ${
+          isActive
+            ? 'bg-muted text-foreground font-medium'
+            : 'text-foreground/70 hover:bg-muted hover:text-foreground'
+        }`
+      }
+    >
+      {({ isActive }) => (
+        <>
+          <Icon size={16} className={isActive ? 'text-foreground' : 'text-muted-foreground'} />
+          <span className="flex-1">{t(labelKey)}</span>
+          {badge != null && badge > 0 && (
+            <span className="inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full bg-primary/5 text-primary text-xs font-medium">
+              {badge}
+            </span>
+          )}
+        </>
+      )}
+    </NavLink>
   )
 }
 
-export default function Sidebar() {
-  const { t } = useTranslation()
+interface SidebarProps {
+  milestone?: { date: string; label: string }
+  remediationCount?: number
+}
+
+export default function Sidebar({ milestone, remediationCount }: SidebarProps) {
+  const { accountName } = useAuth()
 
   return (
-    <aside className="w-60 min-h-screen flex flex-col bg-navy-900 border-r border-navy-700/50 fixed left-0 top-0 z-40">
+    <aside className="w-60 min-h-screen flex flex-col bg-card border-r border-border fixed left-0 top-0 z-40">
       {/* Logo */}
-      <div className="px-5 py-5 border-b border-navy-700/50">
+      <div className="px-4 py-4">
         <Logo size="md" />
       </div>
 
-      {/* Nav */}
-      <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
-        {navGroups.map(({ sectionKey, items }) => (
-          <div key={sectionKey}>
-            <div className="text-[10px] uppercase tracking-wider text-navy-500 font-semibold px-3 pt-4 pb-1">
-              {t(sectionKey)}
-            </div>
-            {items.map((item) => (
-              <NavItem key={item.path} {...item} />
-            ))}
+      {/* Workspace */}
+      <div className="px-3 mb-2">
+        <div className="flex items-center gap-2 px-3 py-2 bg-muted rounded-md">
+          <div className="w-6 h-6 bg-navy rounded-md flex items-center justify-center flex-shrink-0">
+            <span className="text-white text-xs font-medium">{(accountName || 'K')[0].toUpperCase()}</span>
           </div>
-        ))}
+          <span className="text-sm font-medium text-foreground truncate">{accountName || 'Workspace'}</span>
+        </div>
+      </div>
 
-        {/* Settings & Team — separate from groups */}
-        <div className="pt-2">
-          <NavItem {...teamItem} />
-          <NavItem {...settingsItem} />
+      {/* Nav */}
+      <nav className="flex-1 overflow-y-auto px-3">
+        <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide px-3 mb-2 mt-4">
+          Compliance
+        </p>
+        <div className="space-y-0.5">
+          {complianceItems.map((item) => (
+            <NavItem
+              key={item.path}
+              icon={item.icon}
+              path={item.path}
+              labelKey={item.labelKey}
+              badge={item.hasBadge ? remediationCount : undefined}
+            />
+          ))}
+        </div>
+
+        <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide px-3 mb-2 mt-6">
+          System
+        </p>
+        <div className="space-y-0.5">
+          {systemItems.map((item) => (
+            <NavItem key={item.path} icon={item.icon} path={item.path} labelKey={item.labelKey} />
+          ))}
         </div>
       </nav>
 
-      {/* NIS2 Badge */}
-      <div className="mx-3 mb-4 p-3 rounded-lg bg-navy-800/60 border border-navy-700/50">
-        <div className="flex items-center gap-2 mb-2">
-          <Shield size={14} className="text-cyan-400" />
-          <span className="text-xs font-semibold text-cyan-400 font-syne">NIS2 FRAMEWORK</span>
+      {/* Bottom milestone */}
+      {milestone && (
+        <div className="px-3 py-3 border-t border-border">
+          <div className="bg-muted rounded-md px-3 py-3">
+            <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-1">Next Milestone</p>
+            <p className="text-sm font-medium text-foreground">{milestone.date}</p>
+            {milestone.label && (
+              <p className="text-xs text-green mt-0.5">{milestone.label}</p>
+            )}
+          </div>
         </div>
-        <p className="text-xs text-[#CBD8E8] leading-relaxed">
-          EU Directive 2022/2555<br />
-          Article 21 — Security measures
-        </p>
-      </div>
-
-      {/* Version */}
-      <div className="px-5 py-3 border-t border-navy-700/50">
-        <p className="text-xs text-[#94b4d1]">v1.0.0 — Beta</p>
-      </div>
+      )}
     </aside>
   )
 }
