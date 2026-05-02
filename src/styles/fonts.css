@@ -1,0 +1,9 @@
+/* ─────────────────────────────────────────────────
+   Konforme — Font Declarations
+   ───────────────────────────────────────────────── */
+
+/* Geist — primary UI font */
+@import '@fontsource-variable/geist';
+
+/* Geist Mono — code, IDs, timestamps */
+@import '@fontsource-variable/geist-mono';
