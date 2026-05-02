@@ -124,9 +124,8 @@
   }
 
   .glass-card {
-    background: rgba(14, 36, 69, 0.8);
-    backdrop-filter: blur(8px);
-    border: 1px solid rgba(0, 194, 212, 0.08);
+    background: rgb(var(--card));
+    border: 1px solid rgb(var(--border));
   }
 
   .glow-cyan {

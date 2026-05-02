@@ -1,6 +1,7 @@
-import React, { useMemo } from 'react'
+import React, { useState, useCallback } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { useControlsContext } from '../context/ControlsContext'
+import { useRemediation } from '../hooks/useRemediation'
 import { useDashboardScan } from '../hooks/useDashboardScan'
 import { PageContainer, PageContent } from '../components/ui/PageContainer'
 import { PageHeader } from '../components/ui/PageHeader'
@@ -15,8 +16,12 @@ import {
   TableCell,
 } from '../components/ui/DataTable'
 import FindingsList from '../components/data/FindingsList'
-import { ChevronRight } from 'lucide-react'
+import EvidencePanel from '../components/EvidencePanel'
+import { ChevronDown, ChevronRight, User, Calendar, FileText, Check, AlertCircle, Paperclip, Wrench } from 'lucide-react'
+import type { RemediationTask } from '../types/assessment'
 import type { Control, ControlStatus } from '../types/controls'
+
+const ALL_STATUSES: ControlStatus[] = ['Not Started', 'Planned', 'Partial', 'Implemented']
 
 const ARTICLES: Array<{
   code: string
@@ -36,18 +41,6 @@ const ARTICLES: Array<{
   { code: 'j', letter: '(j)', title: 'HR security & access control', description: 'The use of multi-factor authentication or continuous authentication solutions, secured voice, video and text communications, and secured emergency communication systems.' },
 ]
 
-const CROSSWALK: Record<string, Array<{ iso: string; nist: string }>> = {
-  a: [{ iso: 'A.5.1, A.5.2', nist: 'GV.RM, GV.PO' }],
-  b: [{ iso: 'A.5.24, A.5.25, A.5.26', nist: 'RS.MA, RS.AN, RS.CO' }],
-  c: [{ iso: 'A.5.29, A.5.30', nist: 'RC.RP, PR.IP' }],
-  d: [{ iso: 'A.5.19, A.5.20, A.5.21', nist: 'GV.SC, ID.SC' }],
-  e: [{ iso: 'A.8.8, A.8.9', nist: 'PR.DS, PR.IP, PR.PT' }],
-  f: [{ iso: 'A.8.8, A.5.7', nist: 'ID.RA, RS.MI' }],
-  g: [{ iso: 'A.5.35, A.5.36', nist: 'ID.IM, PR.IP' }],
-  h: [{ iso: 'A.6.3, A.5.10', nist: 'PR.AT, PR.AC' }],
-  i: [{ iso: 'A.8.24', nist: 'PR.DS' }],
-  j: [{ iso: 'A.5.15, A.5.16, A.6.1, A.6.2', nist: 'PR.AC, PR.AA' }],
-}
 
 function statusBadgeVariant(s: ControlStatus): 'success' | 'warning' | 'info' | 'muted' {
   switch (s) {
@@ -79,11 +72,11 @@ function ControlsIndex({ articleAreas }: { articleAreas: any[] }) {
       <PageContent>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {ARTICLES.map((art) => {
-            const area = articleAreas.find(a =>
-              a.article?.toLowerCase().includes(`(${art.code})`) || a.id?.toLowerCase() === art.code
+            const matchingAreas = articleAreas.filter(a =>
+              a.article?.toLowerCase().includes(`(${art.code})`)
             )
-            const pass = area?.implementedCount || 0
-            const total = area?.controlCount || 0
+            const pass = matchingAreas.reduce((sum, a) => sum + (a.implementedCount || 0), 0)
+            const total = matchingAreas.reduce((sum, a) => sum + (a.controlCount || 0), 0)
             const pct = total > 0 ? Math.round((pass / total) * 100) : 0
 
             return (
@@ -115,6 +108,229 @@ function ControlsIndex({ articleAreas }: { articleAreas: any[] }) {
   )
 }
 
+// ─── Inline Control Row ─────────────────────────
+
+function ControlRow({
+  ctrl,
+  onUpdate,
+  remediationTasks,
+}: {
+  ctrl: Control
+  onUpdate: (id: string, updates: Partial<Control>) => Promise<string | null>
+  remediationTasks: RemediationTask[]
+}) {
+  const [expanded, setExpanded] = useState(false)
+  const [saving, setSaving] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [localOwner, setLocalOwner] = useState(ctrl.owner || '')
+  const [localNotes, setLocalNotes] = useState(ctrl.notes || '')
+  const [localDueDate, setLocalDueDate] = useState(ctrl.dueDate || '')
+
+  const handleStatusChange = useCallback(async (newStatus: ControlStatus) => {
+    setSaving(true)
+    setError(null)
+    const err = await onUpdate(ctrl.id, { status: newStatus })
+    if (err) setError(err)
+    setSaving(false)
+  }, [ctrl.id, onUpdate])
+
+  const handleFieldSave = useCallback(async (field: 'owner' | 'notes' | 'dueDate', value: string) => {
+    setSaving(true)
+    setError(null)
+    const err = await onUpdate(ctrl.id, { [field]: value || (field === 'dueDate' ? null : '') })
+    if (err) setError(err)
+    setSaving(false)
+  }, [ctrl.id, onUpdate])
+
+  return (
+    <>
+      <tr
+        className="group cursor-pointer hover:bg-muted/50 transition-colors"
+        onClick={() => setExpanded(!expanded)}
+      >
+        <TableCell className="font-mono text-muted-foreground text-xs">
+          <div className="flex items-center gap-1.5">
+            <ChevronRight
+              size={14}
+              className={`text-muted-foreground transition-transform ${expanded ? 'rotate-90' : ''}`}
+            />
+            {ctrl.id}
+          </div>
+        </TableCell>
+        <TableCell>
+          <div>
+            <span className="text-sm text-foreground">{ctrl.title}</span>
+            {ctrl.owner && (
+              <span className="ml-2 text-xs text-muted-foreground">
+                — {ctrl.owner}
+              </span>
+            )}
+          </div>
+        </TableCell>
+        <TableCell>
+          <select
+            value={ctrl.status}
+            onClick={e => e.stopPropagation()}
+            onChange={e => handleStatusChange(e.target.value as ControlStatus)}
+            disabled={saving}
+            className={`text-xs font-medium px-2 py-1 rounded-md border cursor-pointer focus:outline-none focus:ring-1 focus:ring-primary/40 transition-colors ${
+              ctrl.status === 'Implemented'
+                ? 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-500/30'
+                : ctrl.status === 'Partial'
+                ? 'bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-500/30'
+                : ctrl.status === 'Planned'
+                ? 'bg-blue-500/10 text-blue-700 dark:text-blue-400 border-blue-500/30'
+                : 'bg-muted text-muted-foreground border-border'
+            }`}
+          >
+            {ALL_STATUSES.map(s => (
+              <option key={s} value={s}>{statusLabel(s)}</option>
+            ))}
+          </select>
+        </TableCell>
+        <TableCell align="right" className="text-muted-foreground text-xs">
+          {ctrl.lastUpdated
+            ? new Date(ctrl.lastUpdated).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })
+            : '—'}
+        </TableCell>
+      </tr>
+
+      {/* Expanded detail panel */}
+      {expanded && (
+        <tr>
+          <td colSpan={4} className="px-4 pb-4 pt-0">
+            <div className="ml-6 p-4 rounded-lg bg-muted/30 border border-border space-y-4">
+              {error && (
+                <div className="flex items-center gap-2 p-2.5 rounded-md bg-red-500/10 border border-red-500/20">
+                  <AlertCircle size={14} className="text-red-500 shrink-0" />
+                  <span className="text-xs text-red-600 dark:text-red-400">{error}</span>
+                </div>
+              )}
+
+              {ctrl.description && (
+                <p className="text-xs text-muted-foreground leading-relaxed">{ctrl.description}</p>
+              )}
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                {/* Owner */}
+                <div>
+                  <label className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground mb-1.5">
+                    <User size={12} /> Owner
+                  </label>
+                  <input
+                    type="text"
+                    value={localOwner}
+                    onChange={e => setLocalOwner(e.target.value)}
+                    onBlur={() => {
+                      if (localOwner !== (ctrl.owner || '')) handleFieldSave('owner', localOwner)
+                    }}
+                    placeholder="Assign owner..."
+                    className="w-full px-2.5 py-1.5 text-xs rounded-md border border-border bg-background text-foreground placeholder-muted-foreground focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20"
+                  />
+                </div>
+
+                {/* Due date */}
+                <div>
+                  <label className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground mb-1.5">
+                    <Calendar size={12} /> Due date
+                  </label>
+                  <input
+                    type="date"
+                    value={localDueDate}
+                    onChange={e => {
+                      setLocalDueDate(e.target.value)
+                      handleFieldSave('dueDate', e.target.value)
+                    }}
+                    className="w-full px-2.5 py-1.5 text-xs rounded-md border border-border bg-background text-foreground focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20"
+                  />
+                </div>
+
+                {/* Status display */}
+                <div>
+                  <label className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground mb-1.5">
+                    <Check size={12} /> Status
+                  </label>
+                  <Badge variant={statusBadgeVariant(ctrl.status)} size="sm">
+                    {statusLabel(ctrl.status)}
+                  </Badge>
+                </div>
+              </div>
+
+              {/* Notes */}
+              <div>
+                <label className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground mb-1.5">
+                  <FileText size={12} /> Notes
+                </label>
+                <textarea
+                  value={localNotes}
+                  onChange={e => setLocalNotes(e.target.value)}
+                  onBlur={() => {
+                    if (localNotes !== (ctrl.notes || '')) handleFieldSave('notes', localNotes)
+                  }}
+                  placeholder="Add notes, evidence references, or implementation details..."
+                  rows={2}
+                  className="w-full px-2.5 py-1.5 text-xs rounded-md border border-border bg-background text-foreground placeholder-muted-foreground focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 resize-y"
+                />
+              </div>
+
+              {/* Evidence / Documents */}
+              <div>
+                <label className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground mb-1.5">
+                  <Paperclip size={12} /> Evidence & Documents
+                </label>
+                <EvidencePanel entityType="control" entityId={ctrl.id} />
+              </div>
+
+              {/* Related Remediation Tasks */}
+              {remediationTasks.length > 0 && (
+                <div>
+                  <label className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground mb-1.5">
+                    <Wrench size={12} /> Remediation Tasks
+                  </label>
+                  <div className="space-y-1.5">
+                    {remediationTasks.map(rt => (
+                      <Link
+                        key={rt.id}
+                        to="/remediation"
+                        className="flex items-center gap-2.5 px-3 py-2 rounded-md bg-muted/50 border border-border text-xs group hover:bg-muted transition-colors"
+                      >
+                        <span className={`px-1.5 py-0.5 rounded-full font-medium ${
+                          rt.priority === 'critical' ? 'bg-red-500/10 text-red-600' :
+                          rt.priority === 'high' ? 'bg-amber-500/10 text-amber-600' :
+                          'bg-muted text-muted-foreground'
+                        }`}>
+                          {rt.priority === 'critical' ? 'P0' : rt.priority === 'high' ? 'P1' : 'P2'}
+                        </span>
+                        <span className="flex-1 text-foreground truncate">{rt.title}</span>
+                        <span className={`px-1.5 py-0.5 rounded text-[10px] font-medium ${
+                          rt.status === 'completed' ? 'bg-emerald-500/10 text-emerald-600' :
+                          rt.status === 'in_progress' ? 'bg-blue-500/10 text-blue-600' :
+                          'bg-muted text-muted-foreground'
+                        }`}>
+                          {rt.status === 'completed' ? 'Done' : rt.status === 'in_progress' ? 'In progress' : 'Open'}
+                        </span>
+                        {rt.dueDate && (
+                          <span className="text-muted-foreground">
+                            {new Date(rt.dueDate).toLocaleDateString('en-GB', { day: '2-digit', month: 'short' })}
+                          </span>
+                        )}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {saving && (
+                <p className="text-[10px] text-muted-foreground">Saving...</p>
+              )}
+            </div>
+          </td>
+        </tr>
+      )}
+    </>
+  )
+}
+
 // ─── Detail View ───────────────────────────────
 
 function ControlsDetail({
@@ -122,11 +338,15 @@ function ControlsDetail({
   controls,
   articleAreas,
   scanFindings,
+  onUpdateControl,
+  remediationTasks,
 }: {
   code: string
   controls: Control[]
   articleAreas: any[]
   scanFindings: any[]
+  remediationTasks: RemediationTask[]
+  onUpdateControl: (id: string, updates: Partial<Control>) => Promise<string | null>
 }) {
   const art = ARTICLES.find(a => a.code === code)
   if (!art) return <p className="text-sm text-muted-foreground">Article not found.</p>
@@ -147,7 +367,10 @@ function ControlsDetail({
       href: '/scan/findings',
     }))
 
-  const crosswalk = CROSSWALK[code] || []
+  const implemented = areaControls.filter(c => c.status === 'Implemented').length
+  const partial = areaControls.filter(c => c.status === 'Partial').length
+  const planned = areaControls.filter(c => c.status === 'Planned').length
+  const notStarted = areaControls.filter(c => c.status === 'Not Started').length
 
   return (
     <PageContainer>
@@ -160,35 +383,49 @@ function ControlsDetail({
         ]}
       />
       <PageContent>
-        <div className="space-y-8">
+        <div className="space-y-6">
+          {/* Summary stats */}
+          {areaControls.length > 0 && (
+            <div className="grid grid-cols-4 gap-3">
+              {[
+                { label: 'Implemented', count: implemented, color: 'text-emerald-600 dark:text-emerald-400', bg: 'bg-emerald-500/10' },
+                { label: 'Partial', count: partial, color: 'text-amber-600 dark:text-amber-400', bg: 'bg-amber-500/10' },
+                { label: 'Planned', count: planned, color: 'text-blue-600 dark:text-blue-400', bg: 'bg-blue-500/10' },
+                { label: 'Not started', count: notStarted, color: 'text-muted-foreground', bg: 'bg-muted' },
+              ].map(s => (
+                <div key={s.label} className={`${s.bg} rounded-lg p-3 text-center`}>
+                  <p className={`text-xl font-bold ${s.color}`}>{s.count}</p>
+                  <p className="text-[10px] text-muted-foreground mt-0.5">{s.label}</p>
+                </div>
+              ))}
+            </div>
+          )}
+
           {/* Controls table */}
           <div>
-            <h2 className="text-lg font-semibold text-foreground mb-4">Controls</h2>
+            <div className="flex items-center justify-between mb-3">
+              <h2 className="text-sm font-semibold text-foreground">Controls</h2>
+              <p className="text-xs text-muted-foreground">Click a row to expand. Change status inline.</p>
+            </div>
             <Table>
               <TableHead>
                 <tr>
                   <TableHeaderCell className="w-[8em]">Code</TableHeaderCell>
                   <TableHeaderCell>Title</TableHeaderCell>
-                  <TableHeaderCell className="w-[7em]">Status</TableHeaderCell>
-                  <TableHeaderCell align="right" className="w-[9em]">Last checked</TableHeaderCell>
+                  <TableHeaderCell className="w-[9em]">Status</TableHeaderCell>
+                  <TableHeaderCell align="right" className="w-[9em]">Last updated</TableHeaderCell>
                 </tr>
               </TableHead>
               <TableBody>
                 {areaControls.map((ctrl) => (
-                  <TableRow key={ctrl.id}>
-                    <TableCell className="font-mono text-muted-foreground">{ctrl.id}</TableCell>
-                    <TableCell>{ctrl.title}</TableCell>
-                    <TableCell>
-                      <Badge variant={statusBadgeVariant(ctrl.status)} size="sm">
-                        {statusLabel(ctrl.status)}
-                      </Badge>
-                    </TableCell>
-                    <TableCell align="right" className="text-muted-foreground">
-                      {ctrl.lastUpdated
-                        ? new Date(ctrl.lastUpdated).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })
-                        : '—'}
-                    </TableCell>
-                  </TableRow>
+                  <ControlRow
+                    key={ctrl.id}
+                    ctrl={ctrl}
+                    onUpdate={onUpdateControl}
+                    remediationTasks={remediationTasks.filter(
+                      rt => rt.relatedControlId === ctrl.id
+                    )}
+                  />
                 ))}
                 {areaControls.length === 0 && (
                   <tr>
@@ -206,7 +443,7 @@ function ControlsDetail({
 
           {/* Findings */}
           <div>
-            <h2 className="text-lg font-semibold text-foreground mb-4">Recent Findings</h2>
+            <h2 className="text-sm font-semibold text-foreground mb-3">Recent Findings</h2>
             {areaFindings.length > 0 ? (
               <FindingsList findings={areaFindings} totalOpen={areaFindings.length} />
             ) : (
@@ -214,28 +451,6 @@ function ControlsDetail({
             )}
           </div>
 
-          {/* Crosswalk */}
-          <div>
-            <h2 className="text-lg font-semibold text-foreground mb-4">Framework Crosswalk</h2>
-            <Table>
-              <TableHead>
-                <tr>
-                  <TableHeaderCell className="w-[10em]">Directive</TableHeaderCell>
-                  <TableHeaderCell>ISO 27001:2022</TableHeaderCell>
-                  <TableHeaderCell>NIST CSF 2.0</TableHeaderCell>
-                </tr>
-              </TableHead>
-              <TableBody>
-                {crosswalk.map((row, i) => (
-                  <TableRow key={i}>
-                    <TableCell className="font-mono text-muted-foreground">Art. 21(2)({code})</TableCell>
-                    <TableCell className="font-mono">{row.iso}</TableCell>
-                    <TableCell className="font-mono">{row.nist}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </div>
         </div>
       </PageContent>
     </PageContainer>
@@ -247,7 +462,8 @@ function ControlsDetail({
 export default function ControlsLibrary() {
   const [searchParams] = useSearchParams()
   const code = searchParams.get('code')
-  const { controls, articleAreas } = useControlsContext()
+  const { controls, articleAreas, updateControl } = useControlsContext()
+  const { tasks: remediationTasks } = useRemediation()
   const { scanData } = useDashboardScan()
   const allFindings = scanData?.findings ?? []
 
@@ -258,6 +474,8 @@ export default function ControlsLibrary() {
         controls={controls}
         articleAreas={articleAreas}
         scanFindings={allFindings}
+        onUpdateControl={updateControl}
+        remediationTasks={remediationTasks}
       />
     )
   }

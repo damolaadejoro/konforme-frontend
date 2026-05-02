@@ -73,7 +73,7 @@ export default function QuizFlow({ task, onComplete, onStepChange }: QuizFlowPro
               <span className="leading-relaxed">Questions: <span className="font-medium text-gray-800">5 questions</span></span>
             </div>
             <div className="flex items-center gap-2 text-sm sm:text-[15px] text-gray-600">
-              <div className="w-2 h-2 rounded-full bg-cyan-500 flex-shrink-0" />
+              <div className="w-2 h-2 rounded-full bg-primary flex-shrink-0" />
               <span className="leading-relaxed">Pass mark: <span className="font-medium text-gray-800">4 out of 5</span></span>
             </div>
             <div className="flex items-center gap-2 text-sm sm:text-[15px] text-gray-600">
@@ -86,7 +86,7 @@ export default function QuizFlow({ task, onComplete, onStepChange }: QuizFlowPro
         {/* Start Button */}
         <button
           onClick={() => setStep(2)}
-          className="w-full bg-cyan-500 hover:bg-cyan-600 active:bg-cyan-700 text-white font-semibold py-[14px] sm:py-4 px-6 rounded-lg sm:rounded-xl transition-colors flex items-center justify-center gap-2 shadow-sm hover:shadow-md text-base sm:text-[17px] min-h-[52px]"
+          className="w-full bg-primary hover:bg-primary/90 active:bg-primary/80 text-white font-semibold py-[14px] sm:py-4 px-6 rounded-lg sm:rounded-xl transition-colors flex items-center justify-center gap-2 shadow-sm hover:shadow-md text-base sm:text-[17px] min-h-[52px]"
         >
           Start Quiz
           <ChevronRight size={18} />
@@ -151,8 +151,8 @@ export default function QuizFlow({ task, onComplete, onStepChange }: QuizFlowPro
                     : showWrong
                     ? 'bg-red-50 border-red-500 cursor-default'
                     : isSelected
-                    ? 'bg-cyan-50 border-cyan-500 shadow-sm'
-                    : 'bg-white border-gray-200 hover:border-cyan-300 active:border-cyan-400 hover:shadow-sm cursor-pointer'
+                    ? 'bg-primary/5 border-primary shadow-sm'
+                    : 'bg-card border-gray-200 hover:border-primary/50 active:border-primary/70 hover:shadow-sm cursor-pointer'
                 } ${hasCheckedAnswer && 'cursor-default'}`}
               >
                 <div className="flex items-center gap-3">
@@ -162,8 +162,8 @@ export default function QuizFlow({ task, onComplete, onStepChange }: QuizFlowPro
                       : showWrong
                       ? 'bg-red-500 border-red-500'
                       : isSelected
-                      ? 'bg-cyan-500 border-cyan-500'
-                      : 'bg-white border-gray-300'
+                      ? 'bg-primary border-primary'
+                      : 'bg-card border-gray-300'
                   }`}>
                     {showCorrect ? (
                       <CheckCircle size={18} className="text-white sm:w-5 sm:h-5" />
@@ -183,7 +183,7 @@ export default function QuizFlow({ task, onComplete, onStepChange }: QuizFlowPro
                       : showWrong
                       ? 'text-red-900 font-medium'
                       : isSelected
-                      ? 'text-cyan-900 font-medium'
+                      ? 'text-primary font-medium'
                       : 'text-gray-700'
                   }`}>
                     {option}
@@ -216,7 +216,7 @@ export default function QuizFlow({ task, onComplete, onStepChange }: QuizFlowPro
             disabled={selectedAnswer === null}
             className={`w-full font-semibold py-[14px] sm:py-4 px-6 rounded-lg sm:rounded-xl transition-all text-base sm:text-[17px] min-h-[52px] ${
               selectedAnswer !== null
-                ? 'bg-cyan-500 hover:bg-cyan-600 active:bg-cyan-700 text-white shadow-sm hover:shadow-md'
+                ? 'bg-primary hover:bg-primary/90 active:bg-primary/80 text-white shadow-sm hover:shadow-md'
                 : 'bg-gray-100 text-gray-400 cursor-not-allowed'
             }`}
           >
@@ -225,7 +225,7 @@ export default function QuizFlow({ task, onComplete, onStepChange }: QuizFlowPro
         ) : (
           <button
             onClick={handleNextQuestion}
-            className="w-full bg-cyan-500 hover:bg-cyan-600 active:bg-cyan-700 text-white font-semibold py-[14px] sm:py-4 px-6 rounded-lg sm:rounded-xl transition-colors flex items-center justify-center gap-2 shadow-sm hover:shadow-md text-base sm:text-[17px] min-h-[52px]"
+            className="w-full bg-primary hover:bg-primary/90 active:bg-primary/80 text-white font-semibold py-[14px] sm:py-4 px-6 rounded-lg sm:rounded-xl transition-colors flex items-center justify-center gap-2 shadow-sm hover:shadow-md text-base sm:text-[17px] min-h-[52px]"
           >
             {currentQuestionIndex < quizQuestionsData.length - 1 ? 'Next Question' : 'See Results'}
             <ChevronRight size={18} />
@@ -366,7 +366,7 @@ export default function QuizFlow({ task, onComplete, onStepChange }: QuizFlowPro
             setHasCheckedAnswer(false)
             setAnswers([])
           }}
-          className="w-full bg-cyan-500 hover:bg-cyan-600 active:bg-cyan-700 text-white font-semibold py-[14px] sm:py-4 px-6 rounded-lg sm:rounded-xl transition-colors flex items-center justify-center gap-2 shadow-sm hover:shadow-md text-base sm:text-[17px] min-h-[52px]"
+          className="w-full bg-primary hover:bg-primary/90 active:bg-primary/80 text-white font-semibold py-[14px] sm:py-4 px-6 rounded-lg sm:rounded-xl transition-colors flex items-center justify-center gap-2 shadow-sm hover:shadow-md text-base sm:text-[17px] min-h-[52px]"
         >
           Retake Quiz
           <ChevronRight size={18} />

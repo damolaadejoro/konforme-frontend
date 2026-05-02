@@ -117,12 +117,12 @@ export default function Assessment() {
         <Card>
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-2">
-              <ClipboardCheck size={18} className="text-navy" />
+              <ClipboardCheck size={18} className="text-primary" />
               <span className="text-sm font-medium text-foreground">
                 {t('assessment.progress', { answered: answeredCount, total: totalQuestions })}
               </span>
             </div>
-            <span className="text-sm font-semibold text-navy flex items-center gap-1">
+            <span className="text-sm font-semibold text-primary flex items-center gap-1">
               {progressPercent}%
               <InfoTooltip content={t('assessment.percentComplete')} size={12} />
             </span>
@@ -165,7 +165,7 @@ export default function Assessment() {
             {/* Article header */}
             <div className="flex items-center justify-between">
               <div>
-                <span className="text-xs font-mono text-navy">{activeArticle}</span>
+                <span className="text-xs font-mono text-primary">{activeArticle}</span>
                 <h2 className="text-lg font-semibold text-foreground">
                   {ARTICLES.find(a => a.article === activeArticle)?.title}
                 </h2>

@@ -5,12 +5,12 @@ import { Card, Button, InfoTooltip } from './ui'
 import { getScoringConfig, updateScoringConfig, getCombinedScore, getStoredAuth, isConnected } from '../services/api'
 
 function gradeColor(grade: string | null): string {
-  if (!grade) return 'text-navy-400'
-  if (grade === 'A') return 'text-emerald-400'
-  if (grade === 'B') return 'text-blue-400'
-  if (grade === 'C') return 'text-yellow-400'
-  if (grade === 'D') return 'text-orange-400'
-  return 'text-red-400'
+  if (!grade) return 'text-muted-foreground'
+  if (grade === 'A') return 'text-emerald-600'
+  if (grade === 'B') return 'text-blue-600'
+  if (grade === 'C') return 'text-amber-600'
+  if (grade === 'D') return 'text-orange-600'
+  return 'text-red-600'
 }
 
 function scoreColor(score: number | null): string {
@@ -127,8 +127,8 @@ export default function ScoringConfig() {
     return (
       <Card>
         <div className="flex items-center gap-3 mb-5">
-          <Scale size={16} className="text-cyan-400" />
-          <h2 className="text-base font-bold font-syne text-white">{t('settings.scoringConfig')}</h2>
+          <Scale size={16} className="text-primary" />
+          <h2 className="text-base font-bold text-foreground">{t('settings.scoringConfig')}</h2>
         </div>
         <div className="h-24 flex items-center justify-center">
           <div className="w-5 h-5 border-2 border-cyan-500 border-t-transparent rounded-full animate-spin" />
@@ -140,19 +140,19 @@ export default function ScoringConfig() {
   return (
     <Card>
       <div className="flex items-center gap-3 mb-2">
-        <Scale size={16} className="text-cyan-400" />
-        <h2 className="text-base font-bold font-syne text-white">{t('settings.scoringConfig')}</h2>
+        <Scale size={16} className="text-primary" />
+        <h2 className="text-base font-bold text-foreground">{t('settings.scoringConfig')}</h2>
         <InfoTooltip content={t('settings.scoringConfigDesc')} side="right" />
       </div>
-      <p className="text-xs text-navy-400 mb-5">{t('settings.scoringConfigDesc')}</p>
+      <p className="text-xs text-muted-foreground mb-5">{t('settings.scoringConfigDesc')}</p>
 
       {/* Slider */}
       <div className="space-y-3">
         <div className="flex justify-between items-baseline">
-          <span className="text-xs font-semibold text-navy-200 uppercase tracking-wider">
+          <span className="text-xs font-semibold text-foreground/80 uppercase tracking-wider">
             {t('settings.technicalWeight')}
           </span>
-          <span className="text-xs font-semibold text-navy-200 uppercase tracking-wider">
+          <span className="text-xs font-semibold text-foreground/80 uppercase tracking-wider">
             {t('settings.organizationalWeight')}
           </span>
         </div>
@@ -167,33 +167,33 @@ export default function ScoringConfig() {
             onChange={handleSliderChange}
             className="w-full h-2 rounded-full appearance-none cursor-pointer scoring-slider"
             style={{
-              background: `linear-gradient(to right, #00C2D4 ${technical}%, #305789 ${technical}%)`,
+              background: `linear-gradient(to right, #00C2D4 ${technical}%, #e2e8f0 ${technical}%)`,
             }}
           />
         </div>
 
         <div className="flex justify-between">
-          <span className="text-lg font-bold font-syne text-cyan-400">{technical}%</span>
-          <span className="text-lg font-bold font-syne text-navy-300">{organizational}%</span>
+          <span className="text-lg font-bold text-primary">{technical}%</span>
+          <span className="text-lg font-bold text-muted-foreground">{organizational}%</span>
         </div>
       </div>
 
       {/* Live preview — only when both scores exist and there are unsaved changes */}
       {(techScore !== null || humanScore !== null) && (
-        <div className="mt-5 p-4 rounded-lg bg-navy-900/60 border border-navy-800">
+        <div className="mt-5 p-4 rounded-lg bg-muted border border-border">
           <div className="grid grid-cols-2 gap-4">
             {/* Current (saved) */}
             <div className="text-center">
-              <p className="text-[10px] uppercase tracking-wider text-navy-500 mb-1">
+              <p className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1">
                 {hasChanges ? t('settings.before') : t('settings.currentScore')}
               </p>
-              <p className="text-2xl font-bold font-syne" style={{ color: scoreColor(savedOverall) }}>
+              <p className="text-2xl font-bold" style={{ color: scoreColor(savedOverall) }}>
                 {savedOverall !== null ? savedOverall.toFixed(1) : '—'}
               </p>
               <p className={`text-sm font-bold ${gradeColor(savedGrade)}`}>
                 {savedGrade || '—'}
               </p>
-              <p className="text-[10px] text-navy-500 mt-0.5">
+              <p className="text-[10px] text-muted-foreground mt-0.5">
                 {savedTechnical}/{savedOrganizational}
               </p>
             </div>
@@ -201,16 +201,16 @@ export default function ScoringConfig() {
             {/* Preview (unsaved) */}
             {hasChanges && (
               <div className="text-center">
-                <p className="text-[10px] uppercase tracking-wider text-navy-500 mb-1">
+                <p className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1">
                   {t('settings.after')}
                 </p>
-                <p className="text-2xl font-bold font-syne" style={{ color: scoreColor(previewOverall) }}>
+                <p className="text-2xl font-bold" style={{ color: scoreColor(previewOverall) }}>
                   {previewOverall !== null ? previewOverall.toFixed(1) : '—'}
                 </p>
                 <p className={`text-sm font-bold ${gradeColor(previewGrade)}`}>
                   {previewGrade || '—'}
                 </p>
-                <p className="text-[10px] text-navy-500 mt-0.5">
+                <p className="text-[10px] text-muted-foreground mt-0.5">
                   {technical}/{organizational}
                 </p>
               </div>
@@ -233,8 +233,8 @@ export default function ScoringConfig() {
       {saveMessage && (
         <div className={`mt-3 p-3 rounded-lg text-xs ${
           saveMessage.type === 'success'
-            ? 'bg-green-500/10 border border-green-500/20 text-green-400'
-            : 'bg-red-500/10 border border-red-500/20 text-red-400'
+            ? 'bg-green-50 border border-green-200 text-green-600'
+            : 'bg-red-50 border border-red-200 text-red-600'
         }`}>
           {saveMessage.text}
         </div>
@@ -249,7 +249,7 @@ export default function ScoringConfig() {
           height: 20px;
           border-radius: 50%;
           background: #00C2D4;
-          border: 2px solid #0B1F3A;
+          border: 2px solid #ffffff;
           cursor: pointer;
           box-shadow: 0 0 8px rgba(0, 194, 212, 0.4);
         }
@@ -258,7 +258,7 @@ export default function ScoringConfig() {
           height: 20px;
           border-radius: 50%;
           background: #00C2D4;
-          border: 2px solid #0B1F3A;
+          border: 2px solid #ffffff;
           cursor: pointer;
           box-shadow: 0 0 8px rgba(0, 194, 212, 0.4);
         }

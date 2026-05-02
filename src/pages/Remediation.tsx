@@ -1,10 +1,14 @@
 import React, { useState, useMemo } from 'react'
 import { useRemediation } from '../hooks/useRemediation'
+import { useControlsContext } from '../context/ControlsContext'
 import { PageContainer, PageContent } from '../components/ui/PageContainer'
 import { PageHeader } from '../components/ui/PageHeader'
 import { Badge } from '../components/ui/Badge'
 import { EmptyState } from '../components/ui/EmptyState'
 import RemediationLedger from '../components/data/RemediationLedger'
+import type { RemediationItem } from '../components/data/RemediationLedger'
+import { Info } from 'lucide-react'
+import type { RemediationTask } from '../types/assessment'
 
 type PriorityFilter = 'all' | 'P0' | 'P1' | 'P2'
 
@@ -57,18 +61,52 @@ export default function Remediation() {
     return tasks.filter(t => t.status === 'completed')
   }, [tasks])
 
-  const openItems = openTasks.map(t => ({
-    priority: priorityToP(t.priority),
-    text: t.title,
-    due: formatDue(t.dueDate),
-    href: '/remediation',
-  }))
+  const { controls } = useControlsContext()
+
+  // Build a map from control ID to its article letter for deep linking
+  const controlArticleMap = useMemo(() => {
+    const map: Record<string, string> = {}
+    for (const c of controls) {
+      const match = c.article?.toLowerCase().match(/\(([a-j])\)/)
+      if (match) map[c.id] = match[1]
+    }
+    return map
+  }, [controls])
+
+  function taskToItem(t: RemediationTask): RemediationItem {
+    const isControl = t.questionId?.startsWith('ctrl:')
+    const controlId = t.relatedControlId || (isControl ? t.questionId.replace('ctrl:', '') : undefined)
+    const articleCode = controlId ? controlArticleMap[controlId] : undefined
+
+    let source: RemediationItem['source'] = 'manual'
+    let sourceLabel = ''
+    let href = '/remediation'
+
+    if (isControl && articleCode) {
+      source = 'control'
+      sourceLabel = `Art. 21(2)(${articleCode})`
+      href = `/controls?code=${articleCode}`
+    } else if (!isControl && t.questionId && !t.questionId.startsWith('local')) {
+      source = 'assessment'
+      sourceLabel = 'Assessment'
+      href = '/assessment'
+    }
+
+    return {
+      priority: priorityToP(t.priority),
+      text: t.title,
+      due: formatDue(t.dueDate),
+      href,
+      source,
+      sourceLabel,
+    }
+  }
+
+  const openItems = openTasks.map(taskToItem)
 
   const resolvedItems = resolvedTasks.map(t => ({
-    priority: priorityToP(t.priority),
-    text: t.title,
+    ...taskToItem(t),
     due: t.completedAt ? formatDue(t.completedAt) : '—',
-    href: '/remediation',
   }))
 
   const PRIORITY_OPTIONS: PriorityFilter[] = ['all', 'P0', 'P1', 'P2']
@@ -110,6 +148,18 @@ export default function Remediation() {
               Due this week
             </button>
           </div>
+
+          {/* Scheduling note */}
+          {openTasks.length > 0 && (
+            <div className="flex items-start gap-3 p-3.5 rounded-lg bg-primary/5 border border-primary/15">
+              <Info size={16} className="text-primary mt-0.5 shrink-0" />
+              <div className="text-xs text-foreground/70 leading-relaxed">
+                <span className="font-medium text-foreground">Tasks are phased by severity.</span>{' '}
+                Critical items are due within 30 days, high-priority within 45–75 days, and medium within 75–120 days.
+                Deadlines are staggered so you can focus on a few controls at a time rather than everything at once.
+              </div>
+            </div>
+          )}
 
           {/* Open items */}
           {openItems.length > 0 ? (

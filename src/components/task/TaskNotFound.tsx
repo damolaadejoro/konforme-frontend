@@ -3,7 +3,7 @@ import { AlertTriangle, Mail } from 'lucide-react'
 
 export default function TaskNotFound() {
   return (
-    <div className="min-h-screen bg-white flex items-center justify-center px-4 py-8">
+    <div className="min-h-screen bg-card flex items-center justify-center px-4 py-8">
       <div className="max-w-md mx-auto w-full text-center space-y-5 sm:space-y-6">
         <div className="inline-flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 bg-amber-100 rounded-full mb-2 sm:mb-4">
           <AlertTriangle size={40} className="text-amber-600 sm:w-12 sm:h-12" />
@@ -22,15 +22,15 @@ export default function TaskNotFound() {
           <h2 className="text-sm sm:text-base font-semibold text-gray-900 mb-3">What to do next:</h2>
           <ul className="space-y-2.5 text-sm sm:text-[15px] text-gray-600">
             <li className="flex items-start gap-2.5">
-              <span className="text-cyan-500 font-bold flex-shrink-0 mt-0.5">•</span>
+              <span className="text-primary font-bold flex-shrink-0 mt-0.5">•</span>
               <span className="leading-relaxed">Check your email for the correct task link</span>
             </li>
             <li className="flex items-start gap-2.5">
-              <span className="text-cyan-500 font-bold flex-shrink-0 mt-0.5">•</span>
+              <span className="text-primary font-bold flex-shrink-0 mt-0.5">•</span>
               <span className="leading-relaxed">Make sure you're using the full URL (don't cut off any characters)</span>
             </li>
             <li className="flex items-start gap-2.5">
-              <span className="text-cyan-500 font-bold flex-shrink-0 mt-0.5">•</span>
+              <span className="text-primary font-bold flex-shrink-0 mt-0.5">•</span>
               <span className="leading-relaxed">Contact your IT security team if you continue to have issues</span>
             </li>
           </ul>

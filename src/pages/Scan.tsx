@@ -108,7 +108,7 @@ const AZURE_SCAN_DOMAINS = [
 function ProviderTabs({ active, onChange }: { active: Provider; onChange: (p: Provider) => void }) {
   const { t } = useTranslation()
   return (
-    <div className="flex gap-1 p-1 rounded-lg bg-slate-50 border border-slate-200 w-fit">
+    <div className="flex gap-1 p-1 rounded-lg bg-muted border border-border w-fit">
       {([
         { id: 'aws' as Provider, label: t('scan.providerAws') },
         { id: 'azure' as Provider, label: t('scan.providerAzure') },
@@ -118,8 +118,8 @@ function ProviderTabs({ active, onChange }: { active: Provider; onChange: (p: Pr
           onClick={() => onChange(tab.id)}
           className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all ${
             active === tab.id
-              ? 'bg-cyan-500/15 text-cyan-600 border border-cyan-500/30'
-              : 'text-slate-500 hover:text-slate-700 border border-transparent'
+              ? 'bg-primary/50/15 text-cyan-600 border border-cyan-500/30'
+              : 'text-muted-foreground hover:text-foreground border border-transparent'
           }`}
         >
           <Cloud size={14} />
@@ -183,7 +183,7 @@ function ScanTerminal({ checks, currentIndex, progress, status, scanRegion, prov
             <span className="text-xs text-navy-400 font-mono">{t('scan.progress')}</span>
             <span className="text-xs text-cyan-400 font-mono font-bold">{progress}%</span>
           </div>
-          <ProgressBar value={progress} animated height="h-1" color="bg-cyan-500" />
+          <ProgressBar value={progress} animated height="h-1" color="bg-primary/50" />
         </div>
       )}
 
@@ -338,7 +338,7 @@ function ScanComplete({ onReset, scanResult, provider }: { onReset: () => void; 
                 {provider.toUpperCase()}
               </span>
             </div>
-            <p className="text-sm text-slate-500">
+            <p className="text-sm text-muted-foreground">
               {t('scan.awsScoreDesc', { score, failed, total })}
             </p>
           </div>
@@ -359,7 +359,7 @@ function ScanComplete({ onReset, scanResult, provider }: { onReset: () => void; 
         ].map(item => (
           <div key={item.label} className={`rounded-lg p-3 border ${item.bg} text-center`}>
             <div className={`text-2xl font-bold ${item.color}`}>{item.value}</div>
-            <div className="text-xs text-slate-500 mt-0.5">{item.label}</div>
+            <div className="text-xs text-muted-foreground mt-0.5">{item.label}</div>
           </div>
         ))}
       </div>
@@ -464,11 +464,11 @@ function AwsIdleContent({
       {/* Account/credential selector */}
       <div className="space-y-2">
         <div className="flex items-center justify-between">
-          <span className="text-xs text-slate-500 uppercase tracking-wider font-semibold">
+          <span className="text-xs text-muted-foreground uppercase tracking-wider font-semibold">
             {!hasAnyAccount ? t('scan.addFirstAccount') : t('scan.awsAccounts')}
           </span>
           {hasAnyAccount && (
-            <Button variant="ghost" size="sm" onClick={() => setShowAddForm(!showAddForm)} className="text-cyan-600 hover:text-cyan-500">
+            <Button variant="ghost" size="sm" onClick={() => setShowAddForm(!showAddForm)} className="text-cyan-600 hover:text-primary/70">
               {showAddForm ? t('common.cancel') : t('scan.addAccount')}
             </Button>
           )}
@@ -480,14 +480,14 @@ function AwsIdleContent({
             onClick={() => selectAwsAccount(acc.id)}
             className={`p-3 rounded-lg border cursor-pointer transition-all ${
               acc.id === selectedAwsAccountId
-                ? 'bg-cyan-500/8 border-cyan-500/30'
-                : 'bg-slate-50 border-slate-200 hover:border-slate-300'
+                ? 'bg-primary/50/8 border-cyan-500/30'
+                : 'bg-muted border-border hover:border-border/80'
             }`}
           >
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-foreground">{acc.alias}</p>
-                <p className="text-xs text-slate-500 font-mono mt-0.5">{acc.awsAccountId} · {acc.awsRegion}</p>
+                <p className="text-xs text-muted-foreground font-mono mt-0.5">{acc.awsAccountId} · {acc.awsRegion}</p>
               </div>
               {acc.id === selectedAwsAccountId && <div className="w-2 h-2 rounded-full bg-cyan-400" />}
             </div>
@@ -500,14 +500,14 @@ function AwsIdleContent({
             onClick={() => selectCredential(cred.id)}
             className={`p-3 rounded-lg border cursor-pointer transition-all ${
               cred.id === selectedCredId
-                ? 'bg-cyan-500/8 border-cyan-500/30'
-                : 'bg-slate-50 border-slate-200 hover:border-slate-300'
+                ? 'bg-primary/50/8 border-cyan-500/30'
+                : 'bg-muted border-border hover:border-border/80'
             }`}
           >
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-foreground">{cred.alias}</p>
-                <p className="text-xs text-slate-500 font-mono mt-0.5">
+                <p className="text-xs text-muted-foreground font-mono mt-0.5">
                   {cred.aws_account_id || 'AWS'} · {cred.aws_region || 'eu-west-1'}
                   {cred.connection_type === 'role' && <span className="text-cyan-600 ml-1">· IAM Role</span>}
                 </p>
@@ -520,9 +520,9 @@ function AwsIdleContent({
 
       {/* Add AWS — CloudFormation role flow */}
       {(showAddForm || !hasAnyAccount) && (
-        <div className="space-y-3 p-4 rounded-lg bg-slate-50 border border-slate-200">
+        <div className="space-y-3 p-4 rounded-lg bg-muted border border-border">
           <h3 className="text-sm font-semibold text-foreground">{t('settings.awsConnectTitle')}</h3>
-          <p className="text-xs text-slate-500">{t('settings.awsConnectDesc')}</p>
+          <p className="text-xs text-muted-foreground">{t('settings.awsConnectDesc')}</p>
 
           {roleStep === 'init' && (
             <>
@@ -534,15 +534,15 @@ function AwsIdleContent({
 
           {roleStep === 'pending' && (
             <>
-              <div className="p-3 rounded-lg bg-cyan-50 border border-cyan-200">
-                <p className="text-xs text-cyan-700 font-medium mb-1">{t('settings.awsStep2Title')}</p>
-                <ol className="text-xs text-slate-500 space-y-1 list-decimal list-inside">
+              <div className="p-3 rounded-lg bg-primary/5 border border-primary/15">
+                <p className="text-xs text-primary font-medium mb-1">{t('settings.awsStep2Title')}</p>
+                <ol className="text-xs text-muted-foreground space-y-1 list-decimal list-inside">
                   <li>{t('settings.awsStep2Line1')}</li>
                   <li>{t('settings.awsStep2Line2')}</li>
                   <li>{t('settings.awsStep2Line3')}</li>
                 </ol>
                 {cfUrl && (
-                  <a href={cfUrl} target="_blank" rel="noopener noreferrer" className="inline-block mt-2 text-xs text-cyan-600 hover:text-cyan-500 underline">
+                  <a href={cfUrl} target="_blank" rel="noopener noreferrer" className="inline-block mt-2 text-xs text-cyan-600 hover:text-primary/70 underline">
                     {t('settings.awsOpenCfConsole')}
                   </a>
                 )}
@@ -634,7 +634,7 @@ function AzureIdleContent({
   }
 
   if (loading) {
-    return <div className="text-center py-8 text-slate-500 text-sm">Loading Azure credentials...</div>
+    return <div className="text-center py-8 text-muted-foreground text-sm">Loading Azure credentials...</div>
   }
 
   return (
@@ -642,11 +642,11 @@ function AzureIdleContent({
       {/* Azure credential selector */}
       <div className="space-y-2">
         <div className="flex items-center justify-between">
-          <span className="text-xs text-slate-500 uppercase tracking-wider font-semibold">
+          <span className="text-xs text-muted-foreground uppercase tracking-wider font-semibold">
             {azureCredentials.length === 0 ? t('scan.addFirstAzureCredential') : t('scan.azureCredentials')}
           </span>
           {azureCredentials.length > 0 && (
-            <Button variant="ghost" size="sm" onClick={() => setShowAddForm(!showAddForm)} className="text-cyan-600 hover:text-cyan-500">
+            <Button variant="ghost" size="sm" onClick={() => setShowAddForm(!showAddForm)} className="text-cyan-600 hover:text-primary/70">
               {showAddForm ? t('common.cancel') : t('scan.addAccount')}
             </Button>
           )}
@@ -657,14 +657,14 @@ function AzureIdleContent({
             onClick={() => setSelectedCredId(cred.id)}
             className={`p-3 rounded-lg border cursor-pointer transition-all ${
               cred.id === selectedCredId
-                ? 'bg-cyan-500/8 border-cyan-500/30'
-                : 'bg-slate-50 border-slate-200 hover:border-slate-300'
+                ? 'bg-primary/50/8 border-cyan-500/30'
+                : 'bg-muted border-border hover:border-border/80'
             }`}
           >
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-foreground">{cred.alias}</p>
-                <p className="text-xs text-slate-500 font-mono mt-0.5">
+                <p className="text-xs text-muted-foreground font-mono mt-0.5">
                   {cred.azure_subscription_id || 'No subscription ID'}
                   {cred.connection_type === 'oauth' && <span className="text-blue-400 ml-1">· OAuth</span>}
                 </p>
@@ -679,9 +679,9 @@ function AzureIdleContent({
 
       {/* Add Azure — OAuth flow */}
       {(showAddForm || azureCredentials.length === 0) && (
-        <div className="space-y-3 p-4 rounded-lg bg-slate-50 border border-slate-200">
+        <div className="space-y-3 p-4 rounded-lg bg-muted border border-border">
           <h3 className="text-sm font-semibold text-foreground">{t('settings.azureConnectTitle')}</h3>
-          <p className="text-xs text-slate-500">{t('settings.azureConnectDesc')}</p>
+          <p className="text-xs text-muted-foreground">{t('settings.azureConnectDesc')}</p>
           <Input label={t('scan.aliasLabel')} placeholder={t('scan.aliasPlaceholder')} value={form.alias} onChange={e => setForm(p => ({ ...p, alias: e.target.value }))} />
           <Input label={t('settings.azureSubscriptionId')} placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" value={form.subscriptionId} onChange={e => setForm(p => ({ ...p, subscriptionId: e.target.value }))} />
           {addError && (
@@ -724,22 +724,22 @@ function ScanSidebar({ provider }: { provider: Provider }) {
       </h2>
       <div className="space-y-2">
         {domains.map(item => (
-          <div key={item.article + item.labelKey} className="flex items-center justify-between p-2.5 rounded-lg bg-slate-50">
+          <div key={item.article + item.labelKey} className="flex items-center justify-between p-2.5 rounded-lg bg-muted">
             <div>
               <span className={`text-xs font-mono font-bold ${item.color}`}>{item.article}</span>
               <p className="text-xs text-foreground mt-0.5">{t(item.labelKey)}</p>
             </div>
-            <span className="text-xs text-slate-500">{t('scan.checksCount', { count: item.checks })}</span>
+            <span className="text-xs text-muted-foreground">{t('scan.checksCount', { count: item.checks })}</span>
           </div>
         ))}
       </div>
 
-      <div className="mt-4 p-3 rounded-lg bg-cyan-50 border border-cyan-200">
+      <div className="mt-4 p-3 rounded-lg bg-primary/5 border border-primary/15">
         <div className="flex items-center gap-2 mb-1">
           <Clock size={13} className="text-cyan-600" />
           <span className="text-xs font-semibold text-cyan-600">{t('scan.estDuration')}</span>
         </div>
-        <p className="text-xs text-slate-500">{t('scan.estDurationDesc')}</p>
+        <p className="text-xs text-muted-foreground">{t('scan.estDurationDesc')}</p>
       </div>
 
       {provider === 'aws' && (
@@ -748,7 +748,7 @@ function ScanSidebar({ provider }: { provider: Provider }) {
             <Info size={13} className="text-purple-400" />
             <span className="text-xs font-semibold text-purple-400">{t('scan.comingSoonTitle')}</span>
           </div>
-          <p className="text-xs text-slate-500">{t('scan.comingSoonDesc')}</p>
+          <p className="text-xs text-muted-foreground">{t('scan.comingSoonDesc')}</p>
         </div>
       )}
     </Card>
@@ -898,13 +898,13 @@ export default function Scan() {
 
         {(status === 'scanning' || status === 'complete') && (
           <div className="space-y-6">
-            <div className="flex items-center gap-4 p-3 rounded-lg bg-slate-50 border border-slate-200">
+            <div className="flex items-center gap-4 p-3 rounded-lg bg-muted border border-border">
               <Shield size={16} className="text-cyan-600" />
               <div className="flex items-center gap-4 text-sm">
                 <span className="text-foreground font-medium">{displayName}</span>
-                <span className="text-slate-400">·</span>
+                <span className="text-muted-foreground">·</span>
                 <span className="text-muted-foreground font-mono">{displayId}</span>
-                <span className="text-slate-400">·</span>
+                <span className="text-muted-foreground">·</span>
                 <span className={`text-xs px-2 py-0.5 rounded-full font-mono ${
                   scanProvider === 'azure' ? 'bg-blue-500/15 text-blue-400' : 'bg-orange-500/15 text-orange-400'
                 }`}>
@@ -914,7 +914,7 @@ export default function Scan() {
               </div>
               {status === 'scanning' && (
                 <div className="ml-auto flex items-center gap-2 text-xs text-cyan-600">
-                  <span className="w-2 h-2 bg-cyan-500 rounded-full animate-pulse" />
+                  <span className="w-2 h-2 bg-primary/50 rounded-full animate-pulse" />
                   {t('scan.scanningInProgress')}
                 </div>
               )}
@@ -942,7 +942,7 @@ export default function Scan() {
                     key={check.id}
                     className={`flex items-center gap-3 p-2.5 rounded-lg border transition-all duration-300 ${
                       check.status === 'scanning'
-                        ? 'bg-cyan-500/8 border-cyan-500/20'
+                        ? 'bg-primary/50/8 border-cyan-500/20'
                         : check.status === 'pass'
                         ? 'bg-emerald-500/5 border-emerald-500/15'
                         : check.status === 'info'
@@ -951,11 +951,11 @@ export default function Scan() {
                         ? 'bg-amber-500/5 border-amber-500/15'
                         : check.status === 'fail'
                         ? 'bg-red-500/5 border-red-500/10'
-                        : 'bg-slate-50 border-slate-200'
+                        : 'bg-muted border-border'
                     }`}
                   >
                     <div className="flex-shrink-0">
-                      {check.status === 'pending' && <div className="w-2 h-2 rounded-full bg-slate-300" />}
+                      {check.status === 'pending' && <div className="w-2 h-2 rounded-full bg-border" />}
                       {check.status === 'scanning' && <div className="w-2 h-2 rounded-full bg-cyan-400 animate-ping" />}
                       {check.status === 'pass' && <CheckCircle size={13} className="text-emerald-600" />}
                       {check.status === 'info' && <Info size={13} className="text-sky-400" />}
@@ -967,7 +967,7 @@ export default function Scan() {
                       } />}
                     </div>
                     <span className={`text-xs flex-1 truncate ${
-                      check.status === 'pending' ? 'text-slate-400' :
+                      check.status === 'pending' ? 'text-muted-foreground' :
                       check.status === 'scanning' ? 'text-cyan-600' :
                       check.status === 'pass' ? 'text-emerald-700' :
                       check.status === 'info' ? 'text-sky-600' :

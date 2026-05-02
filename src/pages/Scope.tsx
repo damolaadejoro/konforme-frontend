@@ -181,7 +181,7 @@ export default function Scope() {
         onClick={() => setViewMode('processes')}
         className={`px-3 py-1.5 text-sm rounded-md transition-all ${
           viewMode === 'processes'
-            ? 'bg-cyan-50 text-cyan-600 font-medium'
+            ? 'bg-primary/5 text-primary font-medium'
             : 'text-muted-foreground hover:text-foreground'
         }`}
       >
@@ -191,7 +191,7 @@ export default function Scope() {
         onClick={() => setViewMode('soa')}
         className={`px-3 py-1.5 text-sm rounded-md transition-all ${
           viewMode === 'soa'
-            ? 'bg-cyan-50 text-cyan-600 font-medium'
+            ? 'bg-primary/5 text-primary font-medium'
             : 'text-muted-foreground hover:text-foreground'
         }`}
       >
@@ -207,7 +207,7 @@ export default function Scope() {
         <PageContent>
           <Card>
             <div className="text-center py-16">
-              <div className="animate-spin h-8 w-8 border-2 border-cyan-600 border-t-transparent rounded-full mx-auto" />
+              <div className="animate-spin h-8 w-8 border-2 border-primary border-t-transparent rounded-full mx-auto" />
             </div>
           </Card>
         </PageContent>
@@ -264,7 +264,7 @@ export default function Scope() {
                   type="text"
                   value={formData.name}
                   onChange={e => setFormData(prev => ({ ...prev, name: e.target.value }))}
-                  className="w-full bg-white border border-border rounded-lg px-3 py-2 text-foreground text-sm focus:ring-2 focus:ring-ring focus:outline-none"
+                  className="w-full bg-card border border-border rounded-lg px-3 py-2 text-foreground text-sm focus:ring-2 focus:ring-ring focus:outline-none"
                   placeholder={t('scope.fieldNamePlaceholder')}
                 />
               </div>
@@ -274,7 +274,7 @@ export default function Scope() {
                   value={formData.description}
                   onChange={e => setFormData(prev => ({ ...prev, description: e.target.value }))}
                   rows={3}
-                  className="w-full bg-white border border-border rounded-lg px-3 py-2 text-foreground text-sm focus:ring-2 focus:ring-ring focus:outline-none"
+                  className="w-full bg-card border border-border rounded-lg px-3 py-2 text-foreground text-sm focus:ring-2 focus:ring-ring focus:outline-none"
                   placeholder={t('scope.fieldDescriptionPlaceholder')}
                 />
               </div>
@@ -285,7 +285,7 @@ export default function Scope() {
                     type="text"
                     value={formData.owner}
                     onChange={e => setFormData(prev => ({ ...prev, owner: e.target.value }))}
-                    className="bg-white border border-border rounded-lg px-3 py-2 text-foreground text-sm focus:ring-2 focus:ring-ring focus:outline-none"
+                    className="bg-card border border-border rounded-lg px-3 py-2 text-foreground text-sm focus:ring-2 focus:ring-ring focus:outline-none"
                     placeholder={t('scope.fieldOwnerPlaceholder')}
                   />
                 </div>
@@ -294,7 +294,7 @@ export default function Scope() {
                     type="checkbox"
                     checked={formData.is_critical}
                     onChange={e => setFormData(prev => ({ ...prev, is_critical: e.target.checked }))}
-                    className="w-4 h-4 rounded border-border bg-white text-cyan-500 focus:ring-cyan-500"
+                    className="w-4 h-4 rounded border-border bg-white text-primary focus:ring-primary"
                   />
                   <span className="text-sm text-muted-foreground">{t('scope.fieldCritical')}</span>
                 </label>
@@ -339,7 +339,7 @@ export default function Scope() {
                           onClick={() => setExpandedId(isExpanded ? null : bp.id)}
                         >
                           {isExpanded ? (
-                            <ChevronDown size={18} className="text-cyan-600" />
+                            <ChevronDown size={18} className="text-primary" />
                           ) : (
                             <ChevronRight size={18} className="text-muted-foreground" />
                           )}
@@ -365,7 +365,7 @@ export default function Scope() {
                         <div className="flex items-center gap-2">
                           <button
                             onClick={() => openEditForm(bp)}
-                            className="p-2 text-muted-foreground hover:text-cyan-600 transition-colors"
+                            className="p-2 text-muted-foreground hover:text-primary transition-colors"
                           >
                             <Pencil size={15} />
                           </button>
@@ -390,7 +390,7 @@ export default function Scope() {
                                 <div
                                   key={ctrl.controlId}
                                   className={`flex items-center justify-between px-3 py-2 rounded-lg transition-colors ${
-                                    isLinked ? 'bg-cyan-50 border border-cyan-100' : 'hover:bg-muted/70'
+                                    isLinked ? 'bg-primary/5 border border-primary/10' : 'hover:bg-muted/70'
                                   }`}
                                 >
                                   <div className="flex items-center gap-3 flex-1 min-w-0">
@@ -398,7 +398,7 @@ export default function Scope() {
                                       type="checkbox"
                                       checked={isLinked}
                                       onChange={() => handleToggleControl(bp.id, ctrl.controlId, isLinked)}
-                                      className="w-4 h-4 rounded border-border bg-white text-cyan-500 focus:ring-cyan-500 shrink-0"
+                                      className="w-4 h-4 rounded border-border bg-white text-primary focus:ring-primary shrink-0"
                                     />
                                     <div className="min-w-0">
                                       <span className="text-sm text-foreground">{ctrl.controlId}</span>
@@ -442,7 +442,7 @@ export default function Scope() {
         {viewMode === 'soa' && (
           <Card>
             <div className="flex items-center gap-2 mb-4">
-              <FileText size={18} className="text-cyan-600" />
+              <FileText size={18} className="text-primary" />
               <h3 className="text-lg font-semibold text-foreground">{t('scope.soaTitle')}</h3>
             </div>
             <p className="text-sm text-muted-foreground mb-4">{t('scope.soaDescription')}</p>
@@ -477,7 +477,7 @@ export default function Scope() {
                           {entry.linkedProcesses.length > 0 ? (
                             <div className="flex flex-wrap gap-1">
                               {entry.linkedProcesses.map((name, i) => (
-                                <span key={i} className="text-xs px-2 py-0.5 rounded-full bg-cyan-50 text-cyan-600 border border-cyan-200">
+                                <span key={i} className="text-xs px-2 py-0.5 rounded-full bg-primary/5 text-primary border border-primary/15">
                                   {name}
                                 </span>
                               ))}

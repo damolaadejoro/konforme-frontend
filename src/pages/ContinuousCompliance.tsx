@@ -12,10 +12,10 @@ import { fetchPeopleTasks, fetchISMSCoverage, instantiateBaseline } from '../ser
 import type { PeopleTaskItem, ISMSCoverage, PDCAPhase, IsmsDomain } from '../types/peopleTasks'
 
 const PDCA_META: Record<PDCAPhase, { label: string; color: string; bg: string; border: string }> = {
-  plan: { label: 'Plan', color: 'text-blue-400', bg: 'bg-blue-500/10', border: 'border-blue-500/20' },
-  do: { label: 'Do', color: 'text-emerald-400', bg: 'bg-emerald-500/10', border: 'border-emerald-500/20' },
-  check: { label: 'Check', color: 'text-amber-400', bg: 'bg-amber-500/10', border: 'border-amber-500/20' },
-  act: { label: 'Act', color: 'text-purple-400', bg: 'bg-purple-500/10', border: 'border-purple-500/20' },
+  plan: { label: 'Plan', color: 'text-blue-600', bg: 'bg-blue-50', border: 'border-blue-200' },
+  do: { label: 'Do', color: 'text-emerald-600', bg: 'bg-emerald-50', border: 'border-emerald-200' },
+  check: { label: 'Check', color: 'text-amber-600', bg: 'bg-amber-50', border: 'border-amber-200' },
+  act: { label: 'Act', color: 'text-purple-600', bg: 'bg-purple-50', border: 'border-purple-200' },
 }
 
 const PROGRESS_COLORS: Record<PDCAPhase, string> = {
@@ -26,18 +26,18 @@ const STATUS_COLORS: Record<string, string> = {
   healthy: 'bg-emerald-500',
   partial: 'bg-amber-500',
   at_risk: 'bg-red-500',
-  not_started: 'bg-navy-600',
+  not_started: 'bg-muted-foreground',
 }
 
 const ISMS_DOMAIN_META: Record<string, { label: string; icon: React.ReactNode; color: string; bg: string; border: string }> = {
-  policy_governance: { label: 'Policy & Governance', icon: <FileText size={16} />, color: 'text-blue-400', bg: 'bg-blue-500/10', border: 'border-blue-500/20' },
-  risk_management: { label: 'Risk Management', icon: <AlertTriangle size={16} />, color: 'text-amber-400', bg: 'bg-amber-500/10', border: 'border-amber-500/20' },
-  incident_management: { label: 'Incident Management', icon: <Siren size={16} />, color: 'text-red-400', bg: 'bg-red-500/10', border: 'border-red-500/20' },
-  business_continuity: { label: 'Business Continuity', icon: <RotateCcw size={16} />, color: 'text-emerald-400', bg: 'bg-emerald-500/10', border: 'border-emerald-500/20' },
-  supply_chain: { label: 'Supply Chain Security', icon: <Link size={16} />, color: 'text-orange-400', bg: 'bg-orange-500/10', border: 'border-orange-500/20' },
-  access_control: { label: 'Access Control & HR', icon: <Lock size={16} />, color: 'text-violet-400', bg: 'bg-violet-500/10', border: 'border-violet-500/20' },
-  asset_management: { label: 'Asset & Change Mgmt', icon: <Server size={16} />, color: 'text-cyan-400', bg: 'bg-cyan-500/10', border: 'border-cyan-500/20' },
-  audit_training: { label: 'Audit & Training', icon: <ClipboardCheck size={16} />, color: 'text-teal-400', bg: 'bg-teal-500/10', border: 'border-teal-500/20' },
+  policy_governance: { label: 'Policy & Governance', icon: <FileText size={16} />, color: 'text-blue-600', bg: 'bg-blue-50', border: 'border-blue-200' },
+  risk_management: { label: 'Risk Management', icon: <AlertTriangle size={16} />, color: 'text-amber-600', bg: 'bg-amber-50', border: 'border-amber-200' },
+  incident_management: { label: 'Incident Management', icon: <Siren size={16} />, color: 'text-red-600', bg: 'bg-red-50', border: 'border-red-200' },
+  business_continuity: { label: 'Business Continuity', icon: <RotateCcw size={16} />, color: 'text-emerald-600', bg: 'bg-emerald-50', border: 'border-emerald-200' },
+  supply_chain: { label: 'Supply Chain Security', icon: <Link size={16} />, color: 'text-orange-600', bg: 'bg-orange-50', border: 'border-orange-200' },
+  access_control: { label: 'Access Control & HR', icon: <Lock size={16} />, color: 'text-violet-600', bg: 'bg-violet-50', border: 'border-violet-200' },
+  asset_management: { label: 'Asset & Change Mgmt', icon: <Server size={16} />, color: 'text-primary', bg: 'bg-primary/5', border: 'border-primary/15' },
+  audit_training: { label: 'Audit & Training', icon: <ClipboardCheck size={16} />, color: 'text-teal-600', bg: 'bg-teal-50', border: 'border-teal-200' },
 }
 
 export default function ContinuousCompliance() {
@@ -101,7 +101,7 @@ export default function ContinuousCompliance() {
   if (loading && !coverage) {
     return (
       <div className="flex items-center justify-center py-20">
-        <Loader2 size={24} className="animate-spin text-cyan-400" />
+        <Loader2 size={24} className="animate-spin text-primary" />
       </div>
     )
   }
@@ -114,8 +114,8 @@ export default function ContinuousCompliance() {
       {toast && (
         <div className={`flex items-center gap-3 rounded-xl px-4 py-3 text-sm border transition-all ${
           toast.type === 'success'
-            ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-300'
-            : 'bg-red-500/10 border-red-500/20 text-red-300'
+            ? 'bg-emerald-50 border-emerald-200 text-emerald-700'
+            : 'bg-red-50 border-red-200 text-red-700'
         }`}>
           {toast.type === 'success' ? <CheckCircle size={16} /> : <AlertTriangle size={16} />}
           <span className="flex-1">{toast.text}</span>
@@ -145,8 +145,8 @@ export default function ContinuousCompliance() {
                   <span className={`text-xs font-semibold ${meta.color}`}>{pct}%</span>
                 </div>
                 <div className="flex items-baseline gap-1.5 mb-2">
-                  <span className="text-2xl font-bold text-white">{data.completed}</span>
-                  <span className="text-sm text-slate-500">/ {data.total}</span>
+                  <span className="text-2xl font-bold text-foreground">{data.completed}</span>
+                  <span className="text-sm text-muted-foreground">/ {data.total}</span>
                 </div>
                 <ProgressBar value={pct} color={PROGRESS_COLORS[phase]} height="h-1" />
               </button>
@@ -205,18 +205,18 @@ export default function ContinuousCompliance() {
                   className={`text-left rounded-xl border p-3.5 transition-all duration-150 ${
                     isSelected
                       ? `${meta.bg} ${meta.border} ring-1 ring-${meta.color.replace('text-', '')}/10`
-                      : 'bg-navy-800/30 border-navy-700/30 hover:border-navy-600/50'
+                      : 'bg-muted border-border hover:border-border/80'
                   }`}
                 >
                   <div className="flex items-center gap-2 mb-2">
                     <span className={meta.color}>{meta.icon}</span>
                     <span className={`w-2 h-2 rounded-full ml-auto ${STATUS_COLORS[item.status]}`} />
                   </div>
-                  <div className="text-xs font-medium text-white mb-1 leading-snug">{meta.label}</div>
+                  <div className="text-xs font-medium text-foreground mb-1 leading-snug">{meta.label}</div>
                   <div className="flex items-baseline gap-1 mb-2">
-                    <span className="text-lg font-bold text-white">{item.taskCount}</span>
-                    <span className="text-[10px] text-slate-500">{t('peopleTasks.continuous.tasks', 'tasks')}</span>
-                    <span className="text-[10px] text-slate-500 ml-auto">{pct}%</span>
+                    <span className="text-lg font-bold text-foreground">{item.taskCount}</span>
+                    <span className="text-[10px] text-muted-foreground">{t('peopleTasks.continuous.tasks', 'tasks')}</span>
+                    <span className="text-[10px] text-muted-foreground ml-auto">{pct}%</span>
                   </div>
                   <ProgressBar value={pct} color={meta.color.replace('text-', 'bg-')} height="h-1" />
                 </button>
@@ -243,21 +243,21 @@ export default function ContinuousCompliance() {
                   onClick={() => setFilterSub(isSelected ? '' : item.subsection)}
                   className={`text-left rounded-xl border p-3 transition-all duration-150 ${
                     isSelected
-                      ? 'bg-cyan-500/10 border-cyan-500/30 ring-1 ring-cyan-500/10'
-                      : 'bg-navy-800/30 border-navy-700/30 hover:border-navy-600/50'
+                      ? 'bg-primary/5 border-primary/30 ring-1 ring-cyan-500/10'
+                      : 'bg-muted border-border hover:border-border/80'
                   }`}
                 >
                   <div className="flex items-center justify-between mb-1.5">
-                    <span className="text-xs font-bold text-cyan-400">({item.subsection})</span>
+                    <span className="text-xs font-bold text-primary">({item.subsection})</span>
                     <span className={`w-2 h-2 rounded-full ${STATUS_COLORS[item.status]}`} />
                   </div>
-                  <div className="text-[11px] text-slate-400 mb-2 line-clamp-2 leading-relaxed min-h-[2.5em]">{item.label}</div>
+                  <div className="text-[11px] text-muted-foreground mb-2 line-clamp-2 leading-relaxed min-h-[2.5em]">{item.label}</div>
                   <div className="flex items-baseline gap-1 mb-1.5">
-                    <span className="text-base font-bold text-white">{item.taskCount}</span>
-                    <span className="text-[10px] text-slate-500">{t('peopleTasks.continuous.tasks', 'tasks')}</span>
-                    <span className="text-[10px] text-slate-500 ml-auto">{pct}%</span>
+                    <span className="text-base font-bold text-foreground">{item.taskCount}</span>
+                    <span className="text-[10px] text-muted-foreground">{t('peopleTasks.continuous.tasks', 'tasks')}</span>
+                    <span className="text-[10px] text-muted-foreground ml-auto">{pct}%</span>
                   </div>
-                  <ProgressBar value={pct} color="bg-cyan-500" height="h-1" />
+                  <ProgressBar value={pct} color="bg-primary/50" height="h-1" />
                 </button>
               )
             })}
@@ -268,13 +268,13 @@ export default function ContinuousCompliance() {
       {/* Empty state / Wizard */}
       {isEmpty && !showWizard && (
         <div className="flex flex-col items-center justify-center py-20">
-          <div className="w-20 h-20 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center mb-5">
-            <Shield size={36} className="text-cyan-400" />
+          <div className="w-20 h-20 rounded-2xl bg-primary/5 border border-primary/15 flex items-center justify-center mb-5">
+            <Shield size={36} className="text-primary" />
           </div>
-          <h3 className="text-xl font-semibold text-white mb-2">
+          <h3 className="text-xl font-semibold text-foreground mb-2">
             {t('peopleTasks.continuous.emptyTitle', 'No continuous compliance tasks yet')}
           </h3>
-          <p className="text-sm text-slate-400 mb-8 max-w-md text-center leading-relaxed">
+          <p className="text-sm text-muted-foreground mb-8 max-w-md text-center leading-relaxed">
             {t('peopleTasks.continuous.emptyDescription', 'Set up your baseline to create recurring compliance tasks covering all NIS2 Article 21(2) subsections. You can review, customise, and assign tasks before creating them.')}
           </p>
           <Button variant="primary" onClick={() => setShowWizard(true)}>
@@ -295,21 +295,21 @@ export default function ContinuousCompliance() {
       {!isEmpty && (
         <div>
           <div className="flex items-center gap-3 mb-4 flex-wrap">
-            <h3 className="text-base font-semibold text-white">{t('peopleTasks.continuous.taskList', 'Tasks')}</h3>
+            <h3 className="text-base font-semibold text-foreground">{t('peopleTasks.continuous.taskList', 'Tasks')}</h3>
             {hasFilters && (
               <button
                 onClick={clearFilters}
-                className="text-xs text-cyan-400 hover:text-cyan-300 flex items-center gap-1 transition-colors"
+                className="text-xs text-primary hover:text-primary/70 flex items-center gap-1 transition-colors"
               >
                 <X size={12} /> Clear filters
               </button>
             )}
             <div className="flex items-center gap-2 ml-auto flex-wrap">
-              <Filter size={14} className="text-slate-500" />
+              <Filter size={14} className="text-muted-foreground" />
               <select
                 value={filterDomain}
                 onChange={e => setFilterDomain(e.target.value)}
-                className="bg-navy-800/60 border border-navy-700/50 rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-cyan-500/50 transition-colors"
+                className="bg-card border border-border rounded-lg px-2.5 py-1.5 text-xs text-foreground focus:outline-none focus:border-cyan-500/50 transition-colors"
               >
                 <option value="">All Domains</option>
                 {Object.entries(ISMS_DOMAIN_META).map(([key, meta]) => (
@@ -319,7 +319,7 @@ export default function ContinuousCompliance() {
               <select
                 value={filterPhase}
                 onChange={e => setFilterPhase(e.target.value)}
-                className="bg-navy-800/60 border border-navy-700/50 rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-cyan-500/50 transition-colors"
+                className="bg-card border border-border rounded-lg px-2.5 py-1.5 text-xs text-foreground focus:outline-none focus:border-cyan-500/50 transition-colors"
               >
                 <option value="">{t('peopleTasks.continuous.allPhases', 'All Phases')}</option>
                 <option value="plan">Plan</option>
@@ -330,7 +330,7 @@ export default function ContinuousCompliance() {
               <select
                 value={filterType}
                 onChange={e => setFilterType(e.target.value)}
-                className="bg-navy-800/60 border border-navy-700/50 rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-cyan-500/50 transition-colors"
+                className="bg-card border border-border rounded-lg px-2.5 py-1.5 text-xs text-foreground focus:outline-none focus:border-cyan-500/50 transition-colors"
               >
                 <option value="">{t('peopleTasks.continuous.allTypes', 'All Types')}</option>
                 <option value="attestation">{t('peopleTasks.taskTypes.attestation', 'Attestation')}</option>
@@ -357,7 +357,7 @@ export default function ContinuousCompliance() {
                   className={`flex items-center gap-4 px-4 py-3 rounded-xl border transition-all duration-150 ${
                     isDone ? 'bg-emerald-500/5 border-emerald-500/10' :
                     isOverdue ? 'bg-red-500/5 border-red-500/10' :
-                    'bg-navy-800/20 border-navy-700/20 hover:border-navy-600/40'
+                    'bg-muted border-border hover:border-border/80'
                   }`}
                 >
                   {/* Status dot */}
@@ -368,15 +368,15 @@ export default function ContinuousCompliance() {
                   {/* Task info */}
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-0.5">
-                      <span className="text-sm font-medium text-white truncate">{task.title}</span>
+                      <span className="text-sm font-medium text-foreground truncate">{task.title}</span>
                       {task.baselineTemplateId && (
-                        <span className="text-[9px] font-medium px-1.5 py-0.5 rounded bg-navy-700/60 text-slate-400 uppercase tracking-wider flex-shrink-0">
+                        <span className="text-[9px] font-medium px-1.5 py-0.5 rounded bg-muted text-muted-foreground uppercase tracking-wider flex-shrink-0">
                           Baseline
                         </span>
                       )}
                     </div>
                     <div className="flex items-center gap-2 flex-wrap">
-                      <span className={`text-[10px] font-semibold uppercase px-1.5 py-0.5 rounded ${phase?.bg || ''} ${phase?.color || 'text-slate-400'}`}>
+                      <span className={`text-[10px] font-semibold uppercase px-1.5 py-0.5 rounded ${phase?.bg || ''} ${phase?.color || 'text-muted-foreground'}`}>
                         {task.pdcaPhase}
                       </span>
                       {domainMeta && (
@@ -384,19 +384,19 @@ export default function ContinuousCompliance() {
                           {domainMeta.label}
                         </span>
                       )}
-                      <span className="text-[11px] text-slate-500">({task.article21Subsection})</span>
-                      <span className="text-[11px] text-slate-500 capitalize">{task.frequency.replace('_', ' ')}</span>
+                      <span className="text-[11px] text-muted-foreground">({task.article21Subsection})</span>
+                      <span className="text-[11px] text-muted-foreground capitalize">{task.frequency.replace('_', ' ')}</span>
                       {task.relatedControlId && (
                         <button
                           onClick={(e) => { e.stopPropagation(); navigate(`/controls?open=${task.relatedControlId}`) }}
-                          className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded bg-cyan-500/10 text-cyan-400 text-[10px] hover:bg-cyan-500/20 transition-colors"
+                          className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded bg-primary/5 text-primary text-[10px] hover:bg-primary/10 transition-colors"
                           title={t('peopleTasks.goToControl', 'View Control')}
                         >
                           <Shield size={9} /> {task.relatedControlId}
                         </button>
                       )}
                       {task.nextDueDate && (
-                        <span className={`text-[11px] ${isOverdue ? 'text-red-400' : 'text-slate-500'}`}>
+                        <span className={`text-[11px] ${isOverdue ? 'text-red-600' : 'text-muted-foreground'}`}>
                           Due {task.nextDueDate}
                         </span>
                       )}
@@ -406,22 +406,22 @@ export default function ContinuousCompliance() {
                   {/* Right side */}
                   <div className="text-right flex-shrink-0">
                     <span className={`text-xs font-medium ${
-                      isDone ? 'text-emerald-400' : isOverdue ? 'text-red-400' : 'text-amber-400'
+                      isDone ? 'text-emerald-600' : isOverdue ? 'text-red-600' : 'text-amber-600'
                     }`}>
                       {isDone ? t('peopleTasks.status.completed', 'Completed') :
                        isOverdue ? t('peopleTasks.status.overdue', 'Overdue') :
                        t('peopleTasks.status.pending', 'Pending')}
                     </span>
                     {task.completionCount > 0 && (
-                      <div className="text-[11px] text-slate-500">{task.completionCount} completions</div>
+                      <div className="text-[11px] text-muted-foreground">{task.completionCount} completions</div>
                     )}
                   </div>
                 </div>
               )
             })}
             {tasks.length === 0 && (
-              <div className="flex flex-col items-center py-12 text-slate-400 text-sm">
-                <Filter size={20} className="mb-2 text-slate-500" />
+              <div className="flex flex-col items-center py-12 text-muted-foreground text-sm">
+                <Filter size={20} className="mb-2 text-muted-foreground" />
                 {t('peopleTasks.continuous.noMatchingTasks', 'No tasks match the current filters')}
               </div>
             )}

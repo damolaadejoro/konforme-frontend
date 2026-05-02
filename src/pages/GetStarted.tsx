@@ -42,10 +42,10 @@ function formatTierKey(key: string): string {
 
 function transpositionBadge(status: string, t: (key: string) => string) {
   const styles: Record<string, string> = {
-    transposed: 'bg-emerald-500/15 text-emerald-400 border-emerald-500/25',
-    partial: 'bg-yellow-500/15 text-yellow-400 border-yellow-500/25',
-    pending: 'bg-orange-500/15 text-orange-400 border-orange-500/25',
-    not_transposed: 'bg-red-500/15 text-red-400 border-red-500/25',
+    transposed: 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border-emerald-500/25',
+    partial: 'bg-yellow-500/15 text-yellow-600 dark:text-yellow-400 border-yellow-500/25',
+    pending: 'bg-orange-500/15 text-orange-600 dark:text-orange-400 border-orange-500/25',
+    not_transposed: 'bg-red-500/15 text-red-600 dark:text-red-400 border-red-500/25',
   }
   const labels: Record<string, string> = {
     transposed: t('getStarted.countryTransposed'),
@@ -54,7 +54,7 @@ function transpositionBadge(status: string, t: (key: string) => string) {
     not_transposed: t('getStarted.countryNotTransposed'),
   }
   return (
-    <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-xs font-semibold border ${styles[status] || 'bg-navy-700 text-navy-300 border-navy-600'}`}>
+    <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-xs font-semibold border ${styles[status] || 'bg-muted text-muted-foreground border-border'}`}>
       {labels[status] || t('getStarted.countryUnknown')}
     </span>
   )
@@ -267,7 +267,7 @@ export default function GetStarted() {
   const stepIcons = [Globe, Building2, Scale, Cloud, CheckCircle2]
 
   return (
-    <div className="min-h-screen bg-navy-950 flex flex-col items-center px-4 py-8">
+    <div className="min-h-screen bg-background flex flex-col items-center px-4 py-8">
       <div className="w-full max-w-3xl">
         {/* Logo + Language Selector */}
         <div className="flex items-center justify-between mb-6">
@@ -281,7 +281,7 @@ export default function GetStarted() {
               authSetLanguage(code)
               updateAccount({ language: code }).catch(() => {})
             }}
-            className="w-28 px-2 py-1.5 rounded-lg bg-navy-900/60 border border-navy-700 text-xs text-white focus:border-cyan-500/50 focus:outline-none appearance-none cursor-pointer"
+            className="w-28 px-2 py-1.5 rounded-lg bg-white dark:bg-card border border-border/60 shadow-sm text-xs text-foreground focus:border-primary/50 focus:outline-none appearance-none cursor-pointer"
           >
             {LANGUAGES.map(l => (
               <option key={l.code} value={l.code}>{l.flag} {l.label}</option>
@@ -299,20 +299,20 @@ export default function GetStarted() {
               <div key={i} className="flex items-center gap-2">
                 <div className="flex items-center gap-1.5">
                   <div className={`w-7 h-7 rounded-full flex items-center justify-center transition-colors ${
-                    isDone ? 'bg-cyan-500 text-navy-950' :
-                    isActive ? 'bg-cyan-500/20 border border-cyan-500 text-cyan-400' :
-                    'bg-navy-800 text-navy-500'
+                    isDone ? 'bg-primary text-primary-foreground' :
+                    isActive ? 'bg-primary/20 border border-primary text-primary' :
+                    'bg-muted text-muted-foreground'
                   }`}>
                     {isDone ? <CheckCircle2 size={14} /> : <Icon size={14} />}
                   </div>
                   <span className={`text-xs font-medium hidden sm:inline ${
-                    isActive || isDone ? 'text-cyan-400' : 'text-navy-600'
+                    isActive || isDone ? 'text-primary' : 'text-muted-foreground'
                   }`}>
                     {label}
                   </span>
                 </div>
                 {i < stepLabels.length - 1 && (
-                  <div className={`w-6 h-px ${isDone ? 'bg-cyan-400/40' : 'bg-navy-700'}`} />
+                  <div className={`w-6 h-px ${isDone ? 'bg-primary/40' : 'bg-border'}`} />
                 )}
               </div>
             )
@@ -323,29 +323,29 @@ export default function GetStarted() {
         {step === 0 && (
           <div className="animate-in fade-in duration-500">
             <div className="text-center mb-6">
-              <h1 className="text-2xl font-bold font-syne text-white">
+              <h1 className="text-2xl font-bold font-syne text-foreground">
                 {t('getStarted.welcomeTitle', { name: displayName })}
               </h1>
-              <h2 className="text-lg font-semibold text-white mt-3">{t('getStarted.countryTitle')}</h2>
-              <p className="text-sm text-navy-400 mt-1 max-w-lg mx-auto">{t('getStarted.countrySubtitle')}</p>
+              <h2 className="text-lg font-semibold text-foreground mt-3">{t('getStarted.countryTitle')}</h2>
+              <p className="text-sm text-muted-foreground mt-1 max-w-lg mx-auto">{t('getStarted.countrySubtitle')}</p>
             </div>
 
             {/* Search */}
             <div className="relative mb-4">
-              <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-navy-500" />
+              <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
               <input
                 type="text"
                 value={countrySearch}
                 onChange={e => setCountrySearch(e.target.value)}
                 placeholder={t('getStarted.countrySearchPlaceholder')}
-                className="w-full pl-9 pr-3 py-2.5 rounded-lg bg-navy-900/60 border border-navy-700 text-sm text-white placeholder-navy-500 focus:border-cyan-500/50 focus:outline-none"
+                className="w-full pl-9 pr-3 py-2.5 rounded-lg bg-white dark:bg-card border border-border/60 shadow-sm text-sm text-foreground placeholder-muted-foreground focus:border-primary/50 focus:outline-none"
               />
             </div>
 
             {/* Country grid */}
             {countriesLoading ? (
               <div className="flex justify-center py-12">
-                <Loader2 size={24} className="text-cyan-400 animate-spin" />
+                <Loader2 size={24} className="text-primary animate-spin" />
               </div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-[400px] overflow-y-auto pr-1">
@@ -357,15 +357,15 @@ export default function GetStarted() {
                       onClick={() => handleCountrySelect(c.code)}
                       className={`flex items-center gap-3 p-3 rounded-lg border text-left transition-all ${
                         isSelected
-                          ? 'border-cyan-500 bg-cyan-500/10'
-                          : 'border-navy-800 bg-navy-900/40 hover:border-navy-600'
+                          ? 'border-primary bg-primary/5 shadow-md ring-1 ring-primary/20'
+                          : 'border-border/60 bg-white dark:bg-card shadow-sm hover:border-border hover:shadow-md'
                       }`}
                     >
                       <span className="text-xl">{countryFlag(c.code)}</span>
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-white truncate">{c.name}</p>
+                        <p className="text-sm font-medium text-foreground truncate">{c.name}</p>
                         {c.nameLocal && c.nameLocal !== c.name && (
-                          <p className="text-xs text-navy-400 truncate">{c.nameLocal}</p>
+                          <p className="text-xs text-muted-foreground truncate">{c.nameLocal}</p>
                         )}
                       </div>
                       {transpositionBadge(c.transpositionStatus, t)}
@@ -377,39 +377,39 @@ export default function GetStarted() {
 
             {/* Country detail preview */}
             {countryDetail && (
-              <Card className="mt-4">
+              <div className="mt-4 p-4 rounded-lg bg-white dark:bg-card border border-border/60 shadow-sm">
                 <div className="flex items-start gap-3">
                   <span className="text-2xl">{countryFlag(countryDetail.code)}</span>
                   <div className="flex-1">
-                    <h3 className="text-base font-semibold text-white">{countryDetail.name}</h3>
+                    <h3 className="text-base font-semibold text-foreground">{countryDetail.name}</h3>
                     <div className="mt-2 space-y-1.5 text-xs">
                       {countryDetail.transpositionLawName && (
                         <div className="flex gap-2">
-                          <span className="text-navy-400 shrink-0">{t('getStarted.countryLaw')}:</span>
-                          <span className="text-navy-200">{countryDetail.transpositionLawName}</span>
+                          <span className="text-muted-foreground shrink-0">{t('getStarted.countryLaw')}:</span>
+                          <span className="text-foreground">{countryDetail.transpositionLawName}</span>
                         </div>
                       )}
                       {countryDetail.competentAuthorityName && (
                         <div className="flex gap-2">
-                          <span className="text-navy-400 shrink-0">{t('getStarted.countryAuthority')}:</span>
-                          <span className="text-navy-200">{countryDetail.competentAuthorityName}</span>
+                          <span className="text-muted-foreground shrink-0">{t('getStarted.countryAuthority')}:</span>
+                          <span className="text-foreground">{countryDetail.competentAuthorityName}</span>
                         </div>
                       )}
                       {countryDetail.dateEffective && (
                         <div className="flex gap-2">
-                          <span className="text-navy-400 shrink-0">{t('getStarted.countryEffective')}:</span>
-                          <span className="text-navy-200">{countryDetail.dateEffective}</span>
+                          <span className="text-muted-foreground shrink-0">{t('getStarted.countryEffective')}:</span>
+                          <span className="text-foreground">{countryDetail.dateEffective}</span>
                         </div>
                       )}
                     </div>
                   </div>
                 </div>
-              </Card>
+              </div>
             )}
 
             {/* Actions */}
             <div className="flex items-center justify-between mt-6">
-              <button onClick={handleSkip} className="text-sm text-navy-400 hover:text-white transition-colors">
+              <button onClick={handleSkip} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
                 {t('getStarted.skipLink')}
               </button>
               <Button
@@ -426,17 +426,17 @@ export default function GetStarted() {
         {step === 1 && (
           <div className="animate-in fade-in duration-500">
             <div className="text-center mb-6">
-              <h2 className="text-xl font-bold font-syne text-white">{t('getStarted.entityTitle')}</h2>
-              <p className="text-sm text-navy-400 mt-1 max-w-lg mx-auto">{t('getStarted.entitySubtitle')}</p>
+              <h2 className="text-xl font-bold font-syne text-foreground">{t('getStarted.entityTitle')}</h2>
+              <p className="text-sm text-muted-foreground mt-1 max-w-lg mx-auto">{t('getStarted.entitySubtitle')}</p>
             </div>
 
             {tiersLoading ? (
               <div className="flex justify-center py-12">
-                <Loader2 size={24} className="text-cyan-400 animate-spin" />
+                <Loader2 size={24} className="text-primary animate-spin" />
               </div>
             ) : tiers.length === 0 ? (
               <div className="text-center py-8">
-                <p className="text-sm text-navy-400">No entity tiers available for this country yet.</p>
+                <p className="text-sm text-muted-foreground">No entity tiers available for this country yet.</p>
               </div>
             ) : (
               <div className="space-y-4">
@@ -449,32 +449,32 @@ export default function GetStarted() {
                       onClick={() => setSelectedTier(tier.tierKey)}
                       className={`w-full text-left p-5 rounded-xl border transition-all ${
                         isSelected
-                          ? 'border-cyan-500 bg-cyan-500/10 ring-1 ring-cyan-500/20'
-                          : 'border-navy-800 bg-navy-900/40 hover:border-navy-600 hover:bg-navy-900/60'
+                          ? 'border-primary bg-primary/10 ring-1 ring-primary/20'
+                          : 'border-border/60 bg-white dark:bg-card shadow-sm hover:border-border hover:shadow-md'
                       }`}
                     >
                       <div className="flex items-start gap-4">
                         <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${
-                          isSelected ? 'bg-cyan-500/20 border border-cyan-500/30' : 'bg-navy-800 border border-navy-700'
+                          isSelected ? 'bg-primary/20 border border-primary/30' : 'bg-muted border border-border'
                         }`}>
-                          <Shield size={20} className={isSelected ? 'text-cyan-400' : 'text-navy-400'} />
+                          <Shield size={20} className={isSelected ? 'text-primary' : 'text-muted-foreground'} />
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center justify-between">
-                            <h3 className="text-base font-bold font-syne text-white">
+                            <h3 className="text-base font-bold font-syne text-foreground">
                               {tier.localName || formatTierKey(tier.tierKey)}
                             </h3>
-                            {isSelected && <CheckCircle2 size={20} className="text-cyan-400 shrink-0" />}
+                            {isSelected && <CheckCircle2 size={20} className="text-primary shrink-0" />}
                           </div>
                           {tier.description && (
-                            <p className="text-xs text-navy-300 mt-1 leading-relaxed">{tier.description}</p>
+                            <p className="text-xs text-foreground/70 mt-1 leading-relaxed">{tier.description}</p>
                           )}
 
                           {/* Penalties */}
                           {penaltyMax && (
                             <div className="mt-2.5 flex items-center gap-2">
-                              <AlertCircle size={12} className="text-orange-400 shrink-0" />
-                              <span className="text-[11px] text-orange-300">{penaltyMax}</span>
+                              <AlertCircle size={12} className="text-red-500 shrink-0" />
+                              <span className="text-[11px] text-red-600 dark:text-red-400">{penaltyMax}</span>
                             </div>
                           )}
 
@@ -482,7 +482,7 @@ export default function GetStarted() {
                           {tier.sectors.length > 0 && (
                             <div className="mt-3 flex flex-wrap gap-1.5">
                               {(expandedTiers.has(tier.id) ? tier.sectors : tier.sectors.slice(0, 5)).map((s, i) => (
-                                <span key={i} className="text-[10px] px-2 py-0.5 rounded-full bg-navy-800/80 text-navy-300 border border-navy-700/50">
+                                <span key={i} className="text-[10px] px-2 py-0.5 rounded-full bg-muted text-foreground/60 border border-border">
                                   {String(s)}
                                 </span>
                               ))}
@@ -498,7 +498,7 @@ export default function GetStarted() {
                                       return next
                                     })
                                   }}
-                                  className="text-[10px] px-2 py-0.5 rounded-full bg-navy-800/80 text-cyan-400 border border-cyan-500/30 hover:bg-cyan-500/10 transition-colors"
+                                  className="text-[10px] px-2 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/30 hover:bg-primary/20 transition-colors"
                                 >
                                   {expandedTiers.has(tier.id) ? 'Show less' : `+${tier.sectors.length - 5} more`}
                                 </button>
@@ -516,7 +516,7 @@ export default function GetStarted() {
             {/* Skip entity */}
             <button
               onClick={() => { setSelectedTier(null); handleSaveCountry() }}
-              className="block text-sm text-navy-400 hover:text-white transition-colors mt-4"
+              className="block text-sm text-muted-foreground hover:text-foreground transition-colors mt-4"
             >
               {t('getStarted.entitySkip')}
             </button>
@@ -524,7 +524,7 @@ export default function GetStarted() {
             <div className="flex items-center justify-between mt-6">
               <button
                 onClick={() => setStep(0)}
-                className="flex items-center gap-1 text-sm text-navy-400 hover:text-white transition-colors"
+                className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors"
               >
                 <ArrowLeft size={14} /> {t('getStarted.back')}
               </button>
@@ -539,13 +539,13 @@ export default function GetStarted() {
         {step === 2 && (
           <div className="animate-in fade-in duration-500">
             <div className="text-center mb-6">
-              <h2 className="text-xl font-bold font-syne text-white">{t('getStarted.scoringTitle')}</h2>
-              <p className="text-sm text-navy-400 mt-1 max-w-lg mx-auto">{t('getStarted.scoringSubtitle')}</p>
+              <h2 className="text-xl font-bold font-syne text-foreground">{t('getStarted.scoringTitle')}</h2>
+              <p className="text-sm text-muted-foreground mt-1 max-w-lg mx-auto">{t('getStarted.scoringSubtitle')}</p>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {([
-                { key: 'balanced', color: 'cyan' },
+                { key: 'balanced', color: 'primary' },
                 { key: 'technical-first', color: 'purple' },
                 { key: 'governance-led', color: 'blue' },
                 { key: 'controls-focused', color: 'emerald' },
@@ -558,23 +558,23 @@ export default function GetStarted() {
                     onClick={() => setScoringPreset(key)}
                     className={`p-4 rounded-xl border text-left transition-all ${
                       isSelected
-                        ? `border-${color}-500 bg-${color}-500/10 ring-1 ring-${color}-500/20`
-                        : 'border-navy-800 bg-navy-900/40 hover:border-navy-600'
+                        ? 'border-primary bg-primary/10 ring-1 ring-primary/20'
+                        : 'border-border/60 bg-white dark:bg-card shadow-sm hover:border-border hover:shadow-md'
                     }`}
                   >
                     <div className="flex items-center justify-between mb-2">
-                      <h3 className="text-sm font-semibold text-white">
+                      <h3 className="text-sm font-semibold text-foreground">
                         {t(`settings.preset${key.split('-').map(w => w[0].toUpperCase() + w.slice(1)).join('')}` as any)}
                       </h3>
-                      {isSelected && <CheckCircle2 size={16} className={`text-${color}-400`} />}
+                      {isSelected && <CheckCircle2 size={16} className="text-primary" />}
                     </div>
-                    <p className="text-xs text-navy-400 mb-3">
+                    <p className="text-xs text-muted-foreground mb-3">
                       {t(`settings.preset${key.split('-').map(w => w[0].toUpperCase() + w.slice(1)).join('')}Desc` as any)}
                     </p>
                     <div className="flex gap-2 text-[10px]">
-                      <span className="px-1.5 py-0.5 rounded bg-purple-500/15 text-purple-300">{Math.round(p.technical * 100)}% Tech</span>
-                      <span className="px-1.5 py-0.5 rounded bg-blue-500/15 text-blue-300">{Math.round(p.assessment * 100)}% Assess</span>
-                      <span className="px-1.5 py-0.5 rounded bg-emerald-500/15 text-emerald-300">{Math.round(p.controls * 100)}% Ctrl</span>
+                      <span className="px-1.5 py-0.5 rounded bg-purple-500/15 text-purple-600 dark:text-purple-300">{Math.round(p.technical * 100)}% Tech</span>
+                      <span className="px-1.5 py-0.5 rounded bg-blue-500/15 text-blue-600 dark:text-blue-300">{Math.round(p.assessment * 100)}% Assess</span>
+                      <span className="px-1.5 py-0.5 rounded bg-emerald-500/15 text-emerald-600 dark:text-emerald-300">{Math.round(p.controls * 100)}% Ctrl</span>
                     </div>
                   </button>
                 )
@@ -587,57 +587,53 @@ export default function GetStarted() {
               className={`w-full mt-3 p-4 rounded-xl border text-left transition-all ${
                 scoringPreset === 'custom'
                   ? 'border-orange-500 bg-orange-500/10 ring-1 ring-orange-500/20'
-                  : 'border-navy-800 bg-navy-900/40 hover:border-navy-600'
+                  : 'border-border/60 bg-white dark:bg-card shadow-sm hover:border-border hover:shadow-md'
               }`}
             >
               <div className="flex items-center justify-between mb-1">
-                <h3 className="text-sm font-semibold text-white">{t('settings.presetCustom')}</h3>
-                {scoringPreset === 'custom' && <CheckCircle2 size={16} className="text-orange-400" />}
+                <h3 className="text-sm font-semibold text-foreground">{t('settings.presetCustom')}</h3>
+                {scoringPreset === 'custom' && <CheckCircle2 size={16} className="text-orange-500" />}
               </div>
-              <p className="text-xs text-navy-400">{t('settings.presetCustomDesc')}</p>
+              <p className="text-xs text-muted-foreground">{t('settings.presetCustomDesc')}</p>
             </button>
 
             {/* Custom sliders */}
             {scoringPreset === 'custom' && (
-              <Card className="mt-4">
-                {(['technical', 'assessment', 'controls'] as const).map(key => {
-                  const colors = { technical: 'purple', assessment: 'blue', controls: 'emerald' }
-                  const color = colors[key]
-                  return (
-                    <div key={key} className="mb-4 last:mb-0">
-                      <div className="flex items-center justify-between mb-1">
-                        <label className="text-xs text-navy-300 capitalize">{t(`settings.${key}Weight`)}</label>
-                        <span className={`text-sm font-bold text-${color}-400`}>{customWeights[key]}%</span>
-                      </div>
-                      <input
-                        type="range"
-                        min={0}
-                        max={100}
-                        step={5}
-                        value={customWeights[key]}
-                        onChange={e => adjustCustomWeight(key, parseInt(e.target.value))}
-                        className="w-full h-1.5 rounded-full appearance-none bg-navy-700 accent-cyan-500"
-                      />
+              <div className="mt-4 p-4 rounded-lg bg-white dark:bg-card border border-border/60 shadow-sm">
+                {(['technical', 'assessment', 'controls'] as const).map(key => (
+                  <div key={key} className="mb-4 last:mb-0">
+                    <div className="flex items-center justify-between mb-1">
+                      <label className="text-xs text-muted-foreground capitalize">{t(`settings.${key}Weight`)}</label>
+                      <span className="text-sm font-bold text-foreground">{customWeights[key]}%</span>
                     </div>
-                  )
-                })}
-                <p className="text-[10px] text-navy-500 mt-2">
+                    <input
+                      type="range"
+                      min={0}
+                      max={100}
+                      step={5}
+                      value={customWeights[key]}
+                      onChange={e => adjustCustomWeight(key, parseInt(e.target.value))}
+                      className="w-full h-1.5 rounded-full appearance-none bg-muted accent-primary"
+                    />
+                  </div>
+                ))}
+                <p className="text-[10px] text-muted-foreground mt-2">
                   Total: {customWeights.technical + customWeights.assessment + customWeights.controls}%
                 </p>
-              </Card>
+              </div>
             )}
 
             <div className="flex items-center justify-between mt-6">
               <button
                 onClick={() => setStep(1)}
-                className="flex items-center gap-1 text-sm text-navy-400 hover:text-white transition-colors"
+                className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors"
               >
                 <ArrowLeft size={14} /> {t('getStarted.back')}
               </button>
               <div className="flex gap-2">
                 <button
                   onClick={() => setStep(3)}
-                  className="text-sm text-navy-400 hover:text-white transition-colors"
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                 >
                   {t('getStarted.scoringSkip')}
                 </button>
@@ -653,8 +649,8 @@ export default function GetStarted() {
         {step === 3 && (
           <div className="animate-in fade-in duration-500">
             <div className="text-center mb-6">
-              <h2 className="text-xl font-bold font-syne text-white">{t('getStarted.cloudTitle')}</h2>
-              <p className="text-sm text-navy-400 mt-1 max-w-lg mx-auto">{t('getStarted.cloudSubtitle')}</p>
+              <h2 className="text-xl font-bold font-syne text-foreground">{t('getStarted.cloudTitle')}</h2>
+              <p className="text-sm text-muted-foreground mt-1 max-w-lg mx-auto">{t('getStarted.cloudSubtitle')}</p>
             </div>
 
             {/* Connected providers */}
@@ -662,9 +658,9 @@ export default function GetStarted() {
               <div className="mb-4 space-y-2">
                 {cloudConnected.map((c, i) => (
                   <div key={i} className="flex items-center gap-3 p-3 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
-                    <CheckCircle2 size={16} className="text-emerald-400" />
-                    <span className="text-sm text-white font-medium">{c.alias}</span>
-                    <span className="text-xs text-emerald-400 uppercase">{c.provider}</span>
+                    <CheckCircle2 size={16} className="text-emerald-500" />
+                    <span className="text-sm text-foreground font-medium">{c.alias}</span>
+                    <span className="text-xs text-emerald-600 dark:text-emerald-400 uppercase">{c.provider}</span>
                   </div>
                 ))}
               </div>
@@ -675,36 +671,36 @@ export default function GetStarted() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <button
                   onClick={() => setCloudProvider('aws')}
-                  className="p-4 rounded-xl border border-navy-800 bg-navy-900/40 hover:border-cyan-500/40 transition-all text-left"
+                  className="p-4 rounded-xl border border-border/60 bg-white dark:bg-card shadow-sm hover:border-primary/40 hover:shadow-md transition-all text-left"
                 >
                   <div className="flex items-center gap-3 mb-2">
                     <div className="w-10 h-10 rounded-lg bg-orange-500/10 border border-orange-500/20 flex items-center justify-center">
-                      <Cloud size={20} className="text-orange-400" />
+                      <Cloud size={20} className="text-orange-500" />
                     </div>
-                    <h3 className="text-sm font-semibold text-white">{t('getStarted.cloudAws')}</h3>
+                    <h3 className="text-sm font-semibold text-foreground">{t('getStarted.cloudAws')}</h3>
                   </div>
-                  <p className="text-xs text-navy-400">{t('getStarted.cloudAwsDesc')}</p>
+                  <p className="text-xs text-muted-foreground">{t('getStarted.cloudAwsDesc')}</p>
                 </button>
                 <button
                   onClick={() => setCloudProvider('azure')}
-                  className="p-4 rounded-xl border border-navy-800 bg-navy-900/40 hover:border-cyan-500/40 transition-all text-left"
+                  className="p-4 rounded-xl border border-border/60 bg-white dark:bg-card shadow-sm hover:border-primary/40 hover:shadow-md transition-all text-left"
                 >
                   <div className="flex items-center gap-3 mb-2">
                     <div className="w-10 h-10 rounded-lg bg-blue-500/10 border border-blue-500/20 flex items-center justify-center">
-                      <Cloud size={20} className="text-blue-400" />
+                      <Cloud size={20} className="text-blue-500" />
                     </div>
-                    <h3 className="text-sm font-semibold text-white">{t('getStarted.cloudAzure')}</h3>
+                    <h3 className="text-sm font-semibold text-foreground">{t('getStarted.cloudAzure')}</h3>
                   </div>
-                  <p className="text-xs text-navy-400">{t('getStarted.cloudAzureDesc')}</p>
+                  <p className="text-xs text-muted-foreground">{t('getStarted.cloudAzureDesc')}</p>
                 </button>
               </div>
             )}
 
             {/* AWS — CloudFormation role flow */}
             {cloudProvider === 'aws' && (
-              <Card>
-                <h3 className="text-sm font-semibold text-white mb-1">{t('getStarted.cloudAws')}</h3>
-                <p className="text-xs text-navy-400 mb-4">{t('getStarted.cloudAwsRoleDesc')}</p>
+              <div className="p-4 rounded-lg bg-white dark:bg-card border border-border/60 shadow-sm">
+                <h3 className="text-sm font-semibold text-foreground mb-1">{t('getStarted.cloudAws')}</h3>
+                <p className="text-xs text-muted-foreground mb-4">{t('getStarted.cloudAwsRoleDesc')}</p>
 
                 {awsRoleStep === 'init' && (
                   <div className="space-y-3">
@@ -723,15 +719,15 @@ export default function GetStarted() {
 
                 {awsRoleStep === 'pending' && (
                   <>
-                    <div className="p-3 rounded-lg bg-cyan-500/10 border border-cyan-500/20 mb-4">
-                      <p className="text-xs text-cyan-300 font-medium mb-1">{t('getStarted.cloudAwsStep2Title')}</p>
-                      <ol className="text-xs text-navy-300 space-y-1 list-decimal list-inside">
+                    <div className="p-3 rounded-lg bg-primary/10 border border-primary/20 mb-4">
+                      <p className="text-xs text-primary font-medium mb-1">{t('getStarted.cloudAwsStep2Title')}</p>
+                      <ol className="text-xs text-muted-foreground space-y-1 list-decimal list-inside">
                         <li>{t('getStarted.cloudAwsStep2Line1')}</li>
                         <li>{t('getStarted.cloudAwsStep2Line2')}</li>
                         <li>{t('getStarted.cloudAwsStep2Line3')}</li>
                       </ol>
                       {awsCfUrl && (
-                        <a href={awsCfUrl} target="_blank" rel="noopener noreferrer" className="inline-block mt-2 text-xs text-cyan-400 hover:text-cyan-300 underline">
+                        <a href={awsCfUrl} target="_blank" rel="noopener noreferrer" className="inline-block mt-2 text-xs text-primary hover:underline">
                           {t('getStarted.cloudAwsOpenConsole')}
                         </a>
                       )}
@@ -747,8 +743,8 @@ export default function GetStarted() {
 
                 {cloudError && (
                   <div className="mt-3 p-3 rounded-lg bg-red-500/10 border border-red-500/20 flex items-center gap-2">
-                    <AlertCircle size={14} className="text-red-400 shrink-0" />
-                    <p className="text-xs text-red-400">{cloudError}</p>
+                    <AlertCircle size={14} className="text-red-500 shrink-0" />
+                    <p className="text-xs text-red-600 dark:text-red-400">{cloudError}</p>
                   </div>
                 )}
                 <div className="flex gap-2 mt-4">
@@ -766,14 +762,14 @@ export default function GetStarted() {
                     </Button>
                   )}
                 </div>
-              </Card>
+              </div>
             )}
 
             {/* Azure — OAuth flow */}
             {cloudProvider === 'azure' && (
-              <Card>
-                <h3 className="text-sm font-semibold text-white mb-1">{t('getStarted.cloudAzure')}</h3>
-                <p className="text-xs text-navy-400 mb-4">{t('getStarted.cloudAzureOAuthDesc')}</p>
+              <div className="p-4 rounded-lg bg-white dark:bg-card border border-border/60 shadow-sm">
+                <h3 className="text-sm font-semibold text-foreground mb-1">{t('getStarted.cloudAzure')}</h3>
+                <p className="text-xs text-muted-foreground mb-4">{t('getStarted.cloudAzureOAuthDesc')}</p>
                 <div className="space-y-3">
                   <Input
                     label={t('getStarted.cloudAzureAlias')}
@@ -789,8 +785,8 @@ export default function GetStarted() {
                 </div>
                 {cloudError && (
                   <div className="mt-3 p-3 rounded-lg bg-red-500/10 border border-red-500/20 flex items-center gap-2">
-                    <AlertCircle size={14} className="text-red-400 shrink-0" />
-                    <p className="text-xs text-red-400">{cloudError}</p>
+                    <AlertCircle size={14} className="text-red-500 shrink-0" />
+                    <p className="text-xs text-red-600 dark:text-red-400">{cloudError}</p>
                   </div>
                 )}
                 <div className="flex gap-2 mt-4">
@@ -801,13 +797,13 @@ export default function GetStarted() {
                     {t('getStarted.cloudAzureConnectViaMicrosoft')}
                   </Button>
                 </div>
-              </Card>
+              </div>
             )}
 
             <div className="flex items-center justify-between mt-6">
               <button
                 onClick={() => setStep(2)}
-                className="flex items-center gap-1 text-sm text-navy-400 hover:text-white transition-colors"
+                className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors"
               >
                 <ArrowLeft size={14} /> {t('getStarted.back')}
               </button>
@@ -815,7 +811,7 @@ export default function GetStarted() {
                 {!cloudProvider && (
                   <button
                     onClick={() => setStep(4)}
-                    className="text-sm text-navy-400 hover:text-white transition-colors"
+                    className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                   >
                     {t('getStarted.cloudSkip')}
                   </button>
@@ -835,40 +831,40 @@ export default function GetStarted() {
           <div className="animate-in fade-in duration-500">
             <div className="text-center mb-8">
               <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-emerald-500/10 border border-emerald-500/20 mb-4">
-                <CheckCircle2 size={32} className="text-emerald-400" />
+                <CheckCircle2 size={32} className="text-emerald-500" />
               </div>
-              <h1 className="text-2xl font-bold font-syne text-white">{t('getStarted.readyTitle')}</h1>
-              <p className="text-sm text-navy-400 mt-2">{t('getStarted.readySubtitle')}</p>
+              <h1 className="text-2xl font-bold font-syne text-foreground">{t('getStarted.readyTitle')}</h1>
+              <p className="text-sm text-muted-foreground mt-2">{t('getStarted.readySubtitle')}</p>
             </div>
 
-            <Card>
-              <div className="space-y-4">
-                <div className="flex items-center justify-between p-3 rounded-lg bg-navy-900/40 border border-navy-800">
+            <div className="p-4 rounded-lg bg-white dark:bg-card border border-border/60 shadow-sm">
+              <div className="space-y-3">
+                <div className="flex items-center justify-between p-3 rounded-lg bg-muted/50 border border-border">
                   <div className="flex items-center gap-3">
-                    <Globe size={16} className="text-cyan-400" />
-                    <span className="text-sm text-navy-300">{t('getStarted.readyCountry')}</span>
+                    <Globe size={16} className="text-primary" />
+                    <span className="text-sm text-muted-foreground">{t('getStarted.readyCountry')}</span>
                   </div>
-                  <span className="text-sm font-medium text-white">
+                  <span className="text-sm font-medium text-foreground">
                     {selectedCountryCode ? `${countryFlag(selectedCountryCode)} ${countries.find(c => c.code === selectedCountryCode)?.name || selectedCountryCode}` : t('getStarted.readyNoCountry')}
                   </span>
                 </div>
 
-                <div className="flex items-center justify-between p-3 rounded-lg bg-navy-900/40 border border-navy-800">
+                <div className="flex items-center justify-between p-3 rounded-lg bg-muted/50 border border-border">
                   <div className="flex items-center gap-3">
-                    <Building2 size={16} className="text-cyan-400" />
-                    <span className="text-sm text-navy-300">{t('getStarted.readyEntity')}</span>
+                    <Building2 size={16} className="text-primary" />
+                    <span className="text-sm text-muted-foreground">{t('getStarted.readyEntity')}</span>
                   </div>
-                  <span className="text-sm font-medium text-white capitalize">
+                  <span className="text-sm font-medium text-foreground capitalize">
                     {selectedTier || t('getStarted.readyNoEntity')}
                   </span>
                 </div>
 
-                <div className="flex items-center justify-between p-3 rounded-lg bg-navy-900/40 border border-navy-800">
+                <div className="flex items-center justify-between p-3 rounded-lg bg-muted/50 border border-border">
                   <div className="flex items-center gap-3">
-                    <Scale size={16} className="text-cyan-400" />
-                    <span className="text-sm text-navy-300">{t('getStarted.readyScoring')}</span>
+                    <Scale size={16} className="text-primary" />
+                    <span className="text-sm text-muted-foreground">{t('getStarted.readyScoring')}</span>
                   </div>
-                  <span className="text-sm font-medium text-white">
+                  <span className="text-sm font-medium text-foreground">
                     {scoringPreset === 'custom'
                       ? t('getStarted.readyCustomScoring', { technical: customWeights.technical, assessment: customWeights.assessment, controls: customWeights.controls })
                       : t('getStarted.readyDefaultScoring')
@@ -876,12 +872,12 @@ export default function GetStarted() {
                   </span>
                 </div>
 
-                <div className="flex items-center justify-between p-3 rounded-lg bg-navy-900/40 border border-navy-800">
+                <div className="flex items-center justify-between p-3 rounded-lg bg-muted/50 border border-border">
                   <div className="flex items-center gap-3">
-                    <Cloud size={16} className="text-cyan-400" />
-                    <span className="text-sm text-navy-300">{t('getStarted.readyCloud')}</span>
+                    <Cloud size={16} className="text-primary" />
+                    <span className="text-sm text-muted-foreground">{t('getStarted.readyCloud')}</span>
                   </div>
-                  <span className="text-sm font-medium text-white">
+                  <span className="text-sm font-medium text-foreground">
                     {cloudConnected.length > 0
                       ? t('getStarted.readyCloudCount', { count: cloudConnected.length })
                       : t('getStarted.readyNoCloud')
@@ -890,12 +886,12 @@ export default function GetStarted() {
                 </div>
 
               </div>
-            </Card>
+            </div>
 
             <div className="flex items-center justify-between mt-6">
               <button
                 onClick={() => setStep(3)}
-                className="flex items-center gap-1 text-sm text-navy-400 hover:text-white transition-colors"
+                className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors"
               >
                 <ArrowLeft size={14} /> {t('getStarted.back')}
               </button>

@@ -131,23 +131,23 @@ export default function Team() {
         {/* Invite Modal */}
         {showInvite && (
           <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center px-4">
-            <div className="bg-white border border-slate-200 rounded-lg p-6 w-full max-w-md shadow-lg">
-              <h2 className="text-lg font-semibold text-slate-900 mb-4">{t('team.inviteTitle', 'Invite Team Members')}</h2>
+            <div className="bg-card border border-border rounded-lg p-6 w-full max-w-md shadow-lg">
+              <h2 className="text-lg font-semibold text-foreground mb-4">{t('team.inviteTitle', 'Invite Team Members')}</h2>
 
-              <label className="block text-sm text-slate-500 mb-1">{t('team.emailsLabel', 'Email addresses (one per line or comma-separated)')}</label>
+              <label className="block text-sm text-muted-foreground mb-1">{t('team.emailsLabel', 'Email addresses (one per line or comma-separated)')}</label>
               <textarea
                 value={inviteEmails}
                 onChange={e => setInviteEmails(e.target.value)}
                 placeholder="alice@company.com&#10;bob@company.com"
                 rows={4}
-                className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 mb-4"
+                className="w-full bg-card border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground mb-4"
               />
 
-              <label className="block text-sm text-slate-500 mb-1">{t('team.roleLabel', 'Role')}</label>
+              <label className="block text-sm text-muted-foreground mb-1">{t('team.roleLabel', 'Role')}</label>
               <select
                 value={inviteRole}
                 onChange={e => setInviteRole(e.target.value as 'admin' | 'member')}
-                className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 mb-4"
+                className="w-full bg-card border border-border rounded-lg px-3 py-2 text-sm text-foreground mb-4"
               >
                 <option value="member">{t('team.roleMember', 'Member')}</option>
                 <option value="admin">{t('team.roleAdmin', 'Admin')}</option>
@@ -176,7 +176,7 @@ export default function Team() {
 
         {/* Members Table */}
         {loading ? (
-          <p className="text-slate-500">{t('common.loading')}</p>
+          <p className="text-muted-foreground">{t('common.loading')}</p>
         ) : members.length === 0 ? (
           <div className="bg-card border border-border rounded-lg">
             <EmptyState
@@ -220,7 +220,7 @@ export default function Team() {
                           <select
                             value={m.role}
                             onChange={e => handleRoleChange(m.id, e.target.value)}
-                            className="bg-white border border-slate-200 rounded px-2 py-1 text-xs text-slate-900"
+                            className="bg-card border border-border rounded px-2 py-1 text-xs text-foreground"
                           >
                             <option value="admin">{t('team.roleAdmin', 'Admin')}</option>
                             <option value="member">{t('team.roleMember', 'Member')}</option>

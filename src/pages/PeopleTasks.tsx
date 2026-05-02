@@ -67,7 +67,7 @@ function CampaignCard({ campaign }: { campaign: EmployeeCampaign }) {
     completionRate >= 80 ? 'text-success' : completionRate >= 50 ? 'text-warning' : 'text-destructive'
 
   return (
-    <Card className="hover:border-slate-300 transition-all">
+    <Card className="hover:border-border/80 transition-all">
       <div>
         {/* Campaign Header */}
         <div
@@ -285,7 +285,7 @@ export default function PeopleTasks() {
         <div className="space-y-6">
           {/* Inline Create Campaign Form */}
           {showCreateForm && (
-            <Card className="border-cyan-200">
+            <Card className="border-primary/15">
               <h3 className="text-base font-semibold text-foreground mb-4">{t('peopleTasks.createFormTitle')}</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>

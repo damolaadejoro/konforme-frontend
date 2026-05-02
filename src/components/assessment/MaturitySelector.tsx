@@ -30,15 +30,15 @@ export default function MaturitySelector({ value, onChange, disabled }: Maturity
               type="button"
               disabled={disabled}
               onClick={() => onChange(level as MaturityLevel)}
-              className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all duration-200 ${
+              className={`px-3 py-1.5 rounded-md text-xs font-medium border transition-all duration-200 ${
                 isSelected
-                  ? 'ring-1 ring-offset-1 ring-offset-navy-900'
+                  ? 'ring-1 ring-offset-1 ring-offset-background'
                   : 'opacity-60 hover:opacity-100'
               } disabled:cursor-not-allowed disabled:opacity-30`}
               style={{
-                backgroundColor: isSelected ? `${color}20` : 'transparent',
-                borderColor: isSelected ? `${color}80` : '#2a3f5f',
-                color: isSelected ? color : '#94b4d1',
+                backgroundColor: isSelected ? `${color}15` : 'transparent',
+                borderColor: isSelected ? `${color}60` : 'rgb(var(--border))',
+                color: isSelected ? color : 'rgb(var(--muted-foreground))',
                 ...(isSelected ? { ringColor: color } : {}),
               }}
             >
@@ -55,10 +55,10 @@ export default function MaturitySelector({ value, onChange, disabled }: Maturity
           type="button"
           disabled={disabled}
           onClick={() => onChange(null)}
-          className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all duration-200 ${
+          className={`px-3 py-1.5 rounded-md text-xs font-medium border transition-all duration-200 ${
             value === null
-              ? 'bg-navy-700/50 border-navy-500 text-white ring-1 ring-navy-500 ring-offset-1 ring-offset-navy-900'
-              : 'border-navy-700 text-navy-400 opacity-60 hover:opacity-100'
+              ? 'bg-muted border-border text-foreground ring-1 ring-border ring-offset-1 ring-offset-background'
+              : 'border-border text-muted-foreground opacity-60 hover:opacity-100'
           } disabled:cursor-not-allowed disabled:opacity-30`}
         >
           N/A

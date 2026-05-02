@@ -38,8 +38,8 @@ export default function DeadlinesWidget({ countryCode }: DeadlinesWidgetProps) {
   return (
     <Card>
       <div className="flex items-center gap-2 mb-4">
-        <Calendar size={16} className="text-cyan-400" />
-        <h3 className="text-sm font-bold font-syne text-white">{t('overview.deadlines')}</h3>
+        <Calendar size={16} className="text-primary" />
+        <h3 className="text-sm font-bold text-foreground">{t('overview.deadlines')}</h3>
       </div>
       <div className="space-y-2">
         {deadlines.map(d => {
@@ -52,25 +52,25 @@ export default function DeadlinesWidget({ countryCode }: DeadlinesWidgetProps) {
               key={d.id}
               className={`flex items-start gap-3 p-3 rounded-lg border ${
                 isPast
-                  ? 'bg-red-500/10 border-red-500/20'
+                  ? 'bg-red-50 border-red-200'
                   : isUrgent
-                  ? 'bg-orange-500/10 border-orange-500/20'
-                  : 'bg-navy-900/40 border-navy-800'
+                  ? 'bg-orange-50 border-orange-200'
+                  : 'bg-muted border-border'
               }`}
             >
               <div className="mt-0.5">
                 {isPast ? (
-                  <AlertTriangle size={14} className="text-red-400" />
+                  <AlertTriangle size={14} className="text-red-600" />
                 ) : (
-                  <Clock size={14} className={isUrgent ? 'text-orange-400' : 'text-navy-400'} />
+                  <Clock size={14} className={isUrgent ? 'text-orange-500' : 'text-muted-foreground'} />
                 )}
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-xs font-medium text-white">{d.description}</p>
+                <p className="text-xs font-medium text-foreground">{d.description}</p>
                 <div className="flex items-center gap-2 mt-1">
-                  <span className="text-[10px] text-[#94b4d1]">{d.deadlineDate}</span>
+                  <span className="text-[10px] text-muted-foreground">{d.deadlineDate}</span>
                   <span className={`text-[10px] font-semibold ${
-                    isPast ? 'text-red-400' : isUrgent ? 'text-orange-400' : 'text-[#94b4d1]'
+                    isPast ? 'text-red-600' : isUrgent ? 'text-orange-600' : 'text-muted-foreground'
                   }`}>
                     {isPast
                       ? t('overview.deadlinePassed')
@@ -79,7 +79,7 @@ export default function DeadlinesWidget({ countryCode }: DeadlinesWidgetProps) {
                   </span>
                 </div>
                 {d.legalReference && (
-                  <span className="text-[10px] text-[#CBD8E8] mt-0.5 block">{d.legalReference}</span>
+                  <span className="text-[10px] text-muted-foreground mt-0.5 block">{d.legalReference}</span>
                 )}
               </div>
             </div>

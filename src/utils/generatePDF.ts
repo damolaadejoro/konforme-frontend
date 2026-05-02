@@ -18,7 +18,7 @@ interface PDFData {
   complianceScore: ComplianceScore
   controls: Control[]
   articleAreas: ArticleArea[]
-  criticalGaps: Control[]
+  criticalGaps: Pick<Control, 'title' | 'severity' | 'article'>[]
 }
 
 // Brand colors

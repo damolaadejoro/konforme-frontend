@@ -20,12 +20,12 @@ export default function CountryInfoCard() {
     return (
       <Card>
         <div className="flex items-start gap-4">
-          <div className="p-3 rounded-lg bg-navy-900/60 border border-navy-700">
-            <Globe size={20} className="text-navy-400" />
+          <div className="p-3 rounded-lg bg-muted border border-border">
+            <Globe size={20} className="text-muted-foreground" />
           </div>
           <div className="flex-1">
-            <h3 className="text-sm font-semibold text-white mb-1">{t('countryInfo.title')}</h3>
-            <p className="text-xs text-navy-400 mb-3">{t('countryInfo.noCountry')}</p>
+            <h3 className="text-sm font-semibold text-foreground mb-1">{t('countryInfo.title')}</h3>
+            <p className="text-xs text-muted-foreground mb-3">{t('countryInfo.noCountry')}</p>
             <Button variant="ghost" size="sm" onClick={() => navigate('/settings')}>
               {t('countryInfo.goToSettings')}
             </Button>
@@ -36,10 +36,10 @@ export default function CountryInfoCard() {
   }
 
   const statusColor = currentCountry.transpositionStatus === 'transposed'
-    ? 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30'
+    ? 'bg-emerald-50 text-emerald-600 border-emerald-200'
     : currentCountry.transpositionStatus === 'partial'
-    ? 'bg-yellow-500/15 text-yellow-400 border-yellow-500/30'
-    : 'bg-red-500/15 text-red-400 border-red-500/30'
+    ? 'bg-yellow-50 text-amber-600 border-yellow-200'
+    : 'bg-red-50 text-red-600 border-red-200'
 
   const statusLabel = t(`countryInfo.${currentCountry.transpositionStatus}`)
 
@@ -68,7 +68,7 @@ export default function CountryInfoCard() {
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-3 mb-2">
-            <h3 className="text-sm font-bold text-white">{t('countryInfo.title')}</h3>
+            <h3 className="text-sm font-bold text-foreground">{t('countryInfo.title')}</h3>
             <span className={`text-[10px] font-semibold px-2 py-0.5 rounded border ${statusColor}`}>
               {statusLabel}
             </span>
@@ -76,17 +76,17 @@ export default function CountryInfoCard() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
             <div>
-              <p className="text-navy-400 mb-0.5">{t('countryInfo.authority')}</p>
-              <p className="text-white font-medium">{authorityName}</p>
+              <p className="text-muted-foreground mb-0.5">{t('countryInfo.authority')}</p>
+              <p className="text-foreground font-medium">{authorityName}</p>
               {authorityAcronym && (
-                <p className="text-cyan-400 text-[11px]">({authorityAcronym})</p>
+                <p className="text-primary text-[11px]">({authorityAcronym})</p>
               )}
               {authorityUrl && (
                 <a
                   href={authorityUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 text-cyan-400 hover:text-cyan-300 mt-1"
+                  className="inline-flex items-center gap-1 text-primary hover:text-primary mt-1"
                 >
                   {authorityUrl.replace(/^https?:\/\//, '')}
                   <ExternalLink size={10} />
@@ -96,15 +96,15 @@ export default function CountryInfoCard() {
 
             <div className="space-y-2">
               <div>
-                <p className="text-navy-400 mb-0.5">{t('countryInfo.nationalLaw')}</p>
-                <p className="text-white font-medium">{currentCountry.transpositionLawName || '—'}</p>
+                <p className="text-muted-foreground mb-0.5">{t('countryInfo.nationalLaw')}</p>
+                <p className="text-foreground font-medium">{currentCountry.transpositionLawName || '—'}</p>
               </div>
               {currentCountry.csirtUrl && (
                 <a
                   href={currentCountry.csirtUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 hover:text-red-300 hover:border-red-500/40 transition-all text-[11px] font-medium"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-red-50 border border-red-200 text-red-600 hover:text-red-700 hover:border-red-300 transition-all text-[11px] font-medium"
                 >
                   <Shield size={12} />
                   {t('countryInfo.reportIncident')}
@@ -115,14 +115,14 @@ export default function CountryInfoCard() {
           </div>
 
           {notes.length > 0 && (
-            <div className="mt-4 pt-3 border-t border-navy-700">
+            <div className="mt-4 pt-3 border-t border-border">
               <div className="flex items-center gap-2 mb-2">
                 <Info size={13} className="text-sky-400" />
                 <h4 className="text-xs font-bold text-sky-400 uppercase tracking-wider">{t('countryInfo.specificRequirements')}</h4>
               </div>
               <ul className="space-y-1.5">
                 {notes.map((note, i) => (
-                  <li key={i} className="flex items-start gap-2 text-xs text-navy-200">
+                  <li key={i} className="flex items-start gap-2 text-xs text-foreground/80">
                     <span className="text-sky-400 mt-0.5">•</span>
                     <span>{note}</span>
                   </li>

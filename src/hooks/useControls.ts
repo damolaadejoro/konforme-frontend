@@ -632,7 +632,7 @@ export function useControls() {
         areas[areaName] = {
           id: areaName.toLowerCase().replace(/\s+/g, '-'),
           name: areaName,
-          article: control.article.split('(')[0].trim(),
+          article: control.article,
           controlCount: 0,
           implementedCount: 0,
           status: 'Not Started' as ControlStatus

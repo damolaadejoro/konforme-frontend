@@ -29,7 +29,7 @@ function Toggle({ enabled, onToggle }: { enabled: boolean; onToggle: () => void 
       aria-checked={enabled}
       onClick={onToggle}
       className={`w-10 h-5 rounded-full relative cursor-pointer transition-colors ${
-        enabled ? 'bg-cyan-500' : 'bg-slate-300'
+        enabled ? 'bg-cyan-500' : 'bg-border'
       }`}
     >
       <div
@@ -49,7 +49,7 @@ const providerStyles: Record<string, { bg: string; border: string; text: string 
 
 // Static class lookups for scoring presets (avoids dynamic Tailwind classes)
 const presetStyles: Record<string, { active: string; text: string }> = {
-  cyan: { active: 'border-cyan-500 bg-cyan-50', text: 'text-cyan-600' },
+  cyan: { active: 'border-cyan-500 bg-primary/5', text: 'text-primary' },
   purple: { active: 'border-purple-500 bg-purple-50', text: 'text-purple-600' },
   blue: { active: 'border-blue-500 bg-blue-50', text: 'text-blue-600' },
   emerald: { active: 'border-emerald-500 bg-emerald-50', text: 'text-emerald-600' },
@@ -392,7 +392,7 @@ export default function Settings() {
         {/* Profile */}
         <Card>
           <div className="flex items-center gap-3 mb-5">
-            <User size={16} className="text-cyan-600" />
+            <User size={16} className="text-primary" />
             <h2 className="text-base font-semibold text-foreground">{t('settings.account')}</h2>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -423,7 +423,7 @@ export default function Settings() {
         <Card>
           <div className="flex items-center justify-between mb-5">
             <div className="flex items-center gap-3">
-              <Cloud size={16} className="text-cyan-600" />
+              <Cloud size={16} className="text-primary" />
               <div>
                 <h2 className="text-base font-semibold text-foreground">{t('settings.cloudProviders')}</h2>
                 <p className="text-xs text-muted-foreground mt-0.5">{t('settings.cloudProvidersDesc')}</p>
@@ -439,7 +439,7 @@ export default function Settings() {
           {/* Existing credentials */}
           {credLoading ? (
             <div className="flex justify-center py-4">
-              <Loader2 size={20} className="text-cyan-600 animate-spin" />
+              <Loader2 size={20} className="text-primary animate-spin" />
             </div>
           ) : awsAccounts.length === 0 && credentials.length === 0 && !showProviderPicker && !addingProvider ? (
             <div className="text-center py-6">
@@ -594,15 +594,15 @@ export default function Settings() {
 
               {awsRoleStep === 'pending' && (
                 <>
-                  <div className="p-3 rounded-lg bg-cyan-50 border border-cyan-200 mb-4">
-                    <p className="text-xs text-cyan-700 font-medium mb-1">{t('settings.awsStep2Title')}</p>
+                  <div className="p-3 rounded-lg bg-primary/5 border border-primary/15 mb-4">
+                    <p className="text-xs text-primary font-medium mb-1">{t('settings.awsStep2Title')}</p>
                     <ol className="text-xs text-muted-foreground space-y-1 list-decimal list-inside">
                       <li>{t('settings.awsStep2Line1')}</li>
                       <li>{t('settings.awsStep2Line2')}</li>
                       <li>{t('settings.awsStep2Line3')}</li>
                     </ol>
                     {awsCfUrl && (
-                      <a href={awsCfUrl} target="_blank" rel="noopener noreferrer" className="inline-block mt-2 text-xs text-cyan-600 hover:text-cyan-700 underline">
+                      <a href={awsCfUrl} target="_blank" rel="noopener noreferrer" className="inline-block mt-2 text-xs text-primary hover:text-primary underline">
                         {t('settings.awsOpenCfConsole')}
                       </a>
                     )}
@@ -652,7 +652,7 @@ export default function Settings() {
                 </div>
               )}
               <div className="flex items-center justify-between mt-4">
-                <button onClick={() => setAwsLegacyMode(false)} className="text-[11px] text-cyan-600 hover:text-cyan-700 transition-colors">
+                <button onClick={() => setAwsLegacyMode(false)} className="text-[11px] text-primary hover:text-primary transition-colors">
                   {t('settings.useSecureConnection')}
                 </button>
                 <div className="flex gap-2">
@@ -725,7 +725,7 @@ export default function Settings() {
                 </div>
               )}
               <div className="flex items-center justify-between mt-4">
-                <button onClick={() => setAzureLegacyMode(false)} className="text-[11px] text-cyan-600 hover:text-cyan-700 transition-colors">
+                <button onClick={() => setAzureLegacyMode(false)} className="text-[11px] text-primary hover:text-primary transition-colors">
                   {t('settings.useSecureConnection')}
                 </button>
                 <div className="flex gap-2">
@@ -740,7 +740,7 @@ export default function Settings() {
         {/* Notifications */}
         <Card>
           <div className="flex items-center gap-3 mb-5">
-            <Bell size={16} className="text-cyan-600" />
+            <Bell size={16} className="text-primary" />
             <h2 className="text-base font-semibold text-foreground">{t('settings.notifications')}</h2>
           </div>
           <div className="space-y-3">
@@ -762,7 +762,7 @@ export default function Settings() {
         {/* Compliance */}
         <Card>
           <div className="flex items-center gap-3 mb-5">
-            <Shield size={16} className="text-cyan-600" />
+            <Shield size={16} className="text-primary" />
             <h2 className="text-base font-semibold text-foreground">{t('settings.compliance')}</h2>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -789,7 +789,7 @@ export default function Settings() {
         {/* Scoring Weights — editable 3-pillar model */}
         <Card>
           <div className="flex items-center gap-3 mb-2">
-            <Scale size={16} className="text-cyan-600" />
+            <Scale size={16} className="text-primary" />
             <h2 className="text-base font-semibold text-foreground">{t('settings.scoringConfig')}</h2>
           </div>
           <p className="text-xs text-muted-foreground mb-4">{t('settings.scoringConfigDesc')}</p>

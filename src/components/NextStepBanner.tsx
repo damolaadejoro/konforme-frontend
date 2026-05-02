@@ -72,15 +72,15 @@ export default function NextStepBanner() {
   }
 
   return (
-    <div className="glass-card rounded-xl p-4 mb-6 border border-cyan-500/20 bg-gradient-to-r from-cyan-500/5 to-transparent">
+    <div className="bg-card rounded-xl p-4 mb-6 border border-primary/20 bg-gradient-to-r from-primary/5 to-transparent">
       <div className="flex items-center gap-4">
-        <div className="p-2.5 rounded-lg bg-cyan-500/10 border border-cyan-500/20 flex-shrink-0">
-          <Lightbulb size={18} className="text-cyan-400" />
+        <div className="p-2.5 rounded-lg bg-primary/10 border border-primary/20 flex-shrink-0">
+          <Lightbulb size={18} className="text-primary" />
         </div>
 
         <div className="flex-1 min-w-0">
-          <h3 className="text-[14px] font-semibold text-white">{step.label}</h3>
-          <p className="text-[13px] text-[#94b4d1] mt-0.5">{step.description}</p>
+          <h3 className="text-[14px] font-semibold text-foreground">{step.label}</h3>
+          <p className="text-[13px] text-muted-foreground mt-0.5">{step.description}</p>
         </div>
 
         <Button size="sm" onClick={() => navigate(step.path)} className="flex-shrink-0">
@@ -89,7 +89,7 @@ export default function NextStepBanner() {
 
         <button
           onClick={handleDismiss}
-          className="text-navy-400 hover:text-white transition-colors flex-shrink-0 p-1"
+          className="text-muted-foreground hover:text-foreground transition-colors flex-shrink-0 p-1"
           aria-label={t('nextStepBanner.dismissAriaLabel')}
         >
           <X size={16} />

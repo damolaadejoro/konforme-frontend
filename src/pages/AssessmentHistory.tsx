@@ -13,7 +13,7 @@ export default function AssessmentHistory() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[50vh]">
-        <div className="animate-spin w-8 h-8 border-2 border-cyan-400 border-t-transparent rounded-full" />
+        <div className="animate-spin w-8 h-8 border-2 border-primary border-t-transparent rounded-full" />
       </div>
     )
   }
@@ -23,8 +23,8 @@ export default function AssessmentHistory() {
       {/* Header */}
       <div className="flex items-start justify-between">
         <div>
-          <h1 className="text-[26px] font-bold font-syne text-white">{t('assessmentHistory.pageTitle')}</h1>
-          <p className="text-[14px] text-[#CBD8E8] mt-1">
+          <h1 className="text-[26px] font-bold  text-foreground">{t('assessmentHistory.pageTitle')}</h1>
+          <p className="text-[14px] text-muted-foreground mt-1">
             {t('assessmentHistory.pageSubtitle')}
           </p>
         </div>
@@ -42,9 +42,9 @@ export default function AssessmentHistory() {
       {versions.length === 0 ? (
         <Card>
           <div className="text-center py-16">
-            <Clock size={48} className="text-navy-500 mx-auto mb-4" />
-            <h3 className="text-lg font-bold font-syne text-white mb-2">{t('assessmentHistory.noAssessmentsTitle')}</h3>
-            <p className="text-[14px] text-[#CBD8E8] max-w-md mx-auto mb-6">
+            <Clock size={48} className="text-muted-foreground mx-auto mb-4" />
+            <h3 className="text-lg font-bold  text-foreground mb-2">{t('assessmentHistory.noAssessmentsTitle')}</h3>
+            <p className="text-[14px] text-muted-foreground max-w-md mx-auto mb-6">
               {t('assessmentHistory.noAssessmentsDescription')}
             </p>
             <Button onClick={() => navigate('/assessment')}>
@@ -58,8 +58,8 @@ export default function AssessmentHistory() {
           {versions.length >= 2 && (
             <Card glow>
               <div className="flex items-center gap-3 mb-4">
-                <TrendingUp size={20} className="text-cyan-400" />
-                <h2 className="text-lg font-bold font-syne text-white">{t('assessmentHistory.scoreTrendTitle')}</h2>
+                <TrendingUp size={20} className="text-primary" />
+                <h2 className="text-lg font-bold  text-foreground">{t('assessmentHistory.scoreTrendTitle')}</h2>
               </div>
               <div className="flex items-end gap-4 h-32">
                 {[...versions].reverse().map((v) => {
@@ -67,14 +67,14 @@ export default function AssessmentHistory() {
                   const barColor = score >= 75 ? 'bg-emerald-500' : score >= 50 ? 'bg-yellow-500' : 'bg-red-500'
                   return (
                     <div key={v.id} className="flex-1 flex flex-col items-center gap-1">
-                      <span className="text-xs font-bold text-white">{score}%</span>
-                      <div className="w-full bg-navy-800 rounded-t-lg relative" style={{ height: '100px' }}>
+                      <span className="text-xs font-bold text-foreground">{score}%</span>
+                      <div className="w-full bg-muted rounded-t-lg relative" style={{ height: '100px' }}>
                         <div
                           className={`absolute bottom-0 w-full rounded-t-lg transition-all ${barColor}`}
                           style={{ height: `${score}%` }}
                         />
                       </div>
-                      <span className="text-[10px] text-[#94b4d1]">v{v.version}</span>
+                      <span className="text-[10px] text-muted-foreground">v{v.version}</span>
                     </div>
                   )
                 })}
@@ -84,7 +84,7 @@ export default function AssessmentHistory() {
 
           {/* Version list */}
           <Card>
-            <h2 className="text-[18px] font-bold font-syne text-white mb-4">
+            <h2 className="text-[18px] font-bold  text-foreground mb-4">
               {t('assessmentHistory.allVersionsTitle')} ({versions.length})
             </h2>
             <div className="space-y-3">
@@ -97,26 +97,26 @@ export default function AssessmentHistory() {
                 return (
                   <div
                     key={v.id}
-                    className="flex items-center gap-4 p-4 rounded-lg bg-navy-900/40 border border-navy-800 hover:border-navy-600 transition-all"
+                    className="flex items-center gap-4 p-4 rounded-lg bg-muted border border-border hover:border-border/80 transition-all"
                   >
-                    <div className="flex-shrink-0 w-10 h-10 rounded-full bg-navy-800 flex items-center justify-center">
-                      <span className="text-sm font-bold text-cyan-400">v{v.version}</span>
+                    <div className="flex-shrink-0 w-10 h-10 rounded-full bg-muted flex items-center justify-center">
+                      <span className="text-sm font-bold text-primary">v{v.version}</span>
                     </div>
 
                     <div className="flex-1">
                       <div className="flex items-center gap-2">
-                        <h4 className="text-[15px] font-semibold text-white">
+                        <h4 className="text-[15px] font-semibold text-foreground">
                           {t('assessmentHistory.assessmentVersionLabel', { version: v.version })}
                         </h4>
                         <span className={`text-xs px-2 py-0.5 rounded font-semibold ${
                           v.status === 'submitted'
-                            ? 'bg-emerald-500/15 text-emerald-400'
-                            : 'bg-yellow-500/15 text-yellow-400'
+                            ? 'bg-emerald-500/15 text-emerald-600'
+                            : 'bg-yellow-500/15 text-amber-600'
                         }`}>
                           {v.status}
                         </span>
                       </div>
-                      <p className="text-[13px] text-[#94b4d1]">
+                      <p className="text-[13px] text-muted-foreground">
                         {new Date(v.submittedAt).toLocaleDateString('en-GB', {
                           day: 'numeric',
                           month: 'short',
@@ -128,11 +128,11 @@ export default function AssessmentHistory() {
                     </div>
 
                     <div className="text-right">
-                      <div className="text-2xl font-bold font-syne" style={{ color: scoreColor }}>
+                      <div className="text-2xl font-bold " style={{ color: scoreColor }}>
                         {score}%
                       </div>
                       {delta !== null && (
-                        <span className={`text-xs font-semibold ${delta >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
+                        <span className={`text-xs font-semibold ${delta >= 0 ? 'text-emerald-600' : 'text-red-600'}`}>
                           {delta >= 0 ? '+' : ''}{delta.toFixed(1)}%
                         </span>
                       )}

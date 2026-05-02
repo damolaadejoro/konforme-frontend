@@ -38,8 +38,8 @@ export default function PolicyAcknowledgmentFlow({ task, onComplete, onStepChang
         {/* Task Card */}
         <div className="bg-gradient-to-br from-gray-50 to-white border border-gray-200 rounded-lg sm:rounded-2xl p-5 sm:p-6 shadow-sm">
           <div className="flex flex-col sm:flex-row items-start gap-4">
-            <div className="p-3 bg-cyan-100 rounded-xl flex-shrink-0">
-              <FileText size={24} className="text-cyan-600 sm:w-7 sm:h-7" />
+            <div className="p-3 bg-primary/10 rounded-xl flex-shrink-0">
+              <FileText size={24} className="text-primary sm:w-7 sm:h-7" />
             </div>
             <div className="flex-1 w-full sm:w-auto">
               <h2 className="text-base sm:text-lg font-semibold text-navy-900 mb-2 leading-snug">
@@ -60,7 +60,7 @@ export default function PolicyAcknowledgmentFlow({ task, onComplete, onStepChang
 
           <div className="mt-4 pt-4 border-t border-gray-200">
             <div className="flex items-center gap-2 text-sm sm:text-[15px] text-gray-600">
-              <div className="w-2 h-2 rounded-full bg-cyan-500 flex-shrink-0" />
+              <div className="w-2 h-2 rounded-full bg-primary flex-shrink-0" />
               <span className="leading-relaxed">Estimated time: <span className="font-medium text-gray-800">Takes about 1 minute</span></span>
             </div>
           </div>
@@ -69,7 +69,7 @@ export default function PolicyAcknowledgmentFlow({ task, onComplete, onStepChang
         {/* Start Button */}
         <button
           onClick={() => setStep(2)}
-          className="w-full bg-cyan-500 hover:bg-cyan-600 active:bg-cyan-700 text-white font-semibold py-[14px] sm:py-4 px-6 rounded-lg sm:rounded-xl transition-colors flex items-center justify-center gap-2 shadow-sm hover:shadow-md text-base sm:text-[17px] min-h-[52px]"
+          className="w-full bg-primary hover:bg-primary/90 active:bg-primary/80 text-white font-semibold py-[14px] sm:py-4 px-6 rounded-lg sm:rounded-xl transition-colors flex items-center justify-center gap-2 shadow-sm hover:shadow-md text-base sm:text-[17px] min-h-[52px]"
         >
           Start Task
           <ChevronRight size={18} />
@@ -97,8 +97,8 @@ export default function PolicyAcknowledgmentFlow({ task, onComplete, onStepChang
           <ul className="space-y-4">
             {task.policyContent?.summary.map((point, index) => (
               <li key={index} className="flex items-start gap-3">
-                <div className="flex-shrink-0 w-6 h-6 rounded-full bg-cyan-100 flex items-center justify-center mt-0.5">
-                  <span className="text-xs font-semibold text-cyan-600">{index + 1}</span>
+                <div className="flex-shrink-0 w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center mt-0.5">
+                  <span className="text-xs font-semibold text-primary">{index + 1}</span>
                 </div>
                 <span className="text-[15px] sm:text-base text-gray-700 leading-relaxed">{point}</span>
               </li>
@@ -107,13 +107,13 @@ export default function PolicyAcknowledgmentFlow({ task, onComplete, onStepChang
         </div>
 
         {/* Checkbox */}
-        <div className="bg-white border-2 border-gray-200 rounded-lg sm:rounded-xl p-4 sm:p-5">
+        <div className="bg-card border-2 border-gray-200 rounded-lg sm:rounded-xl p-4 sm:p-5">
           <label className="flex items-start gap-3 cursor-pointer min-h-[44px]">
             <input
               type="checkbox"
               checked={hasReadPolicy}
               onChange={(e) => setHasReadPolicy(e.target.checked)}
-              className="mt-0.5 w-5 h-5 sm:w-6 sm:h-6 rounded border-gray-300 text-cyan-500 focus:ring-cyan-500 cursor-pointer flex-shrink-0"
+              className="mt-0.5 w-5 h-5 sm:w-6 sm:h-6 rounded border-gray-300 text-primary focus:ring-primary cursor-pointer flex-shrink-0"
             />
             <span className="text-[15px] sm:text-base text-gray-700 select-none leading-relaxed">
               I have read and understood the above policy
@@ -127,7 +127,7 @@ export default function PolicyAcknowledgmentFlow({ task, onComplete, onStepChang
           disabled={!hasReadPolicy}
           className={`w-full font-semibold py-[14px] sm:py-4 px-6 rounded-lg sm:rounded-xl transition-all flex items-center justify-center gap-2 text-base sm:text-[17px] min-h-[52px] ${
             hasReadPolicy
-              ? 'bg-cyan-500 hover:bg-cyan-600 active:bg-cyan-700 text-white shadow-sm hover:shadow-md'
+              ? 'bg-primary hover:bg-primary/90 active:bg-primary/80 text-white shadow-sm hover:shadow-md'
               : 'bg-gray-100 text-gray-400 cursor-not-allowed'
           }`}
         >
@@ -153,7 +153,7 @@ export default function PolicyAcknowledgmentFlow({ task, onComplete, onStepChang
         </div>
 
         {/* Confirmation Form */}
-        <div className="bg-white border border-gray-200 rounded-lg sm:rounded-2xl p-5 sm:p-6 space-y-5 shadow-sm">
+        <div className="bg-card border border-gray-200 rounded-lg sm:rounded-2xl p-5 sm:p-6 space-y-5 shadow-sm">
           <div>
             <label className="block text-sm sm:text-[15px] font-medium text-gray-700 mb-2">
               Your Name
@@ -162,7 +162,7 @@ export default function PolicyAcknowledgmentFlow({ task, onComplete, onStepChang
               type="text"
               value={confirmedName}
               onChange={(e) => setConfirmedName(e.target.value)}
-              className="w-full px-4 py-3 sm:py-3.5 bg-gray-50 border border-gray-200 rounded-lg sm:rounded-xl text-[15px] sm:text-base text-gray-900 focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-100 min-h-[48px]"
+              className="w-full px-4 py-3 sm:py-3.5 bg-gray-50 border border-gray-200 rounded-lg sm:rounded-xl text-[15px] sm:text-base text-gray-900 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 min-h-[48px]"
             />
           </div>
 
@@ -197,7 +197,7 @@ export default function PolicyAcknowledgmentFlow({ task, onComplete, onStepChang
             disabled={!confirmedName.trim()}
             className={`w-full font-semibold py-[14px] sm:py-4 px-6 rounded-lg sm:rounded-xl transition-all text-base sm:text-[17px] min-h-[52px] ${
               confirmedName.trim()
-                ? 'bg-cyan-500 hover:bg-cyan-600 active:bg-cyan-700 text-white shadow-sm hover:shadow-md'
+                ? 'bg-primary hover:bg-primary/90 active:bg-primary/80 text-white shadow-sm hover:shadow-md'
                 : 'bg-gray-100 text-gray-400 cursor-not-allowed'
             }`}
           >

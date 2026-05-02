@@ -26,7 +26,7 @@ export default function Layout() {
   return (
     <ControlsProvider>
       <ScoreProvider>
-        <div className="flex min-h-screen bg-slate-50">
+        <div className="flex min-h-screen bg-background">
           {/* Desktop sidebar */}
           {!isMobile && <Sidebar />}
 

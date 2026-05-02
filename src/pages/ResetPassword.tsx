@@ -172,7 +172,7 @@ export default function ResetPassword() {
         <div className="w-full max-w-md">
           <div className="text-center mb-8">
             <div className="inline-flex items-center justify-center mb-4">
-              <Logo size="lg" showText={false} />
+              <Logo size="lg" showText={false} inverted />
             </div>
             <h1 className="text-2xl font-bold font-syne text-white">{t('resetPassword.pageTitle')}</h1>
             <p className="text-sm text-navy-400 mt-1">{t('resetPassword.chooseNewPassword', 'Choose a new password for your account')}</p>
@@ -240,7 +240,7 @@ export default function ResetPassword() {
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center mb-4">
-            <Logo size="lg" showText={false} />
+            <Logo size="lg" showText={false} inverted />
           </div>
           <h1 className="text-2xl font-bold font-syne text-white">{t('resetPassword.pageTitle')}</h1>
           <p className="text-sm text-navy-400 mt-1">{t('resetPassword.pageSubtitle')}</p>

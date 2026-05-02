@@ -33,26 +33,26 @@ function ResponseButton({
     yes: {
       icon: CheckCircle,
       label: t('organizationalAssessment.responseYes'),
-      color: selected ? 'bg-emerald-500/15 border-emerald-500/40 text-emerald-400' : 'border-navy-700 text-navy-300 hover:border-emerald-500/30 hover:text-emerald-400',
-      iconColor: 'text-emerald-400',
+      color: selected ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-600' : 'border-border text-muted-foreground hover:border-emerald-500/30 hover:text-emerald-600',
+      iconColor: 'text-emerald-600',
     },
     partial: {
       icon: MinusCircle,
       label: t('organizationalAssessment.responsePartial'),
-      color: selected ? 'bg-yellow-500/15 border-yellow-500/40 text-yellow-400' : 'border-navy-700 text-navy-300 hover:border-yellow-500/30 hover:text-yellow-400',
-      iconColor: 'text-yellow-400',
+      color: selected ? 'bg-amber-500/10 border-amber-500/30 text-amber-600' : 'border-border text-muted-foreground hover:border-amber-500/30 hover:text-amber-600',
+      iconColor: 'text-amber-600',
     },
     no: {
       icon: XCircle,
       label: t('organizationalAssessment.responseNo'),
-      color: selected ? 'bg-red-500/15 border-red-500/40 text-red-400' : 'border-navy-700 text-navy-300 hover:border-red-500/30 hover:text-red-400',
-      iconColor: 'text-red-400',
+      color: selected ? 'bg-red-500/10 border-red-500/30 text-red-600' : 'border-border text-muted-foreground hover:border-red-500/30 hover:text-red-600',
+      iconColor: 'text-red-600',
     },
     na: {
       icon: Circle,
       label: t('organizationalAssessment.responseNa'),
-      color: selected ? 'bg-navy-600/30 border-navy-600/60 text-navy-300' : 'border-navy-700 text-navy-400 hover:border-navy-600 hover:text-navy-300',
-      iconColor: 'text-navy-400',
+      color: selected ? 'bg-muted border-border text-muted-foreground' : 'border-border text-muted-foreground/60 hover:border-border/80 hover:text-muted-foreground',
+      iconColor: 'text-muted-foreground',
     },
   }
 
@@ -83,22 +83,22 @@ function QuestionCard({
   const [showGuidance, setShowGuidance] = useState(false)
 
   return (
-    <div className="glass-card rounded-xl p-5 space-y-4">
+    <div className="bg-muted/30 border border-border rounded-xl p-5 space-y-4">
       <div className="flex items-start justify-between gap-4">
         <div className="flex-1">
           <div className="flex items-center gap-3 mb-2">
             <SeverityBadge severity={question.severity} />
-            <span className="text-xs font-mono font-semibold text-cyan-400/80">{question.article}</span>
+            <span className="text-xs font-mono font-semibold text-primary/70">{question.article}</span>
           </div>
-          <h3 className="text-base font-semibold text-white leading-snug">{question.question}</h3>
-          <p className="text-sm text-navy-300 mt-2 leading-relaxed">{question.description}</p>
+          <h3 className="text-base font-semibold text-foreground leading-snug">{question.question}</h3>
+          <p className="text-sm text-foreground/60 mt-2 leading-relaxed">{question.description}</p>
         </div>
         {answer && answer !== null && (
           <div className="flex-shrink-0">
-            {answer === 'yes' && <CheckCircle size={20} className="text-emerald-400" />}
-            {answer === 'partial' && <MinusCircle size={20} className="text-yellow-400" />}
-            {answer === 'no' && <XCircle size={20} className="text-red-400" />}
-            {answer === 'na' && <Circle size={20} className="text-navy-400" />}
+            {answer === 'yes' && <CheckCircle size={20} className="text-emerald-600" />}
+            {answer === 'partial' && <MinusCircle size={20} className="text-amber-600" />}
+            {answer === 'no' && <XCircle size={20} className="text-red-600" />}
+            {answer === 'na' && <Circle size={20} className="text-muted-foreground" />}
           </div>
         )}
       </div>
@@ -113,7 +113,7 @@ function QuestionCard({
       {question.guidance && (
         <button
           onClick={() => setShowGuidance(!showGuidance)}
-          className="flex items-center gap-2 text-xs text-cyan-400 hover:text-cyan-300 transition-colors"
+          className="flex items-center gap-2 text-xs text-primary hover:text-primary/70 transition-colors"
         >
           <Info size={13} />
           <span>{showGuidance ? t('organizationalAssessment.hideGuidance') : t('organizationalAssessment.showGuidance')}</span>
@@ -122,7 +122,7 @@ function QuestionCard({
       )}
 
       {showGuidance && question.guidance && (
-        <div className="p-3 rounded-lg bg-cyan-500/8 border border-cyan-500/15 text-sm text-navy-200 leading-relaxed">
+        <div className="p-3 rounded-lg bg-primary/5 border border-primary/15 text-sm text-foreground/70 leading-relaxed">
           {question.guidance}
         </div>
       )}
@@ -151,8 +151,8 @@ export default function OrganizationalAssessment() {
     <div className="max-w-4xl mx-auto space-y-6">
       <div className="flex items-start justify-between">
         <div>
-          <h1 className="text-2xl font-bold font-syne text-white">{t('organizationalAssessment.pageTitle')}</h1>
-          <p className="text-sm text-navy-300 mt-1">
+          <h1 className="text-2xl font-bold text-foreground">{t('organizationalAssessment.pageTitle')}</h1>
+          <p className="text-sm text-muted-foreground mt-1">
             {t('organizationalAssessment.pageSubtitle')}
           </p>
         </div>
@@ -167,16 +167,16 @@ export default function OrganizationalAssessment() {
       <Card glow>
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
-            <Shield size={16} className="text-cyan-400" />
-            <h2 className="text-base font-bold font-syne text-white">{t('organizationalAssessment.assessmentProgressTitle')}</h2>
+            <Shield size={16} className="text-primary" />
+            <h2 className="text-base font-bold text-foreground">{t('organizationalAssessment.assessmentProgressTitle')}</h2>
           </div>
-          <span className="text-sm font-semibold text-cyan-400">
+          <span className="text-sm font-semibold text-primary">
             {t('organizationalAssessment.questionsCount', { answered: assessment.answered, total: assessment.totalQuestions })}
           </span>
         </div>
-        <ProgressBar value={progressPercent} animated color="bg-cyan-500" height="h-2.5" />
+        <ProgressBar value={progressPercent} animated color="bg-primary" height="h-2.5" />
         <div className="flex items-center justify-between mt-3 text-sm">
-          <span className="text-navy-300">{t('organizationalAssessment.percentComplete', { percent: progressPercent })}</span>
+          <span className="text-muted-foreground">{t('organizationalAssessment.percentComplete', { percent: progressPercent })}</span>
           {allAnswered && !isComplete && (
             <Button size="sm" onClick={handleComplete}>
               {t('organizationalAssessment.completeAssessmentButton')} <ChevronRight size={14} />
@@ -187,28 +187,28 @@ export default function OrganizationalAssessment() {
 
       <Card>
         <div className="flex items-start gap-3">
-          <Info size={18} className="text-cyan-400 mt-0.5 flex-shrink-0" />
-          <div className="text-sm text-navy-200 leading-relaxed space-y-2">
-            <p className="font-semibold text-white">{t('organizationalAssessment.instructionsTitle')}</p>
-            <ul className="space-y-1 text-navy-300">
+          <Info size={18} className="text-primary mt-0.5 flex-shrink-0" />
+          <div className="text-sm leading-relaxed space-y-2">
+            <p className="font-semibold text-foreground">{t('organizationalAssessment.instructionsTitle')}</p>
+            <ul className="space-y-1 text-muted-foreground">
               <li className="flex items-start gap-2">
-                <ChevronRight size={14} className="text-cyan-400 mt-0.5 flex-shrink-0" />
-                <span><strong className="text-emerald-400">{t('organizationalAssessment.instructionYes')}</strong> — {t('organizationalAssessment.instructionYesDescription')}</span>
+                <ChevronRight size={14} className="text-primary mt-0.5 flex-shrink-0" />
+                <span><strong className="text-emerald-600">{t('organizationalAssessment.instructionYes')}</strong> — {t('organizationalAssessment.instructionYesDescription')}</span>
               </li>
               <li className="flex items-start gap-2">
-                <ChevronRight size={14} className="text-cyan-400 mt-0.5 flex-shrink-0" />
-                <span><strong className="text-yellow-400">{t('organizationalAssessment.instructionPartial')}</strong> — {t('organizationalAssessment.instructionPartialDescription')}</span>
+                <ChevronRight size={14} className="text-primary mt-0.5 flex-shrink-0" />
+                <span><strong className="text-amber-600">{t('organizationalAssessment.instructionPartial')}</strong> — {t('organizationalAssessment.instructionPartialDescription')}</span>
               </li>
               <li className="flex items-start gap-2">
-                <ChevronRight size={14} className="text-cyan-400 mt-0.5 flex-shrink-0" />
-                <span><strong className="text-red-400">{t('organizationalAssessment.instructionNo')}</strong> — {t('organizationalAssessment.instructionNoDescription')}</span>
+                <ChevronRight size={14} className="text-primary mt-0.5 flex-shrink-0" />
+                <span><strong className="text-red-600">{t('organizationalAssessment.instructionNo')}</strong> — {t('organizationalAssessment.instructionNoDescription')}</span>
               </li>
               <li className="flex items-start gap-2">
-                <ChevronRight size={14} className="text-cyan-400 mt-0.5 flex-shrink-0" />
-                <span><strong className="text-navy-400">{t('organizationalAssessment.instructionNa')}</strong> — {t('organizationalAssessment.instructionNaDescription')}</span>
+                <ChevronRight size={14} className="text-primary mt-0.5 flex-shrink-0" />
+                <span><strong className="text-muted-foreground">{t('organizationalAssessment.instructionNa')}</strong> — {t('organizationalAssessment.instructionNaDescription')}</span>
               </li>
             </ul>
-            <p className="text-cyan-400 text-xs mt-3">
+            <p className="text-primary/70 text-xs mt-3">
               {t('organizationalAssessment.autoSaveNote')}
             </p>
           </div>
@@ -224,16 +224,16 @@ export default function OrganizationalAssessment() {
           const isExpanded = expandedSection === section
 
           return (
-            <div key={section} className="glass-card rounded-xl overflow-hidden">
+            <div key={section} className="bg-card border border-border rounded-xl overflow-hidden">
               <button
                 onClick={() => setExpandedSection(isExpanded ? null : section)}
-                className="w-full flex items-center justify-between p-4 hover:bg-navy-800/40 transition-colors"
+                className="w-full flex items-center justify-between p-4 hover:bg-muted/50 transition-colors"
               >
                 <div className="flex items-center gap-3">
-                  <FileText size={18} className="text-cyan-400" />
+                  <FileText size={18} className="text-primary" />
                   <div className="text-left">
-                    <h3 className="text-base font-bold font-syne text-white">{section}</h3>
-                    <p className="text-xs text-navy-400 mt-0.5">
+                    <h3 className="text-base font-bold text-foreground">{section}</h3>
+                    <p className="text-xs text-muted-foreground mt-0.5">
                       {t('organizationalAssessment.answeredOfTotal', { answered: sectionAnswered, total: sectionQuestions.length })}
                     </p>
                   </div>
@@ -249,17 +249,17 @@ export default function OrganizationalAssessment() {
                             ans === 'yes' ? 'bg-emerald-400' :
                             ans === 'partial' ? 'bg-yellow-400' :
                             ans === 'no' ? 'bg-red-400' :
-                            ans === 'na' ? 'bg-navy-600' :
-                            'bg-navy-700'
+                            ans === 'na' ? 'bg-muted-foreground' :
+                            'bg-border'
                           }`}
                         />
                       )
                     })}
                   </div>
                   {isExpanded ? (
-                    <ChevronDown size={18} className="text-cyan-400" />
+                    <ChevronDown size={18} className="text-primary" />
                   ) : (
-                    <ChevronRight size={18} className="text-navy-500" />
+                    <ChevronRight size={18} className="text-muted-foreground" />
                   )}
                 </div>
               </button>
@@ -284,10 +284,10 @@ export default function OrganizationalAssessment() {
       {allAnswered && !isComplete && (
         <Card className="text-center">
           <div className="flex flex-col items-center gap-4 py-4">
-            <CheckCircle size={40} className="text-emerald-400" />
+            <CheckCircle size={40} className="text-emerald-600" />
             <div>
-              <h3 className="text-lg font-bold font-syne text-white">{t('organizationalAssessment.allQuestionsAnsweredTitle')}</h3>
-              <p className="text-sm text-navy-300 mt-1">
+              <h3 className="text-lg font-bold text-foreground">{t('organizationalAssessment.allQuestionsAnsweredTitle')}</h3>
+              <p className="text-sm text-muted-foreground mt-1">
                 {t('organizationalAssessment.allQuestionsAnsweredSubtitle')}
               </p>
             </div>

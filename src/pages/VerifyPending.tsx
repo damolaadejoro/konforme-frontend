@@ -118,7 +118,7 @@ export default function VerifyPending() {
       <div className="min-h-screen bg-navy-950 flex items-center justify-center px-4">
         <div className="w-full max-w-md text-center">
           <div className="inline-flex items-center justify-center mb-6">
-            <Logo size="lg" showText={false} />
+            <Logo size="lg" showText={false} inverted />
           </div>
           <Card>
             <div className="p-2 text-center">
@@ -142,7 +142,7 @@ export default function VerifyPending() {
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center mb-4">
-            <Logo size="lg" showText={false} />
+            <Logo size="lg" showText={false} inverted />
           </div>
         </div>
 
